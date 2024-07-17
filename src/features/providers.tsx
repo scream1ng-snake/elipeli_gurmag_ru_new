@@ -86,7 +86,7 @@ const myVariables = [
   { cssVar: '--gurmag-accent-color', dark: '#F6B911', light: '#F6B911' },
   { cssVar: '--theme-shadow-color', dark: 'black', light: 'grey' },
   { cssVar: '--громкий-текст', dark: '#FFFFFF', light: '#000000' }, 
-  { cssVar: '--тихий-текст', dark: '#DEDEDE', light: '#29363D' }, 
+  { cssVar: '--тихий-текст', dark: '#BABABA', light: '#29363D' }, 
 ]
 
 const antdVariables: Var[] = [
