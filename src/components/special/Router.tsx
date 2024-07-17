@@ -29,8 +29,7 @@ const routes: Array<{
   ]
 
 export const RouterComponent: FC = observer(() => {
-  const { navigationStore } = useStore()
-  const { location } = navigationStore
+  const { nav: { location }} = useStore()
   logger.log('location changed ' + location.pathname, 'Router')
   return (
     <BrowserRouter>

@@ -8,13 +8,13 @@ export default class RootStore {
     this.receptionType = rt
   }
   navigateToInputAddr = () => {
-    this.navigationStore.push('/selectPoint')
+    this.nav.push('/selectPoint')
   }
 
   constructor() {
     makeAutoObservable(this)
   }
-  navigationStore = new NavigationStore()
+  nav = new NavigationStore()
   auth = new AuthStore(this)
 }
 
