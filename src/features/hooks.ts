@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { StoreContext } from "./contexts";
+import { StoreContext, ThemeContext } from "./contexts";
 
 declare global {
   interface Window {
@@ -41,3 +41,4 @@ export function useTelegram() {
 }
 
 export const useStore = () => useContext(StoreContext);
+export const useTheme = () => useContext(ThemeContext);
