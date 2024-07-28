@@ -9,11 +9,11 @@ import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import Feature from 'ol/Feature'
 import Marker from '../../assets/marker.png'
-import BlackMarker from '../../assets/black_marker.png'
-import GreyMarker from '../../assets/black_marker.png'
+import GreyMarker from '../../assets/grey_marker.png'
 import Select from 'ol/interaction/Select'
 import Style from 'ol/style/Style'
 import IconStyle from 'ol/style/Icon'
+import { useTheme } from '../../features/hooks'
 
 const center = [55.947417612394574, 54.72572230097609]
 var previousMarker: any
@@ -23,21 +23,32 @@ interface props {
   onSelect: (cordinates: number[]) => void
 }
 const ReactMap: FC<props> = p => {
+  const { theme } = useTheme()
   useGeographic();
   useEffect(() => {
+    const tile = new TileLayer({ source: new OSM() })
     const map = new Map({
       target: 'map',
       controls: [],
-      view: new View({
-        center,
-        zoom: 13,
-      }),
-      layers: [
-        new TileLayer({
-          source: new OSM(),
-        })
-      ]
+      view: new View({ center, zoom: 13 }),
+      layers: [tile]
     })
+    if (theme === 'dark') {
+      tile.on('prerender', (evt) => {
+        if (evt.context) {
+          const context = evt.context as CanvasRenderingContext2D;
+          context.filter = 'grayscale(80%) invert(100%) ';
+          context.globalCompositeOperation = 'source-over';
+        }
+      });
+
+      tile.on('postrender', (evt) => {
+        if (evt.context) {
+          const context = evt.context as CanvasRenderingContext2D;
+          context.filter = 'none';
+        }
+      });
+    }
     map.on('singleclick', e => {
       const newLayer = new VectorLayer({
         className: e.coordinate.join(', '),
@@ -70,8 +81,10 @@ interface radioProps {
   onSwitch: (r: radioItem) => void
 }
 const ReactMapRadio: FC<radioProps> = p => {
+  const { theme } = useTheme()
   useGeographic();
   useEffect(() => {
+    const tile = new TileLayer({ source: new OSM() })
     const map = new Map({
       target: 'map',
       controls: [],
@@ -81,12 +94,25 @@ const ReactMapRadio: FC<radioProps> = p => {
           : [56.02900051529786, 54.727878021619915],
         zoom: 11,
       }),
-      layers: [
-        new TileLayer({
-          source: new OSM(),
-        })
-      ]
+      layers: [tile]
     })
+    if (theme === 'dark') {
+      tile.on('prerender', (evt) => {
+        if (evt.context) {
+          const context = evt.context as CanvasRenderingContext2D;
+          context.filter = 'grayscale(80%) invert(100%) ';
+          context.globalCompositeOperation = 'source-over';
+        }
+      });
+
+      tile.on('postrender', (evt) => {
+        if (evt.context) {
+          const context = evt.context as CanvasRenderingContext2D;
+          context.filter = 'none';
+        }
+      });
+    }
+
     let selectClick = new Select({
       style: new Style({
         'image': new IconStyle({ 'src': Marker, 'height': 44 })
