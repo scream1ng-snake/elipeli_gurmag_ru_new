@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import Map from 'ol/Map.js'
 import TileLayer from 'ol/layer/Tile'
 import { OSM } from 'ol/source'
@@ -53,7 +53,7 @@ const ReactMap: FC<props> = p => {
       const newLayer = new VectorLayer({
         className: e.coordinate.join(', '),
         source: new VectorSource(),
-        style: { 'icon-src': Marker, 'icon-height': 40 },
+        style: { 'icon-src': Marker, 'icon-height': 40, 'icon-anchor': [0.5,1] },
       })
       map.getView().setCenter(e.coordinate)
       if (previousMarker) map.removeLayer(previousMarker)
@@ -78,10 +78,11 @@ type radioItem = { lat: number, lon: number, key: number }
 interface radioProps {
   items: radioItem[]
   defaultSelected?: radioItem
-  onSwitch: (r: radioItem) => void
+  onSwitch: (r: radioItem|null) => void
 }
 const ReactMapRadio: FC<radioProps> = p => {
   const { theme } = useTheme()
+  const [selectedItem, setSelectedItem] = useState(p.defaultSelected ?? null)
   useGeographic();
   useEffect(() => {
     const tile = new TileLayer({ source: new OSM() })
@@ -115,7 +116,7 @@ const ReactMapRadio: FC<radioProps> = p => {
 
     let selectClick = new Select({
       style: new Style({
-        'image': new IconStyle({ 'src': Marker, 'height': 44 })
+        'image': new IconStyle({ 'src': Marker, 'height': 44, 'anchor': [0.5, 1]})
       })
     })
     map.addInteraction(selectClick)
@@ -127,16 +128,20 @@ const ReactMapRadio: FC<radioProps> = p => {
         )
         if (clicked) {
           p.onSwitch(clicked)
+          setSelectedItem(clicked)
           map.getView().setCenter([clicked.lat, clicked.lon])
         }
+      } else {
+        p.onSwitch(null)
+        setSelectedItem(null)
       }
     })
 
     for (const poimt of p.items) {
       const newLayer = new VectorLayer({
         source: new VectorSource(),
-        style: { 'icon-src': GreyMarker, 'icon-height': 38 },
-        className: String(poimt.key)
+        style: { 'icon-src': GreyMarker, 'icon-height': 38, 'icon-anchor': [0.5,1] },
+        className: String(poimt.key),
       })
       map.addLayer(newLayer)
       let marker = new Feature(new Point([poimt.lat, poimt.lon]));
@@ -146,7 +151,7 @@ const ReactMapRadio: FC<radioProps> = p => {
   return <div id="map" style={fullscreen} />
 }
 
-const fullscreen = { width: '100vw', height: '100vh' }
+const fullscreen = { width: '100vw', height: '100%' }
 
 const Maps = {
   Picker: ReactMap,
