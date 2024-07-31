@@ -28,5 +28,5 @@ export type LoadStatesType = typeof LoadStates[keyof typeof LoadStates];
 
 
 export type WithChildren = {
-  children: ReactNode
+  children?: ReactNode
 }
