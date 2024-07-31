@@ -18,22 +18,10 @@ export class AuthStore {
     makeAutoObservable(this) 
   }
 
-  
-  get isCheckingAuth() {
-    return this.state === AuthStates.CHECKING_AUTH;
-  }
-
-  get isAuth() {
-    return this.state === AuthStates.AUTHORIZED;
-  }
-
-  get isFailed() {
-    return this.state === AuthStates.NOT_AUTHORIZED;
-  }
-
-  get isAuthorizing() {
-    return this.state === AuthStates.AUTHORIZING;
-  }
+  get isAuth() { return this.state === AuthStates.AUTHORIZED }
+  get isFailed() { return this.state === AuthStates.NOT_AUTHORIZED }
+  get isAuthorizing() { return this.state === AuthStates.AUTHORIZING }
+  get isCheckingAuth() { return this.state === AuthStates.CHECKING_AUTH }
 
   setState(state: AuthStateType) {
     this.state = state;
@@ -42,6 +30,7 @@ export class AuthStore {
   /** тут мы авторизуемся */
   async authorize() {
     this.setState('AUTHORIZING')
-    setTimeout(() => this.setState("NOT_AUTHORIZED"), 1000) // todo
+    
+
   }
 }
