@@ -1,0 +1,42 @@
+.delivery_bottom_popup {
+  width: 100vw;
+  border-top-left-radius: 13px;
+  border-top-right-radius: 13px;
+}
+
+
+.container { 
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr min-content;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "map_area"
+    "popup_area";
+}
+
+.map_area { 
+  grid-area: map_area; 
+  overflow: hidden;
+  position: relative;
+}
+
+.popup_area { 
+  grid-area: popup_area; 
+}
+
+.shtorka_box {
+  position: relative;
+}
+.shtorka {
+  position: absolute; 
+  top: -0.9rem;
+  width: 100vw; 
+  height: 1rem; 
+  border-top-left-radius: 13px; 
+  border-top-right-radius: 13px;
+  background: var(--tg-theme-bg-color);
+  z-index: 102;
+}
