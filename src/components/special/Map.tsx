@@ -14,20 +14,23 @@ import Select from 'ol/interaction/Select'
 import Style from 'ol/style/Style'
 import IconStyle from 'ol/style/Icon'
 import { useTheme } from '../../features/hooks'
+import { Optional } from '../../features/helpers'
 
 const center = [55.947417612394574, 54.72572230097609]
 var previousMarker: any
+var map: Map
 
 
 interface props {
-  onSelect: (cordinates: number[]) => void
+  onSelect: (cordinates: [number, number]) => void
+  value: Optional<[number, number]>
 }
 const ReactMap: FC<props> = p => {
   const { theme } = useTheme()
   useGeographic();
   useEffect(() => {
     const tile = new TileLayer({ source: new OSM() })
-    const map = new Map({
+    map = new Map({
       target: 'map',
       controls: [],
       view: new View({ center, zoom: 13 }),
@@ -50,26 +53,44 @@ const ReactMap: FC<props> = p => {
       });
     }
     map.on('singleclick', e => {
-      const newLayer = new VectorLayer({
-        className: e.coordinate.join(', '),
-        source: new VectorSource(),
-        style: { 'icon-src': Marker, 'icon-height': 40, 'icon-anchor': [0.5,1] },
-      })
-      map.getView().setCenter(e.coordinate)
-      if (previousMarker) map.removeLayer(previousMarker)
+      // const newLayer = new VectorLayer({
+      //   className: e.coordinate.join(', '),
+      //   source: new VectorSource(),
+      //   style: { 'icon-src': Marker, 'icon-height': 40, 'icon-anchor': [0.5, 1] },
+      // })
+      // map.getView().setCenter(e.coordinate)
+      // if (previousMarker) map.removeLayer(previousMarker)
 
-      map.addLayer(newLayer)
+      // map.addLayer(newLayer)
 
-      let marker = new Feature(new Point(e.coordinate));
-      newLayer.getSource()?.addFeature(marker)
+      // let marker = new Feature(new Point(e.coordinate));
+      // newLayer.getSource()?.addFeature(marker)
 
-      previousMarker = newLayer
-      p.onSelect(e.coordinate)
+      // previousMarker = newLayer
+      p.onSelect(e.coordinate as [number, number])
     })
     return () => {
       if (previousMarker) map.removeLayer(previousMarker)
     }
   }, [])
+  useEffect(() => {
+    if (p.value) {
+      const newLayer = new VectorLayer({
+        className: p.value.join(', '),
+        source: new VectorSource(),
+        style: { 'icon-src': Marker, 'icon-height': 40, 'icon-anchor': [0.5, 1] },
+      })
+      map.getView().setCenter(p.value)
+      if (previousMarker) map.removeLayer(previousMarker)
+
+      map.addLayer(newLayer)
+
+      let marker = new Feature(new Point(p.value));
+      newLayer.getSource()?.addFeature(marker)
+
+      previousMarker = newLayer
+    }
+  }, [p.value])
   return <div id="map" style={fullscreen} />
 }
 
@@ -78,7 +99,7 @@ type radioItem = { lat: number, lon: number, key: number }
 interface radioProps {
   items: radioItem[]
   defaultSelected?: radioItem
-  onSwitch: (r: radioItem|null) => void
+  onSwitch: (r: radioItem | null) => void
 }
 const ReactMapRadio: FC<radioProps> = p => {
   const { theme } = useTheme()
@@ -116,7 +137,7 @@ const ReactMapRadio: FC<radioProps> = p => {
 
     let selectClick = new Select({
       style: new Style({
-        'image': new IconStyle({ 'src': Marker, 'height': 44, 'anchor': [0.5, 1]})
+        'image': new IconStyle({ 'src': Marker, 'height': 44, 'anchor': [0.5, 1] })
       })
     })
     map.addInteraction(selectClick)
@@ -140,7 +161,7 @@ const ReactMapRadio: FC<radioProps> = p => {
     for (const poimt of p.items) {
       const newLayer = new VectorLayer({
         source: new VectorSource(),
-        style: { 'icon-src': GreyMarker, 'icon-height': 38, 'icon-anchor': [0.5,1] },
+        style: { 'icon-src': GreyMarker, 'icon-height': 38, 'icon-anchor': [0.5, 1] },
         className: String(poimt.key),
       })
       map.addLayer(newLayer)
