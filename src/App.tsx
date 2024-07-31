@@ -1,7 +1,7 @@
 import { locale } from 'moment';
 import React from 'react';
 import './App.css';
-import { Router } from './components';
+import { RouterComponent as Router } from './components';
 import { StoreProvider, ThemeProvider } from './features/providers';
 import RootStore from './stores/root.store';
 
