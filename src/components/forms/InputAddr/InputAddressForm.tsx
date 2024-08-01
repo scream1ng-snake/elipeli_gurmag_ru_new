@@ -1,26 +1,28 @@
 import { FC, Fragment, useEffect, useMemo } from 'react'
-import styles from './InputAddressForm.module.css'
-import { Form, Input, Button, Toast } from 'antd-mobile'
+import styles from '../form.module.css'
+import { Form, Input, Button } from 'antd-mobile'
 import { observer } from 'mobx-react-lite'
-import { Controller, FieldErrors, SubmitHandler, useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { WithChildren } from '../../../features/helpers'
 import { useStore } from '../../../features/hooks'
 import _ from 'lodash'
+import Red from '../../special/RedText'
+import { useNavigate } from 'react-router-dom'
 
 interface InputAddress {
   road: string,
   house_number: string,
 }
 const InputAddressForm: FC = observer(() => {
+  const navigate = useNavigate()
   const { reception } = useStore()
   const validator = yupResolver(addressSchema)
-  const debounced = useMemo(() => 
+  const debounced = useMemo(() =>
     _.debounce((form: InputAddress) => {
       reception.setCordinatesByAddress(form)
     }, 900)
-  , [])
+    , [])
   const form = useForm<InputAddress>({
     defaultValues: {
       road: '',
@@ -39,35 +41,13 @@ const InputAddressForm: FC = observer(() => {
       return promise
     }
   })
-  const { control, formState: { errors }} = form
-  const { setValue, handleSubmit } = form
+  const { control, formState: { errors } } = form
+  const { setValue, getValues } = form
   useEffect(() => {
     setValue('road', reception.address.road)
     setValue('house_number', reception.address.house_number)
     form.clearErrors()
   }, [reception.address])
-
-
-  const Red: FC<WithChildren> = p =>
-    <span style={{ color: 'var(--adm-color-danger)' }}>
-      {p.children}
-    </span>
-
-  const onSubmit: SubmitHandler<InputAddress> =
-    data => console.log(data);
-
-  const onInvalidSubmit = (errors?: FieldErrors<InputAddress>) => {
-    if (errors?.road && errors.house_number) {
-      Toast.show('Укажите улицу и дом')
-      errors.road.ref?.focus?.()
-    } else if (errors?.road) {
-      Toast.show('Укажите улицу')
-      errors.road.ref?.focus?.()
-    } else if (errors?.house_number) {
-      Toast.show('Укажите дом')
-      errors.house_number.ref?.focus?.()
-    }
-  }
 
   return <Fragment>
     <div className={styles.city_label}>
@@ -125,11 +105,16 @@ const InputAddressForm: FC = observer(() => {
           shape='rounded'
           size='large'
           style={{ width: '100%' }}
-          onClick={handleSubmit(onSubmit, onInvalidSubmit)}
+          onClick={function() {
+            const vals = getValues()
+            reception.setAddress(vals)
+            reception.selectLocationPopup.close()
+            navigate('/')
+          }}
           disabled={
-            Boolean(Object.keys(errors).length) 
-              || !reception.address.road.length
-              || !reception.address.house_number.length
+            Boolean(Object.keys(errors).length)
+            || !reception.address.road.length
+            || !reception.address.house_number.length
           }
         >
           Продолжить

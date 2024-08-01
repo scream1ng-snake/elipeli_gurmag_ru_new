@@ -8,7 +8,7 @@ import PickupIcon from '../../../icons/Pickup'
 import SelectLocationPopup from '../../../popups/SelectLocation'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { QuestionCircleOutline } from 'antd-mobile-icons'
-import { WithChildren } from '../../../../features/helpers'
+import Red from '../../../special/RedText'
 
 const ReceptionSwitcher: FC = observer(() => {
   const { reception } = useStore()
@@ -18,12 +18,11 @@ const ReceptionSwitcher: FC = observer(() => {
     isWorkingNow,
     receptionType,
     selectLocationPopup: { show, close },
+    currentOrganizaion,
+    address
   } = reception
 
-  const RedText: FC<WithChildren> = p => 
-    <span style={{ color: 'var(--adm-color-danger)' }}>
-      {p.children}
-    </span>
+  
 
   const getIcon = () =>
     receptionType === 'initial'
@@ -36,18 +35,18 @@ const ReceptionSwitcher: FC = observer(() => {
     receptionType === 'initial'
       ? 'или заберёте сами?'
       : receptionType === 'delivery'
-        ? isWorkingNow ? 'Доставка бесплатно' : <RedText>По этому адресу заведение закрыто</RedText>
-        : isWorkingNow ? 'Забрать из Гурмага' : <RedText>Закрыто - Откроется в 9:30</RedText>
+        ? isWorkingNow ? 'Доставка бесплатно' : <Red>По этому адресу заведение закрыто</Red>
+        : isWorkingNow ? 'Забрать из Гурмага' : <Red>Закрыто - Откроется в 9:30</Red>
 
   const getAdress = () =>
     receptionType === 'initial'
       ? 'Вам доставить'
       : receptionType === 'delivery'
-        ? 'Заки Валиди 18/4'
-        : 'Первомайская 70'
+        ? address.road + ' ' + address.house_number
+        : currentOrganizaion?.Name.replace('_', ' ')
 
   useEffect(() => {
-    if (hash === '#selectLocation') reception.selectLocationPopup.open()
+    if (hash.includes('#selectLocation')) reception.selectLocationPopup.open()
   }, [hash])
 
   return <div className={styles.head_wrapper}>
@@ -55,7 +54,7 @@ const ReceptionSwitcher: FC = observer(() => {
       show={show}
       close={function () {
         close()
-        navigate(-1)
+        navigate('/')
       }}
     />
     <div

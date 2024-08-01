@@ -1,51 +1,69 @@
 import { Popup, Selector, Space, Button, DotLoading } from 'antd-mobile'
 import { CloseOutline } from 'antd-mobile-icons'
 import { observer } from 'mobx-react-lite'
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useStore } from '../../features/hooks'
 import { ReceptionType } from '../../stores/reception.store'
 import Maps from '../special/Map'
 import InputAddressForm from '../forms/InputAddr/InputAddressForm'
 import styles from './SelectLocation.module.css'
 import { Mask } from '../special/Mask'
+import SelectOrgForm from '../forms/selectOrganization/SelectOrg'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Optional } from '../../features/helpers'
 
 type P = {
   show: boolean,
   close: () => void
 }
 const SelectLocationPopup: FC<P> = observer(p => {
-  const {
+  const { hash } = useLocation()
+  const navigate = useNavigate()
+  let {
     reception: {
       receptionType,
       options,
       setReceptionType,
-      addrsBindings, 
+      addrsBindings,
       setAddrByCordinates,
       location,
       reverseGeocoderApi,
-      geocoderApi
+      geocoderApi,
+      currentOrgID
     }
   } = useStore()
+
+  const [clickedOrgID, setClickedOrgID] = useState<Optional<number>>(currentOrgID)
+  useEffect(() => {
+    if(hash.includes('#selectLocation/delivery')) {
+      setReceptionType('delivery')
+    } else if(hash.includes('#selectLocation/pickup')) {
+      setReceptionType('pickup')
+    }
+  }, [hash])
 
   const PopupHeader: FC = () =>
     <div className={styles.shtorka_box}>
       <div className={styles.shtorka}></div>
     </div>
 
+  const isMapSearching = reverseGeocoderApi.state === 'LOADING' 
+    || geocoderApi.state === 'LOADING'
+
   function getContent(rc: ReceptionType) {
     switch (rc) {
       case 'delivery':
         return <div className={styles.container}>
           <div className={styles.map_area}>
-            {reverseGeocoderApi.state === 'LOADING' || geocoderApi.state === 'LOADING'
+            {isMapSearching
               ? <Mask>
-                  <DotLoading style={{ fontSize: 48 }} color='primary' />
-                </Mask>
+                <DotLoading style={{ fontSize: 48 }} color='primary' />
+              </Mask>
               : null
             }
-            <Maps.Picker 
-              value={location} 
-              onSelect={setAddrByCordinates} 
+            <Maps.Picker
+              value={location}
+              onSelect={setAddrByCordinates}
             />
           </div>
           <div className={styles.popup_area}>
@@ -55,18 +73,35 @@ const SelectLocationPopup: FC<P> = observer(p => {
         </div>
 
       case 'pickup':
-        return <React.Fragment>
-          <Maps.RadioPicker
-            onSwitch={console.log}
-            items={addrsBindings.map(val => {
-              const [lat, lon] = val.pos.split(' ').map(Number)
-              return { lat, lon, key: val.Id }
-            })}
-          />
-        </React.Fragment>
-
+        return <div className={styles.container}>
+          <div className={styles.map_area}>
+            {isMapSearching
+              ? <Mask>
+                <DotLoading style={{ fontSize: 48 }} color='primary' />
+              </Mask>
+              : null
+            }
+            <Maps.RadioPicker
+              onSwitch={(s) => {
+                s?.key
+                  ? setClickedOrgID(s.key)
+                  : setClickedOrgID(null)
+               }}
+              items={addrsBindings.map(val => {
+                const [lat, lon] = val.pos.split(' ').map(Number)
+                return { lat, lon, key: val.Id }
+              })}
+            />
+          </div>
+          <div className={styles.popup_area}>
+            <PopupHeader />
+            <SelectOrgForm 
+              clickedOrgID={clickedOrgID}
+              setClickedOrgID={setClickedOrgID} 
+            />
+          </div>
+        </div>
     }
-
   }
 
 
@@ -103,7 +138,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
             options={options}
             value={[receptionType]}
             onChange={function (v) {
-              setReceptionType(v[0])
+              navigate('#selectLocation/' + v[0])
             }}
           />
         </Space>

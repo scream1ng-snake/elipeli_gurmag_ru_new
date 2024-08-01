@@ -1,6 +1,6 @@
 import { Toast } from "antd-mobile";
 import { makeAutoObservable } from "mobx";
-import { Optional, Request, Undef } from "../features/helpers";
+import { getDistance, Optional, Request, Undef } from "../features/helpers";
 import { useTelegram } from "../features/hooks";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
@@ -38,7 +38,46 @@ export class ReceptionStore {
     road: '',
     house_number: '',
   }
-  setAddress = (address: Address) => { this.address = address }
+  setAddress = (address: Address) => { 
+    this.address = address 
+    // сразу ищем ближающую точку для доставки
+    if(this.location) {
+      let resultOrganization
+      let minDistance
+      for (const org of this.deliveryPoints) {
+        // для каждой организации захардкодил кординаты 
+        // каждый раз их узнавать заного смысла нет
+        const pointCords = this.addrsBindings
+          .find(o => o.Id === org.Id) as { Id: number, pos: string }
+
+
+        let lon, lat
+        
+        [lon, lat] = pointCords.pos
+          .split(' ')
+          .map(Number)
+
+        /** расстояние */
+        const distance = getDistance(this.location[1], this.location[0], lat, lon)
+        if (minDistance) {
+          if (distance < minDistance) {
+            minDistance = distance
+            resultOrganization = org
+          }
+        } else {
+          minDistance = distance
+          resultOrganization = org
+        }
+      }
+      if(resultOrganization) {
+        this.setNearestOrg(resultOrganization.Id)
+        logger.log(`ближ. точка для ${address.road} ${address.house_number} (${this.location})
+          была выбрана ${resultOrganization.Name} на расстоянии ${minDistance}
+        `)
+      }
+    }
+    
+  }
   /**
    * by [lat, lon]
    * @param cord 
@@ -65,9 +104,26 @@ export class ReceptionStore {
   
   /** все организации */
   organizations: Array<Organization> = [];
+  setOrgs = (o: Organization[]) => { this.organizations = o }
+
+  /** точки с которых ведется доставк */
+  deliveryPoints: Organization[] = [
+    {
+      Id: 2,
+      Name: "Рабкоров_20",
+      isCK: false
+    },
+    {
+      Id: 140,
+      Name: "Российская_43",
+      isCK: false
+    }
+  ]
 
   /** текущая организация */
   selectedOrgID: number = 0;
+  nearestOrgForDelivery: Optional<number> = null
+  setNearestOrg(orgId: number) { this.nearestOrgForDelivery = orgId }
   
   set currentOrgID(val: number) {
     this.selectedOrgID = val
@@ -103,7 +159,8 @@ export class ReceptionStore {
   loadOrganizations = new Request(async (state, setState) => {
     setState('LOADING');
     try {
-      this.organizations = await http.get('/GetOrgForWeb');
+      let orgs: Organization[] = await http.get('/GetOrgForWeb');
+      this.setOrgs(orgs)
       setState('COMPLETED')
     } catch (err) {
       setState('FAILED')
@@ -222,6 +279,8 @@ export class ReceptionStore {
       return null
     }
   })
+
+  selectOrgPopup = new Popup()
 }
 
 
@@ -237,7 +296,7 @@ export type ReceptionType = typeof receptionTypes[
 
 
 /** Организация */
-type Organization = {
+export type Organization = {
   Id: number,
   Name: string,
   isCK: boolean,

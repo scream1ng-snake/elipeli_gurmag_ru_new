@@ -15,6 +15,7 @@ import Style from 'ol/style/Style'
 import IconStyle from 'ol/style/Icon'
 import { useTheme } from '../../features/hooks'
 import { Optional } from '../../features/helpers'
+import { observer } from 'mobx-react-lite'
 
 const center = [55.947417612394574, 54.72572230097609]
 var previousMarker: any
@@ -101,7 +102,7 @@ interface radioProps {
   defaultSelected?: radioItem
   onSwitch: (r: radioItem | null) => void
 }
-const ReactMapRadio: FC<radioProps> = p => {
+const ReactMapRadio: FC<radioProps> = observer(p => {
   const { theme } = useTheme()
   const [selectedItem, setSelectedItem] = useState(p.defaultSelected ?? null)
   useGeographic();
@@ -113,7 +114,7 @@ const ReactMapRadio: FC<radioProps> = p => {
       view: new View({
         center: p.defaultSelected
           ? [p.defaultSelected.lat, p.defaultSelected.lon]
-          : [56.02900051529786, 54.727878021619915],
+          : [56.038447129765, 54.77072405355034],
         zoom: 11,
       }),
       layers: [tile]
@@ -170,7 +171,7 @@ const ReactMapRadio: FC<radioProps> = p => {
     }
   }, [])
   return <div id="map" style={fullscreen} />
-}
+})
 
 const fullscreen = { width: '100vw', height: '100%' }
 
