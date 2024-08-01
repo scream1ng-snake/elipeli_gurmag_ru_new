@@ -1,14 +1,14 @@
 import { observer } from 'mobx-react-lite'
 import { FC, useEffect } from 'react'
-import DeliveryIcon from '../../../icons/Delivery'
+import DeliveryIcon from '../../../../icons/Delivery'
 import styles from './ReceptionSwitcher.module.css'
 import { DownOutline } from 'antd-mobile-icons'
-import { useStore } from '../../../../features/hooks'
-import PickupIcon from '../../../icons/Pickup'
-import SelectLocationPopup from '../../../popups/SelectLocation'
+import { useStore } from '../../../../../features/hooks'
+import PickupIcon from '../../../../icons/Pickup'
+import SelectLocationPopup from '../../../../popups/SelectLocation'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { QuestionCircleOutline } from 'antd-mobile-icons'
-import Red from '../../../special/RedText'
+import Red from '../../../../special/RedText'
 
 const ReceptionSwitcher: FC = observer(() => {
   const { reception } = useStore()
