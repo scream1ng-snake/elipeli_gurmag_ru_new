@@ -42,14 +42,15 @@ const ReceptionSwitcher: FC = observer(() => {
     receptionType === 'initial'
       ? 'Вам доставить'
       : receptionType === 'delivery'
-        ? address.road + ' ' + address.house_number
-        : currentOrganizaion?.Name.replace('_', ' ')
+        ? address.road ? (address.road + ' ' + address.house_number) : 'Укажите адрес'
+        : currentOrganizaion?.Name.replace('_', ' ') ?? 'Точка не выбрана'
 
   useEffect(() => {
     if (hash.includes('#selectLocation')) reception.selectLocationPopup.open()
   }, [hash])
 
   return <div className={styles.head_wrapper}>
+    
     <SelectLocationPopup
       show={show}
       close={function () {

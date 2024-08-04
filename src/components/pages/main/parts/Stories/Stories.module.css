@@ -1,0 +1,26 @@
+.story_cover_item {
+  margin: 0 0.5rem;
+  border-radius: 13px;
+  overflow: hidden;
+  position: relative;
+}
+.story_cover_item > p {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+}
+
+.closeBtn_relative {
+  position: relative;
+}
+.closeBtn_icon {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  z-index: 1000;
+  color: white;
+  font-size: 32px;
+}
