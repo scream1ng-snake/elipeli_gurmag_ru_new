@@ -3,6 +3,7 @@ import { useTelegram } from "../features/hooks";
 import { logger } from "../features/logger";
 import { AuthStore } from "./auth.store";
 import { ReceptionStore } from "./reception.store";
+import UserStore from "./user.store";
 
 export default class RootStore {
   constructor() {
@@ -11,11 +12,18 @@ export default class RootStore {
   }
   auth = new AuthStore(this)
   reception = new ReceptionStore(this)
+  user = new UserStore(this)
 
   bootstrap = async () => {
     this.whereWeAre()
     await this.reception.loadOrganizations.run();
-    await this.auth.authorize();
+    await this.auth.check();
+    
+    if(this.auth.isFailed) {
+      const orgId = this.reception.OrgForMenu
+      this.reception.employees.loadCooks.run(orgId)
+      this.reception.menu.loadMenu.run(orgId)
+    }
   }
 
   whereWeAre = () => {

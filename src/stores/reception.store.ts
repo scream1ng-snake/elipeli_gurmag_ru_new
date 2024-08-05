@@ -5,6 +5,8 @@ import { useTelegram } from "../features/hooks";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
 import Popup from "../features/modal";
+import EmployeesStore from "./employees.store";
+import MenuStore from "./menu.store";
 import RootStore from "./root.store";
 
 export class ReceptionStore {
@@ -91,6 +93,8 @@ export class ReceptionStore {
       this.setLocation(cord)
     }
   }
+
+  /** by address */
   setCordinatesByAddress = async ({ road, house_number }: Address) => {
     this.address = { road, house_number }
     const result = await this.geocoderApi.run('Уфа, ' + road + ' ' + house_number)
@@ -150,9 +154,16 @@ export class ReceptionStore {
     return this.selectedOrgID
   }
 
+  get OrgForMenu() {
+    const defaultMenuOrg = this.deliveryPoints[0].Id
+    return (this.receptionType === 'delivery'
+      ? this.nearestOrgForDelivery
+      : this.currentOrgID
+    ) || defaultMenuOrg
+  }
   get currentOrganizaion() {
     return this.organizations.find(org => 
-      org.Id == this.selectedOrgID
+      org.Id === this.selectedOrgID
     )
   }
   
@@ -174,7 +185,7 @@ export class ReceptionStore {
   })
 
   get needAskAdress() {
-    return this.selectedOrgID == 142 || this.selectedOrgID == 0
+    return this.selectedOrgID === 142 || this.selectedOrgID === 0
   }
 
 
@@ -281,6 +292,9 @@ export class ReceptionStore {
   })
 
   selectOrgPopup = new Popup()
+
+  employees = new EmployeesStore(this)
+  menu = new MenuStore(this)
 }
 
 

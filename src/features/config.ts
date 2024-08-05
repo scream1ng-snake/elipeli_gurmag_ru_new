@@ -11,4 +11,4 @@ class Config {
   testApi = 'https://elipelisr.lexcloud.ru/elipelibot_test'
 }
 
-export default new Config()
+export default new Config() // eslint-disable-line

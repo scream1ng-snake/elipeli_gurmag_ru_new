@@ -51,7 +51,7 @@ export const ThemeProvider = ({ children }: WithChildren) => {
   }
   useEffect(() => {
     switchTheme(theme)
-  }, [])
+  }, [])// eslint-disable-line
 
   return (
     <ThemeContext.Provider value={{ theme, switchTheme }}>
