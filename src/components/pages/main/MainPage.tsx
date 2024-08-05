@@ -75,7 +75,7 @@ const MainPage: FC = observer(() => {
                     <span style={{ margin: '0.5rem' }}>{employees.selectedCock.NameWork}</span>
                     <List header='Последние отзывы'>
                       {/* @ts-ignore */}
-                      {mainPage.selectedCockReviews[0]?.map((review: CookReviews, index) => {
+                      {employees.selectedCockReviews[0]?.map((review: CookReviews, index) => {
                         const splitedNum = review.Phone.split('')
                         const last3nums = [...splitedNum].slice(8, 11)
                         // const next2nums = [...splitedNum].slice(6, 8)
@@ -156,7 +156,7 @@ const MainPage: FC = observer(() => {
                     <span style={{ margin: '0.5rem' }}>{menu.selectedCourse.Name}</span>
                     <List header='Последние отзывы'>
                       {/* @ts-ignore */}
-                      {mainPage.selectedCourseReviews[0]?.map((review: CourseOtzyv, index) => {
+                      {employees.selectedCourseReviews[0]?.map((review: CourseOtzyv, index) => {
                         const splitedNum = review.Phone.split('')
                         const last3nums = [...splitedNum].slice(8, 11)
                         // const next2nums = [...splitedNum].slice(6, 8)
