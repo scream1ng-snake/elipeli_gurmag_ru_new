@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { Optional, Request } from "../features/helpers";
+import { Request } from "../features/helpers";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
 import Popup from "../features/modal";
@@ -9,16 +9,21 @@ class EmployeesStore {
   constructor(readonly parrent: ReceptionStore) {
     makeAutoObservable(this)
   }
-  cooks: Cook[] = []
 
+
+  /** это сами сотрудники, в основном повара */
+  cooks: Cook[] = []
+  setCooks(cooks: Cook[]) { this.cooks = cooks }
+
+  /** api скачать поваров */
   loadCooks = new Request(async (state, setState, orgID: number) => {
     setState('LOADING')
     try {
       const data: [Cook[]] = await http.get('/getShopInfo/' + orgID);
-      this.cooks = [];
-      data[0]?.forEach((cock) =>
-        this.cooks.push(cock)
-      )
+      data[0]
+        ? this.setCooks(data[0])
+        : this.setCooks([])
+      
       setState('COMPLETED')
     } catch (err) {
       logger.error(err, 'reception')
@@ -26,18 +31,7 @@ class EmployeesStore {
     }
   })
 
-  
-  async watchCook(cook: Cook) {
-    this.selectedCock = cook
-    this.loadCookReviews.run(cook)
-    this.watchCockModal.open()
-  }
-  async closeCookWatch() {
-    this.selectedCock = null
-    this.selectedCockReviews = []
-    this.watchCockModal.close()
-  }
-
+  /* api отзывы на повара */
   loadCookReviews = new Request(async (
     state,
     setState,
@@ -46,21 +40,22 @@ class EmployeesStore {
     const point = this.parrent.OrgForMenu
     try{
       setState('LOADING')
-      this.selectedCockReviews = []
-      const response: any = await http.get(`getShopInfo/${point}/${cook.UserId}`);
-      response.forEach((element: any) => {
-        this.selectedCockReviews.push(element)
-      });
+      const response: any = await http.get(`getShopInfo/${point}/${cook.UserId}`)
       setState('COMPLETED')
+      return Array.isArray(response)
+        ? response
+        : []
     } catch(e) {
       setState('FAILED')
     }
   })
-
-  otziviModal = new Popup();
-  watchCockModal = new Popup();
-  selectedCock: Optional<Cook> = null;
-  selectedCockReviews: CookReviews[] = [];
+  /** popup для просмотра повара и отзывов */
+  watchCockPopup = new Popup<Cook, CookReview[]>({
+    onOpen: async (cook, save) => {
+      const reviews = await this.loadCookReviews.run(cook)
+      save(reviews)
+    },
+  })
 }
 
 export default EmployeesStore
@@ -77,7 +72,7 @@ export type Cook = {
 
 
 /** отзыв на каждое блюдо работника */
-export type CookReviews = { 
+export type CookReview = { 
   Rating: number
   /** название категории */
   Category: string,

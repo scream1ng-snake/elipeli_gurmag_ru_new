@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { Optional, Request, Undef } from "../features/helpers";
+import { Request, Undef } from "../features/helpers";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
 import Popup from "../features/modal";
@@ -10,48 +10,28 @@ class MenuStore {
   constructor(readonly parrent: ReceptionStore) {
     makeAutoObservable(this)
   }
-
   
+  /** все блюда по категориям */
   categories: CategoryCourse[] = []
-  /** выбранное блюдо, которое откроется в отдельном окошке */
-  selectedCourse: Optional<CourseItem> = null;
-  watchCourse(course: Optional<CourseItem>) {
-    logger.log('Просматриваем блюдо ' + course?.Name, 'Main-Page-Store')
-    this.selectedCourse = course;
-    this.itemModal.open();
-  }
+  setCategories(c: CategoryCourse[]) { this.categories = c }
+
+  /** популярные блюда */
   popular: CourseItem[] = []
+  setPopular(p: CourseItem[]) { this.popular = p }
+
+  /** подборки */
   selections: Selection[] = []
+  setSelections(s: Selection[]) { this.selections = s }
 
-
-  watchSelectionPopup = new Popup()
-  selectedCollection: Optional<Selection> = null
-  watchSelection(collection: Selection) {
-    this.selectedCollection = collection
-    this.watchSelectionPopup.open()
-  }
-  closeSelection() {
-    this.selectedCollection = null
-    this.watchSelectionPopup.close()
-  }
 
   loadMenu = new Request(async (state, setState, orgID: number) => {
     setState('LOADING')
     try {
       const data: Undef<V3_userInfoResponse> = await http.get('/getUserMenu_v3/' + orgID);
-      this.categories = [];
-      this.popular = [];
-      this.selections = [];
       if(data?.BaseMenu && data?.PopularMenu) {
-        data.BaseMenu.forEach(category =>
-          this.categories.push(category)
-        )
-        data.PopularMenu.forEach(couse =>
-          this.popular.push(couse)
-        )
-        data.SelectionMenu.forEach(selection =>
-          this.selections.push(selection)
-        )
+        this.setCategories(data.BaseMenu)
+        this.setPopular(data.PopularMenu)
+        this.setSelections(data.SelectionMenu)
       }
       setState('COMPLETED');
     } catch (err) {
@@ -60,25 +40,27 @@ class MenuStore {
     }
   })
 
-  itemModal = new Popup()
-  otziviModal = new Popup()
-  watchCockModal = new Popup()
+  /** попап для просмотра подборки */
+  selectionPopup = new Popup<Selection>()
 
-  
-  selectedCourseReviews: CourseOtzyv[] = []
-  async watchOtzivi(course: CourseItem) {
-    logger.log('Просматриваем отзывы', 'Main-Page-Store')
-    this.selectedCourse = course;
-    this.loadCourseReviews.run(course);
-    this.otziviModal.open();
-  }
+  /** попап для просмотра блюда */
+  coursePopup = new Popup<CourseItem, CourseReview[]>({
+    onOpen: async (course, save) => { 
+      const reviews = await this.loadCourseReviews.run(course)
+      save(reviews)
+    },
+  })
 
-  closeWatchOtzivi() {
-    this.selectedCourse = null;
-    this.selectedCourseReviews = [];
-    this.otziviModal.close();
-  }
+  /** попап для просмотра отзывов */
+  courseReviewsPopup = new Popup<CourseItem, CourseReview[]>({
+    onOpen: async (course, save) => { 
+      const reviews = await this.loadCourseReviews.run(course)
+      save(reviews)
+    },
+  })
 
+
+  /** api отзывы на блюдо */
   loadCourseReviews = new Request(async (
     state,
     setState,
@@ -86,16 +68,12 @@ class MenuStore {
   ) => {
     try{
       setState('LOADING')
-      this.selectedCourseReviews = []
       const orgId = this.parrent.OrgForMenu
-      const response: Undef<CourseOtzyv[]> = await http.get(`getCourseRatingOrg/${VCode}/${orgId}`);
-      if(response?.length) {
-        response.forEach(otziv => {
-          this.selectedCourseReviews.push(otziv)
-        });
-      }
-      
+      const response: Undef<CourseReview[]> = await http.get(`getCourseRatingOrg/${VCode}/${orgId}`)
       setState('COMPLETED')
+      return response?.length
+        ? response
+        : []
     } catch(e) {
       setState('FAILED')
     }
@@ -150,7 +128,7 @@ type CategoryCourse = {
 
 
 
-type CourseOtzyv = {
+type CourseReview = {
   /** 2023-09-08T04:38:41.173Z */
   Date: string,
   /** "Жанна" */
