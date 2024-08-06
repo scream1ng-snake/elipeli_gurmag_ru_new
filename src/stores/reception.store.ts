@@ -1,7 +1,6 @@
 import { Toast } from "antd-mobile";
 import { makeAutoObservable } from "mobx";
-import { getDistance, Optional, Request, Undef } from "../features/helpers";
-import { useTelegram } from "../features/hooks";
+import { getDistance, Optional, Request } from "../features/helpers";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
 import Popup from "../features/modal";
@@ -13,10 +12,26 @@ export class ReceptionStore {
   root: RootStore;
 
   /** выбранный тип обслуживания: доставка или самовывоз */
-  receptionType: ReceptionType = 'initial';
+  receptionType: ReceptionType = localStorage.getItem('receptionType')
+    ? localStorage.getItem('receptionType') as ReceptionType
+    : 'initial'
+  
   setReceptionType(rt: ReceptionType) {
     this.receptionType = rt
+    localStorage.setItem('receptionType', rt)
     logger.log('reception changed to ' + rt, 'reception-store')
+  }
+
+  /**
+   * когда надо показать подсказку что местоположение и тип обслуживания
+   * не выбраны
+   */
+  get needAskLocation() {
+    const userLoaded = this.root.user.loadUserInfo.state === 'COMPLETED'
+    return [this.receptionType === 'initial',
+      !this.address.road && this.receptionType === 'delivery' && userLoaded,
+      !this.currentOrganizaion && this.receptionType === 'pickup' && userLoaded
+    ].includes(true)
   }
 
   /** попап для выбора локации и типа обслуживания */
@@ -36,12 +51,13 @@ export class ReceptionStore {
     this.location = l
   }
 
-  address = {
-    road: '',
-    house_number: '',
-  }
+  address = localStorage.getItem('data')
+    ? JSON.parse(localStorage.getItem('data') as string) as Address
+    : { road: '', house_number: '' }
+  
   setAddress = (address: Address) => { 
-    this.address = address 
+    this.address = address
+    localStorage.setItem('data', JSON.stringify(address))
     // сразу ищем ближающую точку для доставки
     if(this.location) {
       let resultOrganization
@@ -73,6 +89,7 @@ export class ReceptionStore {
       }
       if(resultOrganization) {
         this.setNearestOrg(resultOrganization.Id)
+        localStorage.setItem('nearestOrg', resultOrganization.Id.toString())
         logger.log(`ближ. точка для ${address.road} ${address.house_number} (${this.location})
           была выбрана ${resultOrganization.Name} на расстоянии ${minDistance}
         `)
@@ -125,29 +142,38 @@ export class ReceptionStore {
   ]
 
   /** текущая организация */
-  selectedOrgID: number = 0;
-  nearestOrgForDelivery: Optional<number> = null
+  selectedOrgID: number = localStorage.getItem('currentOrg')
+    ? Number(localStorage.getItem('currentOrg'))
+    : 0
+  
+  nearestOrgForDelivery: Optional<number> = localStorage.getItem('nearestOrg')
+    ? Number(localStorage.getItem('nearestOrg'))
+    : null
+  
   setNearestOrg(orgId: number) { this.nearestOrgForDelivery = orgId }
   
   set currentOrgID(val: number) {
     this.selectedOrgID = val
+    localStorage.setItem('currentOrg', val.toString())
+    // this.saveCurrentOrg.run(val)
   }
 
+  /** апишка сохранения точки на сервере, возможно бесполезна уже */
   saveCurrentOrg = new Request(async (state, setState, newOrgId: number) => {
-    setState('LOADING')
-    const { userId } = useTelegram();
-    try {
-      const response: Undef<string> = await http.post(
-        '/setUserOrg', 
-        { userId, newOrgId }
-      )
-      if(response) {
-        logger.log('Организация успешно сменена', 'Reception-Store');
-        setState('COMPLETED')
-      }
-    } catch(err) {
-      setState('FAILED')
-    }
+    // setState('LOADING') todo
+    // const { userId } = useTelegram();
+    // try {
+    //   const response: Undef<string> = await http.post(
+    //     '/setUserOrg', 
+    //     { userId, newOrgId }
+    //   )
+    //   if(response) {
+    //     logger.log('Организация успешно сменена', 'Reception-Store');
+    //     setState('COMPLETED')
+    //   }
+    // } catch(err) {
+    //   setState('FAILED')
+    // }
   })
 
   get currentOrgID() {

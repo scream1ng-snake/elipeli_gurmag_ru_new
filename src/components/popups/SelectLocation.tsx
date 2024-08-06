@@ -1,7 +1,7 @@
 import { Popup, Selector, Space, Button, DotLoading } from 'antd-mobile'
 import { CloseOutline } from 'antd-mobile-icons'
 import { observer } from 'mobx-react-lite'
-import React, { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useStore } from '../../features/hooks'
 import { ReceptionType } from '../../stores/reception.store'
 import Maps from '../special/Map'
@@ -28,6 +28,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
       setAddrByCordinates,
       location,
       reverseGeocoderApi,
+      loadOrganizations, 
       geocoderApi,
       currentOrgID
     }
@@ -47,8 +48,11 @@ const SelectLocationPopup: FC<P> = observer(p => {
       <div className={styles.shtorka}></div>
     </div>
 
-  const isMapSearching = reverseGeocoderApi.state === 'LOADING' 
-    || geocoderApi.state === 'LOADING'
+  const isMapSearching = [
+    geocoderApi.state, 
+    loadOrganizations.state, 
+    reverseGeocoderApi.state
+  ].includes('LOADING')
 
   function getContent(rc: ReceptionType) {
     switch (rc) {
