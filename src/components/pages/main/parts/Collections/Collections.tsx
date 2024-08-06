@@ -6,7 +6,7 @@ import { useStore } from '../../../../../features/hooks'
 import styles from './Collections.module.css'
 
 const Collections: FC = observer(() => {
-  const { reception: { menu }} = useStore()
+  const { reception: { menu } } = useStore()
   return <div className={styles.collections_wrapper}>
     <h2>Подборки</h2>
     <Space
@@ -20,11 +20,12 @@ const Collections: FC = observer(() => {
       {menu.selections.map((selection, index) =>
         <div key={index} className={styles.selection_cover_item}>
           <Image
-            onClick={() => { menu.watchSelection(selection) }}
             src={config.apiURL
               + "/api/v2/image/FileImage?fileId="
               + selection.Image
             }
+            onClick={() => { menu.selectionPopup.watch(selection) }}
+
             fit='cover'
             style={{
               width: '36vw',
