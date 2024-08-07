@@ -9,6 +9,7 @@ import { Cook } from "../../../stores/employees.store"
 import { CourseItem } from "../../../stores/menu.store"
 import Wrapper from "../../layout/Wrapper"
 import Collections from "./parts/Collections/Collections"
+import Cooks from "./parts/Cooks/Cooks"
 import ReceptionSwitcher from "./parts/ReceptionSwitcher/ReceptionSwitcher"
 import Stories from "./parts/Stories/Stories"
 import styles from './styles.module.css'
@@ -20,6 +21,7 @@ const MainPage: FC = observer(() => {
     <EmptyUnderFixed height="85px" />
     <Stories />
     <Collections />
+    <Cooks />
 
 
 
