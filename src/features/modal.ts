@@ -31,7 +31,7 @@ export default class Popup<I, I2 = any> {
     this.open()
   }
 
-  saved: any = null
+  saved: Optional<I2> = null
   private saver(content: I2) {
     this.saved = content
   }
