@@ -6,6 +6,8 @@ import config from '../../../../../features/config'
 import { useStore } from '../../../../../features/hooks'
 import { Cook } from '../../../../../stores/employees.store'
 import CookReviewPopup from '../../../../popups/CookReviewPopup'
+import { Loader, LoaderTitle } from './preloders'
+import { wrapper_styles, list_styles, wrapperStyle, avatarStyle, cookNameStyle } from './styles'
 
 const Cooks: FC = observer(() => {
   const { reception: { employees, OrgForMenu, organizations } } = useStore()
@@ -15,16 +17,6 @@ const Cooks: FC = observer(() => {
     [OrgForMenu]
   )
 
-  const list_styles: CSSProperties = {
-    marginTop: '0.5rem',
-    display: 'flex',
-    flexWrap: 'nowrap',
-    overflowX: 'scroll',
-    overflowY: 'hidden',
-  }
-  const wrapper_styles: CSSProperties = {
-    padding: '0.5rem 0 0.5rem 0.5rem'
-  }
 
   function Content() {
     return <>
@@ -45,7 +37,10 @@ const Cooks: FC = observer(() => {
   }
   return <div style={wrapper_styles}>
     <CookReviewPopup />
-    <h2>Рады знакомству</h2>
+    {employees.loadCooks.state === 'COMPLETED'
+      ? <h2>Рады знакомству</h2>
+      : <LoaderTitle />
+    }
     <div style={list_styles}>
       {employees.loadCooks.state === 'COMPLETED'
         ? Content()
@@ -56,81 +51,10 @@ const Cooks: FC = observer(() => {
 })
 
 
-const Loader = () => <>
-  <br />
-  <div
-    style={{
-      margin: '0 0.5rem',
-      width: 'calc(100% - 1rem)',
-      display: 'flex',
-      flexWrap: 'nowrap',
-      overflowX: 'scroll',
-      overflowY: 'hidden',
-    }}
-  >
-    <Space
-      style={{ '--gap': '3px', width: '33%', margin: '0 0.25rem' }}
-      direction="vertical"
-      justify="center"
-      align="center"
-    >
-      <Skeleton animated style={{ width: '70px', height: '70px', borderRadius: '35px' }} />
-      <Skeleton animated style={{ marginTop: '0.5rem', marginLeft: '0', height: '18px', width: '70px' }} />
-      <Skeleton animated style={{ marginTop: '0.5rem', marginLeft: '0', height: '12px', width: '40px' }} />
-    </Space>
-    <Space
-      style={{ '--gap': '3px', width: '33%', margin: '0 0.25rem' }}
-      direction="vertical"
-      justify="center"
-      align="center"
-    >
-      <Skeleton animated style={{ width: '70px', height: '70px', borderRadius: '35px' }} />
-      <Skeleton animated style={{ marginTop: '0.5rem', marginLeft: '0', height: '18px', width: '70px' }} />
-      <Skeleton animated style={{ marginTop: '0.5rem', marginLeft: '0', height: '12px', width: '40px' }} />
-    </Space>
-    <Space
-      style={{ '--gap': '3px', width: '33%', margin: '0 0.25rem' }}
-      direction="vertical"
-      justify="center"
-      align="center"
-    >
-      <Skeleton animated style={{ width: '70px', height: '70px', borderRadius: '35px' }} />
-      <Skeleton animated style={{ marginTop: '0.5rem', marginLeft: '0', height: '18px', width: '70px' }} />
-      <Skeleton animated style={{ marginTop: '0.5rem', marginLeft: '0', height: '12px', width: '40px' }} />
-    </Space>
-    <Space
-      style={{ '--gap': '3px', width: '33%', margin: '0 0.25rem' }}
-      direction="vertical"
-      justify="center"
-      align="center"
-    >
-      <Skeleton animated style={{ width: '70px', height: '70px', borderRadius: '35px' }} />
-      <Skeleton animated style={{ marginTop: '0.5rem', marginLeft: '0', height: '18px', width: '70px' }} />
-      <Skeleton animated style={{ marginTop: '0.5rem', marginLeft: '0', height: '12px', width: '40px' }} />
-    </Space>
-  </div>
-</>
-
 
 const CookItem: FC<{ cook: Cook }> = observer(({ cook }) => {
   const { reception: { employees } } = useStore();
 
-  const wrapperStyle = {
-    width: '33%',
-    margin: '0 0.25rem',
-    '--gap': '3px',
-  }
-  const avatarStyle = {
-    width: '70px',
-    height: '70px',
-    borderRadius: '35px',
-    objectFit: 'cover',
-    border: '2px solid var(--tg-theme-text-color)'
-  }
-  const cookNameStyle = {
-    color: 'var(--громкий-текст)',
-    fontSize: '18px'
-  }
   return (
     <Space
       style={wrapperStyle}
