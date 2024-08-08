@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { Request, Undef } from "../features/helpers";
+import { Request, Searcher, Undef } from "../features/helpers";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
 import Popup from "../features/modal";
@@ -47,7 +47,7 @@ class MenuStore {
   coursePopup = new Popup<CourseItem, CourseReview[]>({
     onOpen: async (course, save) => { 
       const reviews = await this.loadCourseReviews.run(course)
-      save(reviews)
+      if(reviews[0]) save(reviews[0])
     },
   })
 
@@ -55,7 +55,7 @@ class MenuStore {
   courseReviewsPopup = new Popup<CourseItem, CourseReview[]>({
     onOpen: async (course, save) => { 
       const reviews = await this.loadCourseReviews.run(course)
-      save(reviews)
+      if(reviews[0]) save(reviews[0])
     },
   })
 
@@ -78,6 +78,17 @@ class MenuStore {
       setState('FAILED')
     }
   })
+
+  dishSearcher = new Searcher(() => this.allDishes)
+  get allDishes() {
+    const result: CourseItem[] = []
+    this.categories.forEach(category => 
+      category.CourseList.forEach(couse => 
+        result.push(couse)
+      )
+    )
+    return result;
+  }
 }
 
 export default MenuStore

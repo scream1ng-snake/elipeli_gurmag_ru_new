@@ -1,14 +1,17 @@
-import { makeAutoObservable } from "mobx";
-import { Request } from "../features/helpers";
+import { flow, makeAutoObservable } from "mobx";
+import { LoadStatesType, Optional, Request, Undef } from "../features/helpers";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
+import Popup from "../features/modal";
 import RootStore from "./root.store";
 
 class UserStore {
+  ID: Optional<string> = null
+  setID(id: string) { this.ID = id }
   constructor(readonly root: RootStore) {
     makeAutoObservable(this)
   }
-
+  
   
   userState: UserInfoState = {
     Phone: '',
@@ -73,9 +76,48 @@ class UserStore {
     setState('COMPLETED')
     return response?.UserInfo || null
   })
+
+  
+  /** история заказов */
+  orderHistory: historyOrderItem[] = []
+  /** просматриваемый закза */
+  selectedHistoryOrder: Optional<historyOrderItem> = null
+
+  watchHistoryOrderModal = new Popup();
+
+  watchHistoryOrder(selectedHistoryOrder: historyOrderItem) {
+    this.selectedHistoryOrder = selectedHistoryOrder;
+    this.watchHistoryOrderModal.open();
+  }
+  closeHistoryOrder() {
+    this.selectedHistoryOrder = null;
+    this.watchHistoryOrderModal.close();
+  }
+
+  orderHistoryState: LoadStatesType = 'INITIAL'
+
+  loadOrdersHistory = flow(function* (
+    this: UserStore, 
+    userId: string
+  ) {
+    this.orderHistoryState = 'LOADING';
+    try {
+      const response: Undef<historyOrderItem[]> = yield http.get('GetUserOrdersHistory/' + userId);
+      if(response?.length) {
+        this.orderHistory = [];
+        response.forEach(order => 
+          this.orderHistory.push(order)
+        )
+        this.orderHistoryState = 'COMPLETED';
+      }
+    } catch (err) {
+      logger.error(err, 'user-info-store')
+      this.orderHistoryState = 'FAILED';
+    }
+  })
 }
 
-type UserInfoState = {
+export type UserInfoState = {
   Phone: string,
   userName: string,
   /** numberStr "182981928" */
@@ -128,3 +170,38 @@ type AllCampaignUser = {
   promocode: string
 }
 export default UserStore
+
+
+
+
+type historyOrderItem = {
+  /** !number string "99328" */
+  VCode: string,
+  /** !number string "11676" */
+  DocumentNumber: string,
+  /** iso string "2023-09-06T00:00:00.000Z" */
+  DocumentDate: string,
+  /** iso string "1970-01-01T18:09:58.627Z" */
+  DeliveryTime: string,
+  StatusOrder: OrderStatuses,
+  PaymentStatus: PaymentStatuses,
+  /** "Рабкоров_20" */
+  OrgName: string,
+  OrgCode: number,
+  OrderCost: number,
+  Courses: historyOrderCouse[],
+  /** "На вынос" или "С доставкой" */
+  OrderType: string,
+  FullAddress: null | string
+}
+
+type historyOrderCouse = {
+  CourseCost: number,
+  CourseQuantity: number,
+  /** !!! number string "89089" */
+  CourseCode: string,
+  CourseName: string
+}
+
+type PaymentStatuses = 'Не оплачен' | 'Оплачен частично' | 'Оплачен'
+type OrderStatuses = 'Создан' | 'В работе' | 'Сборка заказа' | 'В пути' | 'Оплачен' | 'Отменён'
