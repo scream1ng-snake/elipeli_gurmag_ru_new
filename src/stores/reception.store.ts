@@ -317,6 +317,20 @@ export class ReceptionStore {
     }
   })
 
+  requestGeolocation = () => {
+    if (navigator && "geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(({ coords }) => {
+        this.setAddrByCordinates([
+          coords.longitude,
+          coords.latitude, 
+        ])
+      })
+      logger.log('местоположение разрешено', 'reception')
+    } else {
+      logger.log('местоположение не доступно', 'reception')
+    }
+  }
+
   selectOrgPopup = new Popup()
 
   employees = new EmployeesStore(this)
