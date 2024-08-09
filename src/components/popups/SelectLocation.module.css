@@ -40,3 +40,23 @@
   background: var(--tg-theme-bg-color);
   z-index: 102;
 }
+
+.location_box {
+  position: relative;
+}
+.location_ico {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1000px;
+  border: 1px solid var(--adm-color-border);
+  background: var(--tg-theme-bg-color);
+  top: -5rem;
+  right: 0.5rem;
+  padding: 0.5rem;
+}
+.location_svg {
+  font-size: 32px;
+  transform: rotate(32deg);
+}

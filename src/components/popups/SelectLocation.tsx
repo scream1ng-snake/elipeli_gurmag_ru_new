@@ -1,5 +1,5 @@
 import { Popup, Selector, Space, Button, DotLoading } from 'antd-mobile'
-import { CloseOutline } from 'antd-mobile-icons'
+import { CloseOutline, LocationOutline, TravelOutline } from 'antd-mobile-icons'
 import { observer } from 'mobx-react-lite'
 import { FC, useEffect, useState } from 'react'
 import { useStore } from '../../features/hooks'
@@ -30,7 +30,8 @@ const SelectLocationPopup: FC<P> = observer(p => {
       reverseGeocoderApi,
       loadOrganizations, 
       geocoderApi,
-      currentOrgID
+      currentOrgID,
+      requestGeolocation
     }
   } = useStore()
 
@@ -46,6 +47,13 @@ const SelectLocationPopup: FC<P> = observer(p => {
   const PopupHeader: FC = () =>
     <div className={styles.shtorka_box}>
       <div className={styles.shtorka}></div>
+    </div>
+
+  const AskLocation: FC<any> = props => 
+    <div className={styles.location_box}>
+      <Button onClick={props.onClick} className={styles.location_ico}>
+        <LocationOutline className={styles.location_svg} />
+      </Button>
     </div>
 
   const isMapSearching = [
@@ -71,6 +79,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
             />
           </div>
           <div className={styles.popup_area}>
+            <AskLocation onClick={requestGeolocation} />
             <PopupHeader />
             <InputAddressForm />
           </div>
@@ -98,6 +107,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
             />
           </div>
           <div className={styles.popup_area}>
+            <AskLocation onClick={requestGeolocation} />
             <PopupHeader />
             <SelectOrgForm 
               clickedOrgID={clickedOrgID}
