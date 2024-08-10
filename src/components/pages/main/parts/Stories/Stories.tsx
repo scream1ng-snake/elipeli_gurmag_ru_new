@@ -10,7 +10,7 @@ import { CloseOutline } from 'antd-mobile-icons';
 const W100pxH100px = { height: '100%', width: '100%' }
 const storyStyles = {
   width: '100vw',
-  height: '100vh',
+  height: '100%',
   objectFit: 'cover',
   margin: 0
 }
@@ -58,7 +58,7 @@ const Stories: FC = () => {
     {selectedStory
       ? <Popup 
         visible={!!selectedStory} 
-        style={W100pxH100px}
+        bodyStyle={W100pxH100px}
         onClose={closeStory}
       >
         <div className={styles.closeBtn_relative}>
@@ -66,11 +66,11 @@ const Stories: FC = () => {
         </div>
         <WatchStory
           storyStyles={storyStyles}
-          onAllStoriesEnd={closeStory}
+          // onAllStoriesEnd={closeStory}
           stories={selectedStory.slides}
           defaultInterval={1500}
-          width='100vw'
-          height='100vh'
+          width='100%'
+          height='100%'
           
         />
       </Popup>
@@ -81,7 +81,8 @@ const Stories: FC = () => {
         overflowX: 'scroll',
         '--gap-horizontal': '-5px',
         width: '100%',
-        padding: '0.5rem 0'
+        padding: '0.5rem 0',
+        scrollbarWidth: 'none'
       }}
     >
       {AllStories.map((story, index) =>
