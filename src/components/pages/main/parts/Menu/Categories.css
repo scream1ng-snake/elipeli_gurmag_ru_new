@@ -1,0 +1,136 @@
+.categories {
+  width: 100%;
+}
+
+.categories h1 {
+  color: var(--tg-theme-text-color);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32.7px;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  /* background: var(--фон-элемента); */
+}
+
+.courses_list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.course_item {
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  background: var(--tg-theme-bg-color);
+  outline: 1px solid var(--adm-color-border);
+  border-radius: 8px;
+  margin: 0px 6px 12px;
+  height: calc(166px + 114px);
+}
+
+.title {
+  margin-top: 10px;
+  color: var(--тихий-текст);
+}
+
+.course_item .title {
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 21.8px;
+}
+
+.course_item>img {
+  height: 114px;
+  width: auto;
+  object-fit: cover;
+}
+
+
+.description {
+  color: var(--tg-theme-hint-color);
+}
+
+.item_bady {
+  padding: 0 18px;
+  position: relative;
+  height: 160px;
+}
+
+.item_bady .title {
+  text-overflow: ellipsis;
+  white-space: break-spaces;
+}
+
+
+@media screen and (min-width: 300px) {
+  .course_item {
+    width: calc(50% - 12px);
+  }
+
+  .course_item>img {
+    height: 114px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .course_item {
+    width: calc(33% - 12px);
+  }
+
+  .course_item>img {
+    height: 140px;
+  }
+}
+
+
+@media screen and (min-width: 1200px) {
+  .course_item {
+    width: calc(25% - 12px);
+  }
+
+  .course_item>img {
+    height: 165px;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .course_item {
+    width: calc(20% - 12px);
+  }
+
+  .course_item>img {
+    height: 180px;
+  }
+}
+
+.price_cart {
+  bottom: 12px;
+  width: calc(100% - 36px);
+  display: flex;
+  position: absolute;
+  align-items:flex-end;
+  justify-content: space-between;
+  color: var(--громкий-текст);
+}
+
+.price_cart span {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 0.8;
+}
+
+.price_cart>.keke {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  /* border-radius: 100px; */
+  background: var(--gurmag-accent-color);
+  position: relative;
+  color: white;
+}

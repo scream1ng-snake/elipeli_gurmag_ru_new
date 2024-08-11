@@ -57,6 +57,7 @@ export class AuthStore {
           : this.setState('NOT_AUTHORIZED')
 
         if (tgId) this.root.user.setID(tgId)
+        if (tgId) this.root.user.setID(tgId)
         break;
       }
       case 'WEB_BROWSER':
@@ -65,10 +66,12 @@ export class AuthStore {
           ? await this.root.user.loadUserInfo.run(orgId, webId)
           : await this.root.user.loadUserInfo.run(orgId, 0)
 
+
         result?.UserInfo
           ? this.setState('AUTHORIZED')
           : this.setState('NOT_AUTHORIZED')
 
+        if (webId) this.root.user.setID(webId)
         if (webId) this.root.user.setID(webId)
         break;
     }

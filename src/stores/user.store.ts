@@ -13,6 +13,7 @@ class UserStore {
   }
   
   
+  
   info: UserInfoState = {
     Phone: '',
     userName: '',

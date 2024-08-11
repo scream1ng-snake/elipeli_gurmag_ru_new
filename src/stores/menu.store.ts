@@ -48,6 +48,7 @@ class MenuStore {
     onOpen: async (course, save) => { 
       const reviews = await this.loadCourseReviews.run(course)
       if(reviews[0]) save(reviews[0])
+      if(reviews[0]) save(reviews[0])
     },
   })
 
@@ -55,6 +56,7 @@ class MenuStore {
   courseReviewsPopup = new Popup<CourseItem, CourseReview[]>({
     onOpen: async (course, save) => { 
       const reviews = await this.loadCourseReviews.run(course)
+      if(reviews[0]) save(reviews[0])
       if(reviews[0]) save(reviews[0])
     },
   })
