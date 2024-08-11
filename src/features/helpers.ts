@@ -62,3 +62,45 @@ export function getDistance(
     return dist;
   }
 }
+
+export class Searcher {
+  _result: Array<any> = []
+  _inputDataGetter: () => Array<any>
+
+  get isSearching() {
+    return Boolean(this.searchTerm.length)
+  }
+
+  constructor(inputGetter: () => Array<any>) {
+    this._inputDataGetter = inputGetter;
+    this._result = this._inputDataGetter();
+    makeAutoObservable(this);
+  }
+
+  searchTerm = ''
+  search(term: string) {
+    this.searchTerm = term;
+    const data = this._inputDataGetter()
+    if (!this.isSearching) {
+      this._result = data;
+    } else {
+      this._result = data.filter((d) => {
+        const bools = Object.keys(d).map((key) => {
+          if (typeof d[key] === 'string') {
+            return d[key]
+              .toLowerCase()
+              .includes(this.searchTerm.toLowerCase()) || false;
+          } else {
+            return false
+          }
+        })
+        return bools.includes(true);
+      })
+    }
+
+  }
+  get result() {
+    return this._result
+  }
+}
+

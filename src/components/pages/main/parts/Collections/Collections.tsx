@@ -18,7 +18,8 @@ const Collections: FC = observer(() => {
         overflowX: 'scroll',
         '--gap-horizontal': '-5px',
         width: '100%',
-        padding: '0.5rem 0'
+        padding: '0.5rem 0',
+        scrollbarWidth: 'none'
       }}
     >
       {menu.loadMenu.state === 'COMPLETED'

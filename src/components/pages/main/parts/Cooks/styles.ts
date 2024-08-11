@@ -7,6 +7,7 @@ export const list_styles: CSSProperties = {
   flexWrap: 'nowrap',
   overflowX: 'scroll',
   overflowY: 'hidden',
+  scrollbarWidth: 'none'
 }
 export const wrapper_styles: CSSProperties = {
   padding: '0.5rem 0 0.5rem 0.5rem'

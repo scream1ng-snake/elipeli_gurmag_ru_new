@@ -1,4 +1,5 @@
 import { Avatar, List, Popup, Rate, Skeleton } from 'antd-mobile'
+import { toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import moment from 'moment'
 import { FC } from 'react'
@@ -10,8 +11,8 @@ const CourseReviewPopup: FC = observer(function () {
   const { courseReviewsPopup } = menu
 
   const isLoading = menu.loadCourseReviews.state === 'LOADING'
-  const currentCouse = courseReviewsPopup.content
-  const reviews = courseReviewsPopup.saved
+  const currentCouse = toJS(courseReviewsPopup.content)
+  const reviews = toJS(courseReviewsPopup.saved)
 
   return <Popup
     visible={courseReviewsPopup.show}

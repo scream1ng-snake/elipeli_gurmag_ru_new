@@ -1,16 +1,19 @@
 import { makeAutoObservable } from "mobx";
-import { Request } from "../features/helpers";
+import { Optional, Request, Undef } from "../features/helpers";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
+import Popup from "../features/modal";
 import RootStore from "./root.store";
 
 class UserStore {
+  ID: Optional<string> = null
+  setID(id: string) { this.ID = id }
   constructor(readonly root: RootStore) {
     makeAutoObservable(this)
   }
-
   
-  userState: UserInfoState = {
+  
+  info: UserInfoState = {
     Phone: '',
     userName: '',
     UserCode: '',
@@ -20,8 +23,8 @@ class UserStore {
     allCampaign: [],
     dishSet: []
   };
-  setUserState(state: UserInfoState) {
-    this.userState = state;
+  setInfo(info: UserInfoState) {
+    this.info = info;
   }
 
   loadUserInfo = new Request(async (
@@ -47,7 +50,7 @@ class UserStore {
     const Phone = response?.UserInfo?.Phone ?? '';
     
 
-    const newState = {
+    const newInfo = {
       userName: NAME,
       userBonuses: Bonuses,
       percentDiscounts: PercentDiscount,
@@ -59,7 +62,7 @@ class UserStore {
     }
 
     // сохраняем состояние
-    this.setUserState(newState)
+    this.setInfo(newInfo)
 
     // сохраняем текущую организацию 
     // если грузим первый раз
@@ -73,9 +76,37 @@ class UserStore {
     setState('COMPLETED')
     return response?.UserInfo || null
   })
+
+  
+  /** история заказов */
+  orderHistory: historyOrderItem[] = []
+
+  /** попап для просмотра заказа в истории */
+  watchHistoryOrderPopup = new Popup<historyOrderItem>();
+
+  /** api истории заказов */
+  loadOrdersHistory = new Request(async (
+    state, setState, 
+    userId: string
+  ) => {
+    setState('LOADING')
+    try {
+      const response: Undef<historyOrderItem[]> = await http.get('GetUserOrdersHistory/' + userId);
+      if(response?.length) {
+        this.orderHistory = [];
+        response.forEach(order => 
+          this.orderHistory.push(order)
+        )
+        setState('COMPLETED')
+      }
+    } catch (err) {
+      logger.error(err, 'user-info-store')
+      setState('FAILED')
+    }
+  })
 }
 
-type UserInfoState = {
+export type UserInfoState = {
   Phone: string,
   userName: string,
   /** numberStr "182981928" */
@@ -128,3 +159,38 @@ type AllCampaignUser = {
   promocode: string
 }
 export default UserStore
+
+
+
+
+type historyOrderItem = {
+  /** !number string "99328" */
+  VCode: string,
+  /** !number string "11676" */
+  DocumentNumber: string,
+  /** iso string "2023-09-06T00:00:00.000Z" */
+  DocumentDate: string,
+  /** iso string "1970-01-01T18:09:58.627Z" */
+  DeliveryTime: string,
+  StatusOrder: OrderStatuses,
+  PaymentStatus: PaymentStatuses,
+  /** "Рабкоров_20" */
+  OrgName: string,
+  OrgCode: number,
+  OrderCost: number,
+  Courses: historyOrderCouse[],
+  /** "На вынос" или "С доставкой" */
+  OrderType: string,
+  FullAddress: null | string
+}
+
+type historyOrderCouse = {
+  CourseCost: number,
+  CourseQuantity: number,
+  /** !!! number string "89089" */
+  CourseCode: string,
+  CourseName: string
+}
+
+type PaymentStatuses = 'Не оплачен' | 'Оплачен частично' | 'Оплачен'
+type OrderStatuses = 'Создан' | 'В работе' | 'Сборка заказа' | 'В пути' | 'Оплачен' | 'Отменён'

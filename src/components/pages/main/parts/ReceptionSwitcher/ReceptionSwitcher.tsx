@@ -72,8 +72,8 @@ const ReceptionSwitcher: FC = observer(() => {
     <Popover
       visible={needAskLocation}
       content={getPopText()}
-      placement='bottom-start'
-      style={{ zIndex: 100 }}
+      placement='bottom-end'
+      style={{ zIndex: 1000 }}
     >
       <div
         className={styles.switcher_button}

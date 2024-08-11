@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { Request, Undef } from "../features/helpers";
+import { Optional, Request, Searcher, Undef } from "../features/helpers";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
 import Popup from "../features/modal";
@@ -8,7 +8,7 @@ import { ReceptionStore } from "./reception.store";
 
 class MenuStore {
   constructor(readonly parrent: ReceptionStore) {
-    makeAutoObservable(this)
+    makeAutoObservable(this, {}, { autoBind: true })
   }
   
   /** все блюда по категориям */
@@ -47,7 +47,7 @@ class MenuStore {
   coursePopup = new Popup<CourseItem, CourseReview[]>({
     onOpen: async (course, save) => { 
       const reviews = await this.loadCourseReviews.run(course)
-      save(reviews)
+      if(reviews[0]) save(reviews[0])
     },
   })
 
@@ -55,7 +55,7 @@ class MenuStore {
   courseReviewsPopup = new Popup<CourseItem, CourseReview[]>({
     onOpen: async (course, save) => { 
       const reviews = await this.loadCourseReviews.run(course)
-      save(reviews)
+      if(reviews[0]) save(reviews[0])
     },
   })
 
@@ -78,6 +78,24 @@ class MenuStore {
       setState('FAILED')
     }
   })
+
+  dishSearcher = new Searcher(() => this.allDishes)
+  get allDishes() {
+    const result: CourseItem[] = []
+    this.categories.forEach(category => 
+      category.CourseList.forEach(couse => 
+        result.push(couse)
+      )
+    )
+    return result;
+  }
+
+  
+  /** категория блюд которая видна на экране */
+  visibleCategory: Optional<string> = null;
+  setVisibleCategory(VCode: Optional<string>) {
+    this.visibleCategory = VCode;
+  }
 }
 
 export default MenuStore
@@ -117,7 +135,7 @@ type Selection = {
 }
 
 /** Тип категории с блюдами */
-type CategoryCourse = {
+export type CategoryCourse = {
   VCode: number,
   Name: string,
   MenuVCode: number,

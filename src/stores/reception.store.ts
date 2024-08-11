@@ -104,10 +104,12 @@ export class ReceptionStore {
   setAddrByCordinates = async (cord: [number, number]) => {
     const [lon,lat] = cord
     const address: NominatimReverseResponse['address'] = await this.reverseGeocoderApi.run(lat, lon)
-    if(Object.hasOwn(address, 'road') && Object.hasOwn(address, 'house_number')) {
+    if(typeof address === 'object' && address.hasOwnProperty('road') && address.hasOwnProperty('house_number')) {
       const { road, house_number } = address
       this.setAddress({ road, house_number })
       this.setLocation(cord)
+    } else {
+      Toast.show('Местопоожение не найдено')
     }
   }
 
