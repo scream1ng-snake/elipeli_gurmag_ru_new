@@ -1,15 +1,10 @@
-import { Toast, Modal as Modalz, Dialog, InputRef } from "antd-mobile";
-import { BankcardOutline } from "antd-mobile-icons";
-import { ToastHandler } from "antd-mobile/es/components/toast";
-import { flow, makeAutoObservable, reaction, runInAction, toJS } from "mobx";
-import moment from "moment";
-import { LoadStatesType, Optional, Request, Undef } from "../features/helpers";
+import { Toast } from "antd-mobile";
+import { makeAutoObservable, reaction } from "mobx";
+import { Optional, Request, Undef } from "../features/helpers";
 import { http } from "../features/http";
 import { setItem } from "../features/local-storage";
 import { logger } from "../features/logger";
-import Popup from "../features/modal";
 import { CourseItem } from "./menu.store";
-import { Organization, receptionTypes } from "./reception.store";
 import RootStore from "./root.store";
 import { UserInfoState } from "./user.store";
 import Slots from "./slots.store";
@@ -24,15 +19,20 @@ type CouseInCart = {
 }
 
 export class CartStore {
+  items: Array<CouseInCart> = []
+  totalPrice = 0
+  get isEmpty() { return !this.items.length }
+
+
   constructor(readonly root: RootStore) {
-    makeAutoObservable(this);
-
-
+    makeAutoObservable(this)
     reaction(() => this.totalPrice, price => {
       if (price > 1000 && this.payment.method === 'CASH')
         this.payment.method = null
     })
   }
+
+  
   confirmedPromocode: Optional<string> = null
   inputPromocode = ''
   setInputPromo = (str: string, ref: any) => {
@@ -61,27 +61,17 @@ export class CartStore {
       info.dishSet,
     )
   }
-  items: Array<CouseInCart> = [];
-  totalPrice = 0;
+  
 
   clearCart() {
     this.items = [];
     this.totalPrice = 0;
     setItem('cartItems', [])
   }
-
-  clearCousesById(vcode: number) {
-    this.items = this.items.filter(item =>
-      item.couse.VCode !== vcode
-    )
-  }
-
-  get isEmpty() {
-    return !this.items.length
-  }
+ 
 
   findItem(vcode: number) {
-    return this.items.find((item) => item.couse.VCode == vcode)
+    return this.items.find(item => item.couse.VCode === vcode)
   }
 
   isInCart(course: CourseItem): boolean {
@@ -103,7 +93,7 @@ export class CartStore {
       // оставляем его, но
       // в большем количестве
       items = items.map((item) =>
-        item.couse.VCode == couse.VCode
+        item.couse.VCode === couse.VCode
           ? isCourseAdded as CouseInCart
           : item
       )
@@ -147,7 +137,7 @@ export class CartStore {
         isCourseAdded.quantity--;
 
         items = items.map(item =>
-          item.couse.VCode == VCode
+          item.couse.VCode === VCode
             ? isCourseAdded as CouseInCart
             : item
         )
@@ -205,7 +195,7 @@ export class CartStore {
       //проверим все скидки, найдем наибольшую
       let maxPercentDiscount: PercentDiscount = { vcode: 0, MinSum: 0, MaxSum: 0, bonusRate: 0, discountPercent: 0 };
       percentDiscounts?.forEach(a => {
-        if (maxPercentDiscount.vcode == 0) {
+        if (maxPercentDiscount.vcode === 0) {
           maxPercentDiscount = a;
         } else if (maxPercentDiscount.discountPercent < a.discountPercent) {
           maxPercentDiscount = a;
@@ -228,8 +218,8 @@ export class CartStore {
           //идём по всем блюдам сэта
           for (let k = 0; k < set.dishes.length; k++) {
             //если нашли блюдо из сэта, то увеличиваем счётчик сэта
-            if (courseItem.couse.VCode == set.dishes[k].dish) {
-              let curDishSetObj = curDishSets.find(a => a.vcode == set.vcode);
+            if (courseItem.couse.VCode === set.dishes[k].dish) {
+              let curDishSetObj = curDishSets.find(a => a.vcode === set.vcode);
               if (curDishSetObj === undefined) {
                 curDishSetObj = { ...set, countInCart: 0 };
                 curDishSets.push(curDishSetObj);
@@ -245,10 +235,10 @@ export class CartStore {
           let dishDiscount = dishsDiscounts[j];
           //нашли блюдо в акции
           if (
-            courseItem.couse.VCode == dishDiscount.dish
+            courseItem.couse.VCode === dishDiscount.dish
             && (
-              dishDiscount.promocode == null
-              || dishDiscount.promocode == this.confirmedPromocode
+              dishDiscount.promocode === null
+              || dishDiscount.promocode === this.confirmedPromocode
             )
           ) {
             //если есть процентная скидка
@@ -274,15 +264,15 @@ export class CartStore {
 
       for (let j = 0; j < curDishSets.length; j++) {
         if (
-          curDishSets[j].countInCart == curDishSets[j].dishCount
+          curDishSets[j].countInCart === curDishSets[j].dishCount
           && (
-            curDishSets[j].dishes[0].promocode == null
-            || curDishSets[j].dishes[0].promocode == this.confirmedPromocode
+            curDishSets[j].dishes[0].promocode === null
+            || curDishSets[j].dishes[0].promocode === this.confirmedPromocode
           )
         ) {
           for (let i = 0; i < new_state.items.length; i++) {
             let courseItem = new_state.items[i];
-            let dishInSet = curDishSets[j].dishes.find(a => a.dish == courseItem.couse.VCode);
+            let dishInSet = curDishSets[j].dishes.find(a => a.dish === courseItem.couse.VCode);
             if (dishInSet !== undefined) {
               courseItem.campaign = curDishSets[j].vcode;
               // если есть установленный прайс

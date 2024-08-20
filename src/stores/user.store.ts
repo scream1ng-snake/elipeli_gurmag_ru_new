@@ -73,7 +73,7 @@ class UserStore {
     };
 
     // пересчитываем корзину 
-    // this.rootStore.cartStore.applyDiscountForCart(newState) todo
+    this.root.cart.applyDiscountForCart(newInfo)
     setState('COMPLETED')
     return response?.UserInfo || null
   })

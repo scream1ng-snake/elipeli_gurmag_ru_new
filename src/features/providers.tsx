@@ -61,7 +61,7 @@ export const ThemeProvider = ({ children }: WithChildren) => {
 };
 
 const getThemeFromLocalstorage = () =>
-  window.localStorage.getItem("theme") == null
+  window.localStorage.getItem("theme") === null
     ? Themes.light
     : window.localStorage.getItem("theme") === 'dark'
       ? 'dark' as ThemeType

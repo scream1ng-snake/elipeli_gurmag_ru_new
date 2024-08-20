@@ -8,7 +8,7 @@ import { CartStore } from "./cart.store"
 
 /** класс для работы со слотами при доставке */
 class Slots {
-  constructor(readonly cart: CartStore) {
+  constructor(private readonly cart: CartStore) {
     makeAutoObservable(this)
     setInterval(this.checkAvailableSlot, 500)
 
@@ -28,9 +28,8 @@ class Slots {
     this.list = slots
   }
 
-  availbaleSlots: Slot[] = []
-
-  isSlotActive = function (slot: Slot) {
+  private availbaleSlots: Slot[] = []
+  private isSlotActive = function (slot: Slot) {
     const [eHH, eMM] = moment(slot.EndTimeOfWork)
       .format('HH:mm')
       .split(':')
@@ -72,6 +71,26 @@ class Slots {
       }
     } else {
       this.availbaleSlots = this.list
+    }
+  }
+
+  get computedSlots() {
+    const isToday = moment(this.cart.date).isSame(new Date(), 'day')
+
+    if(isToday) {
+      const nearest2hSlot: Slot = { 
+        VCode: '-1', 
+        Name: 'Ближайшие два часа',
+        Start: '',
+        End: '',
+        EndTimeOfWork: '',
+        StartCook: '',
+      }
+      return this.availbaleSlots.length
+        ? [nearest2hSlot, ...this.availbaleSlots]
+        : []
+    } else {
+      return this.availbaleSlots
     }
   }
 }

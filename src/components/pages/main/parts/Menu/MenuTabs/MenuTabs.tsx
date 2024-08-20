@@ -57,7 +57,7 @@ export const MenuTabs: FC = observer(() => {
           <ul className="filter_list">
             {menu.loadMenu.state === 'COMPLETED'
               ? categories.map((category, index) => {
-                const isActive = visibleCategory == String(category.VCode);
+                const isActive = visibleCategory === String(category.VCode);
     
                 return (
                   <li
@@ -92,7 +92,7 @@ export const MenuTabs: FC = observer(() => {
               <ul className="filter_list">
   
                 {categories.map((category, index) => {
-                  const isActive = visibleCategory == String(category.VCode);
+                  const isActive = visibleCategory === String(category.VCode);
   
                   return (
                     <li
