@@ -21,7 +21,7 @@ export const MenuTabs: FC = observer(() => {
 
         if (cordinates) {
           // Если категория находится в видимой области
-          if (cordinates.top < 200 && Math.abs(cordinates.top) + 200 < Number(el?.offsetHeight)) {
+          if (cordinates.top < 200 && Math.abs(cordinates.top) + 100 < Number(el?.offsetHeight)) {
             // делаем ее активной
             if (visibleCategory !== String(category.VCode)) {
               setVisibleCategory(String(category.VCode))
@@ -63,7 +63,9 @@ export const MenuTabs: FC = observer(() => {
                   <li
                     className={`filter_item ${isActive ? 'active' : ''}`}
                     key={`filter_item_${index}`}
-                    onClick={() => NavigateTo(String(category.VCode))}
+                    onClick={() => { 
+                      NavigateTo(String(category.VCode)) 
+                    }}
                   >
                     {category.Name}
                   </li>
@@ -98,7 +100,9 @@ export const MenuTabs: FC = observer(() => {
                     <li
                       className={`filter_item ${isActive ? 'active' : ''}`}
                       key={`fixed_filter_item_${index}`}
-                      onClick={() => NavigateTo(String(category.VCode))}
+                      onClick={() => {
+                        NavigateTo(String(category.VCode)) 
+                      }}
                     >
                       {category.Name}
                     </li>
@@ -129,7 +133,7 @@ function NavigateTo(categoryID: string) {
   if (el && body) {
     // смещение по высоте, которое надо добавить 
     // из-за фиксированного меню
-    let FILTERBAR_OFFSET = 120
+    let FILTERBAR_OFFSET = 160
 
     window.scrollTo({
       top: (el.top - body.top) - FILTERBAR_OFFSET,
