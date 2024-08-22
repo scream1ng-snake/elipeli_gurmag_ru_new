@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite"
 import { FC, useState, useEffect } from "react"
 import { useStore } from "../../../../../../features/hooks"
 import './MenuTabs.css'
+import { CategoryCourse } from "../../../../../../stores/menu.store"
 
 export const MenuTabs: FC = observer(() => {
   const { reception: { menu }, auth } = useStore()
@@ -100,8 +101,10 @@ export const MenuTabs: FC = observer(() => {
                     <li
                       className={`filter_item ${isActive ? 'active' : ''}`}
                       key={`fixed_filter_item_${index}`}
+                      id={String(category.VCode) + '_filter_item'}
                       onClick={() => {
                         NavigateTo(String(category.VCode)) 
+                        scrollTabs(category)
                       }}
                     >
                       {category.Name}
@@ -116,6 +119,14 @@ export const MenuTabs: FC = observer(() => {
     )
   }
 })
+
+function scrollTabs(category: CategoryCourse) {
+  const filter_list = document.querySelector('.overlayed > .filter_list')
+  if(filter_list) {
+    const scrollLeft = document.getElementById(String(category.VCode) + '_filter_item')?.offsetLeft
+    if (scrollLeft) filter_list.scrollLeft = scrollLeft - 50
+  }
+}
 
 function NavigateTo(categoryID: string) {
   // находим относительные кординаты  
