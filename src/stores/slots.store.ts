@@ -66,7 +66,10 @@ class Slots {
     const isToday = moment(this.cart.date).isSame(new Date(), 'day')
     if (isToday) {
       this.availbaleSlots = this.list.filter(this.isSlotActive)
-      if (this.selectedSlot && !this.availbaleSlots.find(slot => slot.VCode === this.selectedSlot?.VCode)) {
+      if (this.selectedSlot 
+        && this.selectedSlot.VCode !== '-1'
+        && !this.availbaleSlots.find(slot => slot.VCode === this.selectedSlot?.VCode)
+      ) {
         this.selectedSlot = null
       }
     } else {
