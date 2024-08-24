@@ -10,6 +10,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { QuestionCircleOutline } from 'antd-mobile-icons'
 import Red from '../../../../special/RedText'
 import { Popover } from 'antd-mobile/es/components/popover/popover'
+import { Void } from '../../../../layout/Void'
 
 const ReceptionSwitcher: FC = observer(() => {
   const { reception } = useStore()
@@ -92,4 +93,7 @@ const ReceptionSwitcher: FC = observer(() => {
   </div>
 })
 
-export default ReceptionSwitcher
+export default () => <>
+  <ReceptionSwitcher />
+  <Void height="85px" />
+</>
