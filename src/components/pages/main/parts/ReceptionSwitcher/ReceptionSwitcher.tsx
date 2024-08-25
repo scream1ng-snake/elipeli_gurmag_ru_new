@@ -1,16 +1,23 @@
 import { observer } from 'mobx-react-lite'
 import { FC, useEffect } from 'react'
-import DeliveryIcon from '../../../../icons/Delivery'
 import styles from './ReceptionSwitcher.module.css'
 import { DownOutline } from 'antd-mobile-icons'
 import { useStore } from '../../../../../features/hooks'
-import PickupIcon from '../../../../icons/Pickup'
 import SelectLocationPopup from '../../../../popups/SelectLocation'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { QuestionCircleOutline } from 'antd-mobile-icons'
 import Red from '../../../../special/RedText'
 import { Popover } from 'antd-mobile/es/components/popover/popover'
 
+/*
+import DeliveryIcon from '../../../../icons/Delivery'
+import PickupIcon from '../../../../icons/Pickup'
+import { QuestionCircleOutline } from 'antd-mobile-icons'
+*/
+import CircleIcon from '../../../../icons/Circle'
+import IconDelivery from '../../../../../assets/icon_delivery.png'
+import IconChoice from '../../../../../assets/icon_choice.png'
+import IconPickup from '../../../../../assets/icon_pickup.png'
+import LogoGurmag from '../../../../../assets/logo_gurmag.png'
 const ReceptionSwitcher: FC = observer(() => {
   const { reception } = useStore()
   const { hash } = useLocation()
@@ -26,12 +33,27 @@ const ReceptionSwitcher: FC = observer(() => {
 
 
 
-  const getIcon = () =>
+  /* const getIcon = () =>
     receptionType === 'initial'
       ? <QuestionCircleOutline fontSize={32} color={"var(--gurmag-accent-color)"} />
       : receptionType === 'delivery'
         ? <DeliveryIcon fontSize={32} color={"var(--gurmag-accent-color)"} />
-        : <PickupIcon fontSize={32} color={"var(--gurmag-accent-color)"} />
+        : <PickupIcon fontSize={32} color={"var(--gurmag-accent-color)"} /> */
+  const getIcon = (receptionType: any) => {
+    let image: any = null;
+    switch (receptionType) {
+      case 'initial':
+        image = IconChoice;
+        break;
+      case 'delivery':
+        image = IconDelivery;
+        break;
+      case 'pickup':
+        image = IconPickup;
+        break;
+    }
+    return <CircleIcon image={image} size={36} />
+  }
 
   const getHint = () =>
     receptionType === 'initial'
@@ -61,7 +83,6 @@ const ReceptionSwitcher: FC = observer(() => {
   }, [hash])
 
   return <div className={styles.head_wrapper}>
-
     <SelectLocationPopup
       show={show}
       close={function () {
@@ -78,17 +99,35 @@ const ReceptionSwitcher: FC = observer(() => {
       <div
         className={styles.switcher_button}
         onClick={function () { navigate('#selectLocation') }}
+        style={{ width: receptionType === 'initial' ? '100%' : 'auto' }}
       >
-        <div className={styles.icon_wrapper}>
-          {getIcon()}
+        <div
+          className={styles.icon_wrapper}
+        >
+          {getIcon(receptionType)}
         </div>
-        <div className={styles.text_box}>
-          <p>{getAdress()}</p>
-          <p className={styles.receptiom_hint}>{getHint()}</p>
-        </div>
-        <DownOutline />
+        {
+          (receptionType === 'initial')
+            ? 
+            <div className={styles.choice_button_wrapper}>
+              <div className={styles.choice_button}>
+                Доставить или забрать?
+              </div>
+            </div>
+            : 
+            <div className={styles.reception_wrapper}>
+              <div className={styles.text_box}>
+                <p>{getAdress()}</p>
+                <p className={styles.reception_hint}>{getHint()}</p>
+              </div>
+              <DownOutline />
+            </div>
+        }
       </div>
     </Popover>
+    <div className={styles.icon_wrapper}>
+      <CircleIcon image={LogoGurmag} size={36} />
+    </div>
   </div>
 })
 
