@@ -7,7 +7,7 @@ import SelectLocationPopup from '../../../../popups/SelectLocation'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Red from '../../../../special/RedText'
 import { Popover } from 'antd-mobile/es/components/popover/popover'
-
+import { Image } from 'antd-mobile'
 /*
 import DeliveryIcon from '../../../../icons/Delivery'
 import PickupIcon from '../../../../icons/Pickup'
@@ -18,6 +18,8 @@ import IconDelivery from '../../../../../assets/icon_delivery.png'
 import IconChoice from '../../../../../assets/icon_choice.png'
 import IconPickup from '../../../../../assets/icon_pickup.png'
 import LogoGurmag from '../../../../../assets/logo_gurmag.png'
+import IconDown from '../../../../../assets/icon_down.svg'
+
 const ReceptionSwitcher: FC = observer(() => {
   const { reception } = useStore()
   const { hash } = useLocation()
@@ -62,7 +64,7 @@ const ReceptionSwitcher: FC = observer(() => {
         ? isWorkingNow ? 'Доставка бесплатно' : <Red>По этому адресу заведение закрыто</Red>
         : isWorkingNow ? 'Забрать из Гурмага' : <Red>Закрыто - Откроется в 9:30</Red>
 
-  const getAdress = () =>
+  const getAddress = () =>
     receptionType === 'initial'
       ? 'Вам доставить'
       : receptionType === 'delivery'
@@ -117,10 +119,18 @@ const ReceptionSwitcher: FC = observer(() => {
             : 
             <div className={styles.reception_wrapper}>
               <div className={styles.text_box}>
-                <p>{getAdress()}</p>
+                <div className={styles.text_address_row}>
+                  <p className={styles.text_address}>{getAddress()}</p>
+                  <Image
+                    src={IconDown}
+                    width={10}
+                    height={6}
+                    fit='cover'
+                  />
+                </div>
                 <p className={styles.reception_hint}>{getHint()}</p>
               </div>
-              <DownOutline />
+              {/* <DownOutline /> */}
             </div>
         }
       </div>

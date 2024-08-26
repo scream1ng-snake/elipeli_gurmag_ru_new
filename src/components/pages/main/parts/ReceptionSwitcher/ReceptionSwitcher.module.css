@@ -24,11 +24,25 @@
 }
 .text_box {
   margin-right: 10px;
+  font-family: Roboto;
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 16.99px;
 }
-
+.text_address_row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.text_address{
+  margin-right: 5px;
+}
 .reception_hint {
   color: var(--тихий-текст);
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14.06px;
+  color: var(--gur-secondary-text-color);
 }
 
 .switcher_button {
