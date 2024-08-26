@@ -6,21 +6,21 @@ const CircleIcon: FC<{ size: any, image: any }> = props =>
     src={props.image}
     width={props.size}
     height={props.size}
-    fallback={<CircleImagePreloder />}
+    fallback={<CircleImagePreloder size={props.size}/>}
     placeholder={
-      <CircleImagePreloder />
+      <CircleImagePreloder size={props.size}/>
     }
     fit='cover'
   />
 
 export default CircleIcon
 
-export const CircleImagePreloder = () =>
+export const CircleImagePreloder: FC<{ size: any }> = props =>
   <Skeleton 
     animated 
     style={{
-      width: '36vw',
-      height: '100px',
+      width: props.size,
+      height: props.size,
       objectFit: 'cover'
     }} 
   />

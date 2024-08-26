@@ -7,18 +7,21 @@ import SelectLocationPopup from '../../../../popups/SelectLocation'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Red from '../../../../special/RedText'
 import { Popover } from 'antd-mobile/es/components/popover/popover'
-import { Image } from 'antd-mobile'
+import { Image, Button } from 'antd-mobile'
 /*
 import DeliveryIcon from '../../../../icons/Delivery'
 import PickupIcon from '../../../../icons/Pickup'
 import { QuestionCircleOutline } from 'antd-mobile-icons'
 */
 import CircleIcon from '../../../../icons/Circle'
+import CustomButton from '../../../../special/CustomButton'
+
 import IconDelivery from '../../../../../assets/icon_delivery.png'
 import IconChoice from '../../../../../assets/icon_choice.png'
 import IconPickup from '../../../../../assets/icon_pickup.png'
 import LogoGurmag from '../../../../../assets/logo_gurmag.png'
 import IconDown from '../../../../../assets/icon_down.svg'
+import ImageBaker from '../../../../../assets/image_baker.png'
 
 const ReceptionSwitcher: FC = observer(() => {
   const { reception } = useStore()
@@ -85,58 +88,88 @@ const ReceptionSwitcher: FC = observer(() => {
   }, [hash])
 
   return <div className={styles.head_wrapper}>
-    <SelectLocationPopup
-      show={show}
-      close={function () {
-        close()
-        navigate('/')
-      }}
-    />
-    <Popover
-      visible={needAskLocation}
-      content={getPopText()}
-      placement='bottom-end'
-      style={{ zIndex: 1000 }}
-    >
-      <div
-        className={styles.switcher_button}
-        onClick={function () { navigate('#selectLocation') }}
-        style={{ width: receptionType === 'initial' ? '100%' : 'auto' }}
+    {
+      (false)
+      ? <CustomButton
+        text={'Войти по номеру телефона'}
+        onClick={() => {}}
+        height={'33px'}
+        maxWidth={'auto'}
+        
+        marginTop={'0px'}
+        marginBottom={'8px'}
+        marginHorizontal={'8px'}
+        paddingHorizontal={'24px'}
+        fontWeight={'400'}
+        
+        backgroundVar={'--gur-secondary-accent-color'}
+        appendImage={ImageBaker}
+      />
+      : null
+    }
+    <div className={styles.head_row}>
+      <SelectLocationPopup
+        show={show}
+        close={function () {
+          close()
+          navigate('/')
+        }}
+      />
+      <Popover
+        visible={needAskLocation}
+        content={getPopText()}
+        placement='bottom-end'
+        style={{ zIndex: 1000 }}
       >
         <div
-          className={styles.icon_wrapper}
+          className={styles.switcher_button}
+          onClick={function () { navigate('#selectLocation') }}
+          style={{ width: receptionType === 'initial' ? '100%' : 'auto' }}
         >
-          {getIcon(receptionType)}
-        </div>
-        {
-          (receptionType === 'initial')
-            ? 
-            <div className={styles.choice_button_wrapper}>
-              <div className={styles.choice_button}>
-                Доставить или забрать?
-              </div>
-            </div>
-            : 
-            <div className={styles.reception_wrapper}>
-              <div className={styles.text_box}>
-                <div className={styles.text_address_row}>
-                  <p className={styles.text_address}>{getAddress()}</p>
-                  <Image
-                    src={IconDown}
-                    width={10}
-                    height={6}
-                    fit='cover'
-                  />
+          <div
+            className={styles.icon_wrapper}
+          >
+            {getIcon(receptionType)}
+          </div>
+          {
+            (receptionType === 'initial')
+              ? 
+                <CustomButton
+                  text={'Доставить или забрать?'}
+                  onClick={() => {}}
+                  height={'33px'}
+                  maxWidth={'215px'}
+                  marginTop={'0px'}
+                  marginBottom={'0px'}
+                  marginHorizontal={'14px'}
+                  paddingHorizontal={'24px'}
+                  fontWeight={'400'}
+                  
+                  backgroundVar={'--gur-accent-color'}
+                  appendImage={null}
+                />
+              : 
+              <div className={styles.reception_wrapper}>
+                <div className={styles.text_box}>
+                  <div className={styles.text_address_row}>
+                    <p className={styles.text_address}>{getAddress()}</p>
+                    <Image
+                      src={IconDown}
+                      width={10}
+                      height={6}
+                      fit='cover'
+                    />
+                  </div>
+                  <p className={styles.reception_hint}>{getHint()}</p>
                 </div>
-                <p className={styles.reception_hint}>{getHint()}</p>
+                {/* <DownOutline /> */}
               </div>
-              {/* <DownOutline /> */}
-            </div>
-        }
+          }
+        </div>
+      </Popover>
+      <div className={styles.icon_wrapper}>
+        <CircleIcon image={LogoGurmag} size={36} />
       </div>
-    </Popover>
-    <div className={styles.icon_wrapper}>
-      <CircleIcon image={LogoGurmag} size={36} />
     </div>
   </div>
 })

@@ -95,6 +95,7 @@ const myVariables = [
   { cssVar: '--gur-primary-text-color', dark: '#000000', light: '#000000' },
   { cssVar: '--gur-secondary-text-color', dark: '#836868', light: '#836868' },
   { cssVar: '--gur-accent-color', dark: '#F7BB0F', light: '#F7BB0F' },
+  { cssVar: '--gur-secondary-accent-color', dark: '#BFFE00', light: '#BFFE00' },
 
   { cssVar: '--gur-skeleton-bg-color', dark: '#D9D9D9', light: '#D9D9D9' },
   { cssVar: '--gur-border-color', dark: '#006241', light: '#006241' },
