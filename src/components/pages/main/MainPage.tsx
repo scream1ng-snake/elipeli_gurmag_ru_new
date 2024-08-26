@@ -7,9 +7,11 @@ import ReceptionSwitcher from "./parts/ReceptionSwitcher/ReceptionSwitcher"
 import Stories from "./parts/Stories/Stories"
 import Menu from "./parts/Menu/Menu"
 import BottomNavigation from "../../common/BottomNav/BottomNav"
+import Banner from "./parts/Banner/Banner"
 
 const MainPage: FC = observer(() => {
   return <Wrapper>
+    <Banner />
     <ReceptionSwitcher />
     <Stories />
     <Collections />

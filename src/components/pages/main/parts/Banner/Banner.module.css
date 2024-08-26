@@ -1,0 +1,19 @@
+.banner {
+  padding: 1rem;
+  width: calc(100% - 2rem);
+}
+
+.banner div>p {
+  word-break: normal;
+  font-size: 14px;
+}
+
+.banner_button {
+  background: var(--gurmag-accent-color);
+  font-weight: 600;
+  width: 100%;
+}
+
+.banner_close {
+  font-size: 20px;
+}
