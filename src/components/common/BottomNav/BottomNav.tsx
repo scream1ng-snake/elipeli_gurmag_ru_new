@@ -1,5 +1,5 @@
 import { HomeOutlined, MoreOutlined, ShoppingCartOutlined } from "@ant-design/icons"
-import { TabBar } from "antd-mobile"
+import { Badge, TabBar } from "antd-mobile"
 import { UserOutline } from "antd-mobile-icons"
 import { observer } from "mobx-react-lite"
 import { CSSProperties, FC } from "react"
@@ -9,7 +9,7 @@ import { Void } from "../../layout/Void"
 
 
 const BottomNavigation: FC = observer(() => {
-  const { cart } = useStore()
+  const { cart, auth } = useStore()
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
@@ -17,6 +17,7 @@ const BottomNavigation: FC = observer(() => {
     navigate(value)
   }
 
+  const isntAuth = auth.state !== 'AUTHORIZED'
   const tabs = [
     {
       key: '/',
@@ -24,9 +25,10 @@ const BottomNavigation: FC = observer(() => {
       icon: <HomeOutlined />,
     },
     {
-      key: '/me',
-      title: 'Вход',
+      key: isntAuth ? '/authorize' : '/me',
+      title: isntAuth ? 'Вход' : 'Профиль',
       icon: <UserOutline />,
+      badge: isntAuth ? Badge.dot : null
     },
     {
       key: '/more',
