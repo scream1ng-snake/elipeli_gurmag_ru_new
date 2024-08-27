@@ -11,7 +11,7 @@ import Slots from "./slots.store";
 import PaymentStore from "./payment.store";
 
 /** Блюдо в корзине как часть заказа */
-type CouseInCart = {
+export type CouseInCart = {
   couse: CourseItem;
   quantity: number;
   priceWithDiscount: number;
@@ -21,6 +21,11 @@ type CouseInCart = {
 export class CartStore {
   items: Array<CouseInCart> = []
   totalPrice = 0
+
+  date = new Date()
+  setDate = (date: Date) => { this.date = date }
+
+
   get isEmpty() { return !this.items.length }
 
 
@@ -371,8 +376,7 @@ export class CartStore {
   }
 
 
-  date = new Date()
-  setDate = (date: Date) => { this.date = date }
+  
 
   
 
@@ -410,7 +414,7 @@ interface DishSetDiscountActive extends DishSetDiscount {
   countInCart: number,
 }
 
-type AllCampaignUser = {
+export type AllCampaignUser = {
   Name: string,
   Description: string,
   VCode: number,

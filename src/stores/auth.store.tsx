@@ -7,6 +7,7 @@ import { Optional, Request } from "../features/helpers";
 import { Dialog, Image } from "antd-mobile";
 import { ExclamationCircleFill as Icon } from "antd-mobile-icons";
 import Pizza from '../assets/Pizza.png'
+import Popup from "../features/modal";
 
 export const AuthStates = {
   CHECKING_AUTH: "CHECKING_AUTH",
@@ -24,7 +25,10 @@ export class AuthStore {
   constructor(root: RootStore) {
     this.root = root;
     makeAutoObservable(this)
+    this.bannerToTg.open()
   }
+  /** верхний банер на главной, который предлагает пойти в тг */
+  bannerToTg = new Popup()
 
   get isAuth() { return this.state === AuthStates.AUTHORIZED }
   get isFailed() { return this.state === AuthStates.NOT_AUTHORIZED }
@@ -52,11 +56,10 @@ export class AuthStore {
           ? await this.root.user.loadUserInfo.run(orgId, tgId)
           : await this.root.user.loadUserInfo.run(orgId, 0)
 
-        result?.UserInfo
+        result
           ? this.setState('AUTHORIZED')
           : this.setState('NOT_AUTHORIZED')
 
-        if (tgId) this.root.user.setID(tgId)
         if (tgId) this.root.user.setID(tgId)
         break;
       }
@@ -67,11 +70,10 @@ export class AuthStore {
           : await this.root.user.loadUserInfo.run(orgId, 0)
 
 
-        result?.UserInfo
+        result
           ? this.setState('AUTHORIZED')
           : this.setState('NOT_AUTHORIZED')
 
-        if (webId) this.root.user.setID(webId)
         if (webId) this.root.user.setID(webId)
         break;
     }
@@ -165,8 +167,7 @@ export class AuthStore {
           setQueryState('FAILED')
           this.setStage('INPUT_TELEPHONE')
           this.setState('NOT_AUTHORIZED')
-          this.showFailedAuth()
-          throw new Error("Не удалось зарегестрироваться")
+          this.showFailedAuth(result?.Message)
         }
         break
       case 'no_client':
@@ -201,8 +202,7 @@ export class AuthStore {
       setState('FAILED')
       this.setStage('INPUT_TELEPHONE')
       this.setState('NOT_AUTHORIZED')
-      this.showFailedAuth()
-      throw new Error("Не удалось зарегестрироваться")
+      this.showFailedAuth(result?.Message)
     }
     logger.log(this.state + ' ' + this.stage, 'auth-store')
   })
@@ -216,11 +216,13 @@ export class AuthStore {
     })
   }
 
-  private showFailedAuth() {
+  private showFailedAuth(content?: string) {
     Dialog.alert({
       header: (<Icon style={{ fontSize: 64, color: 'var(--adm-color-warning)' }} />),
       title: 'Не удалось зарегестрироваться',
+      content,
       confirmText: 'Понятно',
+      style: { zIndex: 10000 }
     })
   }
 }

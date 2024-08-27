@@ -6,8 +6,11 @@ import Popup from "../features/modal";
 import RootStore from "./root.store";
 
 class UserStore {
-  ID: Optional<string> = null
-  setID(id: string) { this.ID = id }
+  ID: Optional<string> = localStorage.getItem('myID') || null
+  setID(id: string) { 
+    this.ID = id
+    localStorage.setItem('myID', id)
+  }
   constructor(readonly root: RootStore) {
     makeAutoObservable(this)
   }
@@ -67,10 +70,14 @@ class UserStore {
 
     // сохраняем текущую организацию 
     // если грузим первый раз
-    if(orgId === 0 && COrg !== 0) {
+    if(orgId == 0 && COrg != 0) {
       this.root.reception.currentOrgID = COrg
       logger.log("получили и засетали новый OrgId " + COrg, "GET /loadUserInfo")
     };
+    if(orgId == COrg) {
+      this.root.reception.employees.loadCooks.run(COrg)
+      this.root.reception.menu.loadMenu.run(COrg)
+    }
 
     // пересчитываем корзину 
     this.root.cart.applyDiscountForCart(newInfo)

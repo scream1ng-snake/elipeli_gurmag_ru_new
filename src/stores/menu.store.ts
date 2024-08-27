@@ -98,6 +98,16 @@ class MenuStore {
   setVisibleCategory(VCode: Optional<string>) {
     this.visibleCategory = VCode;
   }
+
+  getDishByID(id: number | string) {
+    let all: CourseItem[] = []
+    this.categories.forEach(cat => 
+      cat.CourseList.forEach(dish => 
+        all.push(dish)
+      )
+    )
+    return all.find(dish => dish.VCode == id)
+  }
 }
 
 export default MenuStore
@@ -110,7 +120,7 @@ type V3_userInfoResponse = {
   SelectionMenu: Selection[]
 }
 
-type Selection = {
+export type Selection = {
   Name: string,
   VCode: string,
   Description: string,

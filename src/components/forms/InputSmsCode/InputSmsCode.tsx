@@ -1,0 +1,40 @@
+import { Space, PasscodeInput, Form, NavBar, Popup, PasscodeInputRef } from "antd-mobile"
+import { observer } from "mobx-react-lite"
+import { FC, useEffect, useRef } from "react"
+import { useStore } from "../../../features/hooks"
+import { useNavigate } from "react-router-dom"
+import styles from '../form.module.css'
+
+
+const InputSmsCode: FC = observer(() => {
+  const ref = useRef<PasscodeInputRef>(null)
+  const go = useNavigate()
+  const LENGHT = 4
+
+  const { auth } = useStore()
+  function onFill(val: string) {
+    auth.inputSmsCode.run(val)
+  }
+
+  useEffect(() => {
+    ref.current?.focus()
+  }, [])
+  return (
+    <Popup visible bodyClassName={styles.wrapper}>
+      <NavBar onBack={() => { go(-1) }}>
+        Подтвердите номер
+      </NavBar>
+      <Form>
+        <Form.Item
+          label='Мы отправили SMS с кодом на указанный номер. Введите код подтверждения:'
+        >
+          <Space justify='center' style={{ width: "100%" }}>
+            <PasscodeInput ref={ref} length={LENGHT} onFill={onFill} />
+          </Space>
+        </Form.Item>
+      </Form>
+    </Popup>
+  )
+})
+
+export default InputSmsCode

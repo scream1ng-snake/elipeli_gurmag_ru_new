@@ -32,7 +32,7 @@ export const Checker = observer(({
   return (
     <Navigate
       replace
-      to="/authorize" // todo вопрос создавать ли логин страницу?
+      to="/authorize"
     />
   );
 })

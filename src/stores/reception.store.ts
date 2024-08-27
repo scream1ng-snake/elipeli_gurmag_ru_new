@@ -1,6 +1,6 @@
 import { Toast } from "antd-mobile";
-import { makeAutoObservable } from "mobx";
-import { getDistance, Optional, Request } from "../features/helpers";
+import { makeAutoObservable, toJS } from "mobx";
+import { getDistance, Optional, Request, Undef } from "../features/helpers";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
 import Popup from "../features/modal";
@@ -157,25 +157,24 @@ export class ReceptionStore {
   set currentOrgID(val: number) {
     this.selectedOrgID = val
     localStorage.setItem('currentOrg', val.toString())
-    // this.saveCurrentOrg.run(val)
   }
 
   /** апишка сохранения точки на сервере, возможно бесполезна уже */
   saveCurrentOrg = new Request(async (state, setState, newOrgId: number) => {
-    // setState('LOADING') todo
-    // const { userId } = useTelegram();
-    // try {
-    //   const response: Undef<string> = await http.post(
-    //     '/setUserOrg', 
-    //     { userId, newOrgId }
-    //   )
-    //   if(response) {
-    //     logger.log('Организация успешно сменена', 'Reception-Store');
-    //     setState('COMPLETED')
-    //   }
-    // } catch(err) {
-    //   setState('FAILED')
-    // }
+    setState('LOADING')
+    const { ID } = this.root.user
+    try {
+      const response: Undef<string> = await http.post(
+        '/setUserOrg', 
+        { userId: ID, newOrgId }
+      )
+      if(response) {
+        logger.log('Организация успешно сменена', 'Reception-Store');
+        setState('COMPLETED')
+      }
+    } catch(err) {
+      setState('FAILED')
+    }
   })
 
   get currentOrgID() {
@@ -191,7 +190,7 @@ export class ReceptionStore {
   }
   get currentOrganizaion() {
     return this.organizations.find(org => 
-      org.Id === this.selectedOrgID
+      org.Id == this.selectedOrgID
     )
   }
   

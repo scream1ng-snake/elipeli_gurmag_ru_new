@@ -7,6 +7,7 @@ import { FC } from 'react';
 import { Checker } from './AuthCheck';
 import MainPage from '../pages/main/MainPage';
 import CartPage from '../pages/cart/CartPage';
+import LoginPage from '../pages/login/LoginPage';
 
 const routes: Array<{
   path: string,
@@ -22,6 +23,11 @@ const routes: Array<{
       path: '/basket',
       private: false,
       element: <CartPage />
+    },
+    {
+      path: '/authorize',
+      private: false,
+      element: <LoginPage />
     }
   ]
 
