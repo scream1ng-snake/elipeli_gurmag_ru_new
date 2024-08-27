@@ -62,34 +62,49 @@ const Categories: FC = observer(function() {
     )
   } else {
     const preloder = {
-      title: { margin: '1rem' },
-      image: { height: "114px", width: "100%" },
-      name: { marginTop: '12px', height: "16px", width: "130px" }, 
       label: { width: "16px", height: "16px" },
       text: { width: "40px", height: "10px" },
-      price: { width: "40px", height: "40px" },
+      
+      title: { margin: '1rem' },
+      image: { height: "134px", width: "100%" },
+      count: { marginTop: '4.86px', marginBottom: '0.86px', width: "84px", height: "10px" },
+      price: { marginTop: '2px', marginBottom: '1.5px', width: "42px", height: "14.5px" },
+      name: { marginTop: '1.03px', marginBottom: '1.03px', height: "12px", width: "130px" },
+      weight: { marginTop: '7.86px', marginBottom: '0.86px', height: "10px", width: "24px" },
+      button: { height: "24px", width: "100%", borderRadius: '20px' },
     }
     return <>
       <Skeleton.Title style={preloder.title} animated />
       <section className={styles.categories_wrapper}>
         <div>
           <div className={styles.courses_list}>
-            {new Array(2).fill(null).map((_, index) => 
+            {new Array(2).fill(null).map((_, index) =>
               <div className={styles.course_item} key={index}>
                 <Skeleton animated style={preloder.image}/>
                 <div className={styles.item_bady}>
-                  <Skeleton.Title style={preloder.name} />
-                  <Space 
-                    align='center' 
-                    style={{'--gap': '3px', margin: '0.5rem 0' }}
+                  <div
+                    className={styles.item_bottom_wrapper}
                   >
-                    <Skeleton animated style={preloder.label} />
-                    <Skeleton animated style={preloder.text} />
-                  </Space>
-
-                  <div className={styles.price_cart}>
-                    <div className={styles.keke}>
-                      <Skeleton animated style={preloder.price} />
+                    <div
+                      className={styles.item_bottom_content}
+                    >
+                      <div className={styles.count_text}>
+                      <Skeleton animated style={preloder.count} />
+                      </div>
+                      <div className={styles.price_text}>
+                        <Skeleton animated style={preloder.price} />
+                      </div>
+                      <h3
+                        className={styles.title_text}
+                      >
+                        <Skeleton.Title style={preloder.name} />
+                      </h3>
+                      <div className={styles.weight_text}>
+                        <Skeleton animated style={preloder.weight} />
+                      </div>
+                    </div>
+                    <div style={{margin: '0px -4px'}}>
+                      <Skeleton animated style={preloder.button} />
                     </div>
                   </div>
                 </div>
@@ -107,17 +122,17 @@ export default Categories
 
 const iconStyle: CSSProperties = {
   display: 'flex',
-  justifyContent: 'center', 
+  justifyContent: 'center',
   alignItems: 'center'
 }
-export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ course }) => { 
+export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
   const { reception: { menu }} = useStore();
   return(
     <div className={styles.course_item}>
       <Image
         lazy
-        src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`} 
-        onClick={() => menu.coursePopup.watch(course)} 
+        src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}
+        onClick={() => menu.coursePopup.watch(course)}
         placeholder={<Skeleton style={{ width: '100%', height: '134px' }} animated/>}
         fit='cover'
         width="auto"
