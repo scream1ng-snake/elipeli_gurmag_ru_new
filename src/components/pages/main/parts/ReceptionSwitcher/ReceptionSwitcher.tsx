@@ -109,6 +109,7 @@ const ReceptionSwitcher: FC = observer(() => {
           paddingHorizontal={'24px'}
           fontWeight={'700'}
           
+          fontSize={'14.5px'}
           backgroundVar={'--gur-accent-color'}
           appendImage={null}
         />
@@ -127,7 +128,7 @@ const ReceptionSwitcher: FC = observer(() => {
         marginHorizontal={'9px'}
         paddingHorizontal={'24px'}
         fontWeight={'400'}
-        
+        fontSize={'14.5px'}
         backgroundVar={'--gur-secondary-accent-color'}
         appendImage={ImageBaker}
       />
@@ -172,7 +173,7 @@ const ReceptionSwitcher: FC = observer(() => {
                     marginHorizontal={'14px'}
                     paddingHorizontal={'24px'}
                     fontWeight={'400'}
-                    
+                    fontSize={'14.5px'}
                     backgroundVar={'--gur-accent-color'}
                     appendImage={null}
                   />

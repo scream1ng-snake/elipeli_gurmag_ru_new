@@ -14,6 +14,7 @@ const CustomButton: FC<{
   backgroundVar: string,
   appendImage: any,
   fontWeight: string,
+  fontSize: string,
 }> = props =>
   <div className={styles.custom_button_wrapper}>
     <div
@@ -30,6 +31,7 @@ const CustomButton: FC<{
         paddingRight: props.paddingHorizontal,
         backgroundColor: `var(${props.backgroundVar})`,
         fontWeight: props.fontWeight,
+        fontSize: props.fontSize,
       }}
     >
       {props.text}
