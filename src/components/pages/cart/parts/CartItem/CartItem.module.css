@@ -1,0 +1,58 @@
+.cart_item {
+  width: calc(50% - 1rem);
+  display: flex;
+  background: var(--tg-theme-bg-color);
+  margin: 1rem 1rem 0 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.cart_item_image {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  display: flex;
+}
+.cart_item_body>div>span {
+  padding-right: 30px;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--громкий-текст);
+  line-height: 19px;
+  letter-spacing: 0em;
+}
+
+.cart_item_body {
+  padding: 0.5rem 1rem 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cout {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.count {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 21.79px;
+  padding: 8px 12px;
+  margin: 0 12px;
+  border: 1px solid #D8DDE3;
+  border-radius: 6px;
+}
+
+.campaign_text {
+  color: var(--gurmag-accent-color);
+}
