@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Image, Skeleton, Button } from 'antd-mobile'
+import { Image } from 'antd-mobile'
 import styles from './styles.module.css'
 
 const CustomButton: FC<{
@@ -12,7 +12,7 @@ const CustomButton: FC<{
   marginBottom: string,
   paddingHorizontal: string,
   backgroundVar: string,
-  appendImage: any
+  appendImage: any,
   fontWeight: string,
 }> = props =>
   <div className={styles.custom_button_wrapper}>
@@ -37,7 +37,7 @@ const CustomButton: FC<{
         props.appendImage
         ? <Image
             style={{
-              marginLeft: 10
+              marginLeft: 16
             }}
             src={props.appendImage}
             width={props.height}

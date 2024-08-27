@@ -3,7 +3,7 @@
   width: calc(100vw - 30px);
   /* background: var(--tg-theme-bg-color); */
   background: var(--gur-header-bg-color);
-  padding: 16px 16px 8px 16px; /* 40px 16px 8px 16px*/
+  padding: 16px 16px 20px 16px;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
   display: flex;
