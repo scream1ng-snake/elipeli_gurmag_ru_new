@@ -90,7 +90,7 @@ const myVariables = [
 
 
   { cssVar: '--gur-app-bg-color', dark: '#EDF1F4', light: '#EDF1F4' },
-  { cssVar: '--gur-header-bg-color', dark: '#EDF1F4', light: '#EDF1F4' },
+  { cssVar: '--gur-header-bg-color', dark: '#EDF1F4', light: '#EDF1F4' }, /* --tg-theme-secondary-bg-color */
   { cssVar: '--gur-page-bg-color', dark: '#FFFFFF', light: '#FFFFFF' },
   { cssVar: '--gur-primary-text-color', dark: '#000000', light: '#000000' },
   { cssVar: '--gur-secondary-text-color', dark: '#836868', light: '#836868' },

@@ -7,7 +7,14 @@ const authBtnHeight = 68
 const Fixed: FC<{ children: ReactNode }> = observer(props => {
   const { auth } = useStore()
   return <Fragment>
-    <div style={{ position: 'fixed', zIndex: 1, background: 'var(--tg-theme-secondary-bg-color)' }}>
+    <div
+      style={{
+        position: 'fixed',
+        zIndex: 1,
+        background: 'var(--gur-header-bg-color)',
+        width: '100%',
+      }}
+    >
       {props.children}
     </div>
     <div
