@@ -82,7 +82,8 @@ const Stories: FC = () => {
         '--gap-horizontal': '-5px',
         width: '100%',
         padding: '0.5rem 0',
-        scrollbarWidth: 'none'
+        scrollbarWidth: 'none',
+        marginLeft: '8px',
       }}
     >
       {AllStories.map((story, index) =>
@@ -91,7 +92,7 @@ const Stories: FC = () => {
             onClick={() => { setSelectedStory(story) }}
             src={story.coverUrl}
             style={{
-              width: '36vw',
+              width: '95px', /* '36vw' */
               height: '150px',
               objectFit: 'cover'
             }}
