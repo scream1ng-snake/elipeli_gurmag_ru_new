@@ -37,6 +37,7 @@ const MainPage: FC = observer(() => {
       <Cooks />
       <Menu />
     </div>
+    <BottomNavigation />
   </Wrapper>
 })
 

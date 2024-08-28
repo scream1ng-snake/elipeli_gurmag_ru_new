@@ -86,31 +86,46 @@ export const MenuTabs: FC = observer(() => {
 })
 
 export const MenuTabsFixed: FC = observer(() => {
-  const { reception: { menu } } = useStore()
+  const { reception: { menu }, auth } = useStore()
   const { categories, visibleCategory } = menu
   if (menu.categoriesBar.show) return (
-    <section className='page_filter fixed'>
-      <ul className="filter_list">
+    <div
+      style={
+        (auth.isFailed && auth.bannerToTg.show)
+        ? { /* Если баннер, то белый фон */
+          background:' var(--gur-page-bg-color)',
+        }
+        : { /* Если НЕ баннер, то закругление снизу */
+          /* background:' var(--gur-header-bg-color)', */
+          borderBottomLeftRadius: '15px',
+          borderBottomRightRadius: '15px',
+          overflow: "hidden",
+        }
+      }
+    >
+      <section className='page_filter fixed'>
+        <ul className="filter_list">
 
-        {categories.map((category, index) => {
-          const isActive = visibleCategory === String(category.VCode);
+          {categories.map((category, index) => {
+            const isActive = visibleCategory === String(category.VCode);
 
-          return (
-            <li
-              className={`filter_item ${isActive ? 'active' : ''}`}
-              key={`fixed_filter_item_${index}`}
-              id={String(category.VCode) + '_filter_item'}
-              onClick={() => {
-                NavigateTo(String(category.VCode))
-                scrollTabs(category)
-              }}
-            >
-              {category.Name}
-            </li>
-          )
-        })}
-      </ul>
-    </section>
+            return (
+              <li
+                className={`filter_item ${isActive ? 'active' : ''}`}
+                key={`fixed_filter_item_${index}`}
+                id={String(category.VCode) + '_filter_item'}
+                onClick={() => {
+                  NavigateTo(String(category.VCode))
+                  scrollTabs(category)
+                }}
+              >
+                {category.Name}
+              </li>
+            )
+          })}
+        </ul>
+      </section>
+    </div>
   )
   return null
 })

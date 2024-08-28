@@ -76,7 +76,7 @@ const ReceptionSwitcher: FC = observer(() => {
     receptionType === 'initial'
       ? 'Вам доставить'
       : receptionType === 'delivery'
-        ? address.road ? (address.road + ' ' + address.house_number) : 'Укажите адрес'
+        ? address.road ? (address.road + ' ' + address.house_number) : 'Укажите адрес доставки'
         : currentOrganizaion?.Name.replace('_', ' ') ?? 'Точка не выбрана'
 
   const getPopText = () => {

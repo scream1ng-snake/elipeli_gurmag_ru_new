@@ -3,7 +3,7 @@ import { FC, ReactNode, Fragment } from 'react'
 import { useStore } from '../../features/hooks'
 const bannerHeight = 150
 const switcherHeight = 68
-const authBtnHeight = 68
+const authBtnHeight = 72
 const Fixed: FC<{ children: ReactNode }> = observer(props => {
   const { auth } = useStore()
   return <Fragment>
@@ -13,6 +13,8 @@ const Fixed: FC<{ children: ReactNode }> = observer(props => {
         zIndex: 1,
         background: 'var(--gur-header-bg-color)',
         width: '100%',
+        borderBottomLeftRadius: '15px',
+        borderBottomRightRadius: '15px',
       }}
     >
       {props.children}

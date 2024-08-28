@@ -66,7 +66,7 @@ const Banner: FC = observer(() => {
           maxWidth={'auto'}
           
           marginTop={'16px'}
-          marginBottom={'20px'}
+          marginBottom={'21px'}
           marginHorizontal={'25px'}
           paddingHorizontal={'24px'}
           fontWeight={'400'}

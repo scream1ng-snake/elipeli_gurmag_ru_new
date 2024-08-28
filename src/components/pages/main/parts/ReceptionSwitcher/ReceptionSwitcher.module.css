@@ -1,7 +1,5 @@
 .head_wrapper {
-  position: fixed;
   width: 100vw;
-  /* width: calc(100vw - 32px); */
   /* background: var(--tg-theme-bg-color); */
   background: var(--gur-header-bg-color);
   border-bottom-left-radius: 15px;
