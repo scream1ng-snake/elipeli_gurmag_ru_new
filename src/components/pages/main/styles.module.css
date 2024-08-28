@@ -3,6 +3,7 @@
 }
 .gur_main_content {
   background-color: var(--gur-page-bg-color);
-  border-radius: 15px 15px 0px 0px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
   padding: 15px 0px;
 }

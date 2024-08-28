@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite'
 import { FC, ReactNode, Fragment } from 'react'
 import { useStore } from '../../features/hooks'
-const bannerHeight = 149
+const bannerHeight = 150
 const switcherHeight = 68
 const authBtnHeight = 68
 const Fixed: FC<{ children: ReactNode }> = observer(props => {

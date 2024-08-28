@@ -59,28 +59,21 @@ const Banner: FC = observer(() => {
       )
     } else {
       return (
-        <div
-          style={{
-            width: 'calc(100% - 32px)',
-            padding: '16px 16px 20px 16px'
-          }}
-        >
-          <CustomButton
-            text={'Войти по номеру телефона'}
-            onClick={() => { go('/authorize') }}
-            height={'35px'}
-            maxWidth={'auto'}
-            
-            marginTop={'0px'}
-            marginBottom={'8px'}
-            marginHorizontal={'9px'}
-            paddingHorizontal={'24px'}
-            fontWeight={'400'}
-            fontSize={'14.5px'}
-            backgroundVar={'--gur-secondary-accent-color'}
-            appendImage={ImageBaker}
-          />
-        </div>
+        <CustomButton
+          text={'Войти по номеру телефона'}
+          onClick={() => { go('/authorize') }}
+          height={'35px'}
+          maxWidth={'auto'}
+          
+          marginTop={'16px'}
+          marginBottom={'20px'}
+          marginHorizontal={'25px'}
+          paddingHorizontal={'24px'}
+          fontWeight={'400'}
+          fontSize={'14.5px'}
+          backgroundVar={'--gur-secondary-accent-color'}
+          appendImage={ImageBaker}
+        />
       )
     }
   } else {

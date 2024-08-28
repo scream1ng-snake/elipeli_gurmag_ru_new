@@ -30,7 +30,7 @@ import IconDown from '../../../../../assets/icon_down.svg'
 import LogoGurmag from '../../../../../assets/logo_gurmag.png'
 
 const ReceptionSwitcher: FC = observer(() => {
-  const { reception } = useStore()
+  const { auth, reception } = useStore()
   const { hash } = useLocation()
   const navigate = useNavigate()
   const {
@@ -136,7 +136,94 @@ const ReceptionSwitcher: FC = observer(() => {
     if (hash.includes('#selectLocation')) reception.selectLocationPopup.open()
   }, [hash])
 
-  return <div className={styles.head_wrapper}>
+  return <div
+    className={styles.head_wrapper}
+    style={
+      (auth.isFailed && auth.bannerToTg.show)
+      ? { /* Если баннер */
+        borderBottomLeftRadius: '0px',
+        borderBottomRightRadius: '0px',
+      }
+      : {
+      }
+    }
+  >
+    <SelectLocationPopup
+      show={show}
+      close={function () {
+        close()
+        navigate('/')
+      }}
+    />
+    <div
+      className={styles.head_shell}
+      style={
+        (auth.isFailed && auth.bannerToTg.show)
+        ? { /* Если баннер красим в белый */
+          background:' var(--gur-page-bg-color)',
+          borderTopLeftRadius: '15px',
+          borderTopRightRadius: '15px',
+          borderBottomLeftRadius: '0px',
+          borderBottomRightRadius: '0px',
+        }
+        : {
+          background:' var(--gur-header-bg-color)'
+        }
+      }
+    >
+      <div
+        className={styles.head_row}
+      >
+        <div
+          className={styles.switcher_button}
+          onClick={function () { navigate('#selectLocation') }}
+          style={{ width: receptionType === 'initial' ? '100%' : 'auto' }}
+        >
+          <div
+            className={styles.icon_wrapper}
+          >
+            {getIcon(receptionType)}
+          </div>
+          {
+            (receptionType === 'initial')
+              ? 
+                <CustomButton
+                  text={'Доставить или забрать?'}
+                  onClick={function () { navigate('#selectLocation') }}
+                  height={'35px'}
+                  maxWidth={'215px'}
+                  marginTop={'0px'}
+                  marginBottom={'0px'}
+                  marginHorizontal={'14px'}
+                  paddingHorizontal={'24px'}
+                  fontWeight={'400'}
+                  fontSize={'14.5px'}
+                  backgroundVar={'--gur-accent-color'}
+                  appendImage={null}
+                />
+              : 
+              <div className={styles.reception_wrapper}>
+                <div className={styles.text_box}>
+                  <div className={styles.text_address_row}>
+                    <p className={styles.text_address}>{getAddress()}</p>
+                    <Image
+                      src={IconDown}
+                      width={10}
+                      height={6}
+                      fit='cover'
+                    />
+                  </div>
+                  <p className={styles.reception_hint}>{getHint()}</p>
+                </div>
+                {/* <DownOutline /> */}
+              </div>
+          }
+        </div>
+        <div className={styles.icon_wrapper}>
+          <CircleIcon image={LogoGurmag} size={36} />
+        </div>
+      </div>
+    </div>
     {/* <div
       className={styles.switcher_button}
       onClick={function () { navigate('#selectLocation') }}
@@ -145,124 +232,6 @@ const ReceptionSwitcher: FC = observer(() => {
       {getCenter()}
     </div>
     <Gurmag36x36 /> */}
-    <div className={styles.head_row}>
-      <div
-        className={styles.switcher_button}
-        onClick={function () { navigate('#selectLocation') }}
-        style={{ width: receptionType === 'initial' ? '100%' : 'auto' }}
-      >
-        <div
-          className={styles.icon_wrapper}
-        >
-          {getIcon(receptionType)}
-        </div>
-        {
-          (receptionType === 'initial')
-            ? 
-              <CustomButton
-                text={'Доставить или забрать?'}
-                onClick={function () { navigate('#selectLocation') }}
-                height={'35px'}
-                maxWidth={'215px'}
-                marginTop={'0px'}
-                marginBottom={'0px'}
-                marginHorizontal={'14px'}
-                paddingHorizontal={'24px'}
-                fontWeight={'400'}
-                fontSize={'14.5px'}
-                backgroundVar={'--gur-accent-color'}
-                appendImage={null}
-              />
-            : 
-            <div className={styles.reception_wrapper}>
-              <div className={styles.text_box}>
-                <div className={styles.text_address_row}>
-                  <p className={styles.text_address}>{getAddress()}</p>
-                  <Image
-                    src={IconDown}
-                    width={10}
-                    height={6}
-                    fit='cover'
-                  />
-                </div>
-                <p className={styles.reception_hint}>{getHint()}</p>
-              </div>
-              {/* <DownOutline /> */}
-            </div>
-        }
-      </div>
-      <div className={styles.icon_wrapper}>
-        <CircleIcon image={LogoGurmag} size={36} />
-      </div>
-    </div>
-    {
-    (false)
-      ? <div className={styles.head_row}>
-        <SelectLocationPopup
-          show={show}
-          close={function () {
-            close()
-            navigate('/')
-          }}
-        />
-        <Popover
-          visible={needAskLocation}
-          content={getPopText()}
-          placement='bottom-end'
-          style={{ zIndex: 1000 }}
-        >
-          <div
-            className={styles.switcher_button}
-            onClick={function () { navigate('#selectLocation') }}
-            style={{ width: receptionType === 'initial' ? '100%' : 'auto' }}
-          >
-            <div
-              className={styles.icon_wrapper}
-            >
-              {getIcon(receptionType)}
-            </div>
-            {
-              (receptionType === 'initial')
-                ? 
-                  <CustomButton
-                    text={'Доставить или забрать?'}
-                    onClick={() => {}}
-                    height={'35px'}
-                    maxWidth={'215px'}
-                    marginTop={'0px'}
-                    marginBottom={'0px'}
-                    marginHorizontal={'14px'}
-                    paddingHorizontal={'24px'}
-                    fontWeight={'400'}
-                    fontSize={'14.5px'}
-                    backgroundVar={'--gur-accent-color'}
-                    appendImage={null}
-                  />
-                : 
-                <div className={styles.reception_wrapper}>
-                  <div className={styles.text_box}>
-                    <div className={styles.text_address_row}>
-                      <p className={styles.text_address}>{getAddress()}</p>
-                      <Image
-                        src={IconDown}
-                        width={10}
-                        height={6}
-                        fit='cover'
-                      />
-                    </div>
-                    <p className={styles.reception_hint}>{getHint()}</p>
-                  </div>
-                  {/* <DownOutline /> */}
-                </div>
-            }
-          </div>
-        </Popover>
-        <div className={styles.icon_wrapper}>
-          <CircleIcon image={LogoGurmag} size={36} />
-        </div>
-      </div>
-      : null
-    }
   </div>
 })
 

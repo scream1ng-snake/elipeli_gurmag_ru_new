@@ -11,28 +11,33 @@ import Banner from "./parts/Banner/Banner"
 import Fixed from "../../layout/Fixed"
 import { MenuTabsFixed } from "./parts/Menu/MenuTabs/MenuTabs"
 import styles from './styles.module.css'
-
+import { useStore } from '../../../features/hooks'
 const MainPage: FC = observer(() => {
+  const { auth } = useStore()
   return <Wrapper>
     <Fixed>
       <Banner />
       <ReceptionSwitcher />
       <MenuTabsFixed />
     </Fixed>
-    <MainContent >
+    <div
+      className={styles.gur_main_content}
+      style={
+        (auth.isFailed && auth.bannerToTg.show)
+        ? { /* Если баннер, то убираем скругление углов */
+          borderTopLeftRadius: '0px',
+          borderTopRightRadius: '0px',
+        }
+        : {
+        }
+      }
+    >
       <Stories />
       <Collections />
       <Cooks />
       <Menu />
-    </MainContent>
+    </div>
   </Wrapper>
 })
-
-
-const MainContent: FC<{ children: ReactNode }> = props => 
-  <div className={styles.gur_main_content} >
-     {props.children}
-  </div>
-
 
 export default MainPage
