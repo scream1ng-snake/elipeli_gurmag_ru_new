@@ -1,4 +1,4 @@
-import { Avatar, Ellipsis, Rate, Result, Skeleton, Space } from 'antd-mobile'
+import { Avatar, Ellipsis, Rate, Result, Skeleton, Space, Image } from 'antd-mobile'
 import { ClockCircleOutline } from 'antd-mobile-icons'
 import { observer } from 'mobx-react-lite'
 import { FC, useMemo, CSSProperties } from 'react'
@@ -8,7 +8,7 @@ import { Cook } from '../../../../../stores/employees.store'
 import CookReviewPopup from '../../../../popups/CookReviewPopup'
 import { Loader, LoaderTitle } from './preloders'
 import { wrapper_styles, list_styles, wrapperStyle, avatarStyle, cookNameStyle } from './styles'
-
+import ImageCircleBaker from '../../../../../assets/image_circle_baker@2x.png'
 const Cooks: FC = observer(() => {
   const { reception: { employees, OrgForMenu, organizations } } = useStore()
 
@@ -38,7 +38,7 @@ const Cooks: FC = observer(() => {
   return <div style={wrapper_styles}>
     <CookReviewPopup />
     {employees.loadCooks.state === 'COMPLETED'
-      ? <h2>Рады знакомству</h2>
+      ? <h2>Magic family</h2>
       : <LoaderTitle />
     }
     <div style={list_styles}>
@@ -67,8 +67,17 @@ const CookItem: FC<{ cook: Cook }> = observer(({ cook }) => {
       <Avatar
         src={config.apiURL + '/api/v2/image/Cook?vcode=' + cook.UserId}
         style={avatarStyle as CSSProperties}
+        fallback={
+          <Image
+            style={{margin: -1}}
+            src={ImageCircleBaker}
+            width={70}
+            height={70}
+            fit='contain'
+          />
+        }
       />
-      <span style={cookNameStyle}>{cook.FirstName}</span>
+      {/* <span style={cookNameStyle}>{cook.FirstName}</span>
       <Ellipsis
         content={cook.NameWork}
         style={{
@@ -85,7 +94,7 @@ const CookItem: FC<{ cook: Cook }> = observer(({ cook }) => {
           defaultValue={cook.Rating}
           style={{ '--star-size': '10px' }}
         />
-      </Space>
+      </Space> */}
     </Space>
   )
 })

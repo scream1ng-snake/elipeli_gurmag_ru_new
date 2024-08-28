@@ -2,7 +2,8 @@ import { CSSProperties } from 'react'
 
 
 export const list_styles: CSSProperties = {
-  marginTop: '0.5rem',
+  marginTop: '10px',
+  marginLeft: '-0.25rem',
   display: 'flex',
   flexWrap: 'nowrap',
   overflowX: 'scroll',
@@ -10,7 +11,9 @@ export const list_styles: CSSProperties = {
   scrollbarWidth: 'none'
 }
 export const wrapper_styles: CSSProperties = {
-  padding: '0.5rem 0 0.5rem 0.5rem'
+  /* padding: '0.5rem 0 0.5rem 0.5rem', */
+  marginBottom: '26px',
+  marginLeft: '16px'
 }
 
 export const wrapperStyle = {
@@ -23,7 +26,8 @@ export const avatarStyle = {
   height: '70px',
   borderRadius: '35px',
   objectFit: 'cover',
-  border: '2px solid var(--tg-theme-text-color)'
+  border: '1px solid var(--gur-border-color)',
+  boxSizing: 'border-box',
 }
 export const cookNameStyle = {
   color: 'var(--громкий-текст)',

@@ -8,9 +8,11 @@
   position: absolute;
   top: 9px;
   left: 7px;
-  font-size: 12px;
+  font-size: 11px;
+  line-height: 12.89px;
   font-weight: 600;
-  color: white;
+  font-family: Roboto;
+  color: var(--gur-primary-text-color);
 }
 
 .closeBtn_relative {

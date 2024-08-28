@@ -1,6 +1,7 @@
 import { FC, ReactNode } from 'react'
+import styles from './Wrapper.module.css'
 const Wrapper: FC<{ children: ReactNode }> = props => 
-  <div style={{ width: '100%', height: '100%' }}>
+  <div className={styles.gur_wrapper}>
     {props.children}
   </div>
 

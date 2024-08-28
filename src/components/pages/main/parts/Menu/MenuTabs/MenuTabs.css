@@ -1,6 +1,7 @@
 .page_filter {
   max-width: 100vw;
-  background: var(--tg-theme-bg-color);
+  /* background: var(--tg-theme-secondary-bg-color);  */
+  margin-left: 16px;
   position: relative;
   padding: 1rem 0;
 }
@@ -35,16 +36,22 @@
 
 
 .filter_item {
-  color: var(--тихий-текст);
-  margin-left: 18px;
+  margin-right: 21px;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease 0s;
+  border-radius: 1000px;
   font-size: 14px;
+  line-height: 16.41px;
   font-weight: 600;
   list-style: none;
+  color: var(--gur-secondary-text-color);
 }
 
 .filter_list .active {
-  color: var(--громкий-текст);
-  font-weight: 800;
+  /* background: var(--gurmag-accent-color);
+  color: var(--tg-theme-button-text-color); */
+  font-weight: 900;
+  color: var(--gur-primary-text-color);
 }
 
 

@@ -111,9 +111,9 @@ const Stories: FC = () => {
         background: 'var(--tg-theme-bg-color)',
         overflowX: 'scroll',
         '--gap-horizontal': '-7px',
-        width: 'calc(100% - 32px)',
-        padding: '16px',
-        scrollbarWidth: 'none'
+        width: 'calc(100% - 8px)',
+        scrollbarWidth: 'none',
+        marginLeft: '8px',
       }}
     >
       {AllStories.map((story, index) =>

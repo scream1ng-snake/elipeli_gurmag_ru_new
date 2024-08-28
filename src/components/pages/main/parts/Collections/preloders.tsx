@@ -8,8 +8,8 @@ export const ImagePreloder = () =>
   <Skeleton 
     animated 
     style={{
-      width: '36vw',
-      height: '100px',
+      width: '130px',
+      height: '79px',
       objectFit: 'cover'
     }} 
   />

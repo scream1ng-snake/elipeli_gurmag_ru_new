@@ -35,12 +35,12 @@ const Collections: FC = observer(() => {
               placeholder={<ImagePreloder />}
               fit='cover'
               style={{
-                width: '36vw',
-                height: '100px',
+                width: '130px',
+                height: '79px',
                 objectFit: 'cover'
               }}
             />
-            <p>{selection.Name}</p>
+            {/* <p>{selection.Name}</p> */}
           </div>
         )
         : new Array(3).fill(null).map((_, index) =>

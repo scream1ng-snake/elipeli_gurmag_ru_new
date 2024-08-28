@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { FC } from "react"
+import { FC, ReactNode } from "react"
 import Wrapper from "../../layout/Wrapper"
 import Collections from "./parts/Collections/Collections"
 import Cooks from "./parts/Cooks/Cooks"
@@ -10,6 +10,7 @@ import BottomNavigation from "../../common/BottomNav/BottomNav"
 import Banner from "./parts/Banner/Banner"
 import Fixed from "../../layout/Fixed"
 import { MenuTabsFixed } from "./parts/Menu/MenuTabs/MenuTabs"
+import styles from './styles.module.css'
 
 const MainPage: FC = observer(() => {
   return <Wrapper>
@@ -18,15 +19,20 @@ const MainPage: FC = observer(() => {
       <ReceptionSwitcher />
       <MenuTabsFixed />
     </Fixed>
-    <Stories />
-    <Collections />
-    <Cooks />
-    <Menu />
-    <BottomNavigation />
+    <MainContent >
+      <Stories />
+      <Collections />
+      <Cooks />
+      <Menu />
+    </MainContent>
   </Wrapper>
 })
 
 
+const MainContent: FC<{ children: ReactNode }> = props => 
+  <div className={styles.gur_main_content} >
+     {props.children}
+  </div>
 
 
 export default MainPage
