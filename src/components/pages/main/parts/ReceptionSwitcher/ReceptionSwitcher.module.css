@@ -1,7 +1,7 @@
 .head_wrapper {
   width: calc(100vw - 32px);
   background: var(--tg-theme-bg-color);
-  padding: 8px 16px 8px 16px;
+  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;

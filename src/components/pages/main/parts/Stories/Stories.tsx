@@ -46,6 +46,36 @@ const AllStories: StoryItem[] = [
       { url: 'https://avatars.mds.yandex.net/i?id=2d213b7f0b14aef651136451ae8a45d56089a8ca-12615441-images-thumbs&n=13' },
     ]
   },
+  {
+    coverTitle: 'Третья сториз',
+    coverUrl: 'https://avatars.mds.yandex.net/i?id=8668a82d600c2662d1adaad52719413925251793-12644240-images-thumbs&n=13',
+    slides: [
+      { url: 'https://avatars.mds.yandex.net/i?id=acda64723eebd567ca22ff7899a4ec8d-5220516-images-thumbs&n=13' },
+      { url: 'https://avatars.mds.yandex.net/i?id=23894d011e325a85dc0593c675b64043aefe5824-5371098-images-thumbs&n=13' },
+      { url: 'https://avatars.mds.yandex.net/i?id=cf603d081ed4d51832c469e88e2edb80a3f732fb-5226207-images-thumbs&n=13' },
+      { url: 'https://avatars.mds.yandex.net/i?id=2d213b7f0b14aef651136451ae8a45d56089a8ca-12615441-images-thumbs&n=13' },
+    ]
+  },
+  {
+    coverTitle: 'Третья сториз',
+    coverUrl: 'https://avatars.mds.yandex.net/i?id=8668a82d600c2662d1adaad52719413925251793-12644240-images-thumbs&n=13',
+    slides: [
+      { url: 'https://avatars.mds.yandex.net/i?id=acda64723eebd567ca22ff7899a4ec8d-5220516-images-thumbs&n=13' },
+      { url: 'https://avatars.mds.yandex.net/i?id=23894d011e325a85dc0593c675b64043aefe5824-5371098-images-thumbs&n=13' },
+      { url: 'https://avatars.mds.yandex.net/i?id=cf603d081ed4d51832c469e88e2edb80a3f732fb-5226207-images-thumbs&n=13' },
+      { url: 'https://avatars.mds.yandex.net/i?id=2d213b7f0b14aef651136451ae8a45d56089a8ca-12615441-images-thumbs&n=13' },
+    ]
+  },
+  {
+    coverTitle: 'Третья сториз',
+    coverUrl: 'https://avatars.mds.yandex.net/i?id=8668a82d600c2662d1adaad52719413925251793-12644240-images-thumbs&n=13',
+    slides: [
+      { url: 'https://avatars.mds.yandex.net/i?id=acda64723eebd567ca22ff7899a4ec8d-5220516-images-thumbs&n=13' },
+      { url: 'https://avatars.mds.yandex.net/i?id=23894d011e325a85dc0593c675b64043aefe5824-5371098-images-thumbs&n=13' },
+      { url: 'https://avatars.mds.yandex.net/i?id=cf603d081ed4d51832c469e88e2edb80a3f732fb-5226207-images-thumbs&n=13' },
+      { url: 'https://avatars.mds.yandex.net/i?id=2d213b7f0b14aef651136451ae8a45d56089a8ca-12615441-images-thumbs&n=13' },
+    ]
+  },
 ]
 
 
@@ -78,10 +108,11 @@ const Stories: FC = () => {
     }
     <Space
       style={{
+        background: 'var(--tg-theme-bg-color)',
         overflowX: 'scroll',
-        '--gap-horizontal': '-5px',
-        width: '100%',
-        padding: '0.5rem 0',
+        '--gap-horizontal': '-7px',
+        width: 'calc(100% - 32px)',
+        padding: '16px',
         scrollbarWidth: 'none'
       }}
     >
@@ -91,8 +122,8 @@ const Stories: FC = () => {
             onClick={() => { setSelectedStory(story) }}
             src={story.coverUrl}
             style={{
-              width: '36vw',
-              height: '150px',
+              width: '77px',
+              height: '95px',
               objectFit: 'cover'
             }}
           />
