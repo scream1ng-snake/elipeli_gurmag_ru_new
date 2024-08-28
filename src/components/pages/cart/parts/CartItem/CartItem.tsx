@@ -1,8 +1,8 @@
-import { Image, Skeleton } from "antd-mobile";
+import { Button, Image, List, Skeleton } from "antd-mobile";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 import { AllCampaignUser, CouseInCart } from "../../../../../stores/cart.store";
-import { Optional, Undef } from "../../../../../features/helpers";
+import { Undef } from "../../../../../features/helpers";
 import config from "../../../../../features/config";
 import { AddOutline, MinusOutline } from "antd-mobile-icons";
 import styles from './CartItem.module.css'
@@ -11,97 +11,79 @@ type P = {
   courseInCart: CouseInCart,
   add: () => void,
   remove: () => void,
-  campaignAllInfo: Undef<AllCampaignUser>,
-  text: Optional<string>
 }
-const CartItem: FC<P> = observer(({ courseInCart, add, remove, ...rest }) => {
-  const { campaignAllInfo, text } = rest
+const CartItem: FC<P> = observer(props => {
+  const { courseInCart, add, remove } = props
 
-  const ImagePreloader = () =>
-    <Skeleton animated className={styles.cart_item_image} />
-
-
-  function campagnName() {
-    return campaignAllInfo
-      ? <span className={styles.campaign_text}>
-          {`Акция - ${replaceSymbols(campaignAllInfo.Name)}`}
-        </span>
-      : null
-  }
-  function campagnDescriprion() {
-    return <span className={styles.campaign_text}>{text}</span>
-  }
 
   return (
-    <div className={styles.cart_item}>
-      <div className={styles.cart_item_image}>
-        <Image
-          src={config.apiURL
-            + '/api/v2/image/Material?vcode='
-            + courseInCart.couse.VCode
-            + '&compression=true'
-          }
-          placeholder={<ImagePreloader />}
-          fallback={<ImagePreloader />}
-          className={styles.cart_item_image}
-          fit='cover'
+    <List.Item
+      className={styles.cartItem}
+      prefix={<CartImage VCode={courseInCart.couse.VCode} />}
+      description={
+        <div className={styles.PriceWeight}>
+          <PriceCart courseInCart={courseInCart} />
+          <span className={styles.Weight}>{courseInCart.couse.Weigth}</span>
+        </div>
+      }
+      arrowIcon={
+        <PlusMinus
+          add={add}
+          remove={remove}
+          courseInCart={courseInCart}
         />
-      </div>
-
-      <div className={styles.cart_item_body}>
-        <div>
-          <span>{courseInCart.couse.Name}</span>
-        </div>
-        {campagnName()}
-        {campagnDescriprion()}
-
-        <div className="row">
-          {courseInCart.priceWithDiscount >= courseInCart.couse.Price * courseInCart.quantity
-            ? null
-            : <s>{`${Math.ceil((courseInCart.couse.Price * courseInCart.quantity) * 100) / 100} руб.`}</s>
-          }
-          <div className={styles.cout}>
-            <MinusOutline
-              onClick={remove}
-            />
-            <span className={styles.count}>{courseInCart.quantity}</span>
-            <AddOutline
-              onClick={add}
-            />
-          </div>
-          <h5>{`${Math.ceil(courseInCart.priceWithDiscount * 10) / 10} ₽`}</h5>
-        </div>
-        {courseInCart.couse.NoResidue
-          ? null
-          : courseInCart.couse.EndingOcResidue < courseInCart.quantity
-            ? <div
-              style={{
-                position: 'absolute',
-                right: '0px',
-                bottom: '0px',
-                borderBottomRightRadius: '8px',
-                borderTopLeftRadius: '8px',
-                padding: '0.1rem',
-                background: 'var(--adm-color-warning)',
-                fontSize: '14px',
-                fontWeight: '700',
-                color: 'white',
-
-              }}
-            >
-              <p>{`сегодня осталось ${courseInCart.couse.EndingOcResidue}`}</p>
-            </div>
-            : null
-        }
-
-      </div>
-    </div>
+      }
+    >
+      {courseInCart.couse.Name}
+    </List.Item>
   )
 }
 )
 
+const CartImage: FC<{ VCode: number }> = p => {
+  const Loader: FC = () => <Skeleton />
+  return (
+    <Image
+      src={config.apiURL
+        + '/api/v2/image/Material?vcode='
+        + p.VCode
+        + '&compression=true'
+      }
+      className={styles.cartImg}
+      placeholder={<Loader />}
+      fallback={<Loader />}
+    />
+  )
+}
+
+const PlusMinus: FC<Pick<P, 'add' | 'remove' | 'courseInCart'>> = props => {
+  return <div className={styles.PlusMinus}>
+    <Button size='small' onClick={props.remove}>
+      <MinusOutline />
+    </Button>
+    <span>{props.courseInCart.quantity}</span>
+    <Button size='small' onClick={props.add}>
+      <AddOutline />
+    </Button>
+  </div>
+}
+
+const PriceCart: FC<Pick<P, 'courseInCart'>> = props => {
+  const { priceWithDiscount, quantity } = props.courseInCart
+  const { Price } = props.courseInCart.couse
+  return priceWithDiscount < Price * quantity
+    ? <span className={styles.Price}>
+      <span className={styles.hotPrice}>{Round(priceWithDiscount) + ' ₽'}</span>
+      {' '}
+      <span><s>{Round(Price * quantity) + ' ₽'}</s></span>
+    </span>
+    : <span className={styles.Price}>{Round(Price * quantity) + ' ₽'}</span>
+}
+
 const replaceSymbols = (str: string) =>
   str.replace(/ *\{[^}]*\} */g, "")
 
+const Round = (num: number) =>
+  Math.ceil(num * 100) / 100
 
 export default CartItem;

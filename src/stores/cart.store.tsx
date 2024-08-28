@@ -1,4 +1,4 @@
-import { Toast } from "antd-mobile";
+import { InputRef, Toast } from "antd-mobile";
 import { makeAutoObservable, reaction } from "mobx";
 import { Optional, Request, Undef } from "../features/helpers";
 import { http } from "../features/http";
@@ -9,6 +9,8 @@ import RootStore from "./root.store";
 import { UserInfoState } from "./user.store";
 import Slots from "./slots.store";
 import PaymentStore from "./payment.store";
+import { MutableRefObject } from "react";
+import Popup from "../features/modal";
 
 /** Блюдо в корзине как часть заказа */
 export type CouseInCart = {
@@ -19,18 +21,25 @@ export type CouseInCart = {
 }
 
 export class CartStore {
+  /** блюда в корзине */
   items: Array<CouseInCart> = []
   totalPrice = 0
 
+  /** дата заказа */
   date = new Date()
   setDate = (date: Date) => { this.date = date }
 
+  /** примечание к заказу */
+  note = ''
+  setNote = (note: string) => { this.note = note }
 
   get isEmpty() { return !this.items.length }
 
+  /** попуп с деталями заказа */
+  detailPopup = new Popup()
 
   constructor(readonly root: RootStore) {
-    makeAutoObservable(this)
+    makeAutoObservable(this, {}, { autoBind: true })
     reaction(() => this.totalPrice, price => {
       if (price > 1000 && this.payment.method === 'CASH')
         this.payment.method = null
@@ -38,9 +47,15 @@ export class CartStore {
   }
 
   
+  /** найденный промо */
   confirmedPromocode: Optional<string> = null
+
+  /** просто состояние для инпута с промо */
   inputPromocode = ''
-  setInputPromo = (str: string, ref: any) => {
+  setInputPromo = (
+    str: string, 
+    ref: MutableRefObject<Optional<InputRef>>
+  ) => {
     this.inputPromocode = str;
 
     const availablePromos = this.root.user.info.allCampaign
