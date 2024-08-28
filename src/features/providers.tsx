@@ -77,16 +77,16 @@ const tgVariables: Var[] = [
   { cssVar: '--tg-theme-button-color', dark: '#2F6EA5', light: '#40A7E3' },
   { cssVar: '--tg-theme-button-text-color', dark: '#FFFFFF', light: '#FFFFFF' },
   { cssVar: '--tg-theme-bg-color', dark: '#17212B', light: '#FFFFFF' },
-  { cssVar: '--tg-theme-secondary-bg-color', dark: '#232E3C', light: '#F1F1F1' },
+  { cssVar: '--tg-theme-secondary-bg-color', dark: '#232E3C', light: '#EDF1F4' },
   { cssVar: '--tg-theme-text-color', dark: '#F5F5F5', light: '#222222' }
 ]
 
 /** кастомные переменные */
 const myVariables = [
-  { cssVar: '--gurmag-accent-color', dark: '#F6B911', light: '#F6B911' },
+  { cssVar: '--gurmag-accent-color', dark: '#F7BB0F', light: '#F7BB0F' },
   { cssVar: '--theme-shadow-color', dark: 'black', light: 'grey' },
   { cssVar: '--громкий-текст', dark: '#FFFFFF', light: '#000000' }, 
-  { cssVar: '--тихий-текст', dark: '#BABABA', light: '#29363D' }, 
+  { cssVar: '--тихий-текст', dark: '#BABABA', light: '#836868' }, 
 ]
 
 const antdVariables: Var[] = [

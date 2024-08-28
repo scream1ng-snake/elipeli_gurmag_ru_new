@@ -1,36 +1,14 @@
 .page_filter {
   max-width: 100vw;
-  background: var(--tg-theme-secondary-bg-color); 
-  position: relative;
-}
-
-.overlayed {
-  top: 65px;
-  z-index: 1;
-  position: fixed;
-  animation-name: fadeIn;
-  animation-duration: 0.5s;
-
-  width: calc(100vw - 15px);
   background: var(--tg-theme-bg-color);
-  padding: 15px 0px 10px 15px;
-  border-bottom-left-radius: 25px;
-  border-bottom-right-radius: 25px;
-  z-index: 1000;
-}
-.overlayed > .filter_list {
-  flex-wrap: nowrap;
-}
-.overlayed .filter_item {
-  margin-top: 8px;
+  position: relative;
+  padding: 1rem 0;
 }
 
 .filter_list {
   display: flex;
-  flex-wrap: wrap;
   white-space: nowrap;
   overflow-x: overlay;
-  padding-bottom: 5px;
 }
 
 /* size */
@@ -41,7 +19,7 @@
 
 /* Track */
 .filter_list::-webkit-scrollbar-track {
-  background: 'none';
+  background: none;
 }
  
 /* Handle */
@@ -57,21 +35,16 @@
 
 
 .filter_item {
-  padding: 0.75rem 1rem;
-  border-radius: 1000px;
-  color: var(--громкий-текст);
-  border: 1px solid var(--громкий-текст);
-  transition: all 0.3s ease 0s;
-  margin-bottom: 0.5rem;
-  margin-right: 0.5rem;
+  color: var(--тихий-текст);
+  margin-left: 18px;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 600;
   list-style: none;
 }
 
 .filter_list .active {
-  background: var(--gurmag-accent-color);
-  color: var(--tg-theme-button-text-color);
+  color: var(--громкий-текст);
+  font-weight: 800;
 }
 
 

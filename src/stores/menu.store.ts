@@ -61,6 +61,8 @@ class MenuStore {
     },
   })
 
+  /** фиксированная менюшка с категориями */
+  categoriesBar = new Popup()
 
   /** api отзывы на блюдо */
   loadCourseReviews = new Request(async (

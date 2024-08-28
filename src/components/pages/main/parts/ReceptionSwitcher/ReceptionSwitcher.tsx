@@ -1,16 +1,17 @@
 import { observer } from 'mobx-react-lite'
 import { FC, useEffect } from 'react'
-import DeliveryIcon from '../../../../icons/Delivery'
 import styles from './ReceptionSwitcher.module.css'
 import { DownOutline } from 'antd-mobile-icons'
 import { useStore } from '../../../../../features/hooks'
-import PickupIcon from '../../../../icons/Pickup'
 import SelectLocationPopup from '../../../../popups/SelectLocation'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { QuestionCircleOutline } from 'antd-mobile-icons'
 import Red from '../../../../special/RedText'
-import { Popover } from 'antd-mobile/es/components/popover/popover'
 import { Void } from '../../../../layout/Void'
+import { Pickup36x36 } from '../../../../icons/Pickup'
+import { Delivery36x36 } from '../../../../icons/Delivery'
+import { Question36x36 } from '../../../../icons/Question36x36'
+import { Gurmag36x36 } from '../../../../icons/Gurmag36x36'
+import { Button } from 'antd-mobile'
 
 const ReceptionSwitcher: FC = observer(() => {
   const { reception } = useStore()
@@ -21,7 +22,6 @@ const ReceptionSwitcher: FC = observer(() => {
     receptionType,
     selectLocationPopup: { show, close },
     currentOrganizaion,
-    needAskLocation,
     address
   } = reception
 
@@ -29,32 +29,53 @@ const ReceptionSwitcher: FC = observer(() => {
 
   const getIcon = () =>
     receptionType === 'initial'
-      ? <QuestionCircleOutline fontSize={32} color={"var(--gurmag-accent-color)"} />
+      ? <Question36x36 />
       : receptionType === 'delivery'
-        ? <DeliveryIcon fontSize={32} color={"var(--gurmag-accent-color)"} />
-        : <PickupIcon fontSize={32} color={"var(--gurmag-accent-color)"} />
+        ? <Delivery36x36 />
+        : <Pickup36x36 />
 
-  const getHint = () =>
-    receptionType === 'initial'
-      ? 'или заберёте сами?'
-      : receptionType === 'delivery'
-        ? isWorkingNow ? 'Доставка бесплатно' : <Red>По этому адресу заведение закрыто</Red>
-        : isWorkingNow ? 'Забрать из Гурмага' : <Red>Закрыто - Откроется в 9:30</Red>
+  const DownArrow = () => <DownOutline style={{ marginLeft: 5 }} />
 
-  const getAdress = () =>
-    receptionType === 'initial'
-      ? 'Вам доставить'
-      : receptionType === 'delivery'
-        ? address.road ? (address.road + ' ' + address.house_number) : 'Укажите адрес'
-        : currentOrganizaion?.Name.replace('_', ' ') ?? 'Точка не выбрана'
-
-  const getPopText = () => {
-    if(receptionType === 'initial') 
-      return 'Выберите место обслуживания или доставку на дом*'
-    if(!address.road && receptionType === 'delivery') 
-      return 'Уточните адрес доставки*'
-    if(!currentOrganizaion && receptionType === 'pickup') 
-      return 'Выберите заведение для посещения*'
+  const onClick = () => { navigate('#selectLocation') }
+  const getCenter = () => {
+    switch (receptionType) {
+      case 'delivery':
+        if (address?.road && address?.house_number) {
+          return <div className={styles.text_box}>
+            <p>{address.road + ' ' + address.house_number} <DownArrow /></p>
+            <p className={styles.receptiom_hint}>
+              {isWorkingNow
+                ? 'Доставка бесплатно'
+                : <Red>По этому адресу заведение закрыто</Red>
+              }
+            </p>
+          </div>
+        } else {
+          return <p>Уточните адрес доставки*<DownArrow /></p>
+        }
+      case 'initial':
+        return <Button
+          className={styles.initial_button}
+          shape='rounded'
+          onClick={onClick}
+        >
+          Доставить или забрать?
+        </Button>
+      case 'pickup':
+        if (currentOrganizaion) {
+          return <div className={styles.text_box}>
+            <p>{currentOrganizaion?.Name.replace('_', ' ')} <DownArrow /></p>
+            <p className={styles.receptiom_hint}>
+              {isWorkingNow
+                ? 'Заберу сам'
+                : <Red>Закрыто - Откроется в 9:30</Red>
+              }
+            </p>
+          </div>
+        } else {
+          return <p>Выберите заведение для посещения*<DownArrow /></p>
+        }
+    }
   }
 
   useEffect(() => {
@@ -70,30 +91,15 @@ const ReceptionSwitcher: FC = observer(() => {
         navigate('/')
       }}
     />
-    <Popover
-      visible={needAskLocation}
-      content={getPopText()}
-      placement='bottom-end'
-      style={{ zIndex: 1000 }}
+    <div
+      className={styles.switcher_button}
+      onClick={function () { navigate('#selectLocation') }}
     >
-      <div
-        className={styles.switcher_button}
-        onClick={function () { navigate('#selectLocation') }}
-      >
-        <div className={styles.icon_wrapper}>
-          {getIcon()}
-        </div>
-        <div className={styles.text_box}>
-          <p>{getAdress()}</p>
-          <p className={styles.receptiom_hint}>{getHint()}</p>
-        </div>
-        <DownOutline />
-      </div>
-    </Popover>
+      {getIcon()}
+      {getCenter()}
+    </div>
+    <Gurmag36x36 />
   </div>
 })
 
-export default () => <>
-  <ReceptionSwitcher />
-  <Void height="85px" />
-</>
+export default ReceptionSwitcher

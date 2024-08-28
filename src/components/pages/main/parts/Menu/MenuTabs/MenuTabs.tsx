@@ -1,15 +1,13 @@
 import { Skeleton } from "antd-mobile"
 import { observer } from "mobx-react-lite"
-import { FC, useState, useEffect } from "react"
+import { FC, useEffect } from "react"
 import { useStore } from "../../../../../../features/hooks"
 import './MenuTabs.css'
 import { CategoryCourse } from "../../../../../../stores/menu.store"
 
 export const MenuTabs: FC = observer(() => {
-  const { reception: { menu }, auth } = useStore()
-  const { categories, dishSearcher, visibleCategory, setVisibleCategory } = menu
-
-  const [isScrolled, setIsScrolled] = useState(false)
+  const { reception: { menu } } = useStore()
+  const { categories, visibleCategory, setVisibleCategory } = menu
 
   useEffect(() => {
     function listener(e: Event) {
@@ -34,14 +32,14 @@ export const MenuTabs: FC = observer(() => {
       // по достижении какой-то кординаты
       // навбар становится фиксированным 
       // и всегда находится вверху окна
-      const target = document.body.getElementsByClassName('filter_list')[0];
+      const target = document.body.getElementsByClassName('list_static')[0];
       const height = target?.clientHeight;
       const targetRelTop = target?.getBoundingClientRect().top;
       const bodyRelTop = document.body.getBoundingClientRect().top;
-      
+
       window.scrollY > targetRelTop - bodyRelTop + height
-        ? setIsScrolled(true)
-        : setIsScrolled(false)
+        ? menu.categoriesBar.open()
+        : menu.categoriesBar.close()
     }
 
     window.addEventListener('scroll', listener)
@@ -49,80 +47,77 @@ export const MenuTabs: FC = observer(() => {
   }, [visibleCategory, categories.length])
 
 
-  if(dishSearcher.isSearching) {
-    return null
-  } else {
-    return (
-      <>
-        <section className='filter page_filter'>
-          <ul className="filter_list">
-            {menu.loadMenu.state === 'COMPLETED'
-              ? categories.map((category, index) => {
-                const isActive = visibleCategory === String(category.VCode);
-    
-                return (
-                  <li
-                    className={`filter_item ${isActive ? 'active' : ''}`}
-                    key={`filter_item_${index}`}
-                    onClick={() => { 
-                      NavigateTo(String(category.VCode)) 
-                    }}
-                  >
-                    {category.Name}
-                  </li>
-                )
-              })
-              : new Array(8).fill(null).map((_, index)=> 
-                <Skeleton 
-                  key={index}
-                  animated
-                  style={{
-                    width: `${Math.random() * (150 - 70) + 70}px`,
-                    height: "35px", 
-                    borderRadius: "24px",
-                    marginBottom: "8px",
-                    marginRight: "8px",
-                  }} 
-                />
-              )
-            }
-          </ul>
-        </section>
-        {!isScrolled
-          ? null
-          : (
-            <section className='filter page_filter overlayed'>
-              <ul className="filter_list">
-  
-                {categories.map((category, index) => {
-                  const isActive = visibleCategory === String(category.VCode);
-  
-                  return (
-                    <li
-                      className={`filter_item ${isActive ? 'active' : ''}`}
-                      key={`fixed_filter_item_${index}`}
-                      id={String(category.VCode) + '_filter_item'}
-                      onClick={() => {
-                        NavigateTo(String(category.VCode)) 
-                        scrollTabs(category)
-                      }}
-                    >
-                      {category.Name}
-                    </li>
-                  )
-                })}
-              </ul>
-            </section>
+  return (
+    <section className='page_filter'>
+      <ul className="filter_list list_static">
+        {menu.loadMenu.state === 'COMPLETED'
+          ? categories.map((category, index) => {
+            const isActive = visibleCategory === String(category.VCode);
+
+            return (
+              <li
+                className={`filter_item ${isActive ? 'active' : ''}`}
+                key={`filter_item_${index}`}
+                onClick={() => {
+                  NavigateTo(String(category.VCode))
+                }}
+              >
+                {category.Name}
+              </li>
+            )
+          })
+          : new Array(8).fill(null).map((_, index) =>
+            <Skeleton
+              key={index}
+              animated
+              style={{
+                width: `${Math.random() * (150 - 70) + 70}px`,
+                height: "35px",
+                borderRadius: "24px",
+                marginBottom: "8px",
+                marginRight: "8px",
+              }}
+            />
           )
         }
-      </>
-    )
-  }
+      </ul>
+    </section>
+  )
+})
+
+export const MenuTabsFixed: FC = observer(() => {
+  const { reception: { menu } } = useStore()
+  const { categories, visibleCategory } = menu
+  if (menu.categoriesBar.show) return (
+    <section className='page_filter fixed'>
+      <ul className="filter_list">
+
+        {categories.map((category, index) => {
+          const isActive = visibleCategory === String(category.VCode);
+
+          return (
+            <li
+              className={`filter_item ${isActive ? 'active' : ''}`}
+              key={`fixed_filter_item_${index}`}
+              id={String(category.VCode) + '_filter_item'}
+              onClick={() => {
+                NavigateTo(String(category.VCode))
+                scrollTabs(category)
+              }}
+            >
+              {category.Name}
+            </li>
+          )
+        })}
+      </ul>
+    </section>
+  )
+  return null
 })
 
 function scrollTabs(category: CategoryCourse) {
-  const filter_list = document.querySelector('.overlayed > .filter_list')
-  if(filter_list) {
+  const filter_list = document.querySelector('.fixed > .filter_list')
+  if (filter_list) {
     const scrollLeft = document.getElementById(String(category.VCode) + '_filter_item')?.offsetLeft
     if (scrollLeft) filter_list.scrollLeft = scrollLeft - 50
   }

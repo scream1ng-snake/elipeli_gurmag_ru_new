@@ -1,15 +1,16 @@
+
 import { Image, Skeleton } from "antd-mobile"
 import { FC } from "react"
-import Logo from '../../assets/Pickup.png'
+import Logo from '../../assets/Wizard.png'
 
-const w36h36 = { height: '36px', width: '36px' }
+const w35h35 = { height: '35px', width: '35px' }
 
 const Loader: FC = () => 
-  <Skeleton style={w36h36} />
+  <Skeleton style={w35h35} />
 
-export const Pickup36x36: FC = () => 
+export const Wizard35x35: FC = () => 
   <Image 
-    style={w36h36}
+    style={w35h35}
     src={Logo}
     fallback={<Loader />}
     placeholder={<Loader />}

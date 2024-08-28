@@ -6,6 +6,7 @@ import { Gurmag36x36Bordered } from "../../../../icons/Gurmag36x36"
 import styles from './Banner.module.css'
 import { useStore } from "../../../../../features/hooks"
 import { useNavigate } from "react-router-dom"
+import { Wizard35x35 } from "../../../../icons/Wizard35x35"
 
 const W100 = { width: '100%' }
 
@@ -28,8 +29,8 @@ const Banner: FC = observer(() => {
               <p>Удобное приложение в Telegram</p>
               <p>БЕЗ СКАЧИВАНИЯ</p>
             </div>
-            <CloseOutline 
-              className={styles.banner_close} 
+            <CloseOutline
+              className={styles.banner_close}
               onClick={() => { auth.bannerToTg.close() }}
             />
           </Space>
@@ -47,10 +48,13 @@ const Banner: FC = observer(() => {
         <Space className={styles.banner}>
           <Button
             shape='rounded'
-            className={styles.banner_button}
+            className={styles.wizard_button}
             onClick={() => { go('/authorize') }}
           >
-            Войти по номеру телефона
+            <Space align='center'>
+              Войти по номеру телефона
+              <Wizard35x35 />
+            </Space>
           </Button>
         </Space>
       )

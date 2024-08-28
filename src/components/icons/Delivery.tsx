@@ -1,25 +1,16 @@
-import { FC } from 'react'
+import { Image, Skeleton } from "antd-mobile"
+import { FC } from "react"
+import Logo from '../../assets/Delivery.png'
 
-const DeliveryIcon: FC<{ fontSize: any, color: any }> = props =>
-  <svg
-    version="1.1"
-    viewBox="0 0 374.9 374.9"
-    width="1em"
-    height="1em"
-    fill="currentColor"
-    fontSize={props.fontSize}
-    color={props.color}
-  >
-    <g>
-      <g>
-        <path d="M140.6,262.5c-15.5,0-28.1,12.6-28.1,28.1s12.6,28.1,28.1,28.1s28.1-12.6,28.1-28.1C168.8,275.1,156.2,262.5,140.6,262.5z " />
-      </g>
-    </g>
-    <g>
-      <g>
-        <path d="M318.8,93.7h-56.3V56.2H56.3v37.5H18.8C11.5,101,7.4,105.1,0,112.5c7.3,7.3,11.4,11.4,18.8,18.8h37.5v37.5H37.5 c-7.3,7.3-11.4,11.4-18.8,18.8c7.3,7.3,11.4,11.4,18.8,18.7h18.8v74.9h38.4c4.3-21.4,23.3-37.5,45.9-37.5 c22.7,0,41.6,16.1,45.9,37.5h76.9c4.3-21.4,23.3-37.5,45.9-37.5c22.7,0,41.6,16.1,45.9,37.5h19.7V150 C375,119,349.9,93.7,318.8,93.7z M337.5,187.5h-56.3v-56.2h37.5c10.3,0,18.8,8.4,18.8,18.7V187.5z" /></g></g><g><g><path d="M309.4,262.5c-15.5,0-28.1,12.6-28.1,28.1s12.6,28.1,28.1,28.1s28.1-12.6,28.1-28.1S324.9,262.5,309.4,262.5z" />
-        </g>
-    </g>
-  </svg>
+const w36h36 = { height: '36px', width: '36px' }
 
-export default DeliveryIcon
+const Loader: FC = () => 
+  <Skeleton style={w36h36} />
+
+export const Delivery36x36: FC = () => 
+  <Image 
+    style={w36h36}
+    src={Logo}
+    fallback={<Loader />}
+    placeholder={<Loader />}
+  />

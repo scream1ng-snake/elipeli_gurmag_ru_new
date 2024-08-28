@@ -8,11 +8,16 @@ import Stories from "./parts/Stories/Stories"
 import Menu from "./parts/Menu/Menu"
 import BottomNavigation from "../../common/BottomNav/BottomNav"
 import Banner from "./parts/Banner/Banner"
+import Fixed from "../../layout/Fixed"
+import { MenuTabsFixed } from "./parts/Menu/MenuTabs/MenuTabs"
 
 const MainPage: FC = observer(() => {
   return <Wrapper>
-    <Banner />
-    <ReceptionSwitcher />
+    <Fixed>
+      <Banner />
+      <ReceptionSwitcher />
+      <MenuTabsFixed />
+    </Fixed>
     <Stories />
     <Collections />
     <Cooks />
