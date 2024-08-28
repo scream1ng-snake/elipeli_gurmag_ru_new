@@ -1,0 +1,15 @@
+
+.cartHead {
+  width: calc(100% - 24px);
+  position: relative;
+  margin: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cartClose {
+  position: absolute;
+  left: 0;
+  color: var(--gurmag-accent-color);
+  font-weight: 500;
+}
