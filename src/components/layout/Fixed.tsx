@@ -3,7 +3,7 @@ import { FC, ReactNode, Fragment } from 'react'
 import { useStore } from '../../features/hooks'
 const bannerHeight = 150
 const switcherHeight = 68
-const authBtnHeight = 72
+const authBtnHeight = 56
 const Fixed: FC<{ children: ReactNode }> = observer(props => {
   const { auth } = useStore()
   return <Fragment>

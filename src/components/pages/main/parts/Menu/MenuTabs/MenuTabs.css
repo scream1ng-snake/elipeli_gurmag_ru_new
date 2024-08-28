@@ -5,7 +5,9 @@
   position: relative;
   padding: 1rem 0;
 }
-
+.page_filter.fixed {
+  padding-top: 0px;
+}
 .filter_list {
   display: flex;
   white-space: nowrap;

@@ -21,13 +21,13 @@ import { Pickup36x36 } from '../../../../icons/Pickup'
 import { Delivery36x36 } from '../../../../icons/Delivery'
 import { Question36x36 } from '../../../../icons/Question36x36'
 import { Gurmag36x36 } from '../../../../icons/Gurmag36x36'
+import { IconDown } from '../../../../icons/IconDown'
 
-import IconDelivery from '../../../../../assets/icon_delivery.png'
-import IconChoice from '../../../../../assets/icon_choice.png'
-import IconPickup from '../../../../../assets/icon_pickup.png'
-import IconDown from '../../../../../assets/icon_down.svg'
+import IconDelivery from '../../../../../assets/icon_delivery@2x.png'
+import IconChoice from '../../../../../assets/icon_choice@2x.png'
+import IconPickup from '../../../../../assets/icon_pickup@2x.png'
 
-import LogoGurmag from '../../../../../assets/logo_gurmag.png'
+import LogoGurmag from '../../../../../assets/logo_gurmag@2x.png'
 
 const ReceptionSwitcher: FC = observer(() => {
   const { auth, reception } = useStore()
@@ -199,6 +199,7 @@ const ReceptionSwitcher: FC = observer(() => {
                   fontWeight={'400'}
                   fontSize={'14.5px'}
                   backgroundVar={'--gur-accent-color'}
+                  colorVar={'--gur-custom-button-text-color'}
                   appendImage={null}
                 />
               : 
@@ -206,11 +207,10 @@ const ReceptionSwitcher: FC = observer(() => {
                 <div className={styles.text_box}>
                   <div className={styles.text_address_row}>
                     <p className={styles.text_address}>{getAddress()}</p>
-                    <Image
-                      src={IconDown}
+                    <IconDown
                       width={10}
                       height={6}
-                      fit='cover'
+                      color={"var(--gur-primary-text-color)"}
                     />
                   </div>
                   <p className={styles.reception_hint}>{getHint()}</p>

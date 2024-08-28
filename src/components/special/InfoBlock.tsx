@@ -1,7 +1,8 @@
 import { FC, ReactNode } from 'react'
 import { Image, Skeleton, Button } from 'antd-mobile'
 import styles from './styles.module.css'
-import ImageClose from '../../assets/icon_close.png'
+import { IconClose } from '../icons/IconClose'
+
 const InfoBlock: FC<{
   title: string,
   text: string,
@@ -15,11 +16,10 @@ const InfoBlock: FC<{
       className={styles.info_block_close}
       onClick={() => props.onClose()}
     >
-      <Image
-        src={ImageClose}
-        width={22}
-        height={22}
-        fit='contain'
+      <IconClose
+        width={21}
+        height={23}
+        color={"var(--gur-primary-text-color)"}
       />
     </div>
     <div className={styles.info_block_row}>

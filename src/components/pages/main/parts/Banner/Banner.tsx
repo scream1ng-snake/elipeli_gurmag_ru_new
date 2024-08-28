@@ -51,6 +51,7 @@ const Banner: FC = observer(() => {
                 
                 fontSize={'14.5px'}
                 backgroundVar={'--gur-accent-color'}
+                colorVar={'--gur-custom-button-text-color'}
                 appendImage={null}
               />
             }
@@ -66,12 +67,13 @@ const Banner: FC = observer(() => {
           maxWidth={'auto'}
           
           marginTop={'16px'}
-          marginBottom={'21px'}
+          marginBottom={'5px'}
           marginHorizontal={'25px'}
           paddingHorizontal={'24px'}
           fontWeight={'400'}
           fontSize={'14.5px'}
           backgroundVar={'--gur-secondary-accent-color'}
+          colorVar={'--gur-custom-button-text-color'}
           appendImage={ImageBaker}
         />
       )

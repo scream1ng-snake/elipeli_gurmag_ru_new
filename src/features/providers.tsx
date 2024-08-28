@@ -88,25 +88,33 @@ const myVariables = [
   { cssVar: '--громкий-текст', dark: '#FFFFFF', light: '#000000' }, 
   { cssVar: '--тихий-текст', dark: '#BABABA', light: '#836868' }, 
 
-
-  { cssVar: '--gur-app-bg-color', dark: '#EDF1F4', light: '#EDF1F4' },
-  { cssVar: '--gur-header-bg-color', dark: '#EDF1F4', light: '#EDF1F4' }, /* --tg-theme-secondary-bg-color */
-  { cssVar: '--gur-page-bg-color', dark: '#FFFFFF', light: '#FFFFFF' },
-  { cssVar: '--gur-primary-text-color', dark: '#000000', light: '#000000' },
-  { cssVar: '--gur-secondary-text-color', dark: '#836868', light: '#836868' },
-  { cssVar: '--gur-accent-color', dark: '#F7BB0F', light: '#F7BB0F' },
+  /* желтая кнопка */
   { cssVar: '--gur-secondary-accent-color', dark: '#BFFE00', light: '#BFFE00' },
-
-  { cssVar: '--gur-skeleton-bg-color', dark: '#D9D9D9', light: '#D9D9D9' },
-  { cssVar: '--gur-border-color', dark: '#006241', light: '#006241' },
+  /* темный текст в некоторых кнопках */
+  { cssVar: '--gur-custom-button-text-color', dark: '#000000', light: '#000000' },
   
-  { cssVar: '--gur-card-bg-color', dark: '#EDF1F4', light: '#EDF1F4' },
+  /* граница круга сотрудников */
+  { cssVar: '--gur-border-color', dark: '#006241', light: '#006241' }, 
+  
+  /* Переменные карточки товара */
+  { cssVar: '--gur-card-bg-color', dark: '#232E3C', light: '#EDF1F4' },
   { cssVar: '--gur-card-image-text-color', dark: '#FFFFFF', light: '#FFFFFF' },
   { cssVar: '--gur-card-count-text-color', dark: '#006241', light: '#006241' },
   { cssVar: '--gur-card-weight-text-color', dark: '#8E8E8E', light: '#8E8E8E' },
-  { cssVar: '--gur-card-star-color', dark: '#F1BB33', light: '#F1BB33' },
-  { cssVar: '--gur-card-button-bg-color', dark: '#FFFFFF', light: '#FFFFFF' },
-  
+  { cssVar: '--gur-card-button-bg-color', dark: '#17212B', light: '#FFFFFF' },
+
+
+  /* Объединить */
+  { cssVar: '--gur-app-bg-color', dark: '#232E3C', light: '#EDF1F4' }, /* --tg-theme-secondary-bg-color */
+  { cssVar: '--gur-header-bg-color', dark: '#232E3C', light: '#EDF1F4' }, /* --tg-theme-secondary-bg-color */
+  { cssVar: '--gur-page-bg-color', dark: '#17212B', light: '#FFFFFF' }, /* --tg-theme-bg-color */
+  { cssVar: '--gur-primary-text-color', dark: '#FFFFFF', light: '#000000' }, /* --громкий-текст */
+  { cssVar: '--gur-secondary-text-color', dark: '#BABABA', light: '#836868' }, /* --тихий-текст */
+  { cssVar: '--gur-accent-color', dark: '#F7BB0F', light: '#F7BB0F' }, /* --gurmag-accent-color */
+
+  /* Не используем */
+  { cssVar: '--gur-card-star-color', dark: '#F1BB33', light: '#F1BB33' }, /* цвет в svg  */
+  { cssVar: '--gur-skeleton-bg-color', dark: '#D9D9D9', light: '#D9D9D9' }, /* пока не трогаем */
 ]
 
 const antdVariables: Var[] = [

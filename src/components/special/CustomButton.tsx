@@ -12,6 +12,7 @@ const CustomButton: FC<{
   marginBottom: string,
   paddingHorizontal: string,
   backgroundVar: string,
+  colorVar: string,
   appendImage: any,
   fontWeight: string,
   fontSize: string,
@@ -30,6 +31,7 @@ const CustomButton: FC<{
         paddingLeft: props.paddingHorizontal,
         paddingRight: props.paddingHorizontal,
         backgroundColor: `var(${props.backgroundVar})`,
+        color: `var(${props.colorVar})`,
         fontWeight: props.fontWeight,
         fontSize: props.fontSize,
       }}
