@@ -92,6 +92,10 @@ const myVariables = [
   /* темный текст в некоторых кнопках */
   { cssVar: '--gur-custom-button-text-color', dark: '#000000', light: '#000000' },
   
+  /* переменные форм  */
+  /* input (label и border) */
+  { cssVar: '--gur-input-color', dark: '#b3b3b3', light: '#9B9B9B' }, /* --adm-color-border --adm-color-text-secondary */
+
   /* граница круга сотрудников */
   { cssVar: '--gur-border-color', dark: '#006241', light: '#006241' }, 
   
@@ -101,7 +105,6 @@ const myVariables = [
   { cssVar: '--gur-card-count-text-color', dark: '#006241', light: '#006241' },
   { cssVar: '--gur-card-weight-text-color', dark: '#8E8E8E', light: '#8E8E8E' },
   { cssVar: '--gur-card-button-bg-color', dark: '#17212B', light: '#FFFFFF' },
-
 
   /* Объединить */
   { cssVar: '--gur-app-bg-color', dark: '#232E3C', light: '#EDF1F4' }, /* --tg-theme-secondary-bg-color */
