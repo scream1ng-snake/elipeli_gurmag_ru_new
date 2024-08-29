@@ -8,7 +8,7 @@ const CartHead: FC =() => {
   return <Space justify='center' className={styles.cartHead}>
   <span
     className={styles.cartClose}
-    onClick={() => { go(-1) }}
+    onClick={() => { go('/') }}
   >
     Закрыть
   </span>

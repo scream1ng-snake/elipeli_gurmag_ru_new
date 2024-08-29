@@ -16,12 +16,11 @@ class Slots {
   }
 
   selectedSlot: Optional<Slot> = null
-  setSelectedSlot = (slot: Slot) => { 
-    this.selectedSlot = slot 
-    this.selectSlotPopup.close()
+  setSelectedSlot = (VCode: string) => { 
+    const slot = this.computedSlots.find(s => s.VCode === VCode)
+    if(slot) this.selectedSlot = slot 
   }
 
-  selectSlotPopup = new Popup()
 
   private list: Slot[] = []
   private setList(slots: Slot[]) {

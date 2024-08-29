@@ -14,7 +14,8 @@ import { Optional } from '../../features/helpers'
 
 type P = {
   show: boolean,
-  close: () => void
+  close: () => void,
+  onContinue: () => void
 }
 const SelectLocationPopup: FC<P> = observer(p => {
   const { hash } = useLocation()
@@ -81,7 +82,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
           <div className={styles.popup_area}>
             <AskLocation onClick={requestGeolocation} />
             <PopupHeader />
-            <InputAddressForm />
+            <InputAddressForm onContinue={p.onContinue} />
           </div>
         </div>
 
@@ -112,6 +113,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
             <SelectOrgForm 
               clickedOrgID={clickedOrgID}
               setClickedOrgID={setClickedOrgID} 
+              onContinue={p.onContinue}
             />
           </div>
         </div>

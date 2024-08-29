@@ -154,6 +154,10 @@ const ReceptionSwitcher: FC = observer(() => {
         close()
         navigate('/')
       }}
+      onContinue={function () {
+        close()
+        navigate('/')
+      }}
     />
     <div
       className={styles.head_shell}

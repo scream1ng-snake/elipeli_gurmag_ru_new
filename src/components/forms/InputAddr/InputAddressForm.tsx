@@ -14,8 +14,7 @@ interface InputAddress {
   road: string,
   house_number: string,
 }
-const InputAddressForm: FC = observer(() => {
-  const navigate = useNavigate()
+const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
   const { reception } = useStore()
   const validator = yupResolver(addressSchema)
   const debounced = useMemo(() =>
@@ -108,8 +107,7 @@ const InputAddressForm: FC = observer(() => {
           onClick={function() {
             const vals = getValues()
             reception.setAddress(vals)
-            reception.selectLocationPopup.close()
-            navigate('/')
+            p.onContinue()
           }}
           disabled={
             Boolean(Object.keys(errors).length)

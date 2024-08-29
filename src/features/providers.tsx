@@ -84,7 +84,6 @@ const tgVariables: Var[] = [
 /** кастомные переменные */
 const myVariables = [
   { cssVar: '--gurmag-accent-color', dark: '#F7BB0F', light: '#F7BB0F' },
-  { cssVar: '--theme-shadow-color', dark: 'black', light: 'grey' },
   { cssVar: '--громкий-текст', dark: '#FFFFFF', light: '#000000' }, 
   { cssVar: '--тихий-текст', dark: '#BABABA', light: '#836868' }, 
 

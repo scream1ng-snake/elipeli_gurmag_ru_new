@@ -5,7 +5,7 @@ const bannerHeight = 150
 const switcherHeight = 68
 const authBtnHeight = 56
 const Fixed: FC<{ children: ReactNode }> = observer(props => {
-  const { auth } = useStore()
+  const { auth, instance } = useStore()
   return <Fragment>
     <div
       style={{
@@ -22,7 +22,7 @@ const Fixed: FC<{ children: ReactNode }> = observer(props => {
     <div
       style={{
         height: auth.isFailed
-          ? auth.bannerToTg.show
+          ? auth.bannerToTg.show && instance === 'WEB_BROWSER'
             ? bannerHeight + switcherHeight
             : authBtnHeight + switcherHeight
           : switcherHeight

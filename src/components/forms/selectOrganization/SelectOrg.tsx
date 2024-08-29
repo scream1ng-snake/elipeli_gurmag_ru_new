@@ -7,18 +7,16 @@ import _ from 'lodash'
 import { CloseOutline, LeftOutline } from 'antd-mobile-icons'
 import Red from '../../special/RedText'
 import { Optional } from '../../../features/helpers'
-import { useNavigate } from 'react-router-dom'
 
 type Pr = {
   clickedOrgID: Optional<number>,
   setClickedOrgID: (id: Optional<number>) => void
+  onContinue: () => void
 }
 const SelectOrgForm: FC<Pr> = observer(p => {
-  const navigate = useNavigate()
   const { reception } = useStore()
   let {
     selectOrgPopup,
-    selectLocationPopup,
     isWorkingNow,
     organizations
   } = reception
@@ -81,8 +79,7 @@ const SelectOrgForm: FC<Pr> = observer(p => {
           onClick={() => {
             if (p.clickedOrgID) {
               reception.currentOrgID = p.clickedOrgID
-              selectLocationPopup.close()
-              navigate('/')
+              p.onContinue()
             }
           }}
         >
