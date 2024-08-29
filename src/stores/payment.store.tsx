@@ -11,7 +11,7 @@ import { logger } from "../features/logger"
 /** класс выбора способа оплаты */
 class PaymentStore {
   paymentLabels = {
-    [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]: 'Оплата картой при получении',
+    // [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]: 'Оплата картой при получении',
     [paymentMethods.CARD_ONLINE]: 'Картой онлайн',
     [paymentMethods.CASH]: 'Наличными',
   }
@@ -19,7 +19,7 @@ class PaymentStore {
   iconstyle = { marginRight: '0.75rem', fontSize: 25 }
 
   paymentIcons = {
-    [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]: <BankcardOutline style={this.iconstyle} />,
+    // [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]: <BankcardOutline style={this.iconstyle} />,
     [paymentMethods.CARD_ONLINE]: <BankcardOutline style={this.iconstyle} />,
     [paymentMethods.CASH]: <span style={this.iconstyle}>₽</span>,
   }
@@ -34,6 +34,7 @@ class PaymentStore {
   selectMethodPopup = new Popup()
 
   availableMethods = {
+    [receptionTypes.initial]: {},
     [receptionTypes.delivery]: {
       PAY_BY_CARD_UPON_RECIEPT: "PAY_BY_CARD_UPON_RECIEPT",
       CARD_ONLINE: "CARD_ONLINE",
@@ -97,13 +98,13 @@ class PaymentStore {
     }
   })
   constructor(readonly cart: CartStore) {
-    makeAutoObservable(this)
+    makeAutoObservable(this, {}, { autoBind: true })
   }
 }
 
 
 export const paymentMethods = {
-  PAY_BY_CARD_UPON_RECIEPT: "PAY_BY_CARD_UPON_RECIEPT",
+  // PAY_BY_CARD_UPON_RECIEPT: "PAY_BY_CARD_UPON_RECIEPT",
   CARD_ONLINE: "CARD_ONLINE",
   CASH: "CASH",
 } as const

@@ -24,3 +24,53 @@
   margin: 0.5rem;
   background: var(--gurmag-accent-color);
 }
+
+
+.receptionType {
+  margin: 14px;
+  font-size: 22px;
+}
+
+.addrInput {
+  border: 2px solid var(--adm-color-border);
+  margin: 0.5rem 1rem;
+  padding: 0 0.5rem;
+  border-radius: 13px;
+}
+
+
+.slotSelect { 
+  width: calc(100vw - 2rem); 
+  padding: 0 1rem;
+}
+
+.selectWrap {
+  overflow: scroll;
+  width: calc(100vw - 2rem); 
+}
+
+.payMethod {
+  width: calc(100vw - 2rem); 
+  padding: 0 1rem;
+}
+.payTodo {
+  border: 2px solid var(--adm-color-border);
+  padding: 0 0.5rem;
+  border-radius: 13px;
+  width: 100%;
+  min-height: 2.5rem;
+}
+
+.detail {
+  margin: 1rem;
+  line-height: 2rem;
+  font-size: 15px;
+}
+.detailRight {
+  text-align: end;
+}
+
+.orderButton {
+  width: calc(100% - 2rem);
+  margin: 1rem;
+}
