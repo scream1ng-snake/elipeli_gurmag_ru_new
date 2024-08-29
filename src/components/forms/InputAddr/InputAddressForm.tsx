@@ -75,7 +75,6 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
     setValue('road', reception.address.road)
     setValue('house_number', reception.address.house_number)
 
-    
     setValue('frame', reception.address.frame)
     setValue('entrance', reception.address.entrance)
     setValue('doorCode', reception.address.doorCode)
@@ -85,18 +84,6 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
    
     form.clearErrors()
   }, [reception.address])
-  /* useEffect(() => {
-    if (reception.address) {
-      setValue('frame', reception.address.frame)
-      setValue('entrance', reception.address.entrance)
-      setValue('doorCode', reception.address.doorCode)
-      setValue('storey', reception.address.storey)
-      setValue('apartment', reception.address.apartment)
-      setValue('addrComment', reception.address.addrComment)
-      
-      form.clearErrors()
-    }
-  }, []) */
   return <Fragment>
     <div className={styles.city_label}>
       Уфа

@@ -117,17 +117,17 @@ export class ReceptionStore {
     const address: NominatimReverseResponse['address'] = await this.reverseGeocoderApi.run(lat, lon)
     if(typeof address === 'object' && address.hasOwnProperty('road') && address.hasOwnProperty('house_number')) {
       const { road, house_number } = address
-      this.setAddress({ ...this.address, road, house_number })
+      this.setAddress({ road, house_number })
       this.setLocation(cord)
     } else {
-      Toast.show('Местопоожение не найдено')
+      Toast.show('Местоположение не найдено')
     }
   }
 
   /** by address */
   setCordinatesByAddress = async ({ road, house_number }: Address) => {
     logger.log(`setCordinatesByAddress | road: ${JSON.stringify(road)} | house_number: ${JSON.stringify(house_number)}`, 'reception.store')
-    this.address = { ...this.address, road, house_number }
+    this.address = { road, house_number }
     const result = await this.geocoderApi.run('Уфа, ' + road + ' ' + house_number)
     if(result) {
       const [lon, lat]: [number, number] = result
