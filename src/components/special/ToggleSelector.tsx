@@ -3,6 +3,8 @@ import { Image } from 'antd-mobile'
 import styles from './styles.module.css'
 import CustomButton from './CustomButton'
 import ImageBaker from '../../assets/image_baker.png'
+import { useTheme } from "../../features/hooks";
+
 const ToggleSelector: FC<{
   options: Array<any>,
   onChange: Function,
@@ -12,8 +14,10 @@ const ToggleSelector: FC<{
   buttonActiveBackgroundVar: string,
   colorVar: string,
   activeColorVar: string,
-}> = props =>
-  <div style={{
+}> = props => {
+  const { theme } = useTheme()
+  
+  return <div style={{
     display: 'flex',
     flexDirection: 'row',
     height: '36px',
@@ -37,6 +41,9 @@ const ToggleSelector: FC<{
           backgroundVar={(option.value === props.value) ? props.buttonActiveBackgroundVar : props.buttonBackgroundVar }
           colorVar={(option.value === props.value) ? props.activeColorVar : props.colorVar }
           prependImage={option.prependImage}
+          prependImageInvert={
+            !(theme === 'light' || (option.value === props.value))
+          }
           prependImageMargin={option.prependImageMargin}
           prependImageWidth={option.prependImageWidth}
           prependImageHeight={option.prependImageHeight}
@@ -44,6 +51,7 @@ const ToggleSelector: FC<{
       ))
     }
   </div>
+}
 
 
 export default ToggleSelector

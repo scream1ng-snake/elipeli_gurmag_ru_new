@@ -75,6 +75,7 @@ const Banner: FC = observer(() => {
           backgroundVar={'--gur-secondary-accent-color'}
           colorVar={'--gur-custom-button-text-color'}
           appendImage={ImageBaker}
+          appendImageMargin={'16px'}
         />
       )
     }

@@ -21,11 +21,13 @@ const CustomButton: FC<{
   fontSize?: string,
 
   prependImage?: any,
+  prependImageInvert?: boolean,
   prependImageWidth?: string,
   prependImageHeight?: string,
   prependImageMargin?: string,
 
   appendImage?: any,
+  appendImageInvert?: boolean,
   appendImageWidth?: string,
   appendImageHeight?: string,
   appendImageMargin?: string,
@@ -55,7 +57,8 @@ const CustomButton: FC<{
         props.prependImage
         ? <Image
             style={{
-              marginRight: props.prependImageMargin || 16
+              marginRight: props.prependImageMargin || 16,
+              filter: props.prependImageInvert ? 'grayscale(80%) invert(100%)' : 'none'
             }}
             src={props.prependImage}
             width={props.prependImageWidth || props.height}
@@ -69,7 +72,8 @@ const CustomButton: FC<{
         props.appendImage
         ? <Image
             style={{
-              marginLeft: 16 || 16
+              marginLeft: props.appendImageMargin || 16,
+              filter: props.appendImageInvert ? 'grayscale(80%) invert(100%)' : 'none'
             }}
             src={props.appendImage}
             width={props.appendImageWidth || props.height}
