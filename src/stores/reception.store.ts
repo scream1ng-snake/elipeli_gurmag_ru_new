@@ -7,6 +7,9 @@ import Popup from "../features/modal";
 import EmployeesStore from "./employees.store";
 import MenuStore from "./menu.store";
 import RootStore from "./root.store";
+import IconBtnDelivery from '../assets/icon_btn_delivery@2x.png'
+import IconBtnPickup from '../assets/icon_btn_pickup@2x.png'
+
 
 export class ReceptionStore {
   root: RootStore;
@@ -40,10 +43,22 @@ export class ReceptionStore {
   /** доступные опции обслуживания */
   options = [{
     label: 'Доставка',
-    value: receptionTypes.delivery
+    value: receptionTypes.delivery,
+    text: 'Доставка',
+    prependImage: IconBtnDelivery,
+    prependImageMargin: '3px',
+    prependImageWidth: '29px',
+    prependImageHeight: '17px',
+    minWidth: '134px',
   }, {
     label: 'Самовывоз',
-    value: receptionTypes.pickup
+    value: receptionTypes.pickup,
+    text: 'Заберу сам',
+    prependImage: IconBtnPickup,
+    prependImageMargin: '8px',
+    prependImageWidth: '20px',
+    prependImageHeight: '21px',
+    minWidth: '134px',
   }]
 
   location: Optional<[number, number]> = null

@@ -10,6 +10,7 @@ const CustomButton: FC<{
   colorVar: string,
 
   disabled?: boolean
+  minWidth?: string,
   maxWidth?: string,
   marginTop?: string,
   marginHorizontal?: string,
@@ -36,6 +37,7 @@ const CustomButton: FC<{
       style={{
         height: props.height,
         maxWidth: props.maxWidth || 'auto',
+        minWidth: props.minWidth || 'auto',
         marginTop: props.marginTop || '0px',
         marginBottom: props.marginBottom || '0px',
         marginLeft: props.marginHorizontal || '0px',
