@@ -22,6 +22,7 @@ const OrderDetailPopup: FC = observer(() => {
         return <OrderForm.Pickup />
 
       case 'initial': 
+        cart.detailPopup.close()
         return <AskLocation />
     }
   }

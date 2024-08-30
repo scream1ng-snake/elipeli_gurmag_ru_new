@@ -11,6 +11,7 @@ import Slots from "./slots.store";
 import PaymentStore from "./payment.store";
 import { MutableRefObject } from "react";
 import Popup from "../features/modal";
+import moment from "moment";
 
 /** Блюдо в корзине как часть заказа */
 export type CouseInCart = {
@@ -26,8 +27,33 @@ export class CartStore {
   totalPrice = 0
 
   /** дата заказа */
-  date = new Date()
+  date = moment().add(15, 'minutes').toDate()
+
   setDate = (date: Date) => { this.date = date }
+  /** диапазон времени для пикера */
+  get availableTimeRange() {
+    const isToday = moment(this.date).isSame(new Date(), 'day')
+    const startDay = moment(this.date).hour(9).minute(30).toDate()
+    const endDay = moment(this.date).hour(21).minute(30).toDate()
+    if (isToday) {
+      const through15min = moment()
+        .add(15, 'minutes')
+        .toDate()
+
+      return { min: through15min, max: endDay }
+    } else {
+      return { min: startDay, max: endDay }
+    }
+  }
+
+  private checkOrderTime = () => {
+    const nowthrough15min = moment()
+      .add(15, 'minutes')
+      .toDate()
+    
+    const isPast = this.date <= nowthrough15min
+    if (isPast) this.setDate(nowthrough15min)
+  }
 
   /** примечание к заказу */
   note = ''
@@ -37,6 +63,10 @@ export class CartStore {
 
   /** попуп с деталями заказа */
   detailPopup = new Popup()
+  /** пикер с выбором даты */
+  datePick = new Popup()
+  /** пикер с выбором времени */
+  timePick = new Popup()
 
   constructor(readonly root: RootStore) {
     makeAutoObservable(this, {}, { autoBind: true })
@@ -44,16 +74,18 @@ export class CartStore {
       if (price > 1000 && this.payment.method === 'CASH')
         this.payment.method = null
     })
+
+    setInterval(this.checkOrderTime, 1000)
   }
 
-  
+
   /** найденный промо */
   confirmedPromocode: Optional<string> = null
 
   /** просто состояние для инпута с промо */
   inputPromocode = ''
   setInputPromo = (
-    str: string, 
+    str: string,
     ref: MutableRefObject<Optional<InputRef>>
   ) => {
     this.inputPromocode = str;
@@ -70,7 +102,7 @@ export class CartStore {
       this.confirmedPromocode = null
     }
 
-    
+
     let { totalPrice, items, isEmpty } = this;
     const { info } = this.root.user;
     this.applyDiscount(
@@ -81,14 +113,14 @@ export class CartStore {
       info.dishSet,
     )
   }
-  
+
 
   clearCart() {
     this.items = [];
     this.totalPrice = 0;
     setItem('cartItems', [])
   }
- 
+
 
   findItem(vcode: number) {
     return this.items.find(item => item.couse.VCode === vcode)
@@ -374,7 +406,7 @@ export class CartStore {
       throw e
     }
   })
-  
+
 
 
   updateOrderInfo = async (orderId: number) => {
@@ -391,9 +423,9 @@ export class CartStore {
   }
 
 
-  
 
-  
+
+
 
   payment = new PaymentStore(this)
   slots = new Slots(this)
