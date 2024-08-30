@@ -29,6 +29,7 @@ import IconPickup from '../../../../../assets/icon_pickup@2x.png'
 
 import LogoGurmag from '../../../../../assets/logo_gurmag@2x.png'
 
+import { receptionTypes } from "../../../../../stores/reception.store"
 const ReceptionSwitcher: FC = observer(() => {
   const { auth, reception } = useStore()
   const { hash } = useLocation()
@@ -133,7 +134,12 @@ const ReceptionSwitcher: FC = observer(() => {
   }
 
   useEffect(() => {
-    if (hash.includes('#selectLocation')) reception.selectLocationPopup.open()
+    if (hash.includes('#selectLocation')) {
+      if (reception.receptionType === receptionTypes.initial) {
+        reception.setReceptionType(receptionTypes.delivery)
+      }
+      reception.selectLocationPopup.open()
+    }
   }, [hash])
 
   return <div
@@ -223,7 +229,10 @@ const ReceptionSwitcher: FC = observer(() => {
               </div>
           }
         </div>
-        <div className={styles.icon_wrapper}>
+        <div
+          className={styles.icon_wrapper}
+          onClick={function () { navigate( auth.state !== 'AUTHORIZED' ? '/authorize' : '/me') }}
+        >
           <CircleIcon image={LogoGurmag} size={36} />
         </div>
       </div>

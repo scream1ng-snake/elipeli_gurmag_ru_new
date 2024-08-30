@@ -10,7 +10,7 @@ import _ from 'lodash'
 import Red from '../../special/RedText'
 import { useNavigate } from 'react-router-dom'
 import { logger } from '../../../features/logger'
-
+import CustomButton from '../../special/CustomButton'
 interface InputAddress {
   road: string,
   house_number: string,
@@ -28,9 +28,16 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
   const debounced = useMemo(
     () => 
     _.debounce(
-      (form: InputAddress) => {
-        logger.log(`debounce | form: ${JSON.stringify(form)}`, 'InputAddressForm')
-        reception.setCordinatesByAddress(form)
+      (form: InputAddress, formName: string | undefined) => {
+        logger.log(`debounce | formName: ${JSON.stringify(formName)} | form: ${JSON.stringify(form)}`, 'InputAddressForm')
+        if (formName) {
+          if (formName === 'road' || formName === 'house_number') {
+            
+            reception.setCordinatesByAddress(form)
+          } else {
+            reception.setAddressForAdditionalFields(form);
+          }
+        }
       },
       900
     ),
@@ -58,12 +65,8 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         (
           !Object.keys(result.errors).length
           && Object.keys(result.values).length
-          && (
-            options.names?.[0] === 'road'
-            || options.names?.[0] === 'house_number'
-          )
         )
-          ? debounced(result.values)
+          ? debounced(result.values, options.names?.[0])
           : debounced.cancel()
       )
       return promise
@@ -258,7 +261,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         </Form.Item>
       </Space>
       <Space
-        style={{ '--gap': '5px', width: 'calc(100vw - 32px)', margin: '0px 16px 8px' }}
+        style={{ '--gap': '5px', width: 'calc(100vw - 32px)', margin: '0px 16px 0px' }}
         justify={'between'}
         align={'center'}
         className={'gur-space'}
@@ -286,27 +289,32 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         </Form.Item>
       </Space>
       <Form.Item>
-        <Button
-          color='primary'
-          type="submit"
-          fill='solid'
-          shape='rounded'
-          size='large'
-          style={{ width: '100%' }}
+        <CustomButton
+          text={'Доставить сюда'}
           onClick={function() {
             const vals = getValues()
             console.log('vals', vals)
             reception.setAddress(vals)
             p.onContinue()
           }}
+          height={'35px'}
+          maxWidth={'auto'}
+          
+          marginTop={'0px'}
+          marginBottom={'0px'}
+          marginHorizontal={'0px'}
+          paddingHorizontal={'24px'}
+          fontWeight={'400'}
+          fontSize={'14.5px'}
+          backgroundVar={'--gurmag-accent-color'}
+          colorVar={'--gur-custom-button-text-color'}
+          appendImage={null}
           disabled={
             Boolean(Object.keys(errors).length)
             || !reception.address.road.length
             || !reception.address.house_number.length
           }
-        >
-          Продолжить
-        </Button>
+        />
       </Form.Item>
     </Form>
   </Fragment>

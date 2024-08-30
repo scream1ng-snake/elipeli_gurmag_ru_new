@@ -19,11 +19,12 @@ h2 {
   line-height: 22.27px;
 }
 
-/* Форма на карте */
-/* отключение верхней черты в инпуте */
-.gur-form .adm-list-item-content { 
+.adm-form-item.adm-form-item-vertical .adm-list-item-content { 
   border-top: none;
 }
+
+/* Форма на карте */
+/* отключение верхней черты в инпуте */
 
 /* Space на три части*/
 .gur-form .gur-space.gur-space_3 .adm-space-item {

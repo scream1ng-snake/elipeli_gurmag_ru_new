@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite"
 import { FC } from "react"
 import { useStore } from "../../features/hooks"
 import { useNavigate } from "react-router-dom"
+import { receptionTypes } from "../../stores/reception.store"
 
 const popup = { 
   width: 'calc(100vw - 2rem)', 
@@ -35,7 +36,10 @@ const AskLocation: FC = observer(() => {
           shape='rounded'
           color='primary'
           style={btn}
-          onClick={() => { reception.selectLocationPopup.open() }}
+          onClick={() => {
+            reception.setReceptionType(receptionTypes.delivery)
+            reception.selectLocationPopup.open()
+          }}
         >
           Указать адрес доставки
         </Button>
@@ -43,7 +47,10 @@ const AskLocation: FC = observer(() => {
           shape='rounded'
           color='warning'
           fill='outline'
-          onClick={() => { reception.selectLocationPopup.open() }}
+          onClick={() => {
+            reception.setReceptionType(receptionTypes.pickup)
+            reception.selectLocationPopup.open()
+          }}
           style={btn}
         >
           Заберу сам

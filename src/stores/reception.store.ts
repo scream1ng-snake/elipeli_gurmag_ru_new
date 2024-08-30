@@ -63,9 +63,13 @@ export class ReceptionStore {
       apartment: '',
       addrComment: '',
     }
-
+  setAddressForAdditionalFields = (address: Address) => {
+    logger.log(`setAddressForAdditionalFields | address: ${JSON.stringify(address) }`, 'Reception-Store')
+    this.address = address
+    localStorage.setItem('data', JSON.stringify(address))
+  }
   setAddress = (address: Address) => {
-    logger.log(`setAddress | address: ${JSON.stringify(address) }`, 'reception.store')
+    logger.log(`setAddress | address: ${JSON.stringify(address) }`, 'Reception-Store')
     this.address = address
     localStorage.setItem('data', JSON.stringify(address))
     // сразу ищем ближающую точку для доставки
@@ -102,17 +106,16 @@ export class ReceptionStore {
         localStorage.setItem('nearestOrg', resultOrganization.Id.toString())
         logger.log(`setAddress | ближ. точка для ${address.road} ${address.house_number} (${this.location})
           была выбрана ${resultOrganization.Name} на расстоянии ${minDistance}
-        `, 'reception.store')
+        `, 'Reception-Store')
       }
     }
-    
   }
   /**
    * by [lat, lon]
    * @param cord 
    */
   setAddrByCordinates = async (cord: [number, number]) => {
-    logger.log(`setAddrByCordinates | cord: ${JSON.stringify(cord) }`, 'reception.store')
+    logger.log(`setAddrByCordinates | cord: ${JSON.stringify(cord) }`, 'Reception-Store')
     const [lon,lat] = cord
     const address: NominatimReverseResponse['address'] = await this.reverseGeocoderApi.run(lat, lon)
     if(typeof address === 'object' && address.hasOwnProperty('road') && address.hasOwnProperty('house_number')) {
@@ -126,8 +129,9 @@ export class ReceptionStore {
 
   /** by address */
   setCordinatesByAddress = async ({ road, house_number }: Address) => {
-    logger.log(`setCordinatesByAddress | road: ${JSON.stringify(road)} | house_number: ${JSON.stringify(house_number)}`, 'reception.store')
+    logger.log(`setCordinatesByAddress | road: ${JSON.stringify(road)} | house_number: ${JSON.stringify(house_number)}`, 'Reception-Store')
     this.address = { road, house_number }
+    localStorage.setItem('data', JSON.stringify({ road, house_number }))
     const result = await this.geocoderApi.run('Уфа, ' + road + ' ' + house_number)
     if(result) {
       const [lon, lat]: [number, number] = result
@@ -295,7 +299,7 @@ export class ReceptionStore {
       })
       if (result?.[0]) {
         let { lat, lon } = result?.[0]
-        logger.log(`geocoderApi: Нашли кординаты lat = ${lat} lon = ${lon} для ${address}`, 'reception.store')
+        logger.log(`geocoderApi: Нашли кординаты lat = ${lat} lon = ${lon} для ${address}`, 'Reception-Store')
         setState('COMPLETED')
         return [Number(lat), Number(lon)]
       } else {
