@@ -18,3 +18,74 @@ h2 {
   font-weight: 700;
   line-height: 22.27px;
 }
+
+/* Форма на карте */
+/* отключение верхней черты в инпуте */
+.gur-form .adm-list-item-content { 
+  border-top: none;
+}
+
+/* Space на три части*/
+.gur-form .gur-space.gur-space_3 .adm-space-item {
+  width: 33.3%;
+}
+.gur-form .gur-space .adm-space-item {
+  width: 100%;
+}
+
+
+.gur-form .adm-form-item.gur-form__item {
+  /* margin: 0.5rem 1rem; */
+  margin: 0;
+  border-radius: 8px;
+  height: 44px;
+  padding: 4px 8px 0px 16px;
+  border: 1px solid var(--gur-input-color)!important;
+  border-radius: 8px;
+}
+/* крестик */
+.gur-form .adm-form-item.gur-form__item .adm-input-clear {
+  padding: 1.5px;
+}
+.gur-form .adm-form-item.gur-form__item .adm-list-item-content {
+  padding-right: 0;
+}
+.gur-form .adm-form-item.gur-form__item .adm-list-item-content .adm-list-item-content-main {
+  padding: 0;
+}
+.gur-form .adm-form-item.gur-form__item .adm-list-item-content .adm-input {
+  min-height: auto;
+  overflow: hidden;
+  /* width: 100%; */
+}
+.gur-form .adm-form-item.gur-form__item .adm-list-item-content .adm-input .adm-input-element {
+  /* width: 100%; */
+}
+
+/* label */
+.gur-form .adm-form-item .adm-list-item-title .adm-form-item-label {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14.06px;
+  color: var(--gur-input-color);
+  margin-bottom: 5px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* input */
+.gur-form .adm-input-element {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14.06px;
+  color: var(--громкий-текст);
+   display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+ 

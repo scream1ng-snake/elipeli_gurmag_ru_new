@@ -19,7 +19,7 @@ const InfoBlock: FC<{
       <IconClose
         width={21}
         height={23}
-        color={"var(--gur-primary-text-color)"}
+        color={"var(--громкий-текст)"}
       />
     </div>
     <div className={styles.info_block_row}>

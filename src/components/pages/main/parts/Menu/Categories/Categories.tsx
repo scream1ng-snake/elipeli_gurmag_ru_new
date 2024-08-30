@@ -230,7 +230,7 @@ const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
             fontWeight={'400'}
             fontSize={cart.isInCart(course) ? '14.5px' : '18.5px'}
             backgroundVar={'--gur-card-button-bg-color'}
-            colorVar={'--gur-primary-text-color'}
+            colorVar={'--громкий-текст'}
             appendImage={null}
           />
         </div>

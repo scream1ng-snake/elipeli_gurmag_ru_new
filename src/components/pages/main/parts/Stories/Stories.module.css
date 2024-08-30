@@ -12,7 +12,7 @@
   line-height: 12.89px;
   font-weight: 600;
   font-family: Roboto;
-  color: var(--gur-primary-text-color);
+  color: var(--громкий-текст);
 }
 
 .closeBtn_relative {

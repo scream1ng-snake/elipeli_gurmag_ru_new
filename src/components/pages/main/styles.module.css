@@ -2,7 +2,7 @@
   background-color: red;
 }
 .gur_main_content {
-  background-color: var(--gur-page-bg-color);
+  background-color: var(--tg-theme-bg-color);
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
   padding: 15px 0px;

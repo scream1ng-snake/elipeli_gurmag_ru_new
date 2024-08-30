@@ -1,11 +1,11 @@
 
 .city_label {
   background: var(--tg-theme-secondary-bg-color);
-  border-radius: 100px;
-  margin-left: 0.75rem;
-  margin-top: 1rem;
-  padding: 0.75rem;
-  font-size: 18px;
+  border-radius: 8px;
+  margin-left: 16px;
+  margin-top: 0px;
+  padding: 0.35rem 0.75rem;
+  font-size: 14px;
   width: max-content;
 }
 
