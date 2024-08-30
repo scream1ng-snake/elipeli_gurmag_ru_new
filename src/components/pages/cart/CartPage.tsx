@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { FC, useState } from "react"
+import { FC } from "react"
 import Wrapper from "../../layout/Wrapper"
 import { Button, Popup } from "antd-mobile"
 import styles from './CartPage.module.css'
@@ -34,6 +34,7 @@ const CartPage: FC = observer(() => {
           color='primary'
           className={styles.orderButton}
           onClick={cart.detailPopup.open}
+          disabled={!cart.items.length}
         >
           {'Оформить заказ на ' + Round(cart.totalPrice) + ' ₽'}
         </Button>
