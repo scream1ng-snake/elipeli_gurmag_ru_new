@@ -36,7 +36,7 @@ class PaymentStore {
   availableMethods = {
     [receptionTypes.initial]: {},
     [receptionTypes.delivery]: {
-      PAY_BY_CARD_UPON_RECIEPT: "PAY_BY_CARD_UPON_RECIEPT",
+      CASH: "CASH",
       CARD_ONLINE: "CARD_ONLINE",
     },
     [receptionTypes.pickup]: {
