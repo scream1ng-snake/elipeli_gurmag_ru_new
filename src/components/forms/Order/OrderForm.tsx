@@ -1,21 +1,45 @@
 import { RightOutlined } from "@ant-design/icons"
-import { Input, Selector, Space, Form, Grid, Button } from "antd-mobile"
+import { Input, Selector, Space, Form, Grid, Button, DatePicker } from "antd-mobile"
 import { toJS } from "mobx"
 import { observer } from "mobx-react-lite"
-import { FC } from "react"
+import { FC, useState } from "react"
 import { useStore } from "../../../features/hooks"
 import styles from '../form.module.css'
+import moment from "moment"
 
 
 
 const Pickup: FC = observer(() => {
   const { cart } = useStore()
+  const { timePick, datePick, availableTimeRange, date, setDate } = cart
   return <Form>
+    <DatePicker
+      cancelText='Закрыть'
+      confirmText='Подтвердить'
+      title='Выберите дату'
+      visible={datePick.show}
+      onClose={datePick.close}
+      onConfirm={setDate}
+      min={new Date()}
+      value={date}
+    />
+    <DatePicker
+      cancelText='Закрыть'
+      confirmText='Подтвердить'
+      precision='minute'
+      title='Выберите время'
+      visible={timePick.show}
+      onClose={timePick.close}
+      min={availableTimeRange.min}
+      max={availableTimeRange.max}
+      onConfirm={setDate}
+      value={date}
+    />
     <h2 className={styles.receptionType}>
       Заберу сам
     </h2>
     <Location />
-    <Slots />
+    <Time />
     <Payment />
     <Details
       total={cart.totalPrice}
@@ -119,6 +143,26 @@ const Payment: FC = observer(() => {
   </Form.Item>
 })
 
+
+const Time: FC = observer(() => {
+  const { cart } = useStore()
+  const { date, datePick, timePick } = cart
+  
+  const css = { "--gap": '1.25rem', fontSize: '20px' }
+  return <Form.Item
+    label='Время выдачи'
+    className={styles.slotSelect}
+  >
+    <Space style={css}>
+      <span onClick={datePick.open}>
+        {moment(date).format('DD-MM-YYYY')}
+      </span>
+      <span onClick={timePick.open}>
+        {moment(date).format('HH:mm')}
+      </span>
+    </Space>
+  </Form.Item>
+})
 const Slots: FC = observer(() => {
   const { cart } = useStore()
   return <Form.Item
