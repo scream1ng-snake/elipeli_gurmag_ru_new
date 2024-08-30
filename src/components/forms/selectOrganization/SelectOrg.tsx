@@ -30,6 +30,7 @@ const SelectOrgForm: FC<Pr> = observer(p => {
     <SelectOrgPopup
       show={selectOrgPopup.show}
       close={selectOrgPopup.close}
+      setClickedOrgID={p.setClickedOrgID}
     />
     <Space
       justify='between'
@@ -94,6 +95,7 @@ export default SelectOrgForm
 type P = {
   show: boolean,
   close: () => void
+  setClickedOrgID: (id: Optional<number>) => void
 }
 const SelectOrgPopup: FC<P> = observer(p => {
   const { reception } = useStore()
@@ -122,7 +124,11 @@ const SelectOrgPopup: FC<P> = observer(p => {
         {reception.organizations.map(o =>
           <List.Item
             key={o.Id}
-            onClick={() => { reception.currentOrgID = o.Id }}
+            onClick={() => { 
+              reception.currentOrgID = o.Id 
+              p.close()
+              p.setClickedOrgID(o.Id)
+            }}
           >
             {o.Name?.replace('_', ' ')}
           </List.Item>
