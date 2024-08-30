@@ -12,6 +12,7 @@ import Fixed from "../../layout/Fixed"
 import { MenuTabsFixed } from "./parts/Menu/MenuTabs/MenuTabs"
 import styles from './styles.module.css'
 import { useStore } from '../../../features/hooks'
+import AskLocation from "../../popups/AskLocation"
 const MainPage: FC = observer(() => {
   const { auth } = useStore()
   return <Wrapper>
@@ -32,6 +33,7 @@ const MainPage: FC = observer(() => {
         }
       }
     >
+      <AskLocation />
       <Stories />
       <Collections />
       <Cooks />
