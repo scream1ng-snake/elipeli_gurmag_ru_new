@@ -1,5 +1,5 @@
-import { Popup, Selector, Space, Button, DotLoading } from 'antd-mobile'
-import { CloseOutline, LocationOutline, TravelOutline } from 'antd-mobile-icons'
+import { Popup, Space, Button, DotLoading } from 'antd-mobile'
+import { LocationOutline } from 'antd-mobile-icons'
 import { observer } from 'mobx-react-lite'
 import { FC, useEffect, useState } from 'react'
 import { useStore } from '../../features/hooks'
@@ -11,6 +11,8 @@ import { Mask } from '../special/Mask'
 import SelectOrgForm from '../forms/selectOrganization/SelectOrg'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Optional } from '../../features/helpers'
+import ToggleSelector from '../special/ToggleSelector'
+import { IconClose } from '../icons/IconClose'
 
 type P = {
   show: boolean,
@@ -120,7 +122,6 @@ const SelectLocationPopup: FC<P> = observer(p => {
     }
   }
 
-
   return (
     <Popup
       position='bottom'
@@ -140,21 +141,32 @@ const SelectLocationPopup: FC<P> = observer(p => {
           }}
           justify='between'
         >
-          <Button onClick={p.close} shape='rounded'>
-            <CloseOutline />
-          </Button>
-          <Selector
+          <Button
+            onClick={p.close}
+            shape='rounded'
             style={{
-              '--border-radius': '100px',
-              '--border': 'solid transparent 1px',
-              '--checked-border': 'solid var(--adm-color-primary) 1px',
-              '--padding': '8px 24px',
+              height: '38px',
+              width: '38px',
             }}
-            showCheckMark={false}
+          >
+            <span style={{ marginLeft: '-4px' }} >
+              <IconClose
+                width={21}
+                height={23}
+                color={"var(--громкий-текст)"}
+              />
+            </span>
+          </Button>
+          <ToggleSelector
             options={options}
-            value={[receptionType]}
-            onChange={function (v) {
-              navigate('#selectLocation/' + v[0])
+            value={receptionType}
+            backgroundVar={'--tg-theme-bg-color'}
+            buttonBackgroundVar={'--tg-theme-bg-color'}
+            buttonActiveBackgroundVar={'--gurmag-accent-color'}
+            colorVar={'--громкий-текст'}
+            activeColorVar={'--gur-custom-button-text-color'}
+            onChange={function (value:any) {
+              navigate('#selectLocation/' + value)
             }}
           />
         </Space>
