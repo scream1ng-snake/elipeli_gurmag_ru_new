@@ -50,7 +50,7 @@ const Banner: FC = observer(() => {
                 fontWeight={'700'}
                 
                 fontSize={'14.5px'}
-                backgroundVar={'--gur-accent-color'}
+                backgroundVar={'--gurmag-accent-color'}
                 colorVar={'--gur-custom-button-text-color'}
                 appendImage={null}
               />

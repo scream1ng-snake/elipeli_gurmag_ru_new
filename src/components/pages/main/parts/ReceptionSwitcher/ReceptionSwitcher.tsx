@@ -164,14 +164,14 @@ const ReceptionSwitcher: FC = observer(() => {
       style={
         (auth.isFailed && auth.bannerToTg.show)
         ? { /* Если баннер красим в белый */
-          background:' var(--gur-page-bg-color)',
+          background:' var(--tg-theme-bg-color)',
           borderTopLeftRadius: '15px',
           borderTopRightRadius: '15px',
           borderBottomLeftRadius: '0px',
           borderBottomRightRadius: '0px',
         }
         : {
-          background:' var(--gur-header-bg-color)'
+          background:' var(--tg-theme-secondary-bg-color)'
         }
       }
     >
@@ -202,7 +202,7 @@ const ReceptionSwitcher: FC = observer(() => {
                   paddingHorizontal={'24px'}
                   fontWeight={'400'}
                   fontSize={'14.5px'}
-                  backgroundVar={'--gur-accent-color'}
+                  backgroundVar={'--gurmag-accent-color'}
                   colorVar={'--gur-custom-button-text-color'}
                   appendImage={null}
                 />
@@ -214,7 +214,7 @@ const ReceptionSwitcher: FC = observer(() => {
                     <IconDown
                       width={10}
                       height={6}
-                      color={"var(--gur-primary-text-color)"}
+                      color={"var(--громкий-текст)"}
                     />
                   </div>
                   <p className={styles.reception_hint}>{getHint()}</p>

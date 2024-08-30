@@ -81,7 +81,7 @@ h2 {
   font-size: 12px;
   font-weight: 400;
   line-height: 14.06px;
-  color: var(--gur-primary-text-color);
+  color: var(--громкий-текст);
    display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;

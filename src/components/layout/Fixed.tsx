@@ -11,7 +11,7 @@ const Fixed: FC<{ children: ReactNode }> = observer(props => {
       style={{
         position: 'fixed',
         zIndex: 1,
-        background: 'var(--gur-header-bg-color)',
+        background: 'var(--tg-theme-secondary-bg-color)',
         width: '100%',
         borderBottomLeftRadius: '15px',
         borderBottomRightRadius: '15px',

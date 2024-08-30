@@ -94,7 +94,7 @@ const myVariables = [
   
   /* переменные форм  */
   /* input (label и border) */
-  { cssVar: '--gur-input-color', dark: '#b3b3b3', light: '#9B9B9B' }, /* --adm-color-border --adm-color-text-secondary */
+  { cssVar: '--gur-input-color', dark: '#b3b3b3', light: '#9B9B9B' }, 
 
   /* граница круга сотрудников */
   { cssVar: '--gur-border-color', dark: '#006241', light: '#006241' }, 
@@ -106,13 +106,6 @@ const myVariables = [
   { cssVar: '--gur-card-weight-text-color', dark: '#8E8E8E', light: '#8E8E8E' },
   { cssVar: '--gur-card-button-bg-color', dark: '#17212B', light: '#FFFFFF' },
 
-  /* Объединить */
-  { cssVar: '--gur-app-bg-color', dark: '#232E3C', light: '#EDF1F4' }, /* --tg-theme-secondary-bg-color */
-  { cssVar: '--gur-header-bg-color', dark: '#232E3C', light: '#EDF1F4' }, /* --tg-theme-secondary-bg-color */
-  { cssVar: '--gur-page-bg-color', dark: '#17212B', light: '#FFFFFF' }, /* --tg-theme-bg-color */
-  { cssVar: '--gur-primary-text-color', dark: '#FFFFFF', light: '#000000' }, /* --громкий-текст */
-  { cssVar: '--gur-secondary-text-color', dark: '#BABABA', light: '#836868' }, /* --тихий-текст */
-  { cssVar: '--gur-accent-color', dark: '#F7BB0F', light: '#F7BB0F' }, /* --gurmag-accent-color */
 
   /* Не используем */
   { cssVar: '--gur-card-star-color', dark: '#F1BB33', light: '#F1BB33' }, /* цвет в svg  */

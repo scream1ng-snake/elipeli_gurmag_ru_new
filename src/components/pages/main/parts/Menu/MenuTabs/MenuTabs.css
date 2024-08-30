@@ -46,14 +46,14 @@
   /* line-height: 16.41px; */
   font-weight: 600;
   list-style: none;
-  color: var(--gur-secondary-text-color);
+  color: var(--тихий-текст);
 }
 
 .filter_list .active {
   /* background: var(--gurmag-accent-color);
   color: var(--tg-theme-button-text-color); */
   font-weight: 900;
-  color: var(--gur-primary-text-color);
+  color: var(--громкий-текст);
 }
 
 

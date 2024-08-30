@@ -93,10 +93,10 @@ export const MenuTabsFixed: FC = observer(() => {
       style={
         (auth.isFailed && auth.bannerToTg.show)
         ? { /* Если баннер, то белый фон */
-          background:' var(--gur-page-bg-color)',
+          background:' var(--tg-theme-bg-color)',
         }
         : { /* Если НЕ баннер, то закругление снизу */
-          /* background:' var(--gur-header-bg-color)', */
+          /* background:' var(--tg-theme-secondary-bg-color)', */
           borderBottomLeftRadius: '15px',
           borderBottomRightRadius: '15px',
           overflow: "hidden",
