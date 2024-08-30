@@ -380,6 +380,12 @@ export type ReceptionType = typeof receptionTypes[
   keyof typeof receptionTypes
 ];
 
+export const receptionCodes = {
+  [receptionTypes.delivery]: 2,
+  [receptionTypes.pickup]: 1,
+  [receptionTypes.initial]: undefined,
+}
+
 
 /** Организация */
 export type Organization = {

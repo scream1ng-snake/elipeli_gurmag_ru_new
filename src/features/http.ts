@@ -7,8 +7,6 @@ export interface RequestError {
   message: string;
 }
 
-export const REFRESH_TOKEN = "REFRESH";
-
 class HttpClient {
   private client: AxiosInstance;
 

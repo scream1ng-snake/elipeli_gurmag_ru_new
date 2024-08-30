@@ -36,7 +36,6 @@ class PaymentStore {
   availableMethods = {
     [receptionTypes.initial]: {},
     [receptionTypes.delivery]: {
-      CASH: "CASH",
       CARD_ONLINE: "CARD_ONLINE",
     },
     [receptionTypes.pickup]: {

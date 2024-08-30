@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { FC, useState } from "react"
+import { FC } from "react"
 import Wrapper from "../../layout/Wrapper"
 import { Button, Popup } from "antd-mobile"
 import styles from './CartPage.module.css'
@@ -9,11 +9,13 @@ import CartHead from "./parts/CartHead/CartHead"
 import Promocode from "./parts/Promocode/Promocode"
 import NoteToOrder from "./parts/NoteForOrder/NotForOrder"
 import OrderDetailPopup from "../../popups/OrderDetailPopup"
+import YoukassaPopup from "../../popups/YookassaPopup"
 
 const CartPage: FC = observer(() => {
   const { cart } = useStore()
   return (
     <Wrapper>
+      <YoukassaPopup />
       <Popup
         visible
         position='bottom'
@@ -34,6 +36,7 @@ const CartPage: FC = observer(() => {
           color='primary'
           className={styles.orderButton}
           onClick={cart.detailPopup.open}
+          disabled={!cart.items.length}
         >
           {'Оформить заказ на ' + Round(cart.totalPrice) + ' ₽'}
         </Button>

@@ -7,10 +7,12 @@ import { useStore } from "../../../features/hooks"
 import styles from '../form.module.css'
 import moment from "moment"
 import Red from "../../special/RedText"
+import { useNavigate } from "react-router-dom"
 
 
 
 const Pickup: FC = observer(() => {
+  const go = useNavigate()
   const { cart, reception } = useStore()
   const { timePick, datePick, availableTimeRange, date, setDate } = cart
   const isValid = reception.currentOrganizaion
@@ -53,13 +55,15 @@ const Pickup: FC = observer(() => {
       shape='rounded'
       color='primary'
       disabled={!isValid}
+      onClick={() => cart.prePostOrder(go)}
     >
-      Оплатить
+      Подтвердить
     </Button>
   </Form>
 })
 
 const Delivery: FC = observer(() => {
+  const go = useNavigate()
   const { cart, reception } = useStore()
   const { selectLocationPopup: { open }, } = reception
 
@@ -95,8 +99,9 @@ const Delivery: FC = observer(() => {
       shape='rounded'
       color='primary'
       disabled={!isValid}
+      onClick={() => cart.prePostOrder(go)}
     >
-      Оплатить
+      Подтвердить
     </Button>
   </Form>
 })
