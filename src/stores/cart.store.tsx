@@ -1,4 +1,4 @@
-import { InputRef, Toast } from "antd-mobile";
+import { Dialog, InputRef, Toast } from "antd-mobile";
 import { makeAutoObservable, reaction } from "mobx";
 import { Optional, Request, Undef } from "../features/helpers";
 import { http } from "../features/http";
@@ -12,6 +12,8 @@ import PaymentStore from "./payment.store";
 import { MutableRefObject } from "react";
 import Popup from "../features/modal";
 import moment from "moment";
+import { receptionCodes } from "./reception.store";
+import { NavigateFunction } from "react-router-dom";
 
 /** Блюдо в корзине как часть заказа */
 export type CouseInCart = {
@@ -50,7 +52,7 @@ export class CartStore {
     const nowthrough15min = moment()
       .add(15, 'minutes')
       .toDate()
-    
+
     const isPast = this.date <= nowthrough15min
     if (isPast) this.setDate(nowthrough15min)
   }
@@ -369,6 +371,80 @@ export class CartStore {
     )
   }
 
+  /** проверка перед отправкой (остатки и валидации) */
+  prePostOrder = async (go: NavigateFunction) => {
+    /** если заказ нужен на сегодня */
+    const isToday = moment(this.date).isSame(new Date(), 'day')
+
+    /** недостающие блюды */
+    const lostCourses = this.items
+      .filter(({ couse, quantity }) => couse.NoResidue ? false : quantity > couse.EndingOcResidue)
+      .map(cic => cic.couse)
+
+    if (isToday && lostCourses.length) {
+      Dialog.show({
+        title: 'Такой заказ сегодня не доступен((',
+        content: 'Некоторые блюда уже закончились',
+        closeOnAction: true,
+        closeOnMaskClick: true,
+        actions: [{
+          key: 'tomorrow',
+          text: 'Заказать на завтра ' + moment(this.date)
+            .add(1, 'days')
+            .format('YYYY-MM-DD HH:mm'),
+          onClick: () => {
+            const tomorrow = moment(this.date).add(1, 'days').toDate();
+            this.setDate(tomorrow);
+            this.prePostOrder(go)
+          }
+        }, {
+          key: 'anotherDate',
+          text: 'Выбрать другую дату',
+          onClick: () => { this.datePick.open() }
+        }, {
+          key: 'back',
+          text: 'Назад',
+        }]
+      })
+    } else {
+      const { user, reception } = this.root
+      if (user.ID) {
+        await this.postOrder.run({
+          userId: user.ID,
+          contactPhone: user.info.Phone,
+          itemsInCart: this.items,
+          currentOrg: reception.OrgForMenu.toString(),
+          orderDate: this.date.toISOString(),
+          fullAddress: 'Уфа ' + reception.address.road + reception.address.house_number,
+          orderType: receptionCodes[reception.receptionType],
+          promocode: this.confirmedPromocode,
+
+          activeSlot: this.slots.selectedSlot
+            ? Number(this.slots.selectedSlot.VCode)
+            : undefined,
+          street: reception.address.road,
+          house: reception.address.house_number,
+          apartment: reception.address.apartment,
+          description: this.note,
+          frame: reception.address.frame,
+          entrance: reception.address.entrance,
+          storey: reception.address.storey,
+          doorCode: reception.address.doorCode,
+          addrComment: reception.address.addrComment,
+          incorrectAddr: undefined // todo
+        })
+        this.detailPopup.close()
+        Dialog.confirm({
+          content: 'Поздравляем! Заказ оформлен!',
+          cancelText: 'Закрыть',
+          confirmText: 'На главную',
+          onConfirm: () => {
+            go('/')
+          },
+        })
+      }
+    }
+  }
 
   /** апи оформления заказа */
   postOrder = new Request(async (
@@ -377,6 +453,7 @@ export class CartStore {
     order: Order,
   ) => {
     try {
+      logger.log(JSON.stringify(order), 'order')
       setState('LOADING')
       let orgID = order.currentOrg
 
@@ -389,6 +466,7 @@ export class CartStore {
 
       if (response?.[0]) {
         const course = response[0]
+        logger.log(JSON.stringify(course), 'post-order-response')
 
         this.root.user.orderHistory.push(course)
         if (this.payment.method === 'CARD_ONLINE') {
@@ -403,7 +481,7 @@ export class CartStore {
     } catch (e) {
       logger.log('Заказ блин не оформился', 'cart-store')
       setState('FAILED')
-      throw e
+      logger.error(e, 'cart')
     }
   })
 
@@ -484,8 +562,27 @@ type Order = {
   orderDate: string,
 
   fullAddress: string | null
-  orderType: number | null
-  promocode: string
+  orderType?: number
+  promocode: string | null
+
+  activeSlot?: number,
+  street: string,
+  house: string,
+  /* квартира */
+  apartment?: string,
+  /* Комментарий к заказу */
+  description: string,
+  /* Корпус/литер */
+  frame?: string,
+  /* Подъезд */
+  entrance?: string,
+  /* Этаж */
+  storey?: string,
+  /** Код на двери */
+  doorCode?: string,
+  /** Комментарий к адресу */
+  addrComment?: string,
+  incorrectAddr: Undef<string>
 }
 
 type historyOrderItem = {

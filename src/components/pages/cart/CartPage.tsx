@@ -9,11 +9,13 @@ import CartHead from "./parts/CartHead/CartHead"
 import Promocode from "./parts/Promocode/Promocode"
 import NoteToOrder from "./parts/NoteForOrder/NotForOrder"
 import OrderDetailPopup from "../../popups/OrderDetailPopup"
+import YoukassaPopup from "../../popups/YookassaPopup"
 
 const CartPage: FC = observer(() => {
   const { cart } = useStore()
   return (
     <Wrapper>
+      <YoukassaPopup />
       <Popup
         visible
         position='bottom'

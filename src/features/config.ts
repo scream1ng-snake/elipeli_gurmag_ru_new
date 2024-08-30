@@ -2,13 +2,12 @@ class Config {
   enableLogs = true
   isDev = !!(process.env.NODE_ENV === 'development')
   get apiURL() {
-    return this.api
-    // return this.isDev
-    //   ? this.testApi
-    //   : this.api
+    return this.isDev
+      ? this.testApi
+      : this.api
   }
   api = 'https://elipelisr.lexcloud.ru/elipelibot'
-  testApi = 'https://elipelisr.lexcloud.ru/elipelibot_test'
+  testApi = 'https://elipelisr.lexcloud.ru/elipelibottest'
 }
 
 export default new Config() // eslint-disable-line
