@@ -4,9 +4,11 @@ import { Form, Input, Button, Popup, List, Space } from 'antd-mobile'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '../../../features/hooks'
 import _ from 'lodash'
-import { CloseOutline, LeftOutline } from 'antd-mobile-icons'
+import { LeftOutline } from 'antd-mobile-icons'
 import Red from '../../special/RedText'
 import { Optional } from '../../../features/helpers'
+import CustomButton from '../../special/CustomButton'
+import { IconClose } from '../../icons/IconClose'
 
 type Pr = {
   clickedOrgID: Optional<number>,
@@ -42,12 +44,24 @@ const SelectOrgForm: FC<Pr> = observer(p => {
       </div>
       {!p.clickedOrgID
         ? null
-        : <Button
-          style={{ marginTop: '1rem', marginRight: '0.75rem' }}
+        : 
+        <Button
           onClick={() => p.setClickedOrgID(null)}
           shape='rounded'
+          style={{
+            height: '38px',
+            width: '38px',
+            marginTop: '1rem',
+            marginRight: '1rem'
+          }}
         >
-          <CloseOutline />
+          <span style={{ marginLeft: '-4px' }} >
+            <IconClose
+              width={21}
+              height={23}
+              color={"var(--громкий-текст)"}
+            />
+          </span>
         </Button>
       }
     </Space>
@@ -68,24 +82,33 @@ const SelectOrgForm: FC<Pr> = observer(p => {
           <h3>{clickedOrg?.Name.replace('_', ' ')}</h3>
         </Form.Item>
       }
-      <Form.Item>
-        <Button
-          color='primary'
-          type="submit"
-          fill='solid'
-          shape='rounded'
-          size='large'
-          style={{ width: '100%' }}
-          disabled={!p.clickedOrgID}
-          onClick={() => {
+      <Form.Item
+        style={{ marginRight: '4px'}}
+      >
+        <CustomButton
+          text={'Заказать здесь'}
+          onClick={function() {
             if (p.clickedOrgID) {
               reception.currentOrgID = p.clickedOrgID
               p.onContinue()
             }
           }}
-        >
-          Заказать здесь
-        </Button>
+          height={'35px'}
+          maxWidth={'auto'}
+          
+          marginTop={'0px'}
+          marginBottom={'0px'}
+          marginHorizontal={'0px'}
+          paddingHorizontal={'24px'}
+          fontWeight={'400'}
+          fontSize={'14.5px'}
+          backgroundVar={'--gurmag-accent-color'}
+          colorVar={'--gur-custom-button-text-color'}
+          appendImage={null}
+          disabled={
+            !p.clickedOrgID
+          }
+        />
       </Form.Item>
     </Form>
   </Fragment>

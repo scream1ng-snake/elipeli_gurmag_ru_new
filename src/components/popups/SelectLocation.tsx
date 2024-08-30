@@ -1,5 +1,5 @@
 import { Popup, Space, Button, DotLoading } from 'antd-mobile'
-import { CloseOutline, LocationOutline, TravelOutline } from 'antd-mobile-icons'
+import { LocationOutline } from 'antd-mobile-icons'
 import { observer } from 'mobx-react-lite'
 import { FC, useEffect, useState } from 'react'
 import { useStore } from '../../features/hooks'
@@ -12,6 +12,7 @@ import SelectOrgForm from '../forms/selectOrganization/SelectOrg'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Optional } from '../../features/helpers'
 import ToggleSelector from '../special/ToggleSelector'
+import { IconClose } from '../icons/IconClose'
 
 type P = {
   show: boolean,
@@ -140,8 +141,21 @@ const SelectLocationPopup: FC<P> = observer(p => {
           }}
           justify='between'
         >
-          <Button onClick={p.close} shape='rounded'>
-            <CloseOutline />
+          <Button
+            onClick={p.close}
+            shape='rounded'
+            style={{
+              height: '38px',
+              width: '38px',
+            }}
+          >
+            <span style={{ marginLeft: '-4px' }} >
+              <IconClose
+                width={21}
+                height={23}
+                color={"var(--громкий-текст)"}
+              />
+            </span>
           </Button>
           <ToggleSelector
             options={options}
