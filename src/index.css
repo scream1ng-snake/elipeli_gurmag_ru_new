@@ -19,13 +19,20 @@ h2 {
   line-height: 22.27px;
 }
 
+/* Фон картинки в карточке */
+.course_item_card>.adm-image>.adm-image-tip {
+  background: var(--gur-skeleton-bg-color)
+}
+.course_item_card>.adm-image>.adm-image-tip>svg>path {
+  fill: var(--gur-card-bg-color);
+}
+
+/* отключение верхней черты в инпуте */
 .adm-form-item.adm-form-item-vertical .adm-list-item-content { 
   border-top: none;
 }
 
-/* Форма на карте */
-/* отключение верхней черты в инпуте */
-
+/* v Форма на карте */
 /* Space на три части*/
 .gur-form .gur-space.gur-space_3 .adm-space-item {
   width: 33.3%;
@@ -33,7 +40,6 @@ h2 {
 .gur-form .gur-space .adm-space-item {
   width: 100%;
 }
-
 
 .gur-form .adm-form-item.gur-form__item {
   /* margin: 0.5rem 1rem; */
@@ -89,4 +95,4 @@ h2 {
   overflow: hidden;
   text-overflow: ellipsis;
 }
- 
+/* ^ Форма на карте */

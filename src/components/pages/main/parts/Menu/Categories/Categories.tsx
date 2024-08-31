@@ -128,7 +128,7 @@ const iconStyle: CSSProperties = {
 export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
   const { reception: { menu }} = useStore();
   return(
-    <div className={styles.course_item}>
+    <div className={styles.course_item + ' course_item_card'}>
       <Image
         lazy
         src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}
@@ -139,7 +139,7 @@ export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ cours
         height="134px"
         style={{
           "--height": "134px",
-          "--width": "auto",
+          "--width": "auto"
         }}
       />
       {/* <div className={styles.image_text}>
@@ -183,13 +183,13 @@ const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
           </div>
         </div>
         <div>
-        <Image
-          src={ImageReviews}
-          width={44}
-          height={35}
-          fit='contain'
-          onClick={() => menu.courseReviewsPopup.watch(course)}
-        />
+          <Image
+            src={ImageReviews}
+            width={44}
+            height={35}
+            fit='contain'
+            onClick={() => menu.courseReviewsPopup.watch(course)}
+          />
         </div>
       </div>
       <div 

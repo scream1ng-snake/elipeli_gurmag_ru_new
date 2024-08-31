@@ -106,10 +106,10 @@ const myVariables = [
   { cssVar: '--gur-card-weight-text-color', dark: '#8E8E8E', light: '#8E8E8E' },
   { cssVar: '--gur-card-button-bg-color', dark: '#17212B', light: '#FFFFFF' },
 
+  { cssVar: '--gur-skeleton-bg-color', dark: '#D9D9D9', light: '#D9D9D9' },
 
   /* Не используем */
   { cssVar: '--gur-card-star-color', dark: '#F1BB33', light: '#F1BB33' }, /* цвет в svg  */
-  { cssVar: '--gur-skeleton-bg-color', dark: '#D9D9D9', light: '#D9D9D9' }, /* пока не трогаем */
 ]
 
 const antdVariables: Var[] = [
