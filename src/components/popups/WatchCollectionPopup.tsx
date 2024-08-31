@@ -24,7 +24,12 @@ const WatchCollectionPopup: FC = observer(p => {
     // смотрим одну подборку
     if (currentCollection) {
       return <section className={styles.categories_wrapper}>
-        <div>
+        <div
+          style={{
+            overflowY: 'auto',
+            height: 'calc(100vh - 80px)',
+          }}
+        >
           <br />
           <div className={styles.courses_list}>
             {currentCollection.CourseList.map(course =>
@@ -39,20 +44,27 @@ const WatchCollectionPopup: FC = observer(p => {
     } else {
       // или смотрим все подборки
       return <section className={styles.categories_wrapper}>
-        {menu.selections.map((selection, index) =>
-          <div key={index}>
-            <h2 onClick={() => { go('#collections/' + selection.VCode) }}>{selection.Name}</h2>
-            <br />
-            <div className={styles.courses_list}>
-              {selection.CourseList.map(course =>
-                <CourseItemComponent
-                  key={course.VCode + selection.VCode}
-                  course={course}
-                />
-              )}
+        <div
+          style={{
+            overflowY: 'auto',
+            height: 'calc(100vh - 80px)',
+          }}
+        >
+          {menu.selections.map((selection, index) =>
+            <div key={index}>
+              <h2 onClick={() => { go('#collections/' + selection.VCode) }}>{selection.Name}</h2>
+              <br />
+              <div className={styles.courses_list}>
+                {selection.CourseList.map(course =>
+                  <CourseItemComponent
+                    key={course.VCode + selection.VCode}
+                    course={course}
+                  />
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </section>
     }
   }
