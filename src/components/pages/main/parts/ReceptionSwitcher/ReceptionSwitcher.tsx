@@ -70,7 +70,7 @@ const ReceptionSwitcher: FC = observer(() => {
   receptionType === 'initial'
     ? 'или заберёте сами?'
     : receptionType === 'delivery'
-      ? isWorkingNow ? 'Доставка бесплатно' : <Red>По этому адресу заведение закрыто</Red>
+      ? isWorkingNow ? 'Доставка бесплатно' : <Red>Сейчас не доставляем. Доставляем с 9.30 до 21.30</Red>
       : isWorkingNow ? 'Забрать из Гурмага' : <Red>Закрыто - Откроется в 9:30</Red>
 
   const getAddress = () =>
@@ -101,7 +101,7 @@ const ReceptionSwitcher: FC = observer(() => {
             <p className={styles.receptiom_hint}>
               {isWorkingNow
                 ? 'Доставка бесплатно'
-                : <Red>По этому адресу заведение закрыто</Red>
+                : <Red>Сейчас не доставляем. Доставляем с 9.30 до 21.30</Red>
               }
             </p>
           </div>
