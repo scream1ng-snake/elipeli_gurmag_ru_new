@@ -9,7 +9,7 @@ import MenuStore from "./menu.store";
 import RootStore from "./root.store";
 import IconBtnDelivery from '../assets/icon_btn_delivery@2x.png'
 import IconBtnPickup from '../assets/icon_btn_pickup@2x.png'
-
+import _ from 'lodash'
 
 export class ReceptionStore {
   root: RootStore;
@@ -91,7 +91,8 @@ export class ReceptionStore {
     if(this.location) {
       let resultOrganization
       let minDistance
-      for (const org of this.deliveryPoints) {
+      let deliveryPoints: Organization[] = _.clone(this.root.reception.organizations);
+      for (const org of deliveryPoints) {
         // для каждой организации захардкодил кординаты 
         // каждый раз их узнавать заного смысла нет
         const pointCords = this.addrsBindings
@@ -135,8 +136,8 @@ export class ReceptionStore {
     const address: NominatimReverseResponse['address'] = await this.reverseGeocoderApi.run(lat, lon)
     if(typeof address === 'object' && address.hasOwnProperty('road') && address.hasOwnProperty('house_number')) {
       const { road, house_number } = address
-      this.setAddress({ road, house_number })
       this.setLocation(cord)
+      this.setAddress({ road, house_number })
     } else {
       Toast.show('Местоположение не найдено')
     }
@@ -151,6 +152,7 @@ export class ReceptionStore {
     if(result) {
       const [lon, lat]: [number, number] = result
       this.setLocation([lat, lon])
+      /* this.setAddress({ road, house_number }) */
     }
   }
 
@@ -160,8 +162,8 @@ export class ReceptionStore {
   organizations: Array<Organization> = [];
   setOrgs = (o: Organization[]) => { this.organizations = o }
 
-  /** точки с которых ведется доставк */
-  deliveryPoints: Organization[] = [
+  /** точки с которых ведется доставка */
+  /* deliveryPoints: Organization[] = [
     {
       Id: 2,
       Name: "Рабкоров_20",
@@ -172,7 +174,7 @@ export class ReceptionStore {
       Name: "Российская_43",
       isCK: false
     }
-  ]
+  ] */
 
   /** текущая организация */
   selectedOrgID: number = localStorage.getItem('currentOrg')
@@ -213,7 +215,8 @@ export class ReceptionStore {
   }
 
   get OrgForMenu() {
-    const defaultMenuOrg = this.deliveryPoints[0].Id
+    let deliveryPoints: Organization[] = _.clone(this.root.reception.organizations);
+    const defaultMenuOrg = deliveryPoints[0]?.Id
     return (this.receptionType === 'delivery'
       ? this.nearestOrgForDelivery
       : this.currentOrgID
