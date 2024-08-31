@@ -1,4 +1,4 @@
-import { NavBar, Popup } from 'antd-mobile'
+import { NavBar, Popup, Image } from 'antd-mobile'
 import { observer } from 'mobx-react-lite'
 import { FC } from 'react'
 import { useStore } from '../../features/hooks'
@@ -8,6 +8,8 @@ import { CourseItemComponent } from '../pages/main/parts/Menu/Categories/Categor
 import styles from '../pages/main/parts/Menu/Categories/Categories.module.css'
 import { useNavigate } from 'react-router-dom'
 import { Optional } from '../../features/helpers'
+
+import config from '../../features/config'
 
 const WatchCollectionPopup: FC = observer(p => {
   const { reception: { menu } } = useStore()
@@ -30,7 +32,26 @@ const WatchCollectionPopup: FC = observer(p => {
             height: 'calc(100vh - 80px)',
           }}
         >
-          <br />
+          <Image
+            src={config.apiURL
+              + "/api/v2/image/FileImage?fileId="
+              + currentCollection.Image2
+            }
+            fit='contain'
+            style={{
+              borderTopLeftRadius: '8px',
+              borderTopRightRadius: '8px',
+              "--height": "263px",
+              "--width": "100%",
+            }}
+          />
+          <div
+            style={{
+              margin: '8px 16px'
+            }}
+          >
+            {currentCollection.Description}
+          </div>
           <div className={styles.courses_list}>
             {currentCollection.CourseList.map(course =>
               <CourseItemComponent
