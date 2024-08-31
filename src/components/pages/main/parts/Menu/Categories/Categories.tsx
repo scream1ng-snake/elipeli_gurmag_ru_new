@@ -142,9 +142,9 @@ export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ cours
           "--width": "auto",
         }}
       />
-      <div className={styles.image_text}>
+      {/* <div className={styles.image_text}>
         {'Блюдо'}
-      </div>
+      </div> */}
       <CardBodyComponent course={course} />
     </div>
   )
