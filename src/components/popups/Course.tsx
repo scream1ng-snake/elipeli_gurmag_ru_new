@@ -188,7 +188,7 @@ export const ItemModal: FC = observer(() => {
                   text={'Добавить'}
                   onClick={() => {
                     addToCart()
-                    coursePopup.close()
+                    close()
                   }}
                   height={'43px'}
                   maxWidth={'auto'}
