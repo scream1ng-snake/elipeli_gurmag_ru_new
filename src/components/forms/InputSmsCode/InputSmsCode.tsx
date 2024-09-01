@@ -4,6 +4,7 @@ import { FC, useEffect, useRef } from "react"
 import { useStore } from "../../../features/hooks"
 import { useNavigate } from "react-router-dom"
 import styles from '../form.module.css'
+import { FullscreenLoading } from "../../common/Loading/Loading"
 
 
 const InputSmsCode: FC = observer(() => {
@@ -21,6 +22,10 @@ const InputSmsCode: FC = observer(() => {
   }, [])
   return (
     <Popup visible bodyClassName={styles.wrapper}>
+      {auth.inputSmsCode.state === 'LOADING' 
+        ? <FullscreenLoading />
+        : null
+      }
       <NavBar onBack={() => { go(-1) }}>
         Подтвердите номер
       </NavBar>
@@ -29,7 +34,11 @@ const InputSmsCode: FC = observer(() => {
           label='Мы отправили SMS с кодом на указанный номер. Введите код подтверждения:'
         >
           <Space justify='center' style={{ width: "100%" }}>
-            <PasscodeInput ref={ref} length={LENGHT} onFill={onFill} />
+            <PasscodeInput 
+              ref={ref} 
+              length={LENGHT} 
+              onFill={onFill} 
+            />
           </Space>
         </Form.Item>
       </Form>

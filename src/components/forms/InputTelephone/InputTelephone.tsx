@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useStore } from "../../../features/hooks"
 import styles from '../form.module.css'
 import Red from "../../special/RedText"
+import { FullscreenLoading } from "../../common/Loading/Loading"
 
 
 const defaultMask = "+7 ... ... .. .."
@@ -38,7 +39,11 @@ const InputNumber: FC = observer(() => {
     <NavBar onBack={() => { go(-1) }}>
       Вход по номеру
     </NavBar>
-    <Form>
+    {auth.authorize.state === 'LOADING'
+      ? <FullscreenLoading />
+      : null
+    }
+    <Form initialValues={{ number: defaultPrefix }}>
       <Form.Item
         label={errored
           ? <Red>Номер введен не корректно</Red>

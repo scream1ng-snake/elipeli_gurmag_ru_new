@@ -5,6 +5,7 @@ import { FC, useState, useEffect } from "react"
 import { useStore } from "../../../features/hooks"
 import { useNavigate } from "react-router-dom"
 import styles from '../form.module.css'
+import { FullscreenLoading } from "../../common/Loading/Loading"
 
 
 const Registration: FC = observer(() => {
@@ -33,6 +34,10 @@ const Registration: FC = observer(() => {
   const now = new Date()
   return (
     <Popup visible bodyClassName={styles.wrapper}>
+      {auth.registration.state === 'LOADING'
+        ? <FullscreenLoading />
+        : null
+      }
       <DatePicker
         visible={showBirthdayInput}
         onClose={() => setShowBirthdayInput(false)}
