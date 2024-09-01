@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, reaction } from "mobx";
 import { useTelegram } from "../features/hooks";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
@@ -26,6 +26,10 @@ export class AuthStore {
     this.root = root;
     makeAutoObservable(this)
     this.bannerToTg.open()
+    reaction(() => this.state, val => {
+      const { ID, loadOrdersHistory } = this.root.user
+      if(val === 'AUTHORIZED' && ID) loadOrdersHistory.run(ID)
+    })
   }
   /** верхний банер на главной, который предлагает пойти в тг */
   bannerToTg = new Popup()
