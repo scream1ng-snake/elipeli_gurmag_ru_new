@@ -1,7 +1,7 @@
 import { ShoppingCartOutlined } from "@ant-design/icons"
 import { Button, Grid, Image, Popup, Space, Stepper, Swiper, Toast } from "antd-mobile"
 import { observer } from "mobx-react-lite"
-import { CSSProperties, FC, useState } from "react"
+import { CSSProperties, FC, useEffect, useState } from "react"
 import { CourseItem } from "../../stores/menu.store"
 import { useStore } from "../../features/hooks"
 import { toJS } from "mobx"
@@ -30,6 +30,10 @@ export const ItemModal: FC = observer(() => {
 
 
   const [count, setCount] = useState(1);
+
+  useEffect(() => {
+    setCount(1)
+  }, [coursePopup.show])
 
   if (currentCouse) {
     const isHaveCarusel = currentCouse.CompressImages
