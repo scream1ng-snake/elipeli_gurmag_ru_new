@@ -26,14 +26,3 @@
   font-size: 14px;
   margin-left: 1rem;
 }
-
-.PlusMinus {
-  font-size: 16px;
-  font-weight: 700;
-  background: var(--tg-theme-secondary-bg-color);
-  border-radius: 15px;
-  overflow: hidden;
-}
-.PlusMinus button {
-  background: var(--tg-theme-secondary-bg-color);
-}

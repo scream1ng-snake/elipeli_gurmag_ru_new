@@ -115,11 +115,27 @@ export class AuthStore {
         }
       }
       //@ts-ignore
-      if (state && state !== 'no_client') {
-        setState('COMPLETED')
-        this.setStage('INPUT_SMS_CODE')
-        this.setAccountState(state)
-        this.setConfirmedPhone(phone)
+      if (state) {
+        if (state !== 'no_client') {
+          this.setStage('INPUT_SMS_CODE')
+          this.setAccountState(state)
+          this.setConfirmedPhone(phone)
+        } else {
+          this.setAccountState(state)
+          this.setStage('INPUT_TELEPHONE')
+          const src = 'https://t.me/Gurmagbot?start=start'
+          Dialog.alert({
+            confirmText: 'Перейти и запустить',
+            title: 'Упс... Кажется вы забыли запустить GURMAG бот?',
+            content: <p>Вам нужно зайти в <a href={src}>@Gurmagbot</a> и нажать кнопку "Запустить"</p>,
+            onConfirm: () => {
+              const { tg } = useTelegram() // eslint-disable-line
+              tg.openTelegramLink(src)
+              tg.close()
+            },
+          })
+        }
+        logger.log(state)
       }
     } catch (err) {
       logger.error(err)

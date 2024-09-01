@@ -23,6 +23,7 @@ const WaySelectorPopup: FC = observer(() => {
 
   const Way: FC<{ way: PaymentMethod, checked: boolean }> = props =>
     <List.Item
+      clickable={false}
       key={props.way}
       prefix={toJS(paymentIcons[props.way])}
       extra={<Checkbox checked={props.checked} />}

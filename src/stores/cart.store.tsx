@@ -372,7 +372,7 @@ export class CartStore {
   }
 
   /** проверка перед отправкой (остатки и валидации) */
-  prePostOrder = async (go: NavigateFunction) => {
+  prePostOrder = async () => {
     /** если заказ нужен на сегодня */
     const isToday = moment(this.date).isSame(new Date(), 'day')
 
@@ -382,30 +382,7 @@ export class CartStore {
       .map(cic => cic.couse)
 
     if (isToday && lostCourses.length) {
-      Dialog.show({
-        title: 'Такой заказ сегодня не доступен((',
-        content: 'Некоторые блюда уже закончились',
-        closeOnAction: true,
-        closeOnMaskClick: true,
-        actions: [{
-          key: 'tomorrow',
-          text: 'Заказать на завтра ' + moment(this.date)
-            .add(1, 'days')
-            .format('YYYY-MM-DD HH:mm'),
-          onClick: () => {
-            const tomorrow = moment(this.date).add(1, 'days').toDate();
-            this.setDate(tomorrow);
-            this.prePostOrder(go)
-          }
-        }, {
-          key: 'anotherDate',
-          text: 'Выбрать другую дату',
-          onClick: () => { this.datePick.open() }
-        }, {
-          key: 'back',
-          text: 'Назад',
-        }]
-      })
+      this.actionSheet.open()
     } else {
       const { user, reception } = this.root
       if (user.ID) {
@@ -434,17 +411,13 @@ export class CartStore {
           incorrectAddr: undefined // todo
         })
         this.detailPopup.close()
-        Dialog.confirm({
-          content: 'Поздравляем! Заказ оформлен!',
-          cancelText: 'Закрыть',
-          confirmText: 'На главную',
-          onConfirm: () => {
-            go('/')
-          },
-        })
+        this.congratilations.open()
       }
     }
   }
+
+  actionSheet = new Popup()
+  congratilations = new Popup()
 
   /** апи оформления заказа */
   postOrder = new Request(async (

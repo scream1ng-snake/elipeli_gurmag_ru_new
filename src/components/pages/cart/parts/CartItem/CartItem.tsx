@@ -1,11 +1,10 @@
-import { Button, Image, List, Skeleton } from "antd-mobile";
+import { Image, List, Skeleton, Space, Stepper } from "antd-mobile";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
-import { AllCampaignUser, CouseInCart } from "../../../../../stores/cart.store";
-import { Undef } from "../../../../../features/helpers";
+import { CouseInCart } from "../../../../../stores/cart.store";
 import config from "../../../../../features/config";
-import { AddOutline, MinusOutline } from "antd-mobile-icons";
 import styles from './CartItem.module.css'
+import Red from "../../../../special/RedText";
 
 type P = {
   courseInCart: CouseInCart,
@@ -27,11 +26,29 @@ const CartItem: FC<P> = observer(props => {
         </div>
       }
       arrowIcon={
-        <PlusMinus
-          add={add}
-          remove={remove}
-          courseInCart={courseInCart}
-        />
+        <Space direction='vertical' align='center'>
+          <Stepper
+            value={courseInCart.quantity}
+            style={{ borderRadius: 13 }}
+            onChange={val =>
+              val > courseInCart.quantity
+                ? add()
+                : remove()
+            }
+            max={!courseInCart.couse.NoResidue
+              ? courseInCart.couse.EndingOcResidue
+              : undefined
+            }
+          />
+          {!courseInCart.couse.NoResidue
+            ? <Red>
+              <span style={{ fontSize: 14 }}>
+                {'В наличии ' + courseInCart.couse.EndingOcResidue}
+              </span>
+            </Red>
+            : null
+          }
+        </Space>
       }
     >
       {courseInCart.couse.Name}
@@ -41,7 +58,7 @@ const CartItem: FC<P> = observer(props => {
 )
 
 const CartImage: FC<{ VCode: number }> = p => {
-  const Loader: FC = () => <Skeleton />
+  const Loader: FC = () => <Skeleton className={styles.cartImg} style={{ margin:0 }} animated/>
   return (
     <Image
       src={config.staticApi
@@ -56,17 +73,6 @@ const CartImage: FC<{ VCode: number }> = p => {
   )
 }
 
-const PlusMinus: FC<Pick<P, 'add' | 'remove' | 'courseInCart'>> = props => {
-  return <div className={styles.PlusMinus}>
-    <Button size='small' onClick={props.remove}>
-      <MinusOutline />
-    </Button>
-    <span>{props.courseInCart.quantity}</span>
-    <Button size='small' onClick={props.add}>
-      <AddOutline />
-    </Button>
-  </div>
-}
 
 const PriceCart: FC<Pick<P, 'courseInCart'>> = props => {
   const { priceWithDiscount, quantity } = props.courseInCart
