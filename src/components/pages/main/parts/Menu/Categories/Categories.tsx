@@ -9,6 +9,7 @@ import config from "../../../../../../features/config";
 import IconStar from '../../../../../../assets/icon_star.svg'
 import ImageReviews from '../../../../../../assets/image_reviews.svg'
 import CustomButton from '../../../../../special/CustomButton'
+import { useNavigate } from "react-router-dom";
 
 const Categories: FC = observer(function() {
   const { reception: { menu } } = useStore()
@@ -126,13 +127,14 @@ const iconStyle: CSSProperties = {
   alignItems: 'center'
 }
 export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
+  const go = useNavigate()
   const { reception: { menu }} = useStore();
   return(
     <div className={styles.course_item + ' course_item_card'}>
       <Image
         lazy
         src={`${config.staticApi}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}
-        onClick={() => menu.coursePopup.watch(course)}
+        onClick={() => go('/menu/' + course.VCode)}
         placeholder={<Skeleton style={{ width: '100%', height: '134px' }} animated/>}
         fit='cover'
         width="auto"
@@ -151,6 +153,7 @@ export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ cours
 })
 
 const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
+  const go = useNavigate()
   const { theme } = useTheme()
   const { auth, reception } = useStore()
   const { reception: { menu }, cart } = useStore()
@@ -210,7 +213,7 @@ const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
           </div>
           <h3 
             className={styles.title_text}
-            onClick={() => menu.coursePopup.watch(course)}
+            onClick={() => go('/menu/' + course.VCode)}
           >
             <span>{course.Name}</span>
           </h3>
