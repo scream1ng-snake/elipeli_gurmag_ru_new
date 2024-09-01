@@ -54,13 +54,17 @@ const AskLocation: FC = observer(() => {
         >
           Заберу сам
         </Button>
-        <Button 
-          shape='rounded'
-          style={btn}
-          onClick={() => { go('/authorize') }}
-        >
-          Уже есть аккаунт? <span style={{ color: 'var(--adm-color-warning)' }}>Войти</span>
-        </Button>
+        {
+          auth.state !== "AUTHORIZED"
+          ? <Button 
+            shape='rounded'
+            style={btn}
+            onClick={() => { go('/authorize') }}
+          >
+            Уже есть аккаунт? <span style={{ color: 'var(--adm-color-warning)' }}>Войти</span>
+          </Button>
+          : null
+        }
       </Space>
     </Popup>
   )
