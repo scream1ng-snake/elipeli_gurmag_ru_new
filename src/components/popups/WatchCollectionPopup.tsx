@@ -37,7 +37,7 @@ const WatchCollectionPopup: FC = observer(p => {
               + "/api/v2/image/FileImage?fileId="
               + currentCollection.Image2
             }
-            fit='contain'
+            fit='cover'
             style={{
               borderTopLeftRadius: '8px',
               borderTopRightRadius: '8px',
