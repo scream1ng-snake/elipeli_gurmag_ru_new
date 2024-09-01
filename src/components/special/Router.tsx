@@ -20,6 +20,11 @@ const routes: Array<{
       element: <MainPage />
     },
     {
+      path: '/menu/:VCode',
+      private: false,
+      element: <MainPage />
+    },
+    {
       path: '/basket',
       private: false,
       element: <CartPage />
