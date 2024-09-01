@@ -186,9 +186,10 @@ export const ItemModal: FC = observer(() => {
                 />
                 <CustomButton
                   text={'Добавить'}
-                  onClick={
-                    addToCart
-                  }
+                  onClick={() => {
+                    addToCart()
+                    coursePopup.close()
+                  }}
                   height={'43px'}
                   maxWidth={'auto'}
                   
