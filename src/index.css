@@ -91,6 +91,9 @@ h2 {
 
 
 /* Фон картинки в карточке */
+.course_item_card>.adm-image {
+  cursor: pointer;
+}
 .course_item_card>.adm-image>.adm-image-tip {
   background: var(--gur-skeleton-bg-color)
 }
@@ -98,14 +101,26 @@ h2 {
   fill: var(--gur-card-bg-color);
 }
 
-/* Модалка товара */
+/* v Модалка товара */
 .item_modal {
+  background: none!important;
+}
+.item_modal_wrapper {
+  display: flex;
+  flex-direction: column;
   background: none;
   height: calc(100vh - 20px);
   overflow-y: auto;
   border-radius: 20px 20px 0 0;
 }
+.item_modal_image_wrapper {
+  height: 263px;
+  max-height: 33vh;
+}
 .item_modal_content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   background: var(--tg-theme-secondary-bg-color);
   position: relative;
   box-sizing: border-box;
@@ -131,25 +146,22 @@ h2 {
   font-weight: 600;
   line-height: 29px;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-top: 10px;
 }
-
 .item_modal_count_text {
   font-size: 13px;
   font-weight: 700;
   line-height: 29px;
   color: var(--gur-card-count-text-color);
 }
-
 .item_modal_weight_text {
   font-size: 22.5px;
   font-weight: 700;
   line-height: 26.37px;
-
   color: var(--gur-card-weight-text-color);
 }
 .item_modal_price_text_shell {
@@ -185,6 +197,55 @@ h2 {
   min-width: 112px;
 }
 .item_modal_stepper.adm-stepper .adm-input-element {
-
   font-weight: 700;
 }
+.item_modal_absolute_wrapper {
+  position: absolute;
+  top: -25px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.item_modal_rating_wrapper {
+  position: relative;
+  height: 25px;
+  margin-right: 19px;
+  margin-left: 19px;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+  background: var(--tg-theme-bg-color);
+}
+.item_modal_rating_wrapper:before,
+.item_modal_rating_wrapper:after {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 8px; height: 8px;
+}
+.item_modal_rating_wrapper:before {
+  right: 100%; bottom: 0;
+  background-image: radial-gradient(circle at 0 0, transparent 8px, var(--tg-theme-bg-color) 8.5px);
+}
+.item_modal_rating_wrapper:after {
+  left: 100%; bottom: 0;
+  background-image: radial-gradient(circle at 100% 0, transparent 8px, var(--tg-theme-bg-color) 8.5px);
+}
+.item_modal_rating {
+  display: flex;
+  padding: 4.54px 9.19px 2.76px 8.43px;
+  align-items: center;
+  cursor: pointer;
+}
+.item_modal_rating_text {
+  margin-left: 6.39px;
+  font-size: 16.16px;
+  font-weight: 400;
+  line-height: 18.94px;
+}
+.item_modal_exit_btn svg>g {
+  stroke-width: 3!important;
+  stroke: var(--громкий-текст);
+}
+/* ^ Модалка товара */
