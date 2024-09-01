@@ -11,7 +11,7 @@ import ImageReviews from '../../../../../../assets/image_reviews.svg'
 import CustomButton from '../../../../../special/CustomButton'
 
 const Categories: FC = observer(function() {
-  const { reception: { menu }} = useStore()
+  const { reception: { menu } } = useStore()
   const { categories, dishSearcher, loadMenu } = menu;
 
   if(loadMenu.state === 'COMPLETED') {
@@ -152,8 +152,9 @@ export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ cours
 
 const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
   const { theme } = useTheme()
+  const { auth, reception } = useStore()
   const { reception: { menu }, cart } = useStore()
-  function addToCart(e: any) {
+  function addToCart(e?: any) {
     e?.stopPropagation()
     cart.addCourseToCart(course)
     Toast.show({
@@ -220,7 +221,15 @@ const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
         <div style={{margin: '0px -4px'}}>
           <CustomButton
             text={cart.isInCart(course) ? ('' + cart.findItem(course.VCode)?.quantity) : '+'}
-            onClick={addToCart}
+            onClick={
+              () => {
+                if (!reception.nearestOrgForDelivery && !reception.selectedOrgID) {
+                  auth.bannerAskAdress.open();
+                }
+
+                addToCart();
+              }
+            }
             height={'24px'}
             maxWidth={'auto'}
             marginTop={'0px'}

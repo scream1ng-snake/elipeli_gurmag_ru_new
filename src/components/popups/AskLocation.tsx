@@ -19,8 +19,7 @@ const btn = {
 const AskLocation: FC = observer(() => {
   const go = useNavigate()
   const { reception, auth } = useStore()
-  const visible = reception.receptionType === 'initial'
-    && auth.isFailed
+  const visible = !reception.nearestOrgForDelivery && !reception.selectedOrgID && auth.bannerAskAdress.show /* reception.receptionType === 'initial' && auth.isFailed */
 
   return (
     <Popup

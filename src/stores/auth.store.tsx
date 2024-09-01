@@ -29,6 +29,8 @@ export class AuthStore {
   }
   /** верхний банер на главной, который предлагает пойти в тг */
   bannerToTg = new Popup()
+  /** нижний банер который предлагает выбрать адрес или войти */
+  bannerAskAdress = new Popup()
 
   get isAuth() { return this.state === AuthStates.AUTHORIZED }
   get isFailed() { return this.state === AuthStates.NOT_AUTHORIZED }
