@@ -35,7 +35,6 @@ export const ItemModal: FC = observer(() => {
     const isHaveCarusel = currentCouse.CompressImages
       && currentCouse.CompressImages.length
 
-
     const addToCart = () => {
       if (count > 0) {
         for (let i = 0; i < count; i++) {
@@ -149,7 +148,7 @@ export const ItemModal: FC = observer(() => {
                     </div>
                   </div>
                   <div className="item_modal_weight_text">
-                    <span>{`${currentCouse.Weigth}`}</span>
+                    <span>{currentCouse.Weigth}</span>
                   </div>
                 </Space>
                 <div
