@@ -193,6 +193,7 @@ const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
             height={35}
             fit='contain'
             onClick={() => menu.courseReviewsPopup.watch(course)}
+            style={{cursor: 'pointer'}}
           />
         </div>
       </div>
@@ -202,12 +203,9 @@ const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
         <div 
           className={styles.item_bottom_content}
         >
-          {!course.NoResidue && course.EndingOcResidue && course.EndingOcResidue > 0
-            ? <div className={styles.count_text}>
-              <p>{`В наличии ${course.EndingOcResidue} шт`}</p>
-            </div>
-            : null
-          }
+          <div className={styles.count_text}>
+            {`В наличии ${(!course.NoResidue && course.EndingOcResidue > 0) ? course.EndingOcResidue : 0} шт`}
+          </div>
           <div className={styles.price_text}>
             <span>{`${course.Price} ₽`}</span>
           </div>
@@ -247,80 +245,6 @@ const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
           />
         </div>
       </div>
-
-      {/* {!course.NoResidue && course.EndingOcResidue
-        ? <div 
-          style={{
-            position:'absolute',
-            top: -9,
-            left: 0,
-            right: 0,
-            borderRadius: 8,
-            textAlign: 'center',
-            padding: '0.1rem 0.3rem',
-            background: 'var(--gurmag-accent-color)',
-            fontSize: '14px',
-            fontWeight: '700',
-            color: 'white',
-          }}
-        >
-          <p>{`сегодня осталось ${course.EndingOcResidue}`}</p>
-        </div>
-        : null
-      } */}
-
-      {/* <h3 
-        className={styles.title}
-        onClick={() => menu.coursePopup.watch(course)}
-      >
-        <span>{course.Name + " "}</span>
-        <span style={{ color: theme === 'dark' ? "#b3b3b3" : "#808080" }}>{course.Weigth}</span>
-      </h3> */}
-
-      {/* <Space 
-        align='center' 
-        style={{'--gap': '3px', margin: '0.5rem 0' }}
-      >
-        <Rate count={1} value={1} style={{ '--star-size': '16px' }}/>
-        <div>{Math.ceil(course.Quality * 10) / 10}</div>
-        <div 
-          style={{
-            color:'var(--tg-theme-link-color)',
-            fontSize: '10px', 
-          }} 
-          onClick={() => menu.courseReviewsPopup.watch(course)}
-        >
-          Смотреть отзывы
-        </div>
-      </Space> */}
-
-      {/* <div className={styles.price_cart}>
-        <span>{`${course.Price} ₽`}</span>
-        <div className={styles.keke}>
-          {cart.isInCart(course)
-            ? <>
-              <Tag
-                color='primary' 
-                style={{ 
-                  position: 'absolute',
-                  top: '-5px', 
-                  right: '-5px', 
-                  lineHeight: '1',
-                  fontSize: '12px', 
-                  '--border-radius': '6px', 
-                }}
-              >
-                {cart.findItem(course.VCode)?.quantity}
-              </Tag>
-              <CheckOutline style={iconStyle} onClick={addToCart} />
-            </>
-            : <AddOutline style={iconStyle} onClick={addToCart} />
-          }
-          
-        </div>
-      </div> */}
-
-
     </div>
   )
 })
