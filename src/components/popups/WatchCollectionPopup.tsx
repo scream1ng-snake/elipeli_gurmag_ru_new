@@ -33,7 +33,7 @@ const WatchCollectionPopup: FC = observer(p => {
           }}
         >
           <Image
-            src={config.apiURL
+            src={config.staticApi
               + "/api/v2/image/FileImage?fileId="
               + currentCollection.Image2
             }

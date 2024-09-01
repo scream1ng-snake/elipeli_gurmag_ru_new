@@ -46,7 +46,7 @@ const Collections: FC = observer(() => {
         ? menu.selections.map((selection, index) =>
           <div key={index} className={styles.selection_cover_item}>
             <Image
-              src={config.apiURL
+              src={config.staticApi
                 + "/api/v2/image/FileImage?fileId="
                 + selection.Image
               }
