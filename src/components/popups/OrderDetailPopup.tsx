@@ -8,10 +8,11 @@ import SelectLocationPopup from "./SelectLocation"
 import OrderForm from "../forms/Order/OrderForm"
 import WaySelectorPopup from "./SelectPayMethod"
 import AskLocation from "./AskLocation"
+import CartActions from "./CartActions"
 
 const OrderDetailPopup: FC = observer(() => {
   const { cart, reception } = useStore()
-  const { selectLocationPopup: { show, close, open }, } = reception
+  const { selectLocationPopup: { show, close }, } = reception
 
   function getBody(rt: ReceptionType) {
     switch (rt) {
@@ -22,7 +23,6 @@ const OrderDetailPopup: FC = observer(() => {
         return <OrderForm.Pickup />
 
       case 'initial': 
-        cart.detailPopup.close()
         return <AskLocation />
     }
   }
@@ -39,6 +39,7 @@ const OrderDetailPopup: FC = observer(() => {
       onContinue={reception.selectLocationPopup.close}
     />
     <WaySelectorPopup />
+    <CartActions />
     {getBody(reception.receptionType)}
   </Popup>
 })

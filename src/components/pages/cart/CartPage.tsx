@@ -10,6 +10,7 @@ import Promocode from "./parts/Promocode/Promocode"
 import NoteToOrder from "./parts/NoteForOrder/NotForOrder"
 import OrderDetailPopup from "../../popups/OrderDetailPopup"
 import YoukassaPopup from "../../popups/YookassaPopup"
+import { Congratilations } from "../../popups/CartActions"
 
 const CartPage: FC = observer(() => {
   const { cart } = useStore()
@@ -22,6 +23,7 @@ const CartPage: FC = observer(() => {
         bodyClassName={styles.cartPopup}
         mask={false}
       >
+        <Congratilations />
         <OrderDetailPopup />
         <CartHead />
         <h2 className={styles.cartText}>
