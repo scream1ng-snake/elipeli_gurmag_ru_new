@@ -8,6 +8,8 @@ import { Checker } from './AuthCheck';
 import MainPage from '../pages/main/MainPage';
 import CartPage from '../pages/cart/CartPage';
 import LoginPage from '../pages/login/LoginPage';
+import UserPage from '../pages/user/UserPage';
+import MorePage from '../pages/more/MorePage';
 
 const routes: Array<{
   path: string,
@@ -33,6 +35,16 @@ const routes: Array<{
       path: '/authorize',
       private: false,
       element: <LoginPage />
+    },
+    {
+      path: '/me',
+      private: true,
+      element: <UserPage />
+    },
+    {
+      path: '/more',
+      private: false,
+      element: <MorePage />
     }
   ]
 

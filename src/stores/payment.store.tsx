@@ -80,10 +80,17 @@ class PaymentStore {
             this.checkoutWidget.destroy()
             resolve("Заказ успешно оформлен")
           })
-          this.checkoutWidget.on("fail", () => {
+          this.checkoutWidget.on("fail", (err: any) => {
             this.youkassaPopup.close()
             this.checkoutWidget.destroy()
-            Dialog.show({ content: 'Что-то пошло не так' })
+            console.error(err)
+            Dialog.show({ 
+              content: 'Что-то пошло не так c оплатой в Юкассе',
+              actions: [{
+                key: 'close',
+                text: 'Закрыть'
+              }]
+            })
             reject("Что-то пошло не так")
           })
           this.checkoutWidget.render('payment-form')
