@@ -19,14 +19,6 @@ h2 {
   line-height: 22.27px;
 }
 
-/* Фон картинки в карточке */
-.course_item_card>.adm-image>.adm-image-tip {
-  background: var(--gur-skeleton-bg-color)
-}
-.course_item_card>.adm-image>.adm-image-tip>svg>path {
-  fill: var(--gur-card-bg-color);
-}
-
 /* отключение верхней черты в инпуте */
 .adm-form-item.adm-form-item-vertical .adm-list-item-content { 
   border-top: none;
@@ -96,3 +88,103 @@ h2 {
   text-overflow: ellipsis;
 }
 /* ^ Форма на карте */
+
+
+/* Фон картинки в карточке */
+.course_item_card>.adm-image>.adm-image-tip {
+  background: var(--gur-skeleton-bg-color)
+}
+.course_item_card>.adm-image>.adm-image-tip>svg>path {
+  fill: var(--gur-card-bg-color);
+}
+
+/* Модалка товара */
+.item_modal {
+  background: none;
+  height: calc(100vh - 20px);
+  overflow-y: auto;
+  border-radius: 20px 20px 0 0;
+}
+.item_modal_content {
+  background: var(--tg-theme-secondary-bg-color);
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+}
+.item_modal_top_wrapper {
+  background: var(--tg-theme-bg-color);
+  padding: 0 16px 20px;
+  border-radius: 0px 0px 15px 15px;
+}
+.item_modal_description_wrapper {
+  flex: 1;
+  margin-top: 6px;
+  padding: 0 16px 20px;
+  border-radius: 15px 15px 0px 0px;
+  background: var(--tg-theme-bg-color);
+}
+
+.item_modal_title_text {
+  color: var(--громкий-текст);
+  color: var(--tg-theme-text-color);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 29px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-top: 10px;
+}
+
+.item_modal_count_text {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 29px;
+  color: var(--gur-card-count-text-color);
+}
+
+.item_modal_weight_text {
+  font-size: 22.5px;
+  font-weight: 700;
+  line-height: 26.37px;
+
+  color: var(--gur-card-weight-text-color);
+}
+.item_modal_price_text_shell {
+  padding: 1px 11.25px 2px 14.75px;
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-radius: 10px;
+}
+.item_modal_price_text {
+  color: var(--громкий-текст);
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 29.3px;
+  color: var(--gur-card-price-text-color);
+}
+
+.item_modal_description_label {
+  padding-top: 5px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 29px;
+  color: var(--тихий-текст);
+}
+.item_modal_description_text {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: 0.05em;
+  color: var(--громкий-текст);
+}
+
+.item_modal_stepper.adm-stepper {
+  background-color: var(--tg-theme-secondary-bg-color);
+  min-width: 112px;
+}
+.item_modal_stepper.adm-stepper .adm-input-element {
+
+  font-weight: 700;
+}

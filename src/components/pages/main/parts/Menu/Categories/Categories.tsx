@@ -202,12 +202,9 @@ const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
         <div 
           className={styles.item_bottom_content}
         >
-          {!course.NoResidue && course.EndingOcResidue && course.EndingOcResidue > 0
-            ? <div className={styles.count_text}>
-              <p>{`В наличии ${course.EndingOcResidue} шт`}</p>
-            </div>
-            : null
-          }
+          <div className={styles.count_text}>
+            {`В наличии ${(!course.NoResidue && course.EndingOcResidue > 0) ? course.EndingOcResidue : 0} шт`}
+          </div>
           <div className={styles.price_text}>
             <span>{`${course.Price} ₽`}</span>
           </div>

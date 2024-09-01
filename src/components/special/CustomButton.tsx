@@ -16,6 +16,7 @@ const CustomButton: FC<{
   marginHorizontal?: string,
   marginBottom?: string,
   paddingHorizontal?: string,
+  borderRadius?: string,
 
   fontWeight?: string,
   fontSize?: string,
@@ -46,6 +47,7 @@ const CustomButton: FC<{
         marginRight: props.marginHorizontal || '0px',
         paddingLeft: props.paddingHorizontal || '0px',
         paddingRight: props.paddingHorizontal || '0px',
+        borderRadius: props.borderRadius || '20px',
         backgroundColor: `var(${props.backgroundVar})`,
         color: `var(${props.colorVar})`,
         fontWeight: props.fontWeight,
