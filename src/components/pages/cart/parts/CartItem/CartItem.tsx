@@ -44,7 +44,7 @@ const CartImage: FC<{ VCode: number }> = p => {
   const Loader: FC = () => <Skeleton />
   return (
     <Image
-      src={config.apiURL
+      src={config.staticApi
         + '/api/v2/image/Material?vcode='
         + p.VCode
         + '&compression=true'

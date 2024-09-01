@@ -65,7 +65,7 @@ const CookItem: FC<{ cook: Cook }> = observer(({ cook }) => {
       onClick={() => employees.watchCockPopup.watch(cook)}
     >
       <Avatar
-        src={config.apiURL + '/api/v2/image/Cook?vcode=' + cook.UserId}
+        src={config.staticApi + '/api/v2/image/Cook?vcode=' + cook.UserId}
         style={avatarStyle as CSSProperties}
         fallback={
           <Image
