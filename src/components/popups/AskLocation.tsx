@@ -36,8 +36,8 @@ const AskLocation: FC = observer(() => {
           color='primary'
           style={btn}
           onClick={() => {
-            reception.setReceptionType(receptionTypes.delivery)
-            reception.selectLocationPopup.open()
+            auth.bannerAskAdress.close()
+            go('/#selectLocation/delivery')
           }}
         >
           Указать адрес доставки
@@ -47,8 +47,8 @@ const AskLocation: FC = observer(() => {
           color='warning'
           fill='outline'
           onClick={() => {
-            reception.setReceptionType(receptionTypes.pickup)
-            reception.selectLocationPopup.open()
+            auth.bannerAskAdress.close()
+            go('/#selectLocation/pickup')
           }}
           style={btn}
         >
