@@ -15,7 +15,7 @@ import ImageReviewsModal from '../../assets/image_reviews_modal.svg'
 
 export const ItemModal: FC = observer(() => {
   const go = useNavigate()
-  const { reception: { menu }, cart } = useStore();
+  const { reception: { menu, nearestOrgForDelivery, selectedOrgID }, cart, auth } = useStore();
   const { loadCourseReviews, coursePopup } = menu
 
   const close = () => {
@@ -191,6 +191,9 @@ export const ItemModal: FC = observer(() => {
                 <CustomButton
                   text={'Добавить'}
                   onClick={() => {
+                    if (!nearestOrgForDelivery && !selectedOrgID) {
+                      auth.bannerAskAdress.open();
+                    }
                     addToCart()
                     close()
                   }}
