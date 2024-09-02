@@ -77,6 +77,7 @@ export class ReceptionStore {
       storey: '',
       apartment: '',
       addrComment: '',
+      incorrectAddr: false,
     }
   setAddressForAdditionalFields = (address: Address) => {
     logger.log(`setAddressForAdditionalFields | address: ${JSON.stringify(address) }`, 'Reception-Store')
@@ -146,14 +147,14 @@ export class ReceptionStore {
   /** by address */
   setCordinatesByAddress = async ({ road, house_number }: Address) => {
     logger.log(`setCordinatesByAddress | road: ${JSON.stringify(road)} | house_number: ${JSON.stringify(house_number)}`, 'Reception-Store')
-    /* this.address = { road, house_number }
-    localStorage.setItem('data', JSON.stringify({ road, house_number })) */
     const result = await this.geocoderApi.run('Уфа, ' + road + ' ' + house_number)
     if(result) {
       const [lon, lat]: [number, number] = result
       this.setLocation([lat, lon])
+      this.setAddress({ road, house_number })
+    } else {
+      this.setAddress({ road, house_number, incorrectAddr: true })
     }
-    this.setAddress({ road, house_number })
   }
 
 
@@ -504,4 +505,5 @@ type Address = {
   storey?: string | undefined,
   apartment?: string | undefined,
   addrComment?: string | undefined,
+  incorrectAddr?: boolean | undefined,
 }

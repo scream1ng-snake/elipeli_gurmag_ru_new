@@ -408,7 +408,7 @@ export class CartStore {
           storey: reception.address.storey,
           doorCode: reception.address.doorCode,
           addrComment: reception.address.addrComment,
-          incorrectAddr: undefined // todo
+          incorrectAddr: reception.address.incorrectAddr,
         })
         this.detailPopup.close()
         this.congratilations.open()
@@ -555,7 +555,7 @@ type Order = {
   doorCode?: string,
   /** Комментарий к адресу */
   addrComment?: string,
-  incorrectAddr: Undef<string>
+  incorrectAddr?: boolean | undefined,
 }
 
 type historyOrderItem = {

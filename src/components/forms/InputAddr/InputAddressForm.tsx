@@ -21,6 +21,7 @@ interface InputAddress {
   storey?: string | undefined,
   apartment?: string | undefined,
   addrComment?: string | undefined,
+  incorrectAddr?: boolean | undefined,
 }
 const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
   const { reception } = useStore()
@@ -32,7 +33,6 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         logger.log(`debounce | formName: ${JSON.stringify(formName)} | form: ${JSON.stringify(form)}`, 'InputAddressForm')
         if (formName) {
           if (formName === 'road' || formName === 'house_number') {
-            
             reception.setCordinatesByAddress(form)
           } else {
             reception.setAddressForAdditionalFields(form);
@@ -54,6 +54,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
       storey: '',
       apartment: '',
       addrComment: '',
+      incorrectAddr: false,
     },
     mode: 'onChange',
     reValidateMode: 'onChange',
@@ -84,7 +85,8 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
     setValue('storey', reception.address.storey)
     setValue('apartment', reception.address.apartment)
     setValue('addrComment', reception.address.addrComment)
-   
+
+    setValue('incorrectAddr', reception.address.incorrectAddr)
     form.clearErrors()
   }, [reception.address])
   return <Fragment>
