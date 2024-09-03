@@ -10,6 +10,7 @@ import CartPage from '../pages/cart/CartPage';
 import LoginPage from '../pages/login/LoginPage';
 import UserPage from '../pages/user/UserPage';
 import MorePage from '../pages/more/MorePage';
+import OrdersPage, { WatchOrderDetailModal } from '../pages/orders/OrdersPage';
 
 const routes: Array<{
   path: string,
@@ -45,7 +46,17 @@ const routes: Array<{
       path: '/more',
       private: false,
       element: <MorePage />
-    }
+    },
+    {
+      path: '/orders',
+      private: true,
+      element: <OrdersPage />
+    },
+    {
+      path: '/orders/:VCode',
+      private: true,
+      element: <WatchOrderDetailModal />
+    },
   ]
 
 export const RouterComponent: FC = () => <BrowserRouter>

@@ -33,11 +33,11 @@ const MorePage: FC = observer(() => {
           prefix={<MessageOutline style={icoStyle} />}
           onClick={() => {
             tg.isInTelegram()
-              ? tg.tg.openTelegramLink('https://t.me/Elipeli_operator')
-              : window.open('https://t.me/Elipeli_operator')
+              ? tg.tg.openTelegramLink('https://t.me/+79870401199')
+              : window.open('https://wa.me/+79870401119')
           }}
         >
-          Написать в чат
+          Поддержка
         </List.Item>
         <List.Item
           clickable={false}
