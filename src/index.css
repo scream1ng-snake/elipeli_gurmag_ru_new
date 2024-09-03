@@ -104,14 +104,15 @@ h2 {
 /* v Модалка товара */
 .item_modal {
   background: none!important;
+  height: calc(100% - 30px);
 }
 .item_modal_wrapper {
   display: flex;
   flex-direction: column;
   background: none;
-  height: calc(100vh - 20px);
   overflow-y: auto;
   border-radius: 20px 20px 0 0;
+  height: 100%;
 }
 .item_modal_image_wrapper {
   height: 263px;
