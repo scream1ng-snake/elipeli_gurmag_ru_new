@@ -15,7 +15,7 @@ abstract class Metrics {
   static pixelID = 3545385
 
   static buyYandex(order: historyOrderItem) {
-    window.dataLayer.push({
+    window.dataLayer?.push?.({
       "ecommerce": {
           "currencyCode": "RUB",
           "purchase" : {
@@ -32,7 +32,7 @@ abstract class Metrics {
       }
   });
 
-  window.ym(98171988,'reachGoal','purchase')
+  window.ym?.(98171988,'reachGoal','purchase')
   }
   static buy(totalPrice: number, IDs: number[]) {
     _tmr.push({ 
@@ -52,7 +52,7 @@ abstract class Metrics {
       goal: 'registration'
     })
 
-    window.ym(98171988,'reachGoal','registration')
+    window.ym?.(98171988,'reachGoal','registration')
   }
   static addToCart(course: CourseItem) {
     logger.log('addtobasket event vk pixel', 'metrics')
@@ -64,7 +64,7 @@ abstract class Metrics {
       goal: 'addbasket', 
       params: { product_id: course.VCode }
     });
-    window.dataLayer.push({
+    window.dataLayer?.push?.({
       "ecommerce": {
           "currencyCode": "RUB",
           "add" : {
@@ -79,7 +79,7 @@ abstract class Metrics {
       }
     });
     
-    window.ym(98171988,'reachGoal','add')
+    window.ym?.(98171988,'reachGoal','add')
   }
 }
 
