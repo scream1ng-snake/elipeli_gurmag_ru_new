@@ -44,7 +44,7 @@ export const ItemModal: FC = observer(() => {
       if (count > 0) {
         for (let i = 0; i < count; i++) {
           cart.addCourseToCart(currentCouse)
-          Metrics.addToCart(currentCouse.VCode, currentCouse.Price)
+          Metrics.addToCart(currentCouse)
         }
         setCount(1)
         coursePopup.close()

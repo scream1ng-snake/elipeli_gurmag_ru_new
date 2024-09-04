@@ -161,7 +161,7 @@ const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
   function addToCart(e?: any) {
     e?.stopPropagation()
     cart.addCourseToCart(course)
-    Metrics.addToCart(course.VCode, course.Price)
+    Metrics.addToCart(course)
     Toast.show({
       position: 'center', 
       content: 'Добавлено'

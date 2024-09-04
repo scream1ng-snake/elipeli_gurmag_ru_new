@@ -451,6 +451,7 @@ export class CartStore {
 
         setState('COMPLETED')
         this.clearCart()
+        Metrics.buyYandex(course)
         Metrics.buy(this.totalPrice, order.itemsInCart.map(i => i.couse.VCode))
       };
     } catch (e) {
@@ -560,7 +561,7 @@ type Order = {
   incorrectAddr?: boolean | undefined,
 }
 
-type historyOrderItem = {
+export type historyOrderItem = {
   /** !number string "99328" */
   VCode: string,
   /** !number string "11676" */

@@ -13,7 +13,7 @@ const CartList: FC = () => {
         courseInCart={item}
         add={() => {
           cart.addCourseToCart(item.couse)
-          Metrics.addToCart(item.couse.VCode, item.couse.Price)
+          Metrics.addToCart(item.couse)
         }}
         remove={() => cart.removeFromCart(item.couse.VCode)}
       />)}
