@@ -12,6 +12,7 @@ import { copyToClipboard } from "../../features/helpers";
 import CustomButton from "../special/CustomButton"
 import IconStar from '../../assets/icon_star.svg'
 import ImageReviewsModal from '../../assets/image_reviews_modal.svg'
+import Metrics from "../../features/Metrics"
 
 export const ItemModal: FC = observer(() => {
   const go = useNavigate()
@@ -43,7 +44,7 @@ export const ItemModal: FC = observer(() => {
       if (count > 0) {
         for (let i = 0; i < count; i++) {
           cart.addCourseToCart(currentCouse)
-          // Metrics.addToCart(course.VCode, course.Price) todo
+          Metrics.addToCart(currentCouse.VCode, currentCouse.Price)
         }
         setCount(1)
         coursePopup.close()

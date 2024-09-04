@@ -8,6 +8,7 @@ import { Dialog, Image } from "antd-mobile";
 import { ExclamationCircleFill as Icon } from "antd-mobile-icons";
 import Pizza from '../assets/Pizza.png'
 import Popup from "../features/modal";
+import Metrics from "../features/Metrics";
 
 export const AuthStates = {
   CHECKING_AUTH: "CHECKING_AUTH",
@@ -185,6 +186,7 @@ export class AuthStore {
           this.showCongratulation(result?.Message)
           const COrg = this.root.reception.OrgForMenu
           this.root.user.loadUserInfo.run(COrg, userId)
+          Metrics.registration()
         } else {
           setQueryState('FAILED')
           this.setStage('INPUT_TELEPHONE')
@@ -220,6 +222,7 @@ export class AuthStore {
       this.showCongratulation(result?.Message)
       const COrg = this.root.reception.OrgForMenu
       this.root.user.loadUserInfo.run(COrg, userId)
+      Metrics.registration()
     } else {
       setState('FAILED')
       this.setStage('INPUT_TELEPHONE')

@@ -14,6 +14,7 @@ import Popup from "../features/modal";
 import moment from "moment";
 import { receptionCodes } from "./reception.store";
 import { NavigateFunction } from "react-router-dom";
+import Metrics from "../features/Metrics";
 
 /** Блюдо в корзине как часть заказа */
 export type CouseInCart = {
@@ -450,6 +451,7 @@ export class CartStore {
 
         setState('COMPLETED')
         this.clearCart()
+        Metrics.buy(this.totalPrice, order.itemsInCart.map(i => i.couse.VCode))
       };
     } catch (e) {
       logger.log('Заказ блин не оформился', 'cart-store')

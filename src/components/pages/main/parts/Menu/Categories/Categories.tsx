@@ -10,6 +10,7 @@ import IconStar from '../../../../../../assets/icon_star.svg'
 import ImageReviews from '../../../../../../assets/image_reviews.svg'
 import CustomButton from '../../../../../special/CustomButton'
 import { useNavigate } from "react-router-dom";
+import Metrics from "../../../../../../features/Metrics";
 
 const Categories: FC = observer(function() {
   const { reception: { menu } } = useStore()
@@ -160,6 +161,7 @@ const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
   function addToCart(e?: any) {
     e?.stopPropagation()
     cart.addCourseToCart(course)
+    Metrics.addToCart(course.VCode, course.Price)
     Toast.show({
       position: 'center', 
       content: 'Добавлено'

@@ -2,6 +2,7 @@ import { List } from "antd-mobile"
 import { FC } from "react"
 import CartItem from "../CartItem/CartItem"
 import { useStore } from "../../../../../features/hooks"
+import Metrics from "../../../../../features/Metrics"
 
 const CartList: FC = () => {
   const { cart } = useStore()
@@ -10,7 +11,10 @@ const CartList: FC = () => {
       <CartItem
         key={index}
         courseInCart={item}
-        add={() => cart.addCourseToCart(item.couse)}
+        add={() => {
+          cart.addCourseToCart(item.couse)
+          Metrics.addToCart(item.couse.VCode, item.couse.Price)
+        }}
         remove={() => cart.removeFromCart(item.couse.VCode)}
       />)}
   </List>
