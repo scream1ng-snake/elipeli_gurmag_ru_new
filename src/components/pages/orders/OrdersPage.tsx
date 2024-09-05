@@ -38,7 +38,10 @@ const OrdersPage: FC = observer(() => {
           left: 0,
           right: 0,
           top: 0,
-          zIndex: 1
+          zIndex: 1,
+          
+          borderBottomLeftRadius: 15,
+          borderBottomRightRadius: 15
         }}
       >
         История заказов
@@ -54,7 +57,8 @@ const OrdersPage: FC = observer(() => {
                 width: 'calc(100% - 1.5rem)',
                 border: '1px solid var(--adm-border-color)',
                 margin: '0 0.75rem 0.25rem 0.75rem',
-                background: 'var(--tg-theme-bg-color)'
+                background: 'var(--tg-theme-bg-color)',
+                borderRadius: 15
               }}
               title={`Заказ от ${moment(order.DocumentDate).format('LLL')}`}
               extra={<span style={{ marginLeft: '0.25rem' }}>{`№ ${order.VCode}`}</span>}
@@ -172,7 +176,9 @@ export const WatchOrderDetailModal: FC = observer(() => {
             right: '0',
             top: '0',
             background: 'var(--tg-theme-bg-color)',
-            zIndex: '1'
+            zIndex: '1',
+            borderBottomLeftRadius: 15,
+            borderBottomRightRadius: 15
           }}
         >
           <div>
@@ -188,7 +194,8 @@ export const WatchOrderDetailModal: FC = observer(() => {
             width: 'calc(100% - 1.5rem)',
             border: '1px solid var(--adm-border-color)',
             margin: '0.75rem 0.75rem 0.25rem 0.75rem',
-            background: 'var(--tg-theme-bg-color)'
+            background: 'var(--tg-theme-bg-color)',
+            borderRadius:15
           }}
         >
           <Space style={W100} justify='between'>
