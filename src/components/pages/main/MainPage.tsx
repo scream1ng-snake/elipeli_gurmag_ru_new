@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { FC, ReactNode, useEffect } from "react"
+import { FC, useEffect } from "react"
 import Wrapper from "../../layout/Wrapper"
 import Collections from "./parts/Collections/Collections"
 import Cooks from "./parts/Cooks/Cooks"
@@ -18,14 +18,15 @@ import { useNavigate, useParams } from "react-router-dom"
 import { Toast } from "antd-mobile"
 import { logger } from "../../../features/logger"
 const MainPage: FC = observer(() => {
-  const { auth, reception: { menu }} = useStore()
+  const { auth, reception: { menu } } = useStore()
 
   const { VCode } = useParams<{ VCode: string }>()
   const go = useNavigate()
+
   useEffect(() => {
     if (VCode && menu.loadMenu.state === 'COMPLETED') {
       const targetDish = menu.getDishByID(VCode)
-      if(targetDish) {
+      if (targetDish) {
         menu.coursePopup.watch(targetDish)
       } else {
         Toast.show('Товар не найден')

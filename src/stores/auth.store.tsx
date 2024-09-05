@@ -109,7 +109,7 @@ export class AuthStore {
         case 'WEB_BROWSER': {
           const result = await http.post<any, resultType2>(
             '/checkUserPhoneWeb',
-            { phone } // todo UTM
+            { phone, utm: this.utm }
           )
           if (result.State && result.UserId) {
             localStorage.setItem('webId', result.UserId)
@@ -250,6 +250,10 @@ export class AuthStore {
       style: { zIndex: 10000 }
     })
   }
+
+  utm = ''
+  get UTM() { return this.utm }
+  set UTM(utm: string) { this.utm = utm }
 }
 
 
