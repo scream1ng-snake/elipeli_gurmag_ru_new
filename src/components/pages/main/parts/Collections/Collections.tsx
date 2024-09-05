@@ -5,32 +5,16 @@ import config from '../../../../../features/config'
 import { useStore } from '../../../../../features/hooks'
 import styles from './Collections.module.css'
 import { ImagePreloder, LoaderTitle } from './preloders'
-import WatchCollectionPopup from '../../../../popups/WatchCollectionPopup'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const Collections: FC = observer(() => {
   const { reception: { menu } } = useStore()
 
   const go = useNavigate()
-  const { hash } = useLocation()
-  useEffect(() => {
-    if (hash.includes('#collections') && menu.loadMenu.state === 'COMPLETED') {
-      const Vcode = hash.split('#collections/')[1]?.replace('/', '')
-      if(Vcode) {
-        const target = menu.getSelection(Vcode)
-        target
-          ? menu.selectionPopup.watch(target)
-          : Toast.show('Такой подборки не нашли(')
-        
-      } else {
-        menu.selectionPopup.open()
-      }
-    }
-  }, [hash, menu.loadMenu.state])
+  
   return <div className={styles.collections_wrapper}>
-    <WatchCollectionPopup />
     {menu.loadMenu.state === 'COMPLETED'
-      ? <h2 onClick={() => { go('#collections') }}>Подборки</h2>
+      ? <h2 onClick={() => { go('/collections') }}>Подборки</h2>
       : <LoaderTitle />
     }
     <Space
@@ -50,10 +34,10 @@ const Collections: FC = observer(() => {
                 + "/api/v2/image/FileImage?fileId="
                 + selection.Image
               }
-              onClick={() => { go('#collections/' + selection.VCode) }}
+              onClick={() => { go('collections/' + selection.VCode) }}
               fallback={<ImagePreloder />}
               placeholder={<ImagePreloder />}
-              onContainerClick={() => { go('#collections/' + selection.VCode) }}
+              onContainerClick={() => { go('collections/' + selection.VCode) }}
               fit='cover'
               style={{
                 width: '130px',

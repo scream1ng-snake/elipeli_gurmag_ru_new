@@ -15,6 +15,7 @@ import MorePage from '../pages/more/MorePage';
 import OrdersPage, { WatchOrderDetailModal } from '../pages/orders/OrdersPage';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../../features/hooks';
+import { CollectionPopup, CollectionsPage } from '../popups/WatchCollectionPopup';
 
 const routes: Array<{
   path: string,
@@ -30,6 +31,16 @@ const routes: Array<{
       path: '/menu/:VCode',
       private: false,
       element: <MainPage />
+    },
+    {
+      path: '/collections',
+      private: false,
+      element: <CollectionsPage />
+    },
+    {
+      path: '/collections/:VCode',
+      private: false,
+      element: <CollectionPopup />
     },
     {
       path: '/basket',
