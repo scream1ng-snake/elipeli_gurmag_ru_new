@@ -11,6 +11,21 @@ import { Optional } from '../../features/helpers'
 
 import config from '../../features/config'
 import { FullscreenLoading } from '../common/Loading/Loading'
+import { LeftOutline } from 'antd-mobile-icons'
+
+const BackIcon = () => <div
+  style={{
+    boxShadow: 'rgba(0, 0, 0, 0.3) 0 0 5px 0',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 36,
+    height: 36,
+    borderRadius: 100
+  }}
+>
+  <LeftOutline style={{ fontSize: 18, marginRight: 3 }} />
+</div>
 
 export const CollectionPopup: FC = observer(p => {
   const { VCode } = useParams<{ VCode: string }>()
@@ -30,7 +45,7 @@ export const CollectionPopup: FC = observer(p => {
         target
           ? menu.selectionPopup.watch(target)
           : (Toast.show('Такой подборки не нашли(')
-          && close())
+            && close())
       }
     }
   }, [VCode, menu.loadMenu.state])
@@ -45,22 +60,12 @@ export const CollectionPopup: FC = observer(p => {
             height: 'calc(100vh - 80px)',
           }}
         >
-          <Image
-            src={config.staticApi
-              + "/api/v2/image/FileImage?fileId="
-              + currentCollection.Image2
-            }
-            fit='cover'
-            style={{
-              borderTopLeftRadius: '8px',
-              borderTopRightRadius: '8px',
-              "--height": "263px",
-              "--width": "100%",
-            }}
-          />
           <div
             style={{
-              margin: '8px 16px'
+              margin: '0 36px 16px 36px',
+              fontSize: 16,
+              fontWeight: 400,
+              textAlign: 'left',
             }}
           >
             {currentCollection.Description}
@@ -87,8 +92,20 @@ export const CollectionPopup: FC = observer(p => {
       onMaskClick={close}
       bodyStyle={{ width: '100vw', height: '100%' }}
     >
-      <NavBar onBack={close}>
-        {currentCollection?.Name ?? 'Подборки'}
+      <NavBar
+        onBack={close}
+        backIcon={<BackIcon />}
+        style={{ height: 60, padding: '0 20px' }}
+      >
+        <p
+          style={{
+            fontSize: 31,
+            fontWeight: 700,
+            textAlign: 'left'
+          }}
+        >
+          {currentCollection?.Name ?? 'Подборки'}
+        </p>
       </NavBar>
       {getContent()}
     </Popup>
@@ -112,7 +129,21 @@ export const CollectionsPage: FC = observer(p => {
       onMaskClick={close}
       bodyStyle={{ width: '100vw', height: '100%' }}
     >
-      <NavBar onBack={close}>Подборки</NavBar>
+      <NavBar
+        onBack={close}
+        backIcon={<BackIcon />}
+        style={{ height: 60, padding: '0 20px' }}
+      >
+        <p
+          style={{
+            fontSize: 31,
+            fontWeight: 700,
+            textAlign: 'left'
+          }}
+        >
+          Подборки
+        </p>
+      </NavBar>
       <section className={styles.categories_wrapper}>
         <div
           style={{
@@ -122,7 +153,16 @@ export const CollectionsPage: FC = observer(p => {
         >
           {menu.selections.map((selection, index) =>
             <div key={index}>
-              <h2 onClick={() => { go('#collections/' + selection.VCode) }}>{selection.Name}</h2>
+              <h2
+                onClick={() => { go('collections/' + selection.VCode) }}
+                style={{
+                  fontSize: 22,
+                  fontWeight: 700,
+                  margin: '10px 36px 0 36px',
+                }}
+              >
+                {selection.Name}
+              </h2>
               <br />
               <div className={styles.courses_list}>
                 {selection.CourseList.map(course =>
@@ -136,7 +176,7 @@ export const CollectionsPage: FC = observer(p => {
           )}
         </div>
       </section>
-    </Popup>
+    </Popup >
   )
 })
 

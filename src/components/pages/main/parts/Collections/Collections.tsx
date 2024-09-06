@@ -1,11 +1,11 @@
-import { Image, Space, Toast } from 'antd-mobile'
+import { Image, Space } from 'antd-mobile'
 import { observer } from 'mobx-react-lite'
-import { FC, useEffect } from 'react'
+import { FC } from 'react'
 import config from '../../../../../features/config'
 import { useStore } from '../../../../../features/hooks'
 import styles from './Collections.module.css'
 import { ImagePreloder, LoaderTitle } from './preloders'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const Collections: FC = observer(() => {
   const { reception: { menu } } = useStore()
