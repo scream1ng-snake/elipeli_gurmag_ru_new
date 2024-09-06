@@ -251,7 +251,7 @@ export class AuthStore {
     })
   }
 
-  utm = ''
+  utm = '{"utm_source":"","utm_medium":"","utm_campaign":"","utm_content":"","utm_term":""}'
   get UTM() { return this.utm }
   set UTM(utm: string) { this.utm = utm }
 }
