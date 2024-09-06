@@ -10,6 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Optional } from '../../features/helpers'
 
 import config from '../../features/config'
+import { FullscreenLoading } from '../common/Loading/Loading'
 
 export const CollectionPopup: FC = observer(p => {
   const { VCode } = useParams<{ VCode: string }>()
@@ -74,12 +75,14 @@ export const CollectionPopup: FC = observer(p => {
           </div>
         </div>
       </section>
+    } else {
+      return <FullscreenLoading />
     }
   }
   return (
     <Popup
       position='bottom'
-      visible={menu.selectionPopup.show}
+      visible
       onClose={close}
       onMaskClick={close}
       bodyStyle={{ width: '100vw', height: '100%' }}
