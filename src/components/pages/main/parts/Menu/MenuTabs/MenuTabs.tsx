@@ -62,7 +62,7 @@ export const MenuTabs: FC = observer(() => {
                   NavigateTo(String(category.VCode))
                 }}
               >
-                {category.Name}
+                {category.Name.replaceAll('_', ' ')}
               </li>
             )
           })
@@ -119,7 +119,7 @@ export const MenuTabsFixed: FC = observer(() => {
                   scrollTabs(category)
                 }}
               >
-                {category.Name}
+                {category.Name.replaceAll('_', ' ')}
               </li>
             )
           })}

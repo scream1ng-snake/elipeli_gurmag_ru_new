@@ -12,6 +12,7 @@ import { Optional } from '../../features/helpers'
 import config from '../../features/config'
 import { FullscreenLoading } from '../common/Loading/Loading'
 import BackIcon from '../icons/Back'
+import BottomNavigation from '../common/BottomNav/BottomNav'
 
 
 
@@ -96,6 +97,7 @@ export const CollectionPopup: FC = observer(p => {
         </p>
       </NavBar>
       {getContent()}
+      <BottomNavigation />
     </Popup>
   )
 })
@@ -164,6 +166,7 @@ export const CollectionsPage: FC = observer(p => {
           )}
         </div>
       </section>
+      <BottomNavigation />
     </Popup >
   )
 })

@@ -46,7 +46,7 @@ const Categories: FC = observer(function() {
           </div>
           : categories.map((category, index) =>
             <div key={index} id={String(category.VCode)}>
-              <h2>{category.Name}</h2>
+              <h2>{category.Name.replaceAll('_', ' ')}</h2>
               <br />
               <div className={styles.courses_list}>
                 {category.CourseList.map((course, index) =>

@@ -40,8 +40,8 @@ const Collections: FC = observer(() => {
               onContainerClick={() => { go('collections/' + selection.VCode) }}
               fit='cover'
               style={{
-                width: '130px',
-                height: '79px',
+                width:140,
+                height:90,
                 objectFit: 'cover'
               }}
             />
