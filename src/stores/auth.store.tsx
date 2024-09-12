@@ -26,7 +26,7 @@ export class AuthStore {
   constructor(root: RootStore) {
     this.root = root;
     makeAutoObservable(this)
-    this.bannerToTg.open()
+    // this.bannerToTg.open() todo
     reaction(() => this.state, val => {
       const { ID, loadOrdersHistory } = this.root.user
       if(val === 'AUTHORIZED' && ID) loadOrdersHistory.run(ID)
