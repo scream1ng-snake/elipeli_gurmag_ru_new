@@ -18,6 +18,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { Toast } from "antd-mobile"
 import { logger } from "../../../features/logger"
 import AskAuthorize from "../../popups/AskAuthorize"
+import { NiceToMeetYooPopup } from "../../popups/CartActions"
 const MainPage: FC = observer(() => {
   const { auth, reception: { menu } } = useStore()
 
@@ -38,6 +39,7 @@ const MainPage: FC = observer(() => {
   }, [menu.loadMenu.state, VCode])
 
   return <Wrapper>
+    <NiceToMeetYooPopup />
     <ItemModal />
     <Fixed>
       <Banner />

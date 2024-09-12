@@ -187,7 +187,7 @@ export class AuthStore {
         break
       case 'old_user':
         const userId = this.root.user.ID
-        const result = await http.post<any, any>(
+        const result: regAnswer = await http.post<any, any>(
           '/regOldUser',
           { userId, phone: this.confirmedPhone, random_code: code }
         )
@@ -195,7 +195,7 @@ export class AuthStore {
           setQueryState('COMPLETED')
           this.setState('AUTHORIZED')
           this.setStage('COMPLETED')
-          this.showCongratulation(result?.Message)
+          this.niceToMeetYooPopup.watch(result?.Message2)
           const COrg = this.root.reception.OrgForMenu
           this.root.user.loadUserInfo.run(COrg, userId)
           Metrics.registration()
@@ -203,7 +203,7 @@ export class AuthStore {
           setQueryState('FAILED')
           this.setStage('INPUT_TELEPHONE')
           this.setState('NOT_AUTHORIZED')
-          this.showFailedAuth(result?.Message)
+          this.showFailedAuth(result?.Message2)
         }
         break
       case 'no_client':
@@ -218,7 +218,7 @@ export class AuthStore {
     logger.log(this.state + ' ' + this.stage, 'auth-store')
 
     const userId = this.root.user.ID
-    const result = await http.post<any, any>(
+    const result: regAnswer = await http.post<any, any>(
       '/regNewUser',
       {
         userId,
@@ -231,7 +231,8 @@ export class AuthStore {
       setState('COMPLETED')
       this.setState('AUTHORIZED')
       this.setStage('COMPLETED')
-      this.showCongratulation(result?.Message)
+      this.niceToMeetYooPopup.watch(result?.Message2)
+
       const COrg = this.root.reception.OrgForMenu
       this.root.user.loadUserInfo.run(COrg, userId)
       Metrics.registration()
@@ -239,19 +240,12 @@ export class AuthStore {
       setState('FAILED')
       this.setStage('INPUT_TELEPHONE')
       this.setState('NOT_AUTHORIZED')
-      this.showFailedAuth(result?.Message)
+      this.showFailedAuth(result?.Message2)
     }
     logger.log(this.state + ' ' + this.stage, 'auth-store')
   })
 
-  private showCongratulation(content: string) {
-    Dialog.alert({
-      header: (<Image src={Pizza} width='300px' height='auto' />),
-      title: 'Ну, наконец-то, познакомились!',
-      content,
-      confirmText: 'Отлично!',
-    })
-  }
+  niceToMeetYooPopup = new Popup<string>()
 
   private showFailedAuth(content?: string) {
     Dialog.alert({
@@ -289,4 +283,17 @@ type resultType2 = {
 export type SignIn = {
   name: string,
   birthday: string
+}
+
+type regAnswer = {
+  Status: string,
+  // Message: string,
+  /** "{\"title\":\"Примет, \\\\\"ыфыфыфыфыфыыф\\\\\"! Рады знакомству\",\"body1\":\"Если у тебя уже есть промокод\\\\n- введи его в \\\\\"Корзине\\\\\",\\\\nкогда выберешь нужные блюда.\\\\nИ акция будет применена!\\\\nЧто бы получить блюдо в подарок - его нужно закинуть в корзину!\",\"body2\":\"А если промокода нет - то лови!\\\\nПо промокоду \\\\\"2117\\\\\" дарим\\\\nпиццу Пеперони на первый заказ от 1499 руб.\",\"promo\":\"2117\"}" */
+  Message2: string
+}
+export type Message2 = {
+  title: string,
+  body1: string,
+  body2: string,
+  promo: string
 }

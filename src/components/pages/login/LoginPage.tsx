@@ -16,7 +16,7 @@ const LoginPage: FC = observer(() => {
   function getContent() {
     switch (auth.stage) {
       case 'COMPLETED':
-        go(-1)
+        go('/')
         return null
       case 'INPUT_TELEPHONE':
         return <InputNumber />

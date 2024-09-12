@@ -1,13 +1,109 @@
-import { ActionSheet, Dialog, Space } from "antd-mobile";
+import { ActionSheet, Button, Dialog, Image, Popup, Space, Toast } from "antd-mobile";
 import { observer } from "mobx-react-lite";
-import { FC } from "react";
+import { CSSProperties, FC } from "react";
 import { useStore } from "../../features/hooks";
 import type {
   Action
 } from 'antd-mobile/es/components/action-sheet'
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import BackIcon from "../icons/Back";
+import { CloseOutline } from "antd-mobile-icons";
+import { Message2 } from "../../stores/auth.store";
+import { copyToClipboard } from "../../features/helpers";
+import Pizza from '../../assets/pizza_huizza.png'
 
+
+const popup = {
+  width: 'calc(100vw - 2rem)',
+  padding: '0.75rem 1rem',
+  borderTopLeftRadius: 15,
+  borderTopRightRadius: 15,
+}
+
+const boldText = { fontSize: 17, fontWeight: 700, lineHeight: '18.5px' }
+const normalText = { fontSize: 16, fontWeight: 400, lineHeight: '17.5px' }
+const badge = {
+  background: 'rgba(1, 98, 65, 1)',
+  borderRadius: 10,
+  position: 'absolute',
+  padding: '0.5rem 1rem',
+  color: 'white',
+  fontSize: 14,
+  '--gap': '-10'
+} as CSSProperties
+export const NiceToMeetYooPopup: FC = observer(() => {
+  const go = useNavigate()
+  const { auth: { niceToMeetYooPopup: { show, close, content } } } = useStore()
+  let text: Message2 = {
+    body1: '',
+    body2: '',
+    title: 'Наконец-то познакомились!',
+    promo: ''
+  }
+  if (content) {
+    text = JSON.parse(content.replaceAll("\\\"", "\""))
+  }
+  return <Popup
+    visible={show}
+    closeOnMaskClick
+    onClose={close}
+    bodyStyle={popup}
+  >
+
+    <Space style={{ width: '100%' }} justify='between' align='center'>
+      <BackIcon onClick={close} />
+      <CloseOutline onClick={close} fontSize={20} />
+    </Space>
+
+    <br />
+    <br />
+    <p style={boldText}>{text.title.split('\\n').map(txt => <>{txt} <br /></>)}</p>
+    <br />
+    <p style={normalText}>{text.body1.split('\\n').map(txt => <>{txt} <br /></>)}</p>
+    <br />
+    <p style={normalText}>{text.body2.split('\\n').map(txt => <>{txt} <br /></>)}</p>
+    <br />
+    <div style={{ position: 'relative' }}>
+      {!text.promo.length
+        ? null
+        : <Space
+          direction='vertical'
+          style={badge}
+          align='center'
+          justify='center'
+          onClick={() => {
+            copyToClipboard(text.promo)
+            Toast.show('Промокод скопирован')
+          }}
+        >
+          <span>Промокод</span>
+          <span style={{ fontSize: 30 }}>{text.promo}</span>
+        </Space>
+      }
+      <Image src={Pizza} />
+      <Button
+        fill='outline'
+        onClick={() => {
+          close()
+          copyToClipboard(text.promo)
+          Toast.show('Промокод скопирован')
+        }}
+        style={{
+          width: '100%',
+          background: 'rgba(1, 98, 65, 1)',
+          color: 'white',
+          fontSize: 16,
+          fontWeight: 600,
+          borderRadius: 10,
+          padding: '0.75rem', position: 'absolute', bottom: '1rem'
+        }}
+      >
+        Получить подарок!
+      </Button>
+    </div>
+  </Popup >
+})
 
 export const Congratilations: FC = observer(() => {
   const go = useNavigate()
@@ -16,7 +112,7 @@ export const Congratilations: FC = observer(() => {
     title='Поздравляем! Заказ оформлен!'
     visible={cart.congratilations.show}
     actions={[{
-      key: 'ok', 
+      key: 'ok',
       text: 'На главную',
       onClick: () => {
         cart.congratilations.close()
@@ -32,7 +128,7 @@ export const Congratilations: FC = observer(() => {
     }, {
       key: 'close',
       text: 'Закрыть',
-      onClick: cart.congratilations.close, 
+      onClick: cart.congratilations.close,
     }]}
     bodyStyle={{ borderRadius: 13 }}
     onClose={cart.congratilations.close}
@@ -86,29 +182,3 @@ const CartActions: FC = observer(() => {
   />
 })
 export default CartActions
-
-// Dialog.show({
-//   title: 'Такой заказ сегодня не доступен((',
-//   content: 'Сегодня закончились: '
-//     + lostCourses.map(lc => lc.Name).join(', '),
-//   closeOnAction: true,
-//   closeOnMaskClick: true,
-//   actions: [{
-//     key: 'tomorrow',
-//     text: 'Заказать на завтра ' + moment(this.date)
-//       .add(1, 'days')
-//       .format('YYYY-MM-DD HH:mm'),
-//     onClick: () => {
-//       const tomorrow = moment(this.date).add(1, 'days').toDate();
-//       this.setDate(tomorrow);
-//       this.prePostOrder(go)
-//     }
-//   }, {
-//     key: 'anotherDate',
-//     text: 'Выбрать другую дату',
-//     onClick: () => { this.datePick.open() }
-//   }, {
-//     key: 'back',
-//     text: 'Назад',
-//   }]
-// })
