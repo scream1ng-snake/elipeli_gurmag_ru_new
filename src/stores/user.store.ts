@@ -138,6 +138,7 @@ type PercentDiscount = {
   MaxSum: number,
   bonusRate: number,
   discountPercent: number,
+  promocode: string
 }
 
 type DishDiscount = {
@@ -154,6 +155,7 @@ type DishSetDiscount = {
   vcode: number,
   dishes: DishDiscount[],
   dishCount: number,
+  promocode: string
 }
 
 

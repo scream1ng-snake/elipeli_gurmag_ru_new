@@ -148,6 +148,8 @@ export type Selection = {
   Weigth: string,
   Images: undefined | string[],
   CompressImages: undefined | string[],
+  priceWithDiscount: any
+  priceWithDiscountOld: any
 }
 
 /** Тип категории с блюдами */

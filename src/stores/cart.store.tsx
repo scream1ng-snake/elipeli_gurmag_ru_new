@@ -93,14 +93,30 @@ export class CartStore {
   ) => {
     this.inputPromocode = str;
 
-    const availablePromos = this.root.user.info.allCampaign
-      .filter(ac => ac.promocode !== null)
-      .map(ac => ac.promocode)
+    const campaign = this.root.user.info.allCampaign
+      .find(camp => camp.promocode === str)
 
-    if (availablePromos.includes(str)) {
-      Toast.show("Промокод активирован")
-      this.confirmedPromocode = str
-      ref?.current?.blur()
+    if (campaign) {
+      if (campaign.isset) {
+        const { dishSet: dishSets } = this.root.user.info
+        const dishSet = dishSets.find(ds => ds.vcode === campaign.VCode)
+        let count = 0
+        dishSet?.dishes.forEach(dish => {
+          const addedToCart = this.items.find(cic => cic.couse.VCode == dish.dish)
+          if(addedToCart) {
+            count = count + addedToCart.quantity
+            if(count >= dishSet.dishCount) {
+              Toast.show("Промокод активирован")
+              this.confirmedPromocode = str
+              ref?.current?.blur()
+            }
+          }
+        })
+      } else {
+        Toast.show("Промокод активирован")
+        this.confirmedPromocode = str
+        ref?.current?.blur()
+      }
     } else {
       this.confirmedPromocode = null
     }
@@ -122,6 +138,8 @@ export class CartStore {
     this.items = [];
     this.totalPrice = 0;
     setItem('cartItems', [])
+    this.confirmedPromocode = null
+    this.inputPromocode = ''
   }
 
 
@@ -228,127 +246,115 @@ export class CartStore {
     allCampaign: AllCampaignUser[],
     dishSet: DishSetDiscount[],
   ) {
-    // проверяем промокды при каждом пересчитывании скидки
-    const availablePromocodes = allCampaign
-      .filter(ac => ac.promocode !== null)
-      .map(ac => ac.promocode)
+    let new_state = { itemsInCart: state.items };
 
-    if (availablePromocodes.includes(this.inputPromocode)) {
-      this.confirmedPromocode = this.inputPromocode
+    const campaign = this.root.user.info.allCampaign
+      .find(camp => camp.promocode === this.inputPromocode)
+
+    if (campaign) {
+      if (campaign.isset) {
+        const { dishSet: dishSets } = this.root.user.info
+        const dishSet = dishSets.find(ds => ds.vcode === campaign.VCode)
+        let count = 0
+        dishSet?.dishes.forEach(dish => {
+          const addedToCart = this.items.find(cic => cic.couse.VCode == dish.dish)
+          if(addedToCart) {
+            count = count + addedToCart.quantity
+            if(count >= dishSet.dishCount) {
+              Toast.show("Промокод активирован")
+              this.confirmedPromocode = this.inputPromocode
+            } else { this.confirmedPromocode = null }
+          }
+        })
+      } else {
+        Toast.show("Промокод активирован")
+        this.confirmedPromocode = this.inputPromocode
+      }
     } else {
       this.confirmedPromocode = null
     }
 
-    let new_state = { ...state }
+    let curDishSets: any = [];
+    //проверим все скидки, найдем наибольшую
+    let maxPercentDiscount = { vcode: 0, MinSum: 0, MaxSum: 0, bonusRate: 0, discountPercent: 0 };
+    percentDiscounts.forEach(a => {
+      if (maxPercentDiscount.vcode == 0 && (a.promocode == this.confirmedPromocode || a.promocode == null)) {
+        maxPercentDiscount = a;
+      } else if (maxPercentDiscount.discountPercent < a.discountPercent && (a.promocode == this.confirmedPromocode || a.promocode == null)) {
+        maxPercentDiscount = a;
+      }
+    })
+    //идём по всем блюдам в корзине
+    for (let i = 0; i < new_state.itemsInCart.length; i++) {
 
-
-    if (true) {
-      let dishSets = dishSet;
-      let dishsDiscounts = dishDiscounts;
-      //массив сетов, из которых мы нашли данные
-      let curDishSets: DishSetDiscountActive[] = [];
-      //проверим все скидки, найдем наибольшую
-      let maxPercentDiscount: PercentDiscount = { vcode: 0, MinSum: 0, MaxSum: 0, bonusRate: 0, discountPercent: 0 };
-      percentDiscounts?.forEach(a => {
-        if (maxPercentDiscount.vcode === 0) {
-          maxPercentDiscount = a;
-        } else if (maxPercentDiscount.discountPercent < a.discountPercent) {
-          maxPercentDiscount = a;
-        }
-      })
-      //идём по всем блюдам в корзине
-      for (let i = 0; i < new_state.items.length; i++) {
-
-        let courseItem = new_state.items[i];
-        //если есть процентная скидка, сразу её ставим
-        if (maxPercentDiscount !== null) {
-          courseItem.campaign = maxPercentDiscount.vcode;
-          courseItem.priceWithDiscount = courseItem.couse.Price * courseItem.quantity * (100 - maxPercentDiscount.discountPercent) / 100;
-        } else {
-          courseItem.priceWithDiscount = courseItem.couse.Price * courseItem.quantity;
-        }
-        //идём по всем сэтам и смотрим, сколько у нас наберётся элементов в сэте
-        for (let j = 0; j < dishSets.length; j++) {
-          let set = dishSets[j];
-          //идём по всем блюдам сэта
-          for (let k = 0; k < set.dishes.length; k++) {
-            //если нашли блюдо из сэта, то увеличиваем счётчик сэта
-            if (courseItem.couse.VCode === set.dishes[k].dish) {
-              let curDishSetObj = curDishSets.find(a => a.vcode === set.vcode);
-              if (curDishSetObj === undefined) {
-                curDishSetObj = { ...set, countInCart: 0 };
-                curDishSets.push(curDishSetObj);
-              }
-              curDishSetObj.countInCart += courseItem.quantity;
-
+      let courseItem = new_state.itemsInCart[i];
+      if (courseItem.couse === undefined) courseItem.couse = courseItem.couse;
+      courseItem.couse.priceWithDiscountOld = courseItem.couse.priceWithDiscount;
+      courseItem.couse.priceWithDiscount = courseItem.couse.Price;
+      //если есть процентная скидка, сразу её ставим
+      if (maxPercentDiscount !== null) {
+        courseItem.campaign = maxPercentDiscount.vcode;
+        courseItem.priceWithDiscount = Number((courseItem.couse.Price * courseItem.quantity * (100 - maxPercentDiscount.discountPercent) / 100).toFixed(2));
+        courseItem.couse.priceWithDiscount = (courseItem.couse.Price * (100 - maxPercentDiscount.discountPercent) / 100).toFixed(2);
+      } else {
+        courseItem.priceWithDiscount = courseItem.couse.Price * courseItem.quantity;
+      }
+      //идём по всем сэтам и смотрим, сколько у нас наберётся элементов в сэте
+      for (let j = 0; j < dishSet.length; j++) {
+        let set = dishSet[j];
+        //идём по всем блюдам сэта
+        for (let k = 0; k < set.dishes.length; k++) {
+          //если нашли блюдо из сэта, то увеличиваем счётчик сэта
+          if (courseItem.couse.VCode == set.dishes[k].dish) {
+            let curDishSetObj = curDishSets.find((a: any) => a.vcode == set.vcode);
+            if (curDishSetObj === undefined) {
+              curDishSetObj = { ...set, countInCart: 0 };
+              curDishSets.push(curDishSetObj);
             }
+            curDishSetObj.countInCart += courseItem.quantity;
+
           }
         }
-
-        //идём по всем скидкам на позиции, смотрим что выгоднее, цена по акции или по общей скидки в процентах
-        for (let j = 0; j < dishsDiscounts.length; j++) {
-          let dishDiscount = dishsDiscounts[j];
-          //нашли блюдо в акции
-          if (
-            courseItem.couse.VCode === dishDiscount.dish
-            && (
-              dishDiscount.promocode === null
-              || dishDiscount.promocode === this.confirmedPromocode
-            )
-          ) {
-            //если есть процентная скидка
-            if (courseItem.quantity * dishDiscount.price < courseItem.priceWithDiscount) {
-              courseItem.campaign = dishDiscount.vcode;
-              // я не понимаю как оно работает 
-              // но тут надо сделать так
-              // если есть установленный прайс
-              if (dishDiscount.price) {
-                courseItem.priceWithDiscount = courseItem.quantity * dishDiscount.price;
-              }
-              // если нет прайса но есть скидочный процент
-              // @ts-ignore
-              if (dishDiscount.discountPercent) {
-                // @ts-ignore
-                courseItem.priceWithDiscount = (courseItem.couse.Price - (courseItem.couse.Price * dishDiscount.discountPercent / 100)) * courseItem.quantity;
-              }
-            }
-          }
-        }
-
       }
 
-      for (let j = 0; j < curDishSets.length; j++) {
-        if (
-          curDishSets[j].countInCart === curDishSets[j].dishCount
-          && (
-            curDishSets[j].dishes[0].promocode === null
-            || curDishSets[j].dishes[0].promocode === this.confirmedPromocode
-          )
-        ) {
-          for (let i = 0; i < new_state.items.length; i++) {
-            let courseItem = new_state.items[i];
-            let dishInSet = curDishSets[j].dishes.find(a => a.dish === courseItem.couse.VCode);
-            if (dishInSet !== undefined) {
-              courseItem.campaign = curDishSets[j].vcode;
-              // если есть установленный прайс
-              if (dishInSet.price) {
-                courseItem.priceWithDiscount = courseItem.quantity * dishInSet.price;
-              }
-              // если нет прайса но есть скидочный процент
-              // @ts-ignore
-              if (dishInSet.discountPercent) {
-                // @ts-ignore
-                courseItem.priceWithDiscount = courseItem.quantity * (courseItem.couse.Price - (courseItem.couse.Price * dishInSet.discountPercent / 100));
-              }
-            }
+      //идём по всем скидкам на позиции, смотрим что выгоднее, цена по акции или по общей скидки в процентах
+      for (let j = 0; j < dishDiscounts.length; j++) {
+        let dishDiscount = dishDiscounts[j];
+        //нашли блюдо в акции
+        if (courseItem.couse.VCode == dishDiscount.dish && (dishDiscount.promocode == this.confirmedPromocode || dishDiscount.promocode == null)) {
+          //если есть процентная скидка
+          if (dishDiscount.price !== null && (courseItem.quantity * dishDiscount.price < courseItem.priceWithDiscount)) {
+            courseItem.campaign = dishDiscount.vcode;
+            courseItem.priceWithDiscount = courseItem.quantity * dishDiscount.price;
+            courseItem.couse.priceWithDiscount = dishDiscount.price;
+          }
+          if (dishDiscount.discountPercent !== null && (courseItem.couse.Price * (100 - dishDiscount.discountPercent) / 100) * courseItem.quantity < courseItem.priceWithDiscount) {
+            courseItem.campaign = dishDiscount.vcode;
+            courseItem.couse.priceWithDiscount = (courseItem.couse.Price * (100 - dishDiscount.discountPercent) / 100).toFixed(2);
+            courseItem.priceWithDiscount = Number((courseItem.quantity * courseItem.couse.Price * (100 - dishDiscount.discountPercent) / 100).toFixed(2));
+          }
+        }
+      }
+      //new_state.itemsInCart[i] = courseItem;
+    }
+
+    for (let j = 0; j < curDishSets.length; j++) {
+      if (curDishSets[j].countInCart == curDishSets[j].dishCount && (curDishSets[j].dishes[0].promocode == this.confirmedPromocode || curDishSets[j].dishes[0].promocode == null)) {
+        for (let i = 0; i < new_state.itemsInCart.length; i++) {
+          let courseItem = new_state.itemsInCart[i];
+          let dishInSet = curDishSets[j].dishes.find((a: any) => a.dish == courseItem.couse.VCode);
+          if (dishInSet !== undefined) {
+            courseItem.campaign = curDishSets[j].vcode;
+            courseItem.priceWithDiscount = courseItem.quantity * dishInSet.price;
+            courseItem.couse.priceWithDiscount = dishInSet.price;
           }
         }
       }
     }
 
 
-    this.items = new_state.items
-    this.totalPrice = new_state.items.reduce((acc, cur) =>
+    this.items = new_state.itemsInCart
+    this.totalPrice = new_state.itemsInCart.reduce((acc, cur) =>
       acc + cur.priceWithDiscount, 0
     )
 
@@ -494,6 +500,7 @@ type PercentDiscount = {
   MaxSum: number,
   bonusRate: number,
   discountPercent: number,
+  promocode: string
 }
 
 type DishDiscount = {
@@ -510,6 +517,7 @@ type DishSetDiscount = {
   vcode: number,
   dishes: DishDiscount[],
   dishCount: number,
+  promocode: string
 }
 
 interface DishSetDiscountActive extends DishSetDiscount {
