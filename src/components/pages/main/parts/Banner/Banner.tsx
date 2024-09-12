@@ -11,6 +11,7 @@ import InfoBlock from '../../../../special/InfoBlock'
 import CustomButton from '../../../../special/CustomButton'
 import LogoGurmagApp from '../../../../../assets/logo_gurmag_app.png'
 import ImageBaker from '../../../../../assets/image_baker.png'
+import { Gift } from "../../../../icons/Gift"
 
 const W100 = { width: '100%' }
 
@@ -42,13 +43,13 @@ const Banner: FC = observer(() => {
                 onClick={() => { handleClick() }}
                 height={'35px'}
                 maxWidth={'auto'}
-                
+
                 marginTop={'10px'}
                 marginBottom={'0px'}
                 marginHorizontal={'25px'}
                 paddingHorizontal={'0px'}
                 fontWeight={'700'}
-                
+
                 fontSize={'14.5px'}
                 backgroundVar={'--gurmag-accent-color'}
                 colorVar={'--gur-custom-button-text-color'}
@@ -60,23 +61,19 @@ const Banner: FC = observer(() => {
       )
     } else {
       return (
-        <CustomButton
-          text={'Войти по номеру телефона'}
-          onClick={() => { go('/authorize') }}
-          height={'35px'}
-          maxWidth={'auto'}
-          
-          marginTop={'16px'}
-          marginBottom={'5px'}
-          marginHorizontal={'25px'}
-          paddingHorizontal={'24px'}
-          fontWeight={'400'}
-          fontSize={'14.5px'}
-          backgroundVar={'--gur-secondary-accent-color'}
-          colorVar={'--gur-custom-button-text-color'}
-          appendImage={ImageBaker}
-          appendImageMargin={'16px'}
-        />
+        <Space direction='vertical' className={styles.banner}>
+          <Button
+            shape='rounded'
+            className={styles.wizard_button}
+            onClick={() => { go('/authorize') }}
+          >
+            <Space align='center'>
+              Получить подарок
+              <Gift />
+            </Space>
+          </Button>
+        </Space>
+
       )
     }
   } else {
@@ -86,7 +83,7 @@ const Banner: FC = observer(() => {
 
 export default Banner
 
-  {/* 
+{/* 
     <Space direction='vertical' className={styles.banner}>
       <Space style={W100} justify='center'>
         <Gurmag36x36Bordered />
@@ -109,7 +106,7 @@ export default Banner
       </Button>
     </Space> */}
 
-   {/*
+{/*
     
     <Space className={styles.banner}>
       <Button
