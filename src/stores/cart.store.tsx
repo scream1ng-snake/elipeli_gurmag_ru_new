@@ -410,6 +410,8 @@ export class CartStore {
           doorCode: reception.address.doorCode,
           addrComment: reception.address.addrComment,
           incorrectAddr: reception.address.incorrectAddr,
+          lat: reception.location?.[1],
+          lon: reception.location?.[0]
         })
         this.detailPopup.close()
         this.congratilations.open()
@@ -429,13 +431,12 @@ export class CartStore {
     try {
       logger.log(JSON.stringify(order), 'order')
       setState('LOADING')
-      let orgID = order.currentOrg
 
       const response: [historyOrderItem] = await http.post(
         this.payment.method !== 'CARD_ONLINE'
           ? '/NewOrderSlot'
           : '/NewOrderSlotPay',
-        { ...order, currentOrg: orgID }
+        order
       )
 
       if (response?.[0]) {
@@ -559,6 +560,8 @@ type Order = {
   /** Комментарий к адресу */
   addrComment?: string,
   incorrectAddr?: boolean | undefined,
+  lat: number | undefined
+  lon: number | undefined
 }
 
 export type historyOrderItem = {
