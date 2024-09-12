@@ -17,6 +17,7 @@ import { ItemModal } from "../../popups/Course"
 import { useNavigate, useParams } from "react-router-dom"
 import { Toast } from "antd-mobile"
 import { logger } from "../../../features/logger"
+import AskAuthorize from "../../popups/AskAuthorize"
 const MainPage: FC = observer(() => {
   const { auth, reception: { menu } } = useStore()
 
@@ -56,6 +57,7 @@ const MainPage: FC = observer(() => {
       }
     >
       <AskLocation />
+      <AskAuthorize />
       {/* <Stories /> */}
       <Collections />
       <Cooks />

@@ -11,21 +11,9 @@ import { Optional } from '../../features/helpers'
 
 import config from '../../features/config'
 import { FullscreenLoading } from '../common/Loading/Loading'
-import { LeftOutline } from 'antd-mobile-icons'
+import BackIcon from '../icons/Back'
 
-const BackIcon = () => <div
-  style={{
-    boxShadow: 'rgba(0, 0, 0, 0.3) 0 0 5px 0',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 36,
-    height: 36,
-    borderRadius: 100
-  }}
->
-  <LeftOutline style={{ fontSize: 18, marginRight: 3 }} />
-</div>
+
 
 export const CollectionPopup: FC = observer(p => {
   const { VCode } = useParams<{ VCode: string }>()

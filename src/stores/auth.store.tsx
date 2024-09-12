@@ -27,11 +27,23 @@ export class AuthStore {
     this.root = root;
     makeAutoObservable(this)
     // this.bannerToTg.open() todo
+
+    // как только мы авторизровались грузим историю заказа
     reaction(() => this.state, val => {
       const { ID, loadOrdersHistory } = this.root.user
-      if(val === 'AUTHORIZED' && ID) loadOrdersHistory.run(ID)
+      if (val === 'AUTHORIZED' && ID) loadOrdersHistory.run(ID)
+    })
+
+    // если мы не авторизовались то через 5 сек покажем баннер 
+    // предложим подарок чтобы зарегаться или войти
+    reaction(() => this.state, (current, prev) => {
+      if (current === 'NOT_AUTHORIZED' && prev === 'CHECKING_AUTH')
+        setTimeout(this.bannerAuthForGift.open, 5000)
     })
   }
+
+  /** баннер который предлагает подарок при чтобы залогиниться */
+  bannerAuthForGift = new Popup()
   /** верхний банер на главной, который предлагает пойти в тг */
   bannerToTg = new Popup()
   /** нижний банер который предлагает выбрать адрес или войти */
