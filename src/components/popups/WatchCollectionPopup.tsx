@@ -1,4 +1,4 @@
-import { NavBar, Popup, Image, Toast } from 'antd-mobile'
+import { NavBar, Popup, Image, Toast, Ellipsis } from 'antd-mobile'
 import { observer } from 'mobx-react-lite'
 import { FC, useEffect } from 'react'
 import { useStore } from '../../features/hooks'
@@ -84,17 +84,18 @@ export const CollectionPopup: FC = observer(p => {
       <NavBar
         onBack={close}
         backIcon={<BackIcon />}
-        style={{ height: 60, padding: '0 20px' }}
+        style={{ height: 'max-content', minHeight:60, padding: '0 20px'}}
       >
-        <p
+        <span
           style={{
             fontSize: 31,
             fontWeight: 700,
-            textAlign: 'left'
+            textAlign: 'left',
+            textWrap: 'wrap'
           }}
         >
           {currentCollection?.Name ?? 'Подборки'}
-        </p>
+        </span>
       </NavBar>
       {getContent()}
       <BottomNavigation />
