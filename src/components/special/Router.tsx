@@ -78,6 +78,11 @@ const routes: Array<{
       private: false,
       element: <CampaignsPage />
     },
+    {
+      path: "/campaigns/:VCode",
+      private: false,
+      element: <CampaignsPage />
+    },
   ]
 
 export const RouterComponent: FC = () => <BrowserRouter>

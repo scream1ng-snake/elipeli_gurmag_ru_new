@@ -41,6 +41,7 @@ const Campaign: FC<pops> = observer(({ actia }) => {
           style={{ width:"100%", marginTop:16 }}
           color='warning'
           shape='rounded'
+          onClick={() => go('/campaigns/' + actia.VCode)}
         >
           Посмотреть
         </Button>

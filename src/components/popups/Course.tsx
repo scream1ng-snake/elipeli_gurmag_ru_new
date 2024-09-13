@@ -6,7 +6,6 @@ import { CourseItem } from "../../stores/menu.store"
 import { useStore } from "../../features/hooks"
 import { toJS } from "mobx"
 import config from "../../features/config"
-import { useNavigate } from "react-router-dom"
 import { LinkOutline, LeftOutline } from "antd-mobile-icons"
 import { copyToClipboard } from "../../features/helpers";
 import CustomButton from "../special/CustomButton"
@@ -14,14 +13,13 @@ import IconStar from '../../assets/icon_star.svg'
 import ImageReviewsModal from '../../assets/image_reviews_modal.svg'
 import Metrics from "../../features/Metrics"
 
-export const ItemModal: FC = observer(() => {
-  const go = useNavigate()
+export const ItemModal: FC<{ close?: () => void }> = observer(p => {
   const { reception: { menu, nearestOrgForDelivery, selectedOrgID }, cart, auth } = useStore();
   const { loadCourseReviews, coursePopup } = menu
 
   const close = () => {
     coursePopup.close()
-    go('/')
+    p.close?.()
   }
 
   const currentCouse = toJS(coursePopup.content) as CourseItem

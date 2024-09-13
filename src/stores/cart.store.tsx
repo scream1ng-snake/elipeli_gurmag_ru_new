@@ -494,7 +494,7 @@ export class CartStore {
 
 
 
-type PercentDiscount = {
+export type PercentDiscount = {
   vcode: number,
   MinSum: number,
   MaxSum: number,
@@ -503,7 +503,7 @@ type PercentDiscount = {
   promocode: string
 }
 
-type DishDiscount = {
+export type DishDiscount = {
   discountPercent: number,
   vcode: number,
   isset: number,
@@ -513,7 +513,7 @@ type DishDiscount = {
   price: number,
 }
 
-type DishSetDiscount = {
+export type DishSetDiscount = {
   vcode: number,
   dishes: DishDiscount[],
   dishCount: number,

@@ -40,7 +40,7 @@ const MainPage: FC = observer(() => {
 
   return <Wrapper>
     <NiceToMeetYooPopup />
-    <ItemModal />
+    <ItemModal close={() => { go('/') }} />
     <Fixed>
       <Banner />
       <ReceptionSwitcher />

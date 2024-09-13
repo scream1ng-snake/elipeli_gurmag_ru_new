@@ -91,6 +91,8 @@ class UserStore {
 
   /** попап для просмотра заказа в истории */
   watchHistoryOrderPopup = new Popup<historyOrderItem>();
+  /** попап просмотра акции */
+  campaignPopup = new Popup<AllCampaignUser>()
 
   /** api истории заказов */
   loadOrdersHistory = new Request(async (

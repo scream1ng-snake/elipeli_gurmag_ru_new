@@ -58,11 +58,11 @@ export const NiceToMeetYooPopup: FC = observer(() => {
 
     <br />
     <br />
-    <p style={boldText}>{text.title.split('\\n').map(txt => <>{txt} <br /></>)}</p>
+    <p style={boldText}>{text.title.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
     <br />
-    <p style={normalText}>{text.body1.split('\\n').map(txt => <>{txt} <br /></>)}</p>
+    <p style={normalText}>{text.body1.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
     <br />
-    <p style={normalText}>{text.body2.split('\\n').map(txt => <>{txt} <br /></>)}</p>
+    <p style={normalText}>{text.body2.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
     <br />
     <div style={{ position: 'relative' }}>
       {!text.promo.length
