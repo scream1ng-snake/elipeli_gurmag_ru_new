@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "update started"
 git pull
 echo "actual changes loaded from remote"
