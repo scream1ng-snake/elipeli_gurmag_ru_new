@@ -9,4 +9,4 @@ RUN apt-get -y install git
 EXPOSE 6564
 
 
-CMD ["/update.sh"]
+CMD ["/bin/bash", "/update.sh"]
