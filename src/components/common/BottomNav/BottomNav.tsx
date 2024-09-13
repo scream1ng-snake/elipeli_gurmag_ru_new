@@ -1,6 +1,6 @@
 import { HomeOutlined, MoreOutlined, ShoppingCartOutlined } from "@ant-design/icons"
 import { Badge, TabBar } from "antd-mobile"
-import { UserOutline } from "antd-mobile-icons"
+import { GiftOutline, UserOutline } from "antd-mobile-icons"
 import { observer } from "mobx-react-lite"
 import { CSSProperties, FC } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -9,7 +9,7 @@ import { Void } from "../../layout/Void"
 
 
 const BottomNavigation: FC = observer(() => {
-  const { cart, auth } = useStore()
+  const { cart, auth, user } = useStore()
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
@@ -29,6 +29,12 @@ const BottomNavigation: FC = observer(() => {
       title: isntAuth ? 'Вход' : 'Профиль',
       icon: <UserOutline />,
       badge: isntAuth ? Badge.dot : null
+    },
+    {
+      key: '/campaigns', 
+      title: 'Акции', 
+      icon: <GiftOutline />,
+      badge: user.info.allCampaign.filter(al => !al.promocode).length
     },
     {
       key: '/more',

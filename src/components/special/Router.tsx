@@ -16,6 +16,7 @@ import OrdersPage, { WatchOrderDetailModal } from '../pages/orders/OrdersPage';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../../features/hooks';
 import { CollectionPopup, CollectionsPage } from '../popups/WatchCollectionPopup';
+import CampaignsPage from '../pages/campaigns/CampaignsPage';
 
 const routes: Array<{
   path: string,
@@ -71,6 +72,11 @@ const routes: Array<{
       path: '/orders/:VCode',
       private: true,
       element: <WatchOrderDetailModal />
+    },
+    {
+      path: "/campaigns",
+      private: false,
+      element: <CampaignsPage />
     },
   ]
 

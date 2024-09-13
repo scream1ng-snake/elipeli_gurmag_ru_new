@@ -12,7 +12,7 @@ class UserStore {
     localStorage.setItem('myID', id)
   }
   constructor(readonly root: RootStore) {
-    makeAutoObservable(this)
+    makeAutoObservable(this, {}, { autoBind: true })
   }
   
   
