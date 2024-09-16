@@ -48,7 +48,6 @@ const CampaignsPage: FC = observer(() => {
     <div style={{ padding: '0 20px' }}>
       <h2>Акции</h2>
       {info.allCampaign
-        .filter(actia => !actia.promocode)
         .map((actia, index) => <Campaign key={index} actia={actia} />)
       }
     </div>

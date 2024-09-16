@@ -50,17 +50,19 @@ const Campaign: FC<pops> = observer(({ actia }) => {
         <p>{Prepare(actia.Name)}</p>
         <p
           style={{
-            marginTop: 4,
+            marginTop: 10,
             fontFamily: 'Roboto',
             fontSize: '13px',
             fontWeight: '500',
             lineHeight: '18px',
             letterSpacing: '0.03em',
             textAlign: 'left',
-            color: 'rgba(139, 141, 140, 1)'
+            color: 'rgba(139, 141, 140, 1)',
+            textIndent: '1rem'
           }}
         >
-          {Prepare(actia.Description)}
+
+          {Prepare(actia.Description).split('\n').map((txt, index) => <p key={index}>{txt}</p>)}
         </p>
         <Button
           style={{
@@ -72,7 +74,7 @@ const Campaign: FC<pops> = observer(({ actia }) => {
             lineHeight: '16.99px',
             color: 'rgba(215, 133, 52, 1)',
             background: 'rgba(255, 238, 206, 1)',
-            border: 'none', 
+            border: 'none',
             padding: '7px  15px'
           }}
           shape='rounded'
