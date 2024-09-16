@@ -71,17 +71,17 @@ const CampaignPopup: FC = observer(() => {
             if (targetDish?.Name) {
               const watch = () => menu.coursePopup.watch(targetDish)
               if (detail.price) return <p key={detail.dish}>
-                <span style={{ color: 'var(--gurmag-accent-color)', fontWeight:600 }} onClick={watch}>{`👉 ${targetDish.Name}`}</span>
+                <span style={{ color: 'var(--gurmag-accent-color)', fontWeight: 600 }} onClick={watch}>{`👉 ${targetDish.Name}`}</span>
                 {' за '}
-                <span style={{ color: 'var(--громкий-текст)', fontWeight:600, fontSize:19 }}>{detail.price}</span>
+                <span style={{ color: 'var(--громкий-текст)', fontWeight: 600, fontSize: 19 }}>{detail.price}</span>
                 {' руб'}
               </p>
 
               if (detail.discountPercent) return <p key={detail.dish}>
                 {'Скидка '}
-                <span style={{ color: 'var(--громкий-текст)', fontWeight:600, fontSize:19 }}>{detail.discountPercent}%</span>
+                <span style={{ color: 'var(--громкий-текст)', fontWeight: 600, fontSize: 19 }}>{detail.discountPercent}%</span>
                 {' на '}
-                <span style={{ color: 'var(--gurmag-accent-color)', fontWeight:600 }} onClick={watch}>{'👉 ' + targetDish.Name}</span>
+                <span style={{ color: 'var(--gurmag-accent-color)', fontWeight: 600 }} onClick={watch}>{'👉 ' + targetDish.Name}</span>
               </p>
             }
           })
@@ -134,8 +134,8 @@ const CampaignPopup: FC = observer(() => {
       width: 'calc(100% - 40px)',
       maxHeight: 'calc(95% - 80px)',
       overflowY: 'scroll',
-      fontSize:18,
-      lineHeight:1.5,
+      fontSize: 18,
+      lineHeight: 1.5,
     }}
     onClose={close}
   >
@@ -148,15 +148,46 @@ const CampaignPopup: FC = observer(() => {
       }
       style={{ borderRadius: 20 }}
     />
-    <br />
-    <p style={{ fontWeight:600, textAlign:'center' }}>{Prepare(campaign?.Description)}</p>
-    <br />
-    {getDetail(campaign, info)}
-    <br />
-    <Button 
-      color='warning'
+    <p
+      style={{
+        marginTop: 13,
+        fontFamily: 'Roboto',
+        fontSize: '21px',
+        fontWeight: 700,
+        lineHeight: '24px',
+        textAlign: 'left',
+      }}
+    >
+      {Prepare(campaign?.Name)}
+    </p>
+    <p
+      style={{
+        marginTop: 8,
+        fontFamily: 'Nunito',
+        fontSize: '16px',
+        fontWeight: 600,
+        lineHeight: '19px',
+        textAlign: 'left',
+        color: 'rgba(157, 159, 158, 1)',
+        textIndent: '1rem'
+      }}
+    >
+      {Prepare(campaign?.Description).split('\n').map((txt, index) => <p key={index}>{txt}</p>)}
+    </p>
+    <Button
       shape="rounded"
-      style={{ width:'100%' }}
+      style={{
+        width: '100%',
+        marginTop: 20,
+        background: 'rgba(247, 187, 15, 1)',
+        color: 'rgba(0, 0, 0, 1)',
+        fontFamily: 'Roboto',
+        fontSize: 14.5,
+        fontWeight: 600,
+        lineHeight: '16.99px',
+        border: 'none',
+        padding: '7px 15px'
+      }}
       onClick={close}
     >
       Закрыть
