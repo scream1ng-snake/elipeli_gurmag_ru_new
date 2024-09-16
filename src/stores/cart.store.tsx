@@ -103,9 +103,9 @@ export class CartStore {
         let count = 0
         dishSet?.dishes.forEach(dish => {
           const addedToCart = this.items.find(cic => cic.couse.VCode == dish.dish)
-          if(addedToCart) {
+          if (addedToCart) {
             count = count + addedToCart.quantity
-            if(count >= dishSet.dishCount) {
+            if (count >= dishSet.dishCount) {
               Toast.show("Промокод активирован")
               this.confirmedPromocode = str
               ref?.current?.blur()
@@ -258,9 +258,9 @@ export class CartStore {
         let count = 0
         dishSet?.dishes.forEach(dish => {
           const addedToCart = this.items.find(cic => cic.couse.VCode == dish.dish)
-          if(addedToCart) {
+          if (addedToCart) {
             count = count + addedToCart.quantity
-            if(count >= dishSet.dishCount) {
+            if (count >= dishSet.dishCount) {
               Toast.show("Промокод активирован")
               this.confirmedPromocode = this.inputPromocode
             } else { this.confirmedPromocode = null }
@@ -380,6 +380,40 @@ export class CartStore {
 
   /** проверка перед отправкой (остатки и валидации) */
   prePostOrder = async () => {
+    const { receptionType, address, location, nearestOrgForDelivery } = this.root.reception
+    switch (receptionType) {
+      case 'delivery':
+        if (!location?.[0]) {
+          Toast.show('Местоположение не указано')
+          return
+        }
+        if (!location?.[1]) {
+          Toast.show('Местоположение не указано')
+          return
+        }
+        if (!address.road) {
+          Toast.show('Адрес не указан')
+          return
+        }
+        if (!address.house_number) {
+          Toast.show('Адрес не указан')
+          return
+        }
+        if (!this.slots.selectedSlot) {
+          Toast.show('Слот не указан')
+          return
+        }
+        break
+      case 'pickup':
+        if(!nearestOrgForDelivery) {
+          Toast.show('Точка самовывоза не выбрана')
+          return
+        }
+        break
+      case 'initial':
+        Toast.show('Способ получения не выбран')
+        return
+    }
     /** если заказ нужен на сегодня */
     const isToday = moment(this.date).isSame(new Date(), 'day')
 
@@ -421,6 +455,8 @@ export class CartStore {
         })
         this.detailPopup.close()
         this.congratilations.open()
+      } else {
+        Toast.show('Вы не авторизовались')
       }
     }
   }

@@ -18,14 +18,13 @@ const Campaign: FC<pops> = observer(({ actia }) => {
       marginTop: 20
     },
     img: {
-      height: "204px",
+      height: "115px",
       width: 'auto'
     }
   }
   return (
     <div style={styles.border}>
       <Image
-        className='action_img'
         fallback={<Skeleton style={styles.img} animated />}
         placeholder={<Skeleton style={styles.img} animated />}
         src={config.staticApi
@@ -34,19 +33,55 @@ const Campaign: FC<pops> = observer(({ actia }) => {
           + '&compression=true'
         }
         onContainerClick={() => go('/campaigns/' + actia.VCode)}
+        style={styles.img}
+        fit='cover'
       />
-      <Card title={Prepare(actia.Name)}>
-        {Prepare(actia.Description)}
+      <div
+        style={{
+          padding: '10px 19px 19px 19px',
+          fontFamily: 'Nunito',
+          fontSize: 19,
+          fontWeight: 600,
+          lineHeight: '25.92px',
+          letterSpacing: '-0.05em',
+          textAlign: 'left'
+        }}
+      >
+        <p>{Prepare(actia.Name)}</p>
+        <p
+          style={{
+            marginTop: 4,
+            fontFamily: 'Roboto',
+            fontSize: '13px',
+            fontWeight: '500',
+            lineHeight: '18px',
+            letterSpacing: '0.03em',
+            textAlign: 'left',
+            color: 'rgba(139, 141, 140, 1)'
+          }}
+        >
+          {Prepare(actia.Description)}
+        </p>
         <Button
-          style={{ width:"100%", marginTop:16 }}
-          color='warning'
+          style={{
+            width: "100%",
+            marginTop: 16,
+            fontFamily: 'Roboto',
+            fontSize: 14.5,
+            fontWeight: 400,
+            lineHeight: '16.99px',
+            color: 'rgba(215, 133, 52, 1)',
+            background: 'rgba(255, 238, 206, 1)',
+            border: 'none', 
+            padding: '7px  15px'
+          }}
           shape='rounded'
           onClick={() => go('/campaigns/' + actia.VCode)}
         >
           Посмотреть
         </Button>
-      </Card>
-    </div>
+      </div>
+    </div >
   )
 })
 
