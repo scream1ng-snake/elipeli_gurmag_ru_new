@@ -182,11 +182,11 @@ const CampaignPopup: FC = observer(() => {
         background: 'rgba(247, 187, 15, 1)',
         color: 'rgba(0, 0, 0, 1)',
         fontFamily: 'Roboto',
-        fontSize: 14.5,
+        fontSize: 16.5,
         fontWeight: 600,
         lineHeight: '16.99px',
         border: 'none',
-        padding: '7px 15px'
+        padding: '12px 15px'
       }}
       onClick={close}
     >
