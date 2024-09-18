@@ -1,8 +1,8 @@
 import { LeftOutline } from "antd-mobile-icons";
-import { FC } from "react";
+import { CSSProperties, FC } from "react";
 
 
-const BackIcon: FC<{ onClick?: () => any }> = p =>
+const BackIcon: FC<{ onClick?: () => any, styles?: CSSProperties }> = p =>
   <div
     onClick={p?.onClick}
     style={{
@@ -13,7 +13,8 @@ const BackIcon: FC<{ onClick?: () => any }> = p =>
       width: 36,
       height: 36,
       borderRadius: 100,
-      background: 'var(--tg-theme-bg-color)'
+      background: 'var(--tg-theme-bg-color)',
+      ...p.styles 
     }}
   >
     <LeftOutline style={{ fontSize: 18, marginRight: 3 }} />

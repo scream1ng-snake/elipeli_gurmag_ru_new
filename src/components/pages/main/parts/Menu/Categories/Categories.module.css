@@ -1,5 +1,8 @@
 .categories_wrapper {
   width: 100%;
+  border-top-left-radius: 33px;
+  border-top-right-radius: 33px;
+  overflow: hidden;
 }
 .categories_wrapper h2 {
   margin-left: 16px;
@@ -232,4 +235,14 @@
   background: var(--gurmag-accent-color);
   position: relative;
   color: white;
+}
+
+.shtorka {
+  position: absolute;
+  top: -10px;
+  width: 46px;
+  height: 5px;
+  background: var(--tg-theme-bg-color);
+  border-radius: 100px;
+  left: calc(50% - 23px);
 }

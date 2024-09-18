@@ -1,4 +1,4 @@
-import { NavBar, Popup, Image, Toast, Ellipsis } from 'antd-mobile'
+import { NavBar, Popup, Image, Toast, Skeleton } from 'antd-mobile'
 import { observer } from 'mobx-react-lite'
 import { FC, useEffect } from 'react'
 import { useStore } from '../../features/hooks'
@@ -10,7 +10,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Optional } from '../../features/helpers'
 
 import config from '../../features/config'
-import { FullscreenLoading } from '../common/Loading/Loading'
 import BackIcon from '../icons/Back'
 import BottomNavigation from '../common/BottomNav/BottomNav'
 
@@ -42,23 +41,52 @@ export const CollectionPopup: FC = observer(p => {
   function getContent() {
     // смотрим одну подборку
     if (currentCollection) {
-      return <section className={styles.categories_wrapper}>
-        <div
+      return <section
+        style={{
+          height: 'calc(100vh - 40px)',
+          overflowY: 'scroll',
+          borderTopLeftRadius: 33,
+          borderTopRightRadius: 33,
+        }}
+        className={styles.categories_wrapper}
+      >
+        <Image
+          height={262}
+          src={config.staticApi
+            + "/api/v2/image/FileImage?fileId="
+            + currentCollection.Image2
+          }
           style={{
-            overflowY: 'auto',
-            height: 'calc(100vh - 80px)',
+            borderTopLeftRadius: 33,
+            borderTopRightRadius: 33,
+          }}
+        />
+        <p
+          style={{
+            fontFamily: 'Arial',
+            fontSize: 22.5,
+            fontWeight: 400,
+            lineHeight: '25.87px',
+            textAlign: 'left',
+            margin: '3px 29px'
           }}
         >
-          <div
-            style={{
-              margin: '0 36px 16px 36px',
-              fontSize: 16,
-              fontWeight: 400,
-              textAlign: 'left',
-            }}
-          >
-            {currentCollection.Description}
-          </div>
+          {currentCollection?.Name ?? 'Подборки'}
+        </p>
+        <p
+          style={{
+            fontFamily: 'Arial',
+            fontSize: 14.5,
+            fontWeight: 400,
+            lineHeight: '17px',
+            textAlign: 'left',
+            margin: '5px 31px'
+          }}
+        >
+          {currentCollection.Description}
+        </p>
+        <br />
+        <div>
           <div className={styles.courses_list}>
             {currentCollection.CourseList.map(course =>
               <CourseItemComponent
@@ -70,7 +98,27 @@ export const CollectionPopup: FC = observer(p => {
         </div>
       </section>
     } else {
-      return <FullscreenLoading />
+      return <section
+        style={{
+          height: 'calc(100vh - 40px)',
+          overflowY: 'scroll',
+          borderTopLeftRadius: 33,
+          borderTopRightRadius: 33,
+        }}
+        className={styles.categories_wrapper}
+      >
+        <Skeleton
+          animated
+          style={{
+            borderTopLeftRadius: 33,
+            borderTopRightRadius: 33,
+            height: 262,
+            width: '100%'
+          }}
+        />
+        <Skeleton.Title />
+        <Skeleton.Paragraph />
+      </section>
     }
   }
   return (
@@ -79,26 +127,27 @@ export const CollectionPopup: FC = observer(p => {
       visible
       onClose={close}
       onMaskClick={close}
-      bodyStyle={{ width: '100vw', height: '100%' }}
+      closeOnSwipe
+      bodyStyle={{
+        width: '100vw',
+
+        borderTopLeftRadius: 33,
+        borderTopRightRadius: 33,
+        marginTop: 40,
+        position: 'relative',
+      }}
     >
-      <NavBar
-        onBack={close}
-        backIcon={<BackIcon />}
-        style={{ height: 'max-content', minHeight:60, padding: '0 20px'}}
-      >
-        <span
-          style={{
-            fontSize: 31,
-            fontWeight: 700,
-            textAlign: 'left',
-            textWrap: 'wrap'
-          }}
-        >
-          {currentCollection?.Name ?? 'Подборки'}
-        </span>
-      </NavBar>
+      <BackIcon
+        onClick={close}
+        styles={{
+          position: 'absolute',
+          top: -12,
+          left: 30,
+          zIndex: 1000
+        }}
+      />
+      <div className={styles.shtorka} />
       {getContent()}
-      <BottomNavigation />
     </Popup>
   )
 })
@@ -118,23 +167,25 @@ export const CollectionsPage: FC = observer(p => {
       visible
       onClose={close}
       onMaskClick={close}
-      bodyStyle={{ width: '100vw', height: '100%' }}
+      closeOnSwipe
+      bodyStyle={{
+        width: '100vw',
+        borderTopLeftRadius: 33,
+        borderTopRightRadius: 33,
+        marginTop: 40,
+        position: 'relative',
+      }}
     >
-      <NavBar
-        onBack={close}
-        backIcon={<BackIcon />}
-        style={{ height: 60, padding: '0 20px' }}
-      >
-        <p
-          style={{
-            fontSize: 31,
-            fontWeight: 700,
-            textAlign: 'left'
-          }}
-        >
-          Подборки
-        </p>
-      </NavBar>
+      <BackIcon
+        onClick={close}
+        styles={{
+          position: 'absolute',
+          top: -12,
+          left: 30,
+          zIndex: 1000
+        }}
+      />
+      <div className={styles.shtorka} />
       <section className={styles.categories_wrapper}>
         <div
           style={{
@@ -142,6 +193,7 @@ export const CollectionsPage: FC = observer(p => {
             height: 'calc(100vh - 80px)',
           }}
         >
+          <br />
           {menu.selections.map((selection, index) =>
             <div key={index}>
               <h2
