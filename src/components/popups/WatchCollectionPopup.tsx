@@ -96,6 +96,8 @@ export const CollectionPopup: FC = observer(p => {
             )}
           </div>
         </div>
+        <BottomNavigation />
+
       </section>
     } else {
       return <section

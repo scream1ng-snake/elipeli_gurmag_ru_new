@@ -8,7 +8,7 @@ import { useStore } from "../../../features/hooks"
 import { Void } from "../../layout/Void"
 
 
-const BottomNavigation: FC = observer(() => {
+const BottomNavigation: FC<{ style?: CSSProperties }> = observer(p => {
   const { cart, auth, user } = useStore()
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -58,6 +58,7 @@ const BottomNavigation: FC = observer(() => {
     padding: '0.5rem',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
+    ...p.style
   }
 
   return (
@@ -71,7 +72,7 @@ const BottomNavigation: FC = observer(() => {
 
 
 
-export default () => <>
-  <BottomNavigation />
+export default (props: { style?: CSSProperties }) => <>
+  <BottomNavigation style={props.style} />
   <Void height="65px" />
 </>

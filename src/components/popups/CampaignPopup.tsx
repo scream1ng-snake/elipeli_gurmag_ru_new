@@ -1,15 +1,15 @@
 import { Button, Image, Popup } from "antd-mobile"
 import { observer } from "mobx-react-lite"
-import { FC, ReactNode } from "react"
+import { FC } from "react"
 import { useStore } from "../../features/hooks"
 import { useNavigate } from "react-router-dom"
 import { toJS } from "mobx"
 import config from "../../features/config"
 import { AllCampaignUser, DishDiscount, DishSetDiscount, PercentDiscount } from "../../stores/cart.store"
-import { Optional, Undef } from "../../features/helpers"
-import { CourseItem } from "../../stores/menu.store"
+import { Optional } from "../../features/helpers"
 import { ItemModal } from "./Course"
 import { UserInfoState } from "../../stores/user.store"
+import BottomNavigation from "../common/BottomNav/BottomNav"
 
 const CampaignPopup: FC = observer(() => {
   const {
@@ -192,6 +192,7 @@ const CampaignPopup: FC = observer(() => {
     >
       Закрыть
     </Button>
+    <BottomNavigation />
   </Popup>
 })
 
