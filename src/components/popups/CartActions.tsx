@@ -12,6 +12,7 @@ import { CloseOutline } from "antd-mobile-icons";
 import { Message2 } from "../../stores/auth.store";
 import { copyToClipboard } from "../../features/helpers";
 import Pizza from '../../assets/pizza_huizza.png'
+import Shtorka from "../common/Shtorka/Shtorka";
 
 
 const popup = {
@@ -33,7 +34,6 @@ const badge = {
   '--gap': '-10'
 } as CSSProperties
 export const NiceToMeetYooPopup: FC = observer(() => {
-  const go = useNavigate()
   const { auth: { niceToMeetYooPopup: { show, close, content } } } = useStore()
   let text: Message2 = {
     body1: '',
@@ -50,6 +50,7 @@ export const NiceToMeetYooPopup: FC = observer(() => {
     onClose={close}
     bodyStyle={popup}
   >
+    <Shtorka />
 
     <Space style={{ width: '100%' }} justify='between' align='center'>
       <BackIcon onClick={close} />
@@ -81,7 +82,10 @@ export const NiceToMeetYooPopup: FC = observer(() => {
           <span style={{ fontSize: 30 }}>{text.promo}</span>
         </Space>
       }
-      <Image src={Pizza} />
+      <Image 
+        src={Pizza}
+        style={{ marginRight: '-1rem' }} 
+      />
       <Button
         fill='outline'
         onClick={() => {

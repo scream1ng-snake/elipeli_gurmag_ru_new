@@ -7,6 +7,7 @@ import BackIcon from "../icons/Back"
 import { CloseOutline } from "antd-mobile-icons"
 import { copyToClipboard } from "../../features/helpers"
 import Ekler from '../../assets/Ekler.png'
+import Shtorka from "../common/Shtorka/Shtorka"
 
 const popup = {
   width: '100vw',
@@ -41,7 +42,9 @@ const AskAuthorize: FC = observer(() => {
       closeOnMaskClick
       onClose={close}
       bodyStyle={popup}
+      closeOnSwipe
     >
+      <Shtorka />
       
       <Space style={{ width: 'calc(100% - 2rem)', margin: '0 1rem' }} justify='between' align='center'>
         <BackIcon onClick={close} />
