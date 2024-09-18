@@ -2,14 +2,43 @@ import { makeAutoObservable, reaction } from "mobx";
 import { useTelegram } from "../features/hooks";
 import { logger } from "../features/logger";
 import { AuthStore } from "./auth.store";
-import { CartStore } from "./cart.store";
+import { CartStore, CouseInCart } from "./cart.store";
 import { ReceptionStore } from "./reception.store";
 import UserStore from "./user.store";
+import { getItem } from "../features/local-storage";
 
 export default class RootStore {
   constructor() {
     makeAutoObservable(this)
     this.bootstrap()
+
+    /**
+     * Когда все загрузится можем
+     * зайти в localstorage
+     * и взять сохраненную корзину
+     */
+    reaction(
+      () => this.reception.menu.loadMenu.state,
+      val => {
+        if(val === 'COMPLETED') {
+          // вспоминаем что сохранили в локал стораге
+          const savedCart = getItem<CouseInCart[]>('cartItems')
+          // надо проверить есть ли сейчас это блюдо в меню
+          if(savedCart?.length) {
+            this.cart.items = [];
+            savedCart.forEach((couseInCart) => {
+              const isExistsOnMenu = this.reception.menu.allDishes.find((bludo) => 
+                bludo.VCode === couseInCart.couse.VCode
+              )
+              // если есть то норм
+              if(isExistsOnMenu) for (let i = 1; i <= couseInCart.quantity; i++) {
+                this.cart.addCourseToCart(isExistsOnMenu)                
+              }
+            })
+          }
+        }
+      }
+    )
   }
   auth = new AuthStore(this)
   reception = new ReceptionStore(this)

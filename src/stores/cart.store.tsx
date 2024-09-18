@@ -359,11 +359,7 @@ export class CartStore {
     )
 
 
-    // корзину запоминаем 
-    // только когда все загрузилось,
-    // иначе запомним пустой массив 
-    const { loadCourseReviews, loadMenu } = this.root.reception.menu;
-    if (loadCourseReviews.state === 'COMPLETED' && loadMenu.state === 'COMPLETED') setItem('cartItems', state.items)
+    if(state.items.length) setItem('cartItems', state.items)
   }
 
   applyDiscountForCart(userInfo: UserInfoState) {
