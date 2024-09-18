@@ -9,16 +9,16 @@ import { copyToClipboard } from "../../features/helpers"
 import Ekler from '../../assets/Ekler.png'
 
 const popup = {
-  width: 'calc(100vw - 2rem)',
-  padding: '0.75rem 1rem',
+  width: '100vw',
+  padding: '0.75rem 0',
   borderTopLeftRadius: 15,
   borderTopRightRadius: 15,
   background: 'rgba(247, 187, 15, 1)',
   color: 'black',
 }
 
-const bigText = { fontSize: 29, fontWeight: 700, lineHeight: '33px' }
-const smallText = { fontSize: 15, fontWeight: 700, lineHeight: '17px' }
+const bigText = { fontSize: 29, fontWeight: 700, lineHeight: '33px', margin: '0 1rem' }
+const smallText = { fontSize: 15, fontWeight: 700, lineHeight: '17px', margin: '0 1rem' }
 const badge = {
   background: 'rgba(1, 98, 65, 1)',
   borderRadius: 10,
@@ -26,6 +26,7 @@ const badge = {
   padding: '0.5rem 1rem',
   color: 'white',
   fontSize: 14,
+  marginLeft: '1rem',
   '--gap': '-10'
 } as CSSProperties
 
@@ -42,7 +43,7 @@ const AskAuthorize: FC = observer(() => {
       bodyStyle={popup}
     >
       
-      <Space style={{ width: '100%' }} justify='between' align='center'>
+      <Space style={{ width: 'calc(100% - 2rem)', margin: '0 1rem' }} justify='between' align='center'>
         <BackIcon onClick={close} />
         <CloseOutline onClick={close} fontSize={20} />
       </Space>
@@ -81,13 +82,14 @@ const AskAuthorize: FC = observer(() => {
           close()
         }}
         style={{ 
-          width: '100%', 
+          width: 'calc(100% - 2rem)', 
           background: 'rgba(1, 98, 65, 1)', 
           color: 'white',
           fontSize:16,
           fontWeight:600,
           borderRadius:10, 
-          padding:'0.75rem'
+          padding:'0.75rem',
+          margin: '0 1rem'
         }}
       >
         Получить подарок!
