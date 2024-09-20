@@ -119,9 +119,17 @@ export class AuthStore {
           break
         }
         case 'WEB_BROWSER': {
+          let utm: Record<string, string> = {}
+          const utmObj = JSON.parse(this.utm)
+          Object
+            .keys(utmObj)
+            .filter(key => Boolean(utmObj[key]))
+            .forEach(key => utm[key] = utmObj[key])
+
+          
           const result = await http.post<any, resultType2>(
             '/checkUserPhoneWeb',
-            { phone, utm: this.utm }
+            { phone, utm: JSON.stringify(utm) }
           )
           if (result.State && result.UserId) {
             localStorage.setItem('webId', result.UserId)
@@ -257,7 +265,7 @@ export class AuthStore {
     })
   }
 
-  utm = '{"utm_source":"","utm_medium":"","utm_campaign":"","utm_content":"","utm_term":""}'
+  utm = '{"utm_source":"","utm_medium":"","utm_campaign":"","utm_content":"","utm_term":"","yclid":"","rb_clickid":""}'
   get UTM() { return this.utm }
   set UTM(utm: string) { this.utm = utm }
 }

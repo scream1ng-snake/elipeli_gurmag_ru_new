@@ -116,8 +116,18 @@ const UtmChecker: FC<any> = observer(p => {
     let utm_campaign = searchParams.get("utm_campaign") || ''
     let utm_content = searchParams.get("utm_content") || ''
     let utm_term = searchParams.get("utm_term") || ''
+    let rb_clickid = searchParams.get("rb_clickid") || ''
+    let yclid = searchParams.get("yclid") || ''
 
-    let utm = JSON.stringify({ utm_source, utm_medium, utm_campaign, utm_content, utm_term })
+    let utm = JSON.stringify({ 
+      utm_source, 
+      utm_medium, 
+      utm_campaign, 
+      utm_content, 
+      utm_term,
+      rb_clickid,
+      yclid
+    })
     auth.UTM = utm
   }, [])
   useEffect(() => {
