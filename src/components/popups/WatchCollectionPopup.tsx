@@ -80,10 +80,12 @@ export const CollectionPopup: FC = observer(p => {
             fontWeight: 400,
             lineHeight: '17px',
             textAlign: 'left',
-            margin: '5px 31px'
+            margin: '5px 31px',
+            color: 'rgba(112, 112, 112, 1)',
+            textIndent: '1rem'
           }}
         >
-          {currentCollection.Description}
+          {currentCollection.Description.split('\n').map((txt, index) => <p key={index}>{txt}</p>)}
         </p>
         <br />
         <div>
