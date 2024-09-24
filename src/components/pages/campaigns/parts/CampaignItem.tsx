@@ -28,9 +28,8 @@ const Campaign: FC<pops> = observer(({ actia }) => {
         fallback={<Skeleton style={styles.img} animated />}
         placeholder={<Skeleton style={styles.img} animated />}
         src={config.staticApi
-          + '/api/v2/image/Disount?vcode='
-          + actia.VCode
-          + '&compression=true'
+          + "/api/v2/image/FileImage?fileId="
+          + actia.compresimage
         }
         onContainerClick={() => go('/campaigns/' + actia.VCode)}
         style={styles.img}

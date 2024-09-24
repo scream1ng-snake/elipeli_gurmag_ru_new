@@ -168,7 +168,9 @@ type AllCampaignUser = {
   periodtype: string,
   isset: number,
   quantity: number,
-  promocode: string
+  promocode: string,
+  image: string,
+  compresimage: string,
 }
 export default UserStore
 

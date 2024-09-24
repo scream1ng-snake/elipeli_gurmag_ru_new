@@ -42,9 +42,8 @@ const CampaignPopup: FC = observer(() => {
     <ItemModal />
     <Image
       src={config.staticApi
-        + '/api/v2/image/Disount?vcode='
-        + campaign?.VCode
-        + '&compression=true'
+        + "/api/v2/image/FileImage?fileId="
+        + campaign?.image
       }
       style={{ borderRadius: 20 }}
     />
