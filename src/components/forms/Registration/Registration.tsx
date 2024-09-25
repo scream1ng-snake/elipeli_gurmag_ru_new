@@ -2,14 +2,13 @@ import { DatePicker, Input, Button, Form, NavBar, Popup } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import moment from "moment"
 import { FC, useState, useEffect } from "react"
-import { useStore } from "../../../features/hooks"
-import { useNavigate } from "react-router-dom"
+import { useGoUTM, useStore } from "../../../features/hooks"
 import styles from '../form.module.css'
 import { FullscreenLoading } from "../../common/Loading/Loading"
 
 
 const Registration: FC = observer(() => {
-  const go = useNavigate()
+  const go = useGoUTM()
   const { auth } = useStore()
   const [name, setName] = useState('')
   const [birthday, setBirthDay] = useState('')
@@ -48,7 +47,7 @@ const Registration: FC = observer(() => {
         confirmText='Сохранить'
         cancelText='Закрыть'
       />
-      <NavBar onBack={() => { go(-1) }}>
+      <NavBar onBack={() => { go('/') }}>
         Расскажите о себе
       </NavBar>
       <Form>

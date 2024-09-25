@@ -1,21 +1,16 @@
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 import Wrapper from "../../layout/Wrapper";
-import { useStore } from "../../../features/hooks";
-import { Avatar, Card, Divider, List, NavBar, Space, Tag } from "antd-mobile";
-import { useNavigate } from "react-router-dom";
+import { useGoUTM, useStore } from "../../../features/hooks";
+import { Avatar, List, NavBar } from "antd-mobile";
 import { GiftOutline, RedoOutline } from "antd-mobile-icons";
-import { WithChildren } from "../../../features/helpers";
-import moment from "moment";
-import config from "../../../features/config";
-import { toJS } from "mobx";
 
 
 const UserPage: FC = observer(() => {
-  const go = useNavigate()
+  const go = useGoUTM()
   const { user } = useStore()
   return <Wrapper>
-    <NavBar onBack={() => { go(-1) }}>
+    <NavBar onBack={() => { go('/') }}>
       Вы
     </NavBar>
     <List style={{ borderRadius: 20, overflow: 'hidden' }}>

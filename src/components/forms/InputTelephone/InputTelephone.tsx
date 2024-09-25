@@ -2,8 +2,8 @@ import { Input, Button, Popup, NavBar, Form } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { FC, useState, useEffect } from "react"
 import { getFormattedNumber, useMask } from "react-phone-hooks"
-import { useNavigate, useParams } from "react-router-dom"
-import { useStore } from "../../../features/hooks"
+import { useParams } from "react-router-dom"
+import { useGoUTM, useStore } from "../../../features/hooks"
 import styles from '../form.module.css'
 import Red from "../../special/RedText"
 import { FullscreenLoading } from "../../common/Loading/Loading"
@@ -14,7 +14,7 @@ const defaultPrefix = "+7"
 const phoneRegex = /^((\+8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/
 
 const InputNumber: FC = observer(() => {
-  const go = useNavigate()
+  const go = useGoUTM()
   const { auth } = useStore()
   const { tel } = useParams()
   const [number, setNumber] = useState(defaultPrefix)
@@ -36,7 +36,7 @@ const InputNumber: FC = observer(() => {
     if (tel?.length) setNumber(getFormattedNumber(tel, defaultMask))
   }, [])
   return <Popup visible bodyClassName={styles.wrapper}>
-    <NavBar onBack={() => { go(-1) }}>
+    <NavBar onBack={() => { go('/') }}>
       Вход по номеру
     </NavBar>
     {auth.authorize.state === 'LOADING'

@@ -2,9 +2,8 @@ import { Card, Divider, List, NavBar, Space, Tag } from "antd-mobile"
 import { observer } from "mobx-react-lite";
 import moment from "moment";
 import { FC } from "react";
-import { useNavigate } from "react-router-dom";
 import { WithChildren } from "../../../features/helpers";
-import { useStore } from "../../../features/hooks";
+import { useGoUTM, useStore } from "../../../features/hooks";
 import config from "../../../features/config";
 import BottomNav from "../../common/BottomNav/BottomNav";
 
@@ -25,8 +24,8 @@ const PaymentStatusColors = {
 const W100 = { width: 'calc(100% - 1.5rem)' }
 const OrdersPage: FC = observer(() => {
   const { user } = useStore()
-  const go = useNavigate()
-  const onBack = () => { go(-1) }
+  const go = useGoUTM()
+  const onBack = () => { go('/') }
   return (
     <div style={{ background: 'var(--tg-theme-secondary-bg-color)', minHeight: '100%' }}>
       <NavBar
@@ -155,8 +154,8 @@ const Scrollable: FC<WithChildren> = ({ children }) =>
 export const WatchOrderDetailModal: FC = observer(() => {
   const { user } = useStore();
   const watchingOrder = user.watchHistoryOrderPopup.content
-  const go = useNavigate()
-  const onBack = () => { go(-1) }
+  const go = useGoUTM()
+  const onBack = () => { go('/orders') }
   if (watchingOrder) {
     return (
       <div

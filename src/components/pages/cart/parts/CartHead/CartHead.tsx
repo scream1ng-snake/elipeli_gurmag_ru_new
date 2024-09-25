@@ -1,10 +1,10 @@
 import { Space } from "antd-mobile"
 import { FC } from "react"
-import { useNavigate } from "react-router-dom"
 import styles from './styles.module.css'
+import { useGoUTM } from "../../../../../features/hooks"
 
 const CartHead: FC =() => {
-  const go = useNavigate()
+  const go = useGoUTM()
   return <Space justify='center' className={styles.cartHead}>
   <span
     className={styles.cartClose}

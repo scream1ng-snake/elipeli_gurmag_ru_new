@@ -1,15 +1,14 @@
 import { Space, PasscodeInput, Form, NavBar, Popup, PasscodeInputRef } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { FC, useEffect, useRef } from "react"
-import { useStore } from "../../../features/hooks"
-import { useNavigate } from "react-router-dom"
+import { useGoUTM, useStore } from "../../../features/hooks"
 import styles from '../form.module.css'
 import { FullscreenLoading } from "../../common/Loading/Loading"
 
 
 const InputSmsCode: FC = observer(() => {
   const ref = useRef<PasscodeInputRef>(null)
-  const go = useNavigate()
+  const go = useGoUTM()
   const LENGHT = 4
 
   const { auth } = useStore()
@@ -26,7 +25,7 @@ const InputSmsCode: FC = observer(() => {
         ? <FullscreenLoading />
         : null
       }
-      <NavBar onBack={() => { go(-1) }}>
+      <NavBar onBack={() => { go('/') }}>
         Подтвердите номер
       </NavBar>
       <Form>

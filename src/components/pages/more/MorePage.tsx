@@ -1,18 +1,17 @@
 import { Collapse, List, NavBar } from 'antd-mobile';
 import { FC } from 'react';
 import { observer } from 'mobx-react-lite';
-import { useNavigate } from 'react-router-dom';
 import { LocationFill, MessageOutline, RedoOutline, UserCircleOutline } from 'antd-mobile-icons';
 import { PhoneOutlined } from '@ant-design/icons';
 import Wrapper from '../../layout/Wrapper';
-import { useTelegram } from '../../../features/hooks';
+import { useGoUTM, useTelegram } from '../../../features/hooks';
 
 const MorePage: FC = observer(() => {
   const tg = useTelegram()
-  const go = useNavigate()
+  const go = useGoUTM()
   return (
     <Wrapper>
-      <NavBar onBack={() => { go(-1) }}>
+      <NavBar onBack={() => { go('/') }}>
         Еще
       </NavBar>
       <List style={{ borderRadius: 20, overflow: 'hidden' }}>
