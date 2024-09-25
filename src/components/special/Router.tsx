@@ -17,7 +17,8 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '../../features/hooks';
 import { CollectionPopup, CollectionsPage } from '../popups/WatchCollectionPopup';
 import CampaignsPage from '../pages/campaigns/CampaignsPage';
-
+// @ts-ignore
+window.dataLayer = window.dataLayer || []
 const routes: Array<{
   path: string,
   private: boolean,
@@ -93,10 +94,12 @@ export const RouterComponent: FC = () => <BrowserRouter>
         path={route.path}
         element={
           <UtmChecker>
-            {route.private
-              ? <Checker>{route.element}</Checker>
-              : route.element
-            }
+            <Metrics>
+              {route.private
+                ? <Checker>{route.element}</Checker>
+                : route.element
+              }
+            </Metrics>
           </UtmChecker>
         }
       />
@@ -106,9 +109,59 @@ export const RouterComponent: FC = () => <BrowserRouter>
 
 
 
+const Metrics: FC<any> = p => {
+  const { pathname, search } = useLocation()
+  useEffect(() => {
+    console.log('new script')
+    const YaScript = document.createElement('script')
+    YaScript.type = 'text/javascript'
+    YaScript.innerHTML = `
+    (function (m, e, t, r, i, k, a) {
+      m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+      m[i].l = 1 * new Date();
+      for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+      k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+    })
+      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+    console.log(ym)
+    ym(98171988, "init", {
+      clickmap: true,
+      trackLinks: true,
+      accurateTrackBounce: true,
+      webvisor: true,
+      ecommerce: "dataLayer"
+    });
+    console.log(window.dataLayer)
+    `
+    document.head.appendChild(YaScript)
+
+    const vkScript = document.createElement('script')
+    vkScript.type = 'text/javascript'
+    vkScript.innerHTML = `
+    var _tmr = window._tmr || (window._tmr = []);
+    var USER_ID = localStorage.getItem('myID') ?? 'USER_ID'
+    _tmr.push({ id: "3545385", type: "pageView", start: (new Date()).getTime(), pid: USER_ID });
+    (function (d, w, id) {
+      if (d.getElementById(id)) return;
+      var ts = d.createElement("script"); ts.type = "text/javascript"; ts.async = true; ts.id = id;
+      ts.src = "https://top-fwz1.mail.ru/js/code.js";
+      var f = function () { var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ts, s); };
+      if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); }
+    })(document, window, "tmr-code");
+    `
+    document.head.appendChild(vkScript)
+
+    return () => {
+      document.head.removeChild(YaScript)
+      document.head.removeChild(vkScript)
+    }
+  }, [pathname, search])
+  return p.children
+}
+
 const UtmChecker: FC<any> = observer(p => {
-  const { pathname, hash, search } = useLocation()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const { auth } = useStore()
   useEffect(() => {
     let utm_source = searchParams.get("utm_source") || undefined
@@ -130,22 +183,6 @@ const UtmChecker: FC<any> = observer(p => {
     })
     auth.UTM = utm
   }, [])
-  // useEffect(() => {
-  //   console.log('pathname changed')
-  //   console.log('saved utm')
-  //   const utmObj = JSON.parse(auth.utm)
-  //   console.log(utmObj)
-  //   let sParams: Record<string, string> = {}
-  //   Object
-  //     .keys(utmObj)
-  //     .filter(key => Boolean(utmObj[key]))
-  //     .forEach(key => sParams[key] = utmObj[key])
-
-  //   console.log('setted search params')
-  //   console.log(sParams)
-  //   console.log(searchParams.size)
-  //   if(!searchParams.size) setSearchParams(sParams)
-  // }, [search])
   return p.children
 })
 

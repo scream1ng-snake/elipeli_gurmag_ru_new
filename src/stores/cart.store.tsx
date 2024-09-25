@@ -376,7 +376,7 @@ export class CartStore {
 
   /** проверка перед отправкой (остатки и валидации) */
   prePostOrder = async () => {
-    const { receptionType, address, location, nearestOrgForDelivery } = this.root.reception
+    const { receptionType, address, location, currentOrgID } = this.root.reception
     switch (receptionType) {
       case 'delivery':
         if (!location?.[0]) {
@@ -401,7 +401,7 @@ export class CartStore {
         }
         break
       case 'pickup':
-        if(!nearestOrgForDelivery) {
+        if(!currentOrgID) {
           Toast.show('Точка самовывоза не выбрана')
           return
         }

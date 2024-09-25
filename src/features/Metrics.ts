@@ -11,12 +11,13 @@ declare global {
   }
 }
 
-let _tmr = window._tmr || (window._tmr = [])
 abstract class Metrics {
   static pixelID = 3545385
 
+  static isDev = false
+
   static buyYandex(order: historyOrderItem) {
-    if(!config.isDev) {
+    if(!this.isDev) {
       window.dataLayer?.push?.({
         "ecommerce": {
             "currencyCode": "RUB",
@@ -34,12 +35,14 @@ abstract class Metrics {
         }
     });
   
-    window.ym?.(98171988,'reachGoal','purchase')
+    // @ts-ignore
+    ym?.(98171988,'reachGoal','purchase')
     }
   }
   static buy(totalPrice: number, IDs: number[]) {
-    if(!config.isDev) {
-      _tmr.push({ 
+    if(!this.isDev) {
+      // @ts-ignore
+      _tmr.push({
         type: 'reachGoal', 
         id: this.pixelID, 
         value: totalPrice, 
@@ -51,20 +54,24 @@ abstract class Metrics {
     }
   }
   static registration() {
-    if(!config.isDev) {
+    if(!this.isDev) {
+      // @ts-ignore
       _tmr.push({ 
         type: 'reachGoal', 
         id: this.pixelID, 
         goal: 'registration'
       })
   
-      window.ym?.(98171988,'reachGoal','registration')
+      // @ts-ignore
+      ym?.(98171988,'reachGoal','registration')
     }
   }
   static addToCart(course: CourseItem) {
-    if(!config.isDev) {
+    if(!this.isDev) {
       logger.log('addtobasket event vk pixel', 'metrics')
+      // @ts-ignore
       console.log(_tmr)
+      // @ts-ignore
       _tmr.push({ 
         type: 'reachGoal', 
         id: this.pixelID, 
@@ -87,7 +94,8 @@ abstract class Metrics {
         }
       });
       
-      window.ym?.(98171988,'reachGoal','add')
+      // @ts-ignore
+      ym?.(98171988,'reachGoal','add')
     }
   }
 }
