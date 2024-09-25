@@ -1,7 +1,7 @@
 import { Button, Image, Popup, Space, Toast } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { CSSProperties, FC } from "react"
-import { useStore } from "../../features/hooks"
+import { useGoUTM, useStore } from "../../features/hooks"
 import { useNavigate } from "react-router-dom"
 import BackIcon from "../icons/Back"
 import { CloseOutline } from "antd-mobile-icons"
@@ -32,7 +32,7 @@ const badge = {
 } as CSSProperties
 
 const AskAuthorize: FC = observer(() => {
-  const go = useNavigate()
+  const go = useGoUTM()
   const { auth } = useStore()
   const { bannerAuthForGift: { show, close } } = auth
 

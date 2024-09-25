@@ -3,7 +3,7 @@ import { useTelegram } from "../features/hooks";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
 import RootStore from "./root.store";
-import { Optional, Request } from "../features/helpers";
+import { Optional, Request, Undef } from "../features/helpers";
 import { Dialog, Image } from "antd-mobile";
 import { ExclamationCircleFill as Icon } from "antd-mobile-icons";
 import Pizza from '../assets/Pizza.png'
@@ -119,17 +119,9 @@ export class AuthStore {
           break
         }
         case 'WEB_BROWSER': {
-          let utm: Record<string, string> = {}
-          const utmObj = JSON.parse(this.utm)
-          Object
-            .keys(utmObj)
-            .filter(key => Boolean(utmObj[key]))
-            .forEach(key => utm[key] = utmObj[key])
-
-          
           const result = await http.post<any, resultType2>(
             '/checkUserPhoneWeb',
-            { phone, utm: JSON.stringify(utm) }
+            { phone, utm: this.utm }
           )
           if (result.State && result.UserId) {
             localStorage.setItem('webId', result.UserId)
@@ -265,9 +257,9 @@ export class AuthStore {
     })
   }
 
-  utm = '{"utm_source":"","utm_medium":"","utm_campaign":"","utm_content":"","utm_term":"","yclid":"","rb_clickid":""}'
+  utm: Undef<string> = undefined
   get UTM() { return this.utm }
-  set UTM(utm: string) { this.utm = utm }
+  set UTM(utm: Undef<string>) { this.utm = utm }
 }
 
 

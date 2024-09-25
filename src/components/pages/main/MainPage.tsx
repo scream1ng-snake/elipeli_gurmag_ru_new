@@ -11,7 +11,7 @@ import Banner from "./parts/Banner/Banner"
 import Fixed from "../../layout/Fixed"
 import { MenuTabsFixed } from "./parts/Menu/MenuTabs/MenuTabs"
 import styles from './styles.module.css'
-import { useStore } from '../../../features/hooks'
+import { useGoUTM, useStore } from '../../../features/hooks'
 import AskLocation from "../../popups/AskLocation"
 import { ItemModal } from "../../popups/Course"
 import { useNavigate, useParams } from "react-router-dom"
@@ -23,7 +23,7 @@ const MainPage: FC = observer(() => {
   const { auth, reception: { menu } } = useStore()
 
   const { VCode } = useParams<{ VCode: string }>()
-  const go = useNavigate()
+  const go = useGoUTM()
 
   useEffect(() => {
     if (VCode && menu.loadMenu.state === 'COMPLETED') {

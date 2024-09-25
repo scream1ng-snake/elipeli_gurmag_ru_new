@@ -1,7 +1,7 @@
 import { ActionSheet, Button, Dialog, Image, Popup, Space, Toast } from "antd-mobile";
 import { observer } from "mobx-react-lite";
 import { CSSProperties, FC } from "react";
-import { useStore } from "../../features/hooks";
+import { useGoUTM, useStore } from "../../features/hooks";
 import type {
   Action
 } from 'antd-mobile/es/components/action-sheet'
@@ -110,7 +110,7 @@ export const NiceToMeetYooPopup: FC = observer(() => {
 })
 
 export const Congratilations: FC = observer(() => {
-  const go = useNavigate()
+  const go = useGoUTM()
   const { cart } = useStore()
   return <Dialog
     title='Поздравляем! Заказ оформлен!'

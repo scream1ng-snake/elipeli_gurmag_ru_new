@@ -3,17 +3,17 @@ import { FC, useEffect } from "react"
 import Wrapper from "../../layout/Wrapper"
 import { Image, NavBar, Toast } from "antd-mobile"
 import bigLogo from '../../../assets/big_logo.png'
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 import BottomNav from "../../common/BottomNav/BottomNav"
-import { useStore } from "../../../features/hooks"
+import { useGoUTM, useStore } from "../../../features/hooks"
 import Campaign from "./parts/CampaignItem"
 import { logger } from "../../../features/logger"
 import CampaignPopup from "../../popups/CampaignPopup"
 
 const CampaignsPage: FC = observer(() => {
-  const go = useNavigate()
+  const go = useGoUTM()
   const { pathname } = useLocation()
-  const { user: { info, campaignPopup, loadUserInfo }} = useStore()
+  const { user: { info, campaignPopup, loadUserInfo }, auth } = useStore()
 
   const params = useParams<{ VCode: string }>();
 

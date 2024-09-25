@@ -4,17 +4,17 @@ import { GiftOutline, UserOutline } from "antd-mobile-icons"
 import { observer } from "mobx-react-lite"
 import { CSSProperties, FC } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { useStore } from "../../../features/hooks"
+import { useGoUTM, useStore } from "../../../features/hooks"
 import { Void } from "../../layout/Void"
 
 
 const BottomNavigation: FC<{ style?: CSSProperties }> = observer(p => {
   const { cart, auth, user } = useStore()
-  const navigate = useNavigate()
+  const go = useGoUTM()
   const { pathname } = useLocation()
 
   const setRouteActive = (value: string) => {
-    navigate(value)
+    go(value)
   }
 
   const isntAuth = auth.state !== 'AUTHORIZED'

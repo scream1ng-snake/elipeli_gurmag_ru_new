@@ -1,7 +1,7 @@
 import { Button, Image, Popup } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { FC } from "react"
-import { useStore } from "../../features/hooks"
+import { useGoUTM, useStore } from "../../features/hooks"
 import { useNavigate } from "react-router-dom"
 import { toJS } from "mobx"
 import config from "../../features/config"
@@ -16,7 +16,7 @@ const CampaignPopup: FC = observer(() => {
     user: { info, campaignPopup },
     reception: { menu }
   } = useStore()
-  const go = useNavigate()
+  const go = useGoUTM()
   function close() {
     campaignPopup.close()
     go('/campaigns')

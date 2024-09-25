@@ -107,39 +107,45 @@ export const RouterComponent: FC = () => <BrowserRouter>
 
 
 const UtmChecker: FC<any> = observer(p => {
-  const { pathname, hash } = useLocation() 
+  const { pathname, hash, search } = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const { auth } = useStore()
   useEffect(() => {
-    let utm_source = searchParams.get("utm_source") || ''
-    let utm_medium = searchParams.get("utm_medium") || ''
-    let utm_campaign = searchParams.get("utm_campaign") || ''
-    let utm_content = searchParams.get("utm_content") || ''
-    let utm_term = searchParams.get("utm_term") || ''
-    let rb_clickid = searchParams.get("rb_clickid") || ''
-    let yclid = searchParams.get("yclid") || ''
+    let utm_source = searchParams.get("utm_source") || undefined
+    let utm_medium = searchParams.get("utm_medium") || undefined
+    let utm_campaign = searchParams.get("utm_campaign") || undefined
+    let utm_content = searchParams.get("utm_content") || undefined
+    let utm_term = searchParams.get("utm_term") || undefined
+    let rb_clickid = searchParams.get("rb_clickid") || undefined
+    let yclid = searchParams.get("yclid") || undefined
 
-    let utm = JSON.stringify({ 
-      utm_source, 
-      utm_medium, 
-      utm_campaign, 
-      utm_content, 
+    let utm = JSON.stringify({
+      utm_source,
+      utm_medium,
+      utm_campaign,
+      utm_content,
       utm_term,
       rb_clickid,
       yclid
     })
     auth.UTM = utm
   }, [])
-  useEffect(() => {
-    const utmObj = JSON.parse(auth.utm)
-    let searchParams: Record<string, string> = {}
-    Object
-      .keys(utmObj)
-      .filter(key => Boolean(utmObj[key]))
-      .forEach(key => searchParams[key] = utmObj[key])
+  // useEffect(() => {
+  //   console.log('pathname changed')
+  //   console.log('saved utm')
+  //   const utmObj = JSON.parse(auth.utm)
+  //   console.log(utmObj)
+  //   let sParams: Record<string, string> = {}
+  //   Object
+  //     .keys(utmObj)
+  //     .filter(key => Boolean(utmObj[key]))
+  //     .forEach(key => sParams[key] = utmObj[key])
 
-    setSearchParams(searchParams)
-  }, [pathname, hash])
+  //   console.log('setted search params')
+  //   console.log(sParams)
+  //   console.log(searchParams.size)
+  //   if(!searchParams.size) setSearchParams(sParams)
+  // }, [search])
   return p.children
 })
 

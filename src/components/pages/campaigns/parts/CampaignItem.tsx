@@ -1,14 +1,13 @@
 import { CSSProperties, FC } from "react"
 import { AllCampaignUser } from "../../../../stores/cart.store"
 import { observer } from "mobx-react-lite"
-import { useStore } from "../../../../features/hooks"
-import { Button, Card, Ellipsis, Image, Skeleton } from "antd-mobile"
-import { useNavigate } from "react-router-dom"
+import { useGoUTM } from "../../../../features/hooks"
+import { Button, Image, Skeleton } from "antd-mobile"
 import config from "../../../../features/config"
 
 interface pops { actia: AllCampaignUser }
 const Campaign: FC<pops> = observer(({ actia }) => {
-  const go = useNavigate()
+  const go = useGoUTM()
   const styles: Record<string, CSSProperties> = {
     border: {
       border: '2px solid var(--adm-color-border)',

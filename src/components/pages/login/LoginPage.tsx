@@ -3,7 +3,7 @@ import { FC } from "react";
 import { useNavigate } from 'react-router';
 import Wrapper from '../../layout/Wrapper';
 import { FullscreenLoading } from '../../common/Loading/Loading';
-import { useStore } from '../../../features/hooks';
+import { useGoUTM, useStore } from '../../../features/hooks';
 import InputNumber from '../../forms/InputTelephone/InputTelephone';
 import Registration from '../../forms/Registration/Registration';
 import InputSmsCode from '../../forms/InputSmsCode/InputSmsCode';
@@ -11,7 +11,7 @@ import InputSmsCode from '../../forms/InputSmsCode/InputSmsCode';
 
 
 const LoginPage: FC = observer(() => {
-  const go = useNavigate()
+  const go = useGoUTM()
   const { auth } = useStore()
   function getContent() {
     switch (auth.stage) {

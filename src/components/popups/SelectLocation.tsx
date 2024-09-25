@@ -1,7 +1,7 @@
 import { Popup, Space, Button, DotLoading } from 'antd-mobile'
 import { LocationOutline } from 'antd-mobile-icons'
 import { observer } from 'mobx-react-lite'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { useStore } from '../../features/hooks'
 import { ReceptionType } from '../../stores/reception.store'
 import Maps from '../special/Map'
@@ -9,7 +9,6 @@ import InputAddressForm from '../forms/InputAddr/InputAddressForm'
 import styles from './SelectLocation.module.css'
 import { Mask } from '../special/Mask'
 import SelectOrgForm from '../forms/selectOrganization/SelectOrg'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { Optional } from '../../features/helpers'
 import ToggleSelector from '../special/ToggleSelector'
 import { IconClose } from '../icons/IconClose'
@@ -20,8 +19,6 @@ type P = {
   onContinue: () => void
 }
 const SelectLocationPopup: FC<P> = observer(p => {
-  const { hash } = useLocation()
-  const navigate = useNavigate()
   let {
     reception: {
       receptionType,
@@ -39,13 +36,6 @@ const SelectLocationPopup: FC<P> = observer(p => {
   } = useStore()
 
   const [clickedOrgID, setClickedOrgID] = useState<Optional<number>>(currentOrgID)
-  useEffect(() => {
-    if(hash.includes('#selectLocation/delivery')) {
-      setReceptionType('delivery')
-    } else if(hash.includes('#selectLocation/pickup')) {
-      setReceptionType('pickup')
-    }
-  }, [hash])
 
   const PopupHeader: FC = () =>
     <div className={styles.shtorka_box}>
@@ -165,9 +155,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
             buttonActiveBackgroundVar={'--gurmag-accent-color'}
             colorVar={'--громкий-текст'}
             activeColorVar={'--gur-custom-button-text-color'}
-            onChange={function (value:any) {
-              navigate('#selectLocation/' + value)
-            }}
+            onChange={setReceptionType}
           />
         </Space>
       </div>

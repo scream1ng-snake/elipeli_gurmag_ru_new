@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite"
 import { CSSProperties, FC } from "react"
 import styles from './Categories.module.css'
-import { useStore, useTheme } from "../../../../../../features/hooks";
+import { useGoUTM, useStore, useTheme } from "../../../../../../features/hooks";
 import { Divider, Image, Rate, Result, Skeleton, Space, Tag, Toast } from "antd-mobile";
 import { AddOutline, CheckOutline, SmileOutline } from "antd-mobile-icons";
 import { CourseItem } from "../../../../../../stores/menu.store";
@@ -128,7 +128,7 @@ const iconStyle: CSSProperties = {
   alignItems: 'center'
 }
 export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
-  const go = useNavigate()
+  const go = useGoUTM()
   const { reception: { menu }} = useStore();
   return(
     <div className={styles.course_item + ' course_item_card'}>
@@ -154,7 +154,7 @@ export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ cours
 })
 
 const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
-  const go = useNavigate()
+  const go = useGoUTM()
   const { theme } = useTheme()
   const { auth, reception } = useStore()
   const { reception: { menu }, cart } = useStore()

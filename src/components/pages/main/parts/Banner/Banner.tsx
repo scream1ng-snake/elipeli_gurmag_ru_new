@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite"
 import { FC } from "react"
 import { Gurmag36x36Bordered } from "../../../../icons/Gurmag36x36"
 import styles from './Banner.module.css'
-import { useStore } from "../../../../../features/hooks"
+import { useGoUTM, useStore } from "../../../../../features/hooks"
 import { useNavigate } from "react-router-dom"
 import { Wizard35x35 } from "../../../../icons/Wizard35x35"
 import InfoBlock from '../../../../special/InfoBlock'
@@ -16,7 +16,7 @@ import { Gift } from "../../../../icons/Gift"
 const W100 = { width: '100%' }
 
 const Banner: FC = observer(() => {
-  const go = useNavigate()
+  const go = useGoUTM()
   const { auth, instance } = useStore()
   function handleClick() {
     const src = 'https://t.me/Gurmagbot'

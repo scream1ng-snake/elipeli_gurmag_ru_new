@@ -2,7 +2,7 @@ import { Image, Space } from 'antd-mobile'
 import { observer } from 'mobx-react-lite'
 import { FC } from 'react'
 import config from '../../../../../features/config'
-import { useStore } from '../../../../../features/hooks'
+import { useGoUTM, useStore } from '../../../../../features/hooks'
 import styles from './Collections.module.css'
 import { ImagePreloder, LoaderTitle } from './preloders'
 import { useNavigate } from 'react-router-dom'
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 const Collections: FC = observer(() => {
   const { reception: { menu } } = useStore()
 
-  const go = useNavigate()
+  const go = useGoUTM()
   
   return <div className={styles.collections_wrapper}>
     {menu.loadMenu.state === 'COMPLETED'

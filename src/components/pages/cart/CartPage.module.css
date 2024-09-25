@@ -1,6 +1,6 @@
 .cartPopup {
   width: 100%;
-  height: 93vh;
+  height: calc(100% - 2rem);
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
   overflow-y: scroll;

@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { StoreContext, ThemeContext } from "./contexts";
+import { useNavigate } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -42,3 +43,13 @@ export function useTelegram() {
 
 export const useStore = () => useContext(StoreContext);
 export const useTheme = () => useContext(ThemeContext);
+
+
+export function useGoUTM() {
+  const { auth } = useStore()
+  const navigate = useNavigate()
+  return (pathname: string) => navigate({ 
+    pathname, 
+    search: new URLSearchParams(JSON.parse(auth.UTM ?? '{}')).toString()
+  })
+}

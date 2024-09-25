@@ -1,7 +1,7 @@
 import { NavBar, Popup, Image, Toast, Skeleton } from 'antd-mobile'
 import { observer } from 'mobx-react-lite'
 import { FC, useEffect } from 'react'
-import { useStore } from '../../features/hooks'
+import { useGoUTM, useStore } from '../../features/hooks'
 import { toJS } from 'mobx'
 import { Selection } from '../../stores/menu.store'
 import { CourseItemComponent } from '../pages/main/parts/Menu/Categories/Categories'
@@ -19,7 +19,7 @@ export const CollectionPopup: FC = observer(p => {
   const { VCode } = useParams<{ VCode: string }>()
   const { reception: { menu } } = useStore()
 
-  const go = useNavigate()
+  const go = useGoUTM()
   function close() {
     go('/')
     menu.selectionPopup.close()
@@ -158,7 +158,7 @@ export const CollectionPopup: FC = observer(p => {
 export const CollectionsPage: FC = observer(p => {
   const { reception: { menu } } = useStore()
 
-  const go = useNavigate()
+  const go = useGoUTM()
   function close() {
     go('/')
     menu.selectionPopup.close()

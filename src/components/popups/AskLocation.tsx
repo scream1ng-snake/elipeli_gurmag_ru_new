@@ -1,7 +1,7 @@
 import { Button, Popup, Space } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { FC } from "react"
-import { useStore } from "../../features/hooks"
+import { useGoUTM, useStore } from "../../features/hooks"
 import { useNavigate } from "react-router-dom"
 import { receptionTypes } from "../../stores/reception.store"
 
@@ -17,7 +17,7 @@ const btn = {
 }
 
 const AskLocation: FC = observer(() => {
-  const go = useNavigate()
+  const go = useGoUTM()
   const { reception, auth } = useStore()
   const visible = !reception.nearestOrgForDelivery && !reception.selectedOrgID && auth.bannerAskAdress.show /* reception.receptionType === 'initial' && auth.isFailed */
 
