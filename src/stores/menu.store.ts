@@ -27,6 +27,10 @@ class MenuStore {
     return this.selections.find(item => item.VCode === vcode)
   }
 
+  /** stories */
+  stories: WebHistoty[] = []
+  setStories(s: WebHistoty[]) { this.stories = s }
+
 
   loadMenu = new Request(async (state, setState, orgID: number) => {
     setState('LOADING')
@@ -36,6 +40,7 @@ class MenuStore {
         this.setCategories(data.BaseMenu)
         this.setPopular(data.PopularMenu)
         this.setSelections(data.SelectionMenu)
+        this.setStories(data.WebHistoty)
       }
       setState('COMPLETED');
     } catch (err) {
@@ -122,6 +127,16 @@ type V3_userInfoResponse = {
   BaseMenu: CategoryCourse[]
   PopularMenu: CourseItem[]
   SelectionMenu: Selection[]
+  WebHistoty: WebHistoty[]
+}
+
+export type WebHistoty = {
+  NameHistory: string,
+  ImageFront: string,
+  listSlides: {
+    link: Optional<string>,
+    image: string
+  }[]
 }
 
 export type Selection = {

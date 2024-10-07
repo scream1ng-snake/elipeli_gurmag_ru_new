@@ -1,10 +1,14 @@
-import { Image, Popup, Space } from 'antd-mobile'
+import { Button, Image, Popup, Space } from 'antd-mobile'
 import { FC, useState } from 'react'
 import styles from './Stories.module.css'
-import WatchStory from 'react-insta-stories';
-import { Story } from 'react-insta-stories/dist/interfaces';
+import WatchStory, { WithSeeMore } from 'react-insta-stories';
 import { Optional } from '../../../../../features/helpers';
 import { CloseOutline } from 'antd-mobile-icons';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '../../../../../features/hooks';
+import { WebHistoty } from '../../../../../stores/menu.store';
+import config from '../../../../../features/config';
+import { useNavigate } from 'react-router-dom';
 
 
 const W100pxH100px = { height: '100%', width: '100%' }
@@ -15,79 +19,17 @@ const storyStyles = {
   margin: 0
 }
 
-const AllStories: StoryItem[] = [
-  {
-    coverTitle: 'История первая',
-    coverUrl: 'https://avatars.mds.yandex.net/i?id=513d67839d2a92750fc5730686eb8752bda96ccd-12588502-images-thumbs&n=13',
-    slides: [
-      { url: 'https://avatars.mds.yandex.net/i?id=acda64723eebd567ca22ff7899a4ec8d-5220516-images-thumbs&n=13',},
-      { url: 'https://avatars.mds.yandex.net/i?id=23894d011e325a85dc0593c675b64043aefe5824-5371098-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=cf603d081ed4d51832c469e88e2edb80a3f732fb-5226207-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=2d213b7f0b14aef651136451ae8a45d56089a8ca-12615441-images-thumbs&n=13' },
-    ],
-  },
-  {
-    coverTitle: 'История вторая',
-    coverUrl: 'https://avatars.mds.yandex.net/i?id=d352b28086f99935ec46f06dfd880db362348a84-4550834-images-thumbs&n=13',
-    slides: [
-      { url: 'https://avatars.mds.yandex.net/i?id=acda64723eebd567ca22ff7899a4ec8d-5220516-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=23894d011e325a85dc0593c675b64043aefe5824-5371098-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=cf603d081ed4d51832c469e88e2edb80a3f732fb-5226207-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=2d213b7f0b14aef651136451ae8a45d56089a8ca-12615441-images-thumbs&n=13' },
-    ]
-  },
-  {
-    coverTitle: 'Третья сториз',
-    coverUrl: 'https://avatars.mds.yandex.net/i?id=8668a82d600c2662d1adaad52719413925251793-12644240-images-thumbs&n=13',
-    slides: [
-      { url: 'https://avatars.mds.yandex.net/i?id=acda64723eebd567ca22ff7899a4ec8d-5220516-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=23894d011e325a85dc0593c675b64043aefe5824-5371098-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=cf603d081ed4d51832c469e88e2edb80a3f732fb-5226207-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=2d213b7f0b14aef651136451ae8a45d56089a8ca-12615441-images-thumbs&n=13' },
-    ]
-  },
-  {
-    coverTitle: 'Третья сториз',
-    coverUrl: 'https://avatars.mds.yandex.net/i?id=8668a82d600c2662d1adaad52719413925251793-12644240-images-thumbs&n=13',
-    slides: [
-      { url: 'https://avatars.mds.yandex.net/i?id=acda64723eebd567ca22ff7899a4ec8d-5220516-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=23894d011e325a85dc0593c675b64043aefe5824-5371098-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=cf603d081ed4d51832c469e88e2edb80a3f732fb-5226207-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=2d213b7f0b14aef651136451ae8a45d56089a8ca-12615441-images-thumbs&n=13' },
-    ]
-  },
-  {
-    coverTitle: 'Третья сториз',
-    coverUrl: 'https://avatars.mds.yandex.net/i?id=8668a82d600c2662d1adaad52719413925251793-12644240-images-thumbs&n=13',
-    slides: [
-      { url: 'https://avatars.mds.yandex.net/i?id=acda64723eebd567ca22ff7899a4ec8d-5220516-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=23894d011e325a85dc0593c675b64043aefe5824-5371098-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=cf603d081ed4d51832c469e88e2edb80a3f732fb-5226207-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=2d213b7f0b14aef651136451ae8a45d56089a8ca-12615441-images-thumbs&n=13' },
-    ]
-  },
-  {
-    coverTitle: 'Третья сториз',
-    coverUrl: 'https://avatars.mds.yandex.net/i?id=8668a82d600c2662d1adaad52719413925251793-12644240-images-thumbs&n=13',
-    slides: [
-      { url: 'https://avatars.mds.yandex.net/i?id=acda64723eebd567ca22ff7899a4ec8d-5220516-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=23894d011e325a85dc0593c675b64043aefe5824-5371098-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=cf603d081ed4d51832c469e88e2edb80a3f732fb-5226207-images-thumbs&n=13' },
-      { url: 'https://avatars.mds.yandex.net/i?id=2d213b7f0b14aef651136451ae8a45d56089a8ca-12615441-images-thumbs&n=13' },
-    ]
-  },
-]
 
-
-const Stories: FC = () => {
-  const [selectedStory, setSelectedStory] = useState<Optional<StoryItem>>(null)
+const Stories: FC = observer(() => {
+  const go = useNavigate()
+  const { reception: { menu } } = useStore()
+  const [selectedStory, setSelectedStory] = useState<Optional<WebHistoty>>(null)
   const closeStory = () => { setSelectedStory(null) }
-
 
   return <>
     {selectedStory
-      ? <Popup 
-        visible={!!selectedStory} 
+      ? <Popup
+        visible={!!selectedStory}
         bodyStyle={W100pxH100px}
         onClose={closeStory}
       >
@@ -97,11 +39,36 @@ const Stories: FC = () => {
         <WatchStory
           storyStyles={storyStyles}
           // onAllStoriesEnd={closeStory}
-          stories={selectedStory.slides}
-          defaultInterval={1500}
+          stories={selectedStory.listSlides.map(slide => ({
+            url: config.staticApi
+              + "/api/v2/image/FileImage?fileId="
+              + slide.image,
+            seeMore: slide.link
+              ? () => null
+              : undefined,
+            seeMoreCollapsed: slide.link
+              ? ({ toggleMore, action }) =>
+                <Button
+                  shape='rounded'
+                  color='primary'
+                  fill='outline'
+                  onClick={() => go(slide.link as string)}
+                  style={{ 
+                    position: 'absolute', 
+                    bottom: 22, 
+                    left: 22, 
+                    right: 22,
+                    padding: 10
+                  }}
+                >
+                  Смотреть
+                </Button>
+              : undefined,
+          }))}
+          defaultInterval={3000}
           width='100%'
           height='100%'
-          
+
         />
       </Popup>
       : null
@@ -116,38 +83,25 @@ const Stories: FC = () => {
         marginLeft: '8px',
       }}
     >
-      {AllStories.map((story, index) =>
+      {menu.stories.map((story, index) =>
         <div key={index} className={styles.story_cover_item}>
           <Image
             onClick={() => { setSelectedStory(story) }}
-            src={story.coverUrl}
+            src={config.staticApi
+              + "/api/v2/image/FileImage?fileId="
+              + story.ImageFront
+            }
             style={{
               width: '77px',
               height: '95px',
               objectFit: 'cover'
             }}
           />
-          <p>{story.coverTitle}</p>
+          <p>{story.NameHistory}</p>
         </div>
       )}
     </Space>
   </>
-}
+})
 
 export default Stories
-
-
-type StoryItem = {
-  /** обложка для истории */
-  coverUrl: string
-  slides: Story[]
-  /** заголовок обложки */
-  coverTitle: string
-}
-
-// type Slide = {
-//   type: 'video' | 'photo'
-//   duration: number
-//   src: string
-//   markup: unknown
-// }
