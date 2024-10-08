@@ -52,7 +52,12 @@ const Stories: FC = observer(() => {
                   shape='rounded'
                   color='primary'
                   fill='outline'
-                  onClick={() => go(slide.link as string)}
+                  onClick={() => {
+                    const isExternal = slide.link?.includes('http')
+                    isExternal
+                      ? window.location.href = slide.link as string
+                      : go(slide.link as string)
+                  }}
                   style={{ 
                     position: 'absolute', 
                     bottom: 22, 
