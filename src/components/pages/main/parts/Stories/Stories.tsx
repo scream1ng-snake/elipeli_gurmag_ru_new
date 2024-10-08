@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 const W100pxH100px = { height: '100%', width: '100%' }
 const storyStyles = {
   width: '100vw',
-  height: '100%',
+  height: '100vh',
   objectFit: 'cover',
   margin: 0
 }
@@ -38,7 +38,7 @@ const Stories: FC = observer(() => {
         </div>
         <WatchStory
           storyStyles={storyStyles}
-          // onAllStoriesEnd={closeStory}
+          onAllStoriesEnd={closeStory}
           stories={selectedStory.listSlides.map(slide => ({
             url: config.staticApi
               + "/api/v2/image/FileImage?fileId="
