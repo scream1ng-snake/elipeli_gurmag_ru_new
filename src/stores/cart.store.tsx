@@ -376,6 +376,7 @@ export class CartStore {
 
   /** проверка перед отправкой (остатки и валидации) */
   prePostOrder = async () => {
+    this.postOrder.setState('LOADING')
     const { receptionType, address, location, currentOrgID } = this.root.reception
     switch (receptionType) {
       case 'delivery':
