@@ -67,12 +67,18 @@ const Registration: FC = observer(() => {
           name='birthday'
           className={styles.addr_from_input}
         >
-          <span onClick={() => setShowBirthdayInput(true)}>
+          <Input 
+            type='date'
+            value={birthday}
+            placeholder='ДД-ММ-ГГГГ'
+            onChange={setBirthDay}
+          />
+          {/* <span onClick={() => setShowBirthdayInput(true)}>
             {birthday.length
               ? moment(birthday).format('DD-MM-YYYY')
               : 'ДД-ММ-ГГГГ'
             }
-          </span>
+          </span> */}
         </Form.Item>
         <Button
           disabled={isDisabled}
