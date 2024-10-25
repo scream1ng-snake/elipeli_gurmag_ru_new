@@ -80,16 +80,16 @@ class Slots {
     const isToday = moment(this.cart.date).isSame(new Date(), 'day')
 
     if(isToday) {
-      const nearest2hSlot: Slot = { 
+      const nearestSlot: Slot = { 
         VCode: '-1', 
-        Name: 'Ближайшие два часа',
+        Name: 'Как можно быстрее',
         Start: '',
         End: '',
         EndTimeOfWork: '',
         StartCook: '',
       }
       return this.availbaleSlots.length
-        ? [nearest2hSlot, ...this.availbaleSlots]
+        ? [nearestSlot, ...this.availbaleSlots]
         : []
     } else {
       return this.availbaleSlots
