@@ -37,6 +37,13 @@ export class ReceptionStore {
     ].includes(true)
   }
 
+  /**
+   * находится ли юзер в злне обслуживания доставки
+   */
+  get isInServiceArea() {
+    return this.nearestOrgDistance && this.nearestOrgDistance < 10
+  }
+
   /** попап для выбора локации и типа обслуживания */
   selectLocationPopup = new Popup()
 
@@ -80,83 +87,114 @@ export class ReceptionStore {
       incorrectAddr: false,
     }
   setAddressForAdditionalFields = (address: Address) => {
-    logger.log(`setAddressForAdditionalFields | address: ${JSON.stringify(address) }`, 'Reception-Store')
     this.address = address
     localStorage.setItem('data', JSON.stringify(address))
   }
   setAddress = (address: Address) => {
-    logger.log(`setAddress | address: ${JSON.stringify(address) }`, 'Reception-Store')
     this.address = address
     localStorage.setItem('data', JSON.stringify(address))
-    // сразу ищем ближающую точку для доставки
-    if(this.location) {
-      let resultOrganization
-      let minDistance
-      let deliveryPoints: Organization[] = _.clone(this.root.reception.organizations);
-      for (const org of deliveryPoints) {
-        // для каждой организации захардкодил кординаты 
-        // каждый раз их узнавать заного смысла нет
-        const pointCords = this.addrsBindings
-          .find(o => o.Id === org.Id) as { Id: number, pos: string }
-
-
-        let lon, lat
-        
-        [lon, lat] = pointCords.pos
-          .split(' ')
-          .map(Number)
-
-        /** расстояние */
-        const distance = getDistance(this.location[1], this.location[0], lat, lon)
-        if (minDistance) {
-          if (distance < minDistance) {
-            minDistance = distance
-            resultOrganization = org
-          }
-        } else {
-          minDistance = distance
-          resultOrganization = org
-        }
-      }
-      if(resultOrganization) {
-        this.setNearestOrg(resultOrganization.Id)
-        localStorage.setItem('nearestOrg', resultOrganization.Id.toString())
-        logger.log(`setAddress | ближ. точка для ${address.road} ${address.house_number} (${this.location})
-          была выбрана ${resultOrganization.Name} на расстоянии ${minDistance}
-        `, 'Reception-Store')
-      }
-    }
   }
   /**
    * by [lat, lon]
    * @param cord 
    */
   setAddrByCordinates = async (cord: [number, number]) => {
-    logger.log(`setAddrByCordinates | cord: ${JSON.stringify(cord) }`, 'Reception-Store')
-    const [lon,lat] = cord
-    const address: NominatimReverseResponse['address'] = await this.reverseGeocoderApi.run(lat, lon)
-    if(typeof address === 'object' && address.hasOwnProperty('road') && address.hasOwnProperty('house_number')) {
-      const { road, house_number } = address
-      this.setLocation(cord)
-      this.setAddress({ road, house_number })
+    const { nearestDeliveryPoint, distance } = this.getNearestDeliveryPoint(cord[1], cord[0])
+    
+    if(nearestDeliveryPoint && distance) {
+      if(distance < 10) {
+        const [lon,lat] = cord
+        const address: NominatimReverseResponse['address'] = await this.reverseGeocoderApi.run(lat, lon)
+        if(typeof address === 'object' && address.hasOwnProperty('road') && address.hasOwnProperty('house_number')) {
+          const { road, house_number } = address
+          this.setLocation(cord)
+          this.setAddress({ road, house_number })
+          this.setNearestOrg(nearestDeliveryPoint.Id)
+          this.setNearestOrgDistance(distance)
+          console.log('найдена ближ. точка ' 
+            + nearestDeliveryPoint?.Name 
+            + ' для доставки в '
+            + road + ' ' + house_number
+            + ' на расстоянии ' 
+            + distance
+          )
+        } else {
+          Toast.show('Местоположение не найдено')
+        }
+      } else {
+        Toast.show("Адрес вне зоны обслуживания Gurmag")
+      }
     } else {
-      Toast.show('Местоположение не найдено')
+      Toast.show("Не удалось найти ближающее заведение для доставки")
     }
   }
 
   /** by address */
   setCordinatesByAddress = async ({ road, house_number }: Address) => {
-    logger.log(`setCordinatesByAddress | road: ${JSON.stringify(road)} | house_number: ${JSON.stringify(house_number)}`, 'Reception-Store')
     const result = await this.geocoderApi.run('Уфа, ' + road + ' ' + house_number)
     if(result) {
       const [lon, lat]: [number, number] = result
-      this.setLocation([lat, lon])
-      this.setAddress({ road, house_number })
+      const { nearestDeliveryPoint, distance } = this.getNearestDeliveryPoint(lat, lon)
+      if(nearestDeliveryPoint && distance) {
+        if(distance < 10) {
+          this.setLocation([lat, lon])
+          this.setAddress({ road, house_number })
+          this.setNearestOrg(nearestDeliveryPoint.Id)
+          this.setNearestOrgDistance(distance)
+          console.log('найдена ближ. точка ' 
+            + nearestDeliveryPoint?.Name 
+            + ' для доставки в '
+            + road + ' ' + house_number
+            + ' на расстоянии ' 
+            + distance
+          )
+        } else {
+          Toast.show("Адрес вне зоны обслуживания Gurmag")
+        }
+      } else {
+        Toast.show("Не удалось найти ближающее заведение для доставки")
+      }
     } else {
       this.setAddress({ road, house_number, incorrectAddr: true })
     }
   }
 
+  /**
+   * найти ближ точку для доставки и расстояние до нее
+   * @param targetlat this.location[1]
+   * @param targetlon this.location[0]
+   */
+  private getNearestDeliveryPoint = (targetlat: number, targetlon: number) => {
+    let resultOrganization
+    let minDistance
+    let deliveryPoints: Organization[] = _.clone(this.root.reception.organizations);
+    for (const org of deliveryPoints) {
+      // для каждой организации захардкодил кординаты 
+      // каждый раз их узнавать заного смысла нет
+      const pointCords = this.addrsBindings
+        .find(o => o.Id === org.Id) as { Id: number, pos: string }
+
+
+      let lon, lat
+      
+      [lon, lat] = pointCords.pos
+        .split(' ')
+        .map(Number)
+
+      /** расстояние */
+      const distance = getDistance(targetlat, targetlon, lat, lon)
+      if (minDistance) {
+        if (distance < minDistance) {
+          minDistance = distance
+          resultOrganization = org
+        }
+      } else {
+        minDistance = distance
+        resultOrganization = org
+      }
+    }
+    return { nearestDeliveryPoint: resultOrganization, distance: minDistance }
+  }
 
   
   /** все организации */
@@ -182,11 +220,23 @@ export class ReceptionStore {
     ? Number(localStorage.getItem('currentOrg'))
     : 0
   
+  /** ближ точка для доставки */
   nearestOrgForDelivery: Optional<number> = localStorage.getItem('nearestOrg')
     ? Number(localStorage.getItem('nearestOrg'))
     : null
   
-  setNearestOrg(orgId: number) { this.nearestOrgForDelivery = orgId }
+  nearestOrgDistance: Optional<number> = localStorage.getItem('nearestOrgDistance')
+    ? Number(localStorage.getItem('nearestOrgDistance'))
+    : null
+  
+  setNearestOrg(orgId: number) { 
+    this.nearestOrgForDelivery = orgId 
+    localStorage.setItem('nearestOrg', orgId.toString())
+  }
+  setNearestOrgDistance(distance: number) { 
+    this.nearestOrgDistance = distance 
+    localStorage.setItem('nearestOrgDistance', distance.toString())
+  }
   
   set currentOrgID(val: number) {
     this.selectedOrgID = val
