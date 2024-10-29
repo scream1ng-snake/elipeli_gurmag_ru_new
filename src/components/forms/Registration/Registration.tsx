@@ -5,6 +5,7 @@ import { FC, useState, useEffect } from "react"
 import { useGoUTM, useStore } from "../../../features/hooks"
 import styles from '../form.module.css'
 import { FullscreenLoading } from "../../common/Loading/Loading"
+import InputMask from 'react-input-mask';
 
 
 const Registration: FC = observer(() => {
@@ -67,12 +68,21 @@ const Registration: FC = observer(() => {
           name='birthday'
           className={styles.addr_from_input}
         >
-          <Input 
-            type='date'
+          <InputMask
+            maskChar={null}
+            mask="99.99.9999"
             value={birthday}
-            placeholder='ДД-ММ-ГГГГ'
-            onChange={setBirthDay}
-          />
+            onChange={setBirthDay as any}
+          >
+            {/* @ts-ignore */}
+            {(inputProps: any) =>
+              <Input 
+                {...inputProps}
+                type='tel'
+                placeholder='ДД.ММ.ГГГГ'
+              />
+            }
+          </InputMask>
           {/* <span onClick={() => setShowBirthdayInput(true)}>
             {birthday.length
               ? moment(birthday).format('DD-MM-YYYY')
