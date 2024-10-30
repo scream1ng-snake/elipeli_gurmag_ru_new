@@ -78,6 +78,7 @@ export class ReceptionStore {
     : {
       road: '',
       house_number: '',
+      multiapartment: true,
       frame: '',
       entrance: '',
       doorCode: '',
@@ -548,6 +549,7 @@ type NominatimReverseResponse = {
 type Address = {
   road: string,
   house_number: string,
+  multiapartment?: boolean,
 
   frame?: string | undefined,
   entrance?: string | undefined,

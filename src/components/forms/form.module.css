@@ -10,7 +10,7 @@
 }
 
 .addr_from_input {
-  border: 2px solid var(--adm-color-border);
+  /* border: 2px solid var(--adm-color-border); */
   margin: 0.5rem 1rem;
   border-radius: 13px;
 }
