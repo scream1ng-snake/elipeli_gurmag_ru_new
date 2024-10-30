@@ -381,9 +381,6 @@ const fullAddressSchema = yup.object().shape({
   entrance: yup
     .string()
     .required('Обязательное'),
-  doorCode: yup
-    .string()
-    .required('Обязательное'),
   storey: yup
     .string()
     .required('Обязательное'),
