@@ -24,10 +24,12 @@ const Registration: FC = observer(() => {
   }, [name, birthday])
 
   function submit() {
-    const preparedBirthday = moment(birthday).format('YYYYMMDD')
+    const [DD,MM,YYYY] = birthday.split(".")
     auth.registration.run({
       name,
-      birthday: preparedBirthday
+      birthday: YYYY&&MM&&DD
+        ? YYYY+MM+DD
+        : '19710101'
     })
   }
 
