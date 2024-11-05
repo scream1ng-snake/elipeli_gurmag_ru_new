@@ -1,11 +1,7 @@
-import { observer } from 'mobx-react-lite'
 import { FC, ReactNode, Fragment } from 'react'
-import { useStore } from '../../features/hooks'
-const bannerHeight = 150
-const switcherHeight = 68
-const authBtnHeight = 56
-const Fixed: FC<{ children: ReactNode }> = observer(props => {
-  const { auth, instance } = useStore()
+import { ReceptionSwitcherEmpty } from '../pages/main/parts/ReceptionSwitcher/ReceptionSwitcher'
+
+const Fixed: FC<{ children: ReactNode }> = props => {
   return <Fragment>
     <div
       style={{
@@ -19,16 +15,8 @@ const Fixed: FC<{ children: ReactNode }> = observer(props => {
     >
       {props.children}
     </div>
-    <div
-      style={{
-        height: auth.isFailed
-          ? auth.bannerToTg.show && instance === 'WEB_BROWSER'
-            ? bannerHeight + switcherHeight
-            : authBtnHeight + switcherHeight
-          : switcherHeight
-      }}
-    />
+    <ReceptionSwitcherEmpty />
   </ Fragment>
 
-})
+}
 export default Fixed;

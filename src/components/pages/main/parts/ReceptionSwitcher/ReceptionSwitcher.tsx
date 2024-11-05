@@ -4,30 +4,22 @@ import styles from './ReceptionSwitcher.module.css'
 import { useGoUTM, useStore } from '../../../../../features/hooks'
 import SelectLocationPopup from '../../../../popups/SelectLocation'
 import Red from '../../../../special/RedText'
-// import { Popover } from 'antd-mobile/es/components/popover/popover'
-// import { Image, Button } from 'antd-mobile'
-/*
-import DeliveryIcon from '../../../../icons/Delivery'
-import PickupIcon from '../../../../icons/Pickup'
-import { QuestionCircleOutline } from 'antd-mobile-icons'
-*/
 import CircleIcon from '../../../../icons/Circle'
-import CustomButton from '../../../../special/CustomButton'
-
-// import { Void } from '../../../../layout/Void'
-// import { Pickup36x36 } from '../../../../icons/Pickup'
-// import { Delivery36x36 } from '../../../../icons/Delivery'
-// import { Question36x36 } from '../../../../icons/Question36x36'
-// import { Gurmag36x36 } from '../../../../icons/Gurmag36x36'
 import { IconDown } from '../../../../icons/IconDown'
-
 import IconDelivery from '../../../../../assets/icon_delivery@2x.png'
 import IconChoice from '../../../../../assets/icon_choice@2x.png'
 import IconPickup from '../../../../../assets/icon_pickup@2x.png'
-
 import LogoGurmag from '../../../../../assets/logo_gurmag@2x.png'
+import { ReceptionType } from '../../../../../stores/reception.store'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import { Gift } from '../../../../icons/Gift'
+import { Button, Space } from 'antd-mobile'
+
 
 const ReceptionSwitcher: FC = observer(() => {
+  const go = useGoUTM()
   const { auth, reception } = useStore()
   const navigate = useGoUTM()
   const {
@@ -38,21 +30,7 @@ const ReceptionSwitcher: FC = observer(() => {
     address,
   } = reception
 
-  const getIcon = (receptionType: any) => {
-    let image: any = null;
-    switch (receptionType) {
-      case 'initial':
-        image = IconChoice;
-        break;
-      case 'delivery':
-        image = IconDelivery;
-        break;
-      case 'pickup':
-        image = IconPickup;
-        break;
-    }
-    return <CircleIcon image={image} size={36} />
-  }
+
   const getHint = () =>
     receptionType === 'initial'
       ? 'или заберёте сами?'
@@ -68,76 +46,70 @@ const ReceptionSwitcher: FC = observer(() => {
         : currentOrganizaion?.Name.replace('_', ' ') ?? 'Точка не выбрана'
 
 
+  const ReceptionTypesImages: Record<ReceptionType, string> = {
+    initial: IconChoice,
+    delivery: IconDelivery,
+    pickup: IconPickup,
+  }
+
+  function handleClose() {
+    close()
+    navigate('/')
+  }
+
   return <div
     className={styles.head_wrapper}
-    style={
-      (auth.isFailed && auth.bannerToTg.show)
-        ? { /* Если баннер */
-          borderBottomLeftRadius: '0px',
-          borderBottomRightRadius: '0px',
-        }
-        : {
-        }
+    style={auth.isFailed && auth.bannerToTg.show
+      ? { borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }
+      : undefined
     }
   >
-    <SelectLocationPopup
-      show={show}
-      close={function () {
-        close()
-        navigate('/')
-      }}
-      onContinue={function () {
-        close()
-        navigate('/')
-      }}
-    />
-    <div
-      className={styles.head_shell}
-      style={
-        (auth.isFailed && auth.bannerToTg.show)
-          ? { /* Если баннер красим в белый */
-            background: ' var(--tg-theme-bg-color)',
-            borderTopLeftRadius: '15px',
-            borderTopRightRadius: '15px',
-            borderBottomLeftRadius: '0px',
-            borderBottomRightRadius: '0px',
+    <Container>
+      <SelectLocationPopup
+        show={show}
+        close={handleClose}
+        onContinue={handleClose}
+      />
+      <Row
+        className='justify-content-sm-center mt-3'
+        style={auth.isFailed && auth.bannerToTg.show
+          ? {
+            background: 'var(--tg-theme-bg-color)',
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 15,
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
           }
-          : {
-            background: ' var(--tg-theme-secondary-bg-color)'
-          }
-      }
-    >
-      <div
-        className={styles.head_row}
+          : { background: 'var(--tg-theme-secondary-bg-color)' }
+        }
       >
-        <div
-          className={styles.switcher_button}
-          onClick={open}
-          style={{ width: receptionType === 'initial' ? '100%' : 'auto' }}
+        <Col
+          xs={{ order: 2, span: 'auto' }}
+          md={{ order: 1 }}
+        >
+          <CircleIcon
+            image={ReceptionTypesImages[receptionType]}
+            size={36}
+          />
+        </Col>
+        <Col
+          xs={{ order: 3 }}
+          md={{ order: 2 }}
+          className='mb-3'
         >
           <div
-            className={styles.icon_wrapper}
+            onClick={open}
+            style={{ width: receptionType === 'initial' ? '100%' : 'auto' }}
           >
-            {getIcon(receptionType)}
-          </div>
-          {
-            (receptionType === 'initial')
-              ?
-              <CustomButton
-                text={'Доставить или забрать?'}
+            {receptionType === 'initial'
+              ? <Button
+                color='primary'
                 onClick={open}
-                height={'35px'}
-                maxWidth={'215px'}
-                marginTop={'0px'}
-                marginBottom={'0px'}
-                marginHorizontal={'14px'}
-                paddingHorizontal={'24px'}
-                fontWeight={'400'}
-                fontSize={'14.5px'}
-                backgroundVar={'--gurmag-accent-color'}
-                colorVar={'--gur-custom-button-text-color'}
-                appendImage={null}
-              />
+                shape='rounded'
+                className='w-100'
+              >
+                Доставить или забрать?
+              </Button>
               :
               <div className={styles.reception_wrapper}>
                 <div className={styles.text_box}>
@@ -152,21 +124,92 @@ const ReceptionSwitcher: FC = observer(() => {
                   <p className={styles.reception_hint}>{getHint()}</p>
                 </div>
               </div>
-          }
-        </div>
-        <div
-          className={styles.icon_wrapper}
-          onClick={() => navigate(
-            auth.state !== 'AUTHORIZED'
-              ? '/authorize'
-              : '/me'
-          )}
-        >
-          <CircleIcon image={LogoGurmag} size={36} />
-        </div>
-      </div>
-    </div>
+            }
+          </div>
+        </Col>
+        {!auth.isFailed
+          ? null
+          : <Col
+            xs={{ order: 1, span: 12 }}
+            md={{ order: 3, span: 5 }}
+            className='mb-3 d-flex justify-content-center'
+          >
+            <Button
+              shape='rounded'
+              className={styles.wizard_button + ' w-100'}
+              onClick={() => { go('/authorize') }}
+            >
+              <Space align='center'>
+                Получить подарок
+                <Gift />
+              </Space>
+            </Button>
+          </Col>
+        }
+
+        <Col xs={{ order: 4, span: 'auto' }}>
+          <div
+            className={styles.icon_wrapper}
+            onClick={() => navigate(
+              auth.state !== 'AUTHORIZED'
+                ? '/authorize'
+                : '/me'
+            )}
+          >
+            <CircleIcon image={LogoGurmag} size={36} />
+          </div>
+        </Col>
+      </Row>
+    </Container>
   </div>
+})
+
+/** эта шляпа должна занимать столько же места что и ReceptionSwitcher
+ * но без логики 
+ */
+export const ReceptionSwitcherEmpty = observer(() => {
+  const { auth } = useStore()
+  return (
+    <div className={styles.head_wrapper}>
+      <Container>
+        <Row className='justify-content-sm-center mt-3'>
+          <Col xs={{ order: 2, span: 'auto' }} md={{ order: 1 }}>
+            <CircleIcon image={IconChoice} size={36} />
+          </Col>
+          <Col xs={{ order: 3 }} md={{ order: 2 }} className='mb-3'>
+            <div>
+              <Button color='primary' shape='rounded' className='w-100'>
+                Доставить или забрать?
+              </Button>
+            </div>
+          </Col>
+          {!auth.isFailed 
+            ? null
+            : <Col
+              xs={{ order: 1, span: 12 }}
+              md={{ order: 3, span: 5 }}
+              className='mb-3 d-flex justify-content-center'
+            >
+              <Button
+                shape='rounded'
+                className={styles.wizard_button + ' w-100'}
+              >
+                <Space align='center'>
+                  Получить подарок
+                  <Gift />
+                </Space>
+              </Button>
+            </Col>
+          }
+          <Col xs={{ order: 4, span: 'auto' }}>
+            <div className={styles.icon_wrapper}>
+              <CircleIcon image={LogoGurmag} size={36} />
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
+  )
 })
 
 export default ReceptionSwitcher

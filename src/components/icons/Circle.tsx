@@ -7,10 +7,9 @@ const CircleIcon: FC<{ size: any, image: any }> = props =>
     width={props.size}
     height={props.size}
     fallback={<CircleImagePreloder size={props.size}/>}
-    placeholder={
-      <CircleImagePreloder size={props.size}/>
-    }
+    placeholder={<CircleImagePreloder size={props.size}/>}
     fit='cover'
+    style={{ borderRadius:1000 }}
   />
 
 export default CircleIcon
@@ -21,6 +20,7 @@ export const CircleImagePreloder: FC<{ size: any }> = props =>
     style={{
       width: props.size,
       height: props.size,
-      objectFit: 'cover'
+      objectFit: 'cover',
+      borderRadius:1000
     }} 
   />

@@ -7,14 +7,13 @@ import ReceptionSwitcher from "./parts/ReceptionSwitcher/ReceptionSwitcher"
 import Stories from "./parts/Stories/Stories"
 import Menu from "./parts/Menu/Menu"
 import BottomNavigation from "../../common/BottomNav/BottomNav"
-import Banner from "./parts/Banner/Banner"
 import Fixed from "../../layout/Fixed"
 import { MenuTabsFixed } from "./parts/Menu/MenuTabs/MenuTabs"
 import styles from './styles.module.css'
 import { useGoUTM, useStore } from '../../../features/hooks'
 import AskLocation from "../../popups/AskLocation"
 import { ItemModal } from "../../popups/Course"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { Toast } from "antd-mobile"
 import { logger } from "../../../features/logger"
 import AskAuthorize from "../../popups/AskAuthorize"
@@ -42,7 +41,6 @@ const MainPage: FC = observer(() => {
     <NiceToMeetYooPopup />
     <ItemModal close={() => { go('/') }} />
     <Fixed>
-      <Banner />
       <ReceptionSwitcher />
       <MenuTabsFixed />
     </Fixed>
