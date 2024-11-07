@@ -1,4 +1,4 @@
-import { Avatar, Ellipsis, Rate, Result, Skeleton, Space, Image } from 'antd-mobile'
+import { Avatar, Result, Space, Image } from 'antd-mobile'
 import { ClockCircleOutline } from 'antd-mobile-icons'
 import { observer } from 'mobx-react-lite'
 import { FC, useMemo, CSSProperties } from 'react'
@@ -7,7 +7,7 @@ import { useStore } from '../../../../../features/hooks'
 import { Cook } from '../../../../../stores/employees.store'
 import CookReviewPopup from '../../../../popups/CookReviewPopup'
 import { Loader, LoaderTitle } from './preloders'
-import { wrapper_styles, list_styles, wrapperStyle, avatarStyle, cookNameStyle } from './styles'
+import { wrapper_styles, list_styles, wrapperStyle, avatarStyle } from './styles'
 import ImageCircleBaker from '../../../../../assets/image_circle_baker@2x.png'
 const Cooks: FC = observer(() => {
   const { reception: { employees, OrgForMenu, organizations } } = useStore()

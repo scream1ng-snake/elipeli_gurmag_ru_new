@@ -18,8 +18,11 @@ import { Toast } from "antd-mobile"
 import { logger } from "../../../features/logger"
 import AskAuthorize from "../../popups/AskAuthorize"
 import { NiceToMeetYooPopup } from "../../popups/CartActions"
+import Container from "react-bootstrap/Container"
+
+
 const MainPage: FC = observer(() => {
-  const { auth, reception: { menu } } = useStore()
+  const { reception: { menu } } = useStore()
 
   const { VCode } = useParams<{ VCode: string }>()
   const go = useGoUTM()
@@ -42,27 +45,16 @@ const MainPage: FC = observer(() => {
     <ItemModal close={() => { go('/') }} />
     <Fixed>
       <ReceptionSwitcher />
-      <MenuTabsFixed />
+      <Container><MenuTabsFixed /></Container>
     </Fixed>
-    <div
-      className={styles.gur_main_content}
-      style={
-        (auth.isFailed && auth.bannerToTg.show)
-          ? { /* Если баннер, то убираем скругление углов */
-            borderTopLeftRadius: '0px',
-            borderTopRightRadius: '0px',
-          }
-          : {
-          }
-      }
-    >
+    <Container className={styles.gur_main_content}>
       <AskLocation />
       <AskAuthorize />
       <Stories />
       <Collections />
       <Cooks />
       <Menu />
-    </div>
+    </Container>
     <BottomNavigation />
   </Wrapper>
 })

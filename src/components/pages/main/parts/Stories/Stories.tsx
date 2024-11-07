@@ -1,14 +1,13 @@
 import { Button, Image, Popup, Space } from 'antd-mobile'
 import { FC, useState } from 'react'
 import styles from './Stories.module.css'
-import WatchStory, { WithSeeMore } from 'react-insta-stories';
+import WatchStory  from 'react-insta-stories';
 import { Optional } from '../../../../../features/helpers';
 import { CloseOutline } from 'antd-mobile-icons';
 import { observer } from 'mobx-react-lite';
-import { useStore } from '../../../../../features/hooks';
+import { useGoUTM, useStore } from '../../../../../features/hooks';
 import { WebHistoty } from '../../../../../stores/menu.store';
 import config from '../../../../../features/config';
-import { useNavigate } from 'react-router-dom';
 
 
 const W100pxH100px = { height: '100%', width: '100%' }
@@ -21,7 +20,7 @@ const storyStyles = {
 
 
 const Stories: FC = observer(() => {
-  const go = useNavigate()
+  const go = useGoUTM()
   const { reception: { menu } } = useStore()
   const [selectedStory, setSelectedStory] = useState<Optional<WebHistoty>>(null)
   const closeStory = () => { setSelectedStory(null) }
@@ -85,7 +84,6 @@ const Stories: FC = observer(() => {
         '--gap-horizontal': '-7px',
         width: 'calc(100% - 8px)',
         scrollbarWidth: 'none',
-        marginLeft: '8px',
       }}
     >
       {menu.stories.map((story, index) =>

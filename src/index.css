@@ -20,6 +20,12 @@ h2 {
   line-height: 22.27px;
 }
 
+dl, ol, ul {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-left: 0 !important;
+}
+
 /* отключение верхней черты в инпуте */
 .adm-form-item.adm-form-item-vertical .adm-list-item-content { 
   border-top: none;

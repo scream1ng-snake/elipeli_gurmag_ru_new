@@ -131,7 +131,7 @@ const ReceptionSwitcher: FC = observer(() => {
           ? null
           : <Col
             xs={{ order: 1, span: 12 }}
-            md={{ order: 3, span: 5 }}
+            md={{ order: 3, span: 4 }}
             className='mb-3 d-flex justify-content-center'
           >
             <Button

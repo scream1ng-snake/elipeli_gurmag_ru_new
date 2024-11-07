@@ -13,7 +13,6 @@ export const list_styles: CSSProperties = {
 export const wrapper_styles: CSSProperties = {
   /* padding: '0.5rem 0 0.5rem 0.5rem', */
   marginBottom: '26px',
-  marginLeft: '16px'
 }
 
 export const wrapperStyle = {
