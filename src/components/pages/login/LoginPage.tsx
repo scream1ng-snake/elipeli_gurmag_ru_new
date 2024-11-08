@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react-lite';
 import { FC } from "react";
-import { useNavigate } from 'react-router';
 import Wrapper from '../../layout/Wrapper';
 import { FullscreenLoading } from '../../common/Loading/Loading';
 import { useGoUTM, useStore } from '../../../features/hooks';

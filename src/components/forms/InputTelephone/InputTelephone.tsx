@@ -7,6 +7,9 @@ import { useGoUTM, useStore } from "../../../features/hooks"
 import styles from '../form.module.css'
 import Red from "../../special/RedText"
 import { FullscreenLoading } from "../../common/Loading/Loading"
+import Row from "react-bootstrap/Row"
+import Col from "react-bootstrap/Col"
+import Container from "react-bootstrap/Container"
 
 
 const defaultMask = "+7 ... ... .. .."
@@ -36,38 +39,45 @@ const InputNumber: FC = observer(() => {
     if (tel?.length) setNumber(getFormattedNumber(tel, defaultMask))
   }, [])
   return <Popup visible bodyClassName={styles.wrapper}>
-    <NavBar onBack={() => { go('/') }}>
-      Вход по номеру
-    </NavBar>
-    {auth.authorize.state === 'LOADING'
-      ? <FullscreenLoading />
-      : null
-    }
-    <Form initialValues={{ number: defaultPrefix }}>
-      <Form.Item
-        label={errored
-          ? <Red>Номер введен не корректно</Red>
-          : 'Введите номер телефона, чтобы войти или зарегестироваться'
-        }
-        name='number'
-        className={styles.addr_from_input}
-      >
-        <Input
-          type={"tel"}
-          value={number}
-          onChange={onChange}
-          {...useMask(defaultMask)}
-        />
-      </Form.Item>
-      <Button
-        disabled={errored || number.length < 10}
-        onClick={submit}
-        className={styles.submit_button}
-        shape='rounded'
-      >
-        Отправить
-      </Button>
-    </Form>
+    <Container>
+      <NavBar onBack={() => { go('/') }}>
+        Вход по номеру
+      </NavBar>
+      {auth.authorize.state === 'LOADING'
+        ? <FullscreenLoading />
+        : null
+      }
+      <Form initialValues={{ number: defaultPrefix }}>
+        <Form.Item
+          label={errored
+            ? <Red>Номер введен не корректно</Red>
+            : 'Введите номер телефона, чтобы войти или зарегестироваться'
+          }
+          name='number'
+          className={styles.addr_from_input}
+        >
+          <Input
+            type={"tel"}
+            value={number}
+            onChange={onChange}
+            {...useMask(defaultMask)}
+          />
+        </Form.Item>
+        <Row className="justify-content-md-center">
+          <Col md={6}>
+            <Button
+              disabled={errored || number.length < 10}
+              onClick={submit}
+              className={styles.submit_button}
+              shape='rounded'
+            >
+              Отправить
+            </Button>
+          </Col>
+
+        </Row>
+      </Form>
+    </Container>
   </Popup>
 })
 

@@ -4,6 +4,7 @@ import { FC, useEffect, useRef } from "react"
 import { useGoUTM, useStore } from "../../../features/hooks"
 import styles from '../form.module.css'
 import { FullscreenLoading } from "../../common/Loading/Loading"
+import Container from 'react-bootstrap/Container'
 
 
 const InputSmsCode: FC = observer(() => {
@@ -21,26 +22,28 @@ const InputSmsCode: FC = observer(() => {
   }, [])
   return (
     <Popup visible bodyClassName={styles.wrapper}>
-      {auth.inputSmsCode.state === 'LOADING' 
+      {auth.inputSmsCode.state === 'LOADING'
         ? <FullscreenLoading />
         : null
       }
-      <NavBar onBack={() => { go('/') }}>
-        Подтвердите номер
-      </NavBar>
-      <Form>
-        <Form.Item
-          label='Мы отправили SMS с кодом на указанный номер. Введите код подтверждения:'
-        >
-          <Space justify='center' style={{ width: "100%" }}>
-            <PasscodeInput 
-              ref={ref} 
-              length={LENGHT} 
-              onFill={onFill} 
-            />
-          </Space>
-        </Form.Item>
-      </Form>
+      <Container>
+        <NavBar onBack={() => { go('/') }}>
+          Подтвердите номер
+        </NavBar>
+        <Form>
+          <Form.Item
+            label='Мы отправили SMS с кодом на указанный номер. Введите код подтверждения:'
+          >
+            <Space justify='center' style={{ width: "100%" }}>
+              <PasscodeInput
+                ref={ref}
+                length={LENGHT}
+                onFill={onFill}
+              />
+            </Space>
+          </Form.Item>
+        </Form>
+      </Container>
     </Popup>
   )
 })

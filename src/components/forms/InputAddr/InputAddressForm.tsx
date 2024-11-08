@@ -105,7 +105,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
       style={{ '--border-top': 'none' }}
     >
       <Space
-        style={{ '--gap': '5px', width: 'calc(100vw - 32px)', margin: '8px 16px 8px' }}
+        style={{ '--gap': '5px', width: 'calc(100% - 32px)', margin: '8px 16px 8px' }}
         justify={'between'}
         align={'center'}
         className={'gur-space'}
@@ -134,7 +134,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         </Form.Item>
       </Space>
       <Space
-        style={{ '--gap': '5px', width: 'calc(100vw - 32px)', margin: '8px 16px 8px' }}
+        style={{ '--gap': '5px', width: 'calc(100% - 32px)', margin: '8px 16px 8px' }}
         justify='between'
         align='center'
         className='gur-space'
@@ -179,7 +179,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         </Form.Item>
       </Space>
       <Space
-        style={{ '--gap': '5px', width: 'calc(100vw - 42px)', margin: '0 16px 8px' }}
+        style={{ '--gap': '5px', width: 'calc(100% - 42px)', margin: '0 16px 8px' }}
         justify='between'
         align='center'
         className='gur-space gur-space_2'
@@ -230,7 +230,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         </Form.Item>
       </Space>
       <Space
-        style={{ '--gap': '5px', width: 'calc(100vw - 42px)', margin: '0 16px 8px' }}
+        style={{ '--gap': '5px', width: 'calc(100% - 42px)', margin: '0 16px 8px' }}
         justify={'between'}
         align={'center'}
         className={'gur-space gur-space_3'}
@@ -303,7 +303,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         </Form.Item>
       </Space>
       <Space
-        style={{ '--gap': '5px', width: 'calc(100vw - 32px)', margin: '0px 16px 0px' }}
+        style={{ '--gap': '5px', width: 'calc(100% - 32px)', margin: '0px 16px 0px' }}
         justify={'between'}
         align={'center'}
         className={'gur-space'}

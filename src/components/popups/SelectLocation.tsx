@@ -12,6 +12,7 @@ import SelectOrgForm from '../forms/selectOrganization/SelectOrg'
 import { Optional } from '../../features/helpers'
 import ToggleSelector from '../special/ToggleSelector'
 import { IconClose } from '../icons/IconClose'
+import Container from "react-bootstrap/Container"
 
 type P = {
   show: boolean,
@@ -28,7 +29,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
       setAddrByCordinates,
       location,
       reverseGeocoderApi,
-      loadOrganizations, 
+      loadOrganizations,
       geocoderApi,
       currentOrgID,
       requestGeolocation
@@ -42,7 +43,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
       <div className={styles.shtorka}></div>
     </div>
 
-  const AskLocation: FC<any> = props => 
+  const AskLocation: FC<any> = props =>
     <div className={styles.location_box}>
       <Button onClick={props.onClick} className={styles.location_ico}>
         <LocationOutline className={styles.location_svg} />
@@ -50,8 +51,8 @@ const SelectLocationPopup: FC<P> = observer(p => {
     </div>
 
   const isMapSearching = [
-    geocoderApi.state, 
-    loadOrganizations.state, 
+    geocoderApi.state,
+    loadOrganizations.state,
     reverseGeocoderApi.state
   ].includes('LOADING')
 
@@ -72,9 +73,11 @@ const SelectLocationPopup: FC<P> = observer(p => {
             />
           </div>
           <div className={styles.popup_area}>
-            <AskLocation onClick={requestGeolocation} />
             <PopupHeader />
-            <InputAddressForm onContinue={p.onContinue} />
+            <Container>
+              <AskLocation onClick={requestGeolocation} />
+              <InputAddressForm onContinue={p.onContinue} />
+            </Container>
           </div>
         </div>
 
@@ -92,7 +95,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
                 s?.key
                   ? setClickedOrgID(s.key)
                   : setClickedOrgID(null)
-               }}
+              }}
               items={addrsBindings.map(val => {
                 const [lat, lon] = val.pos.split(' ').map(Number)
                 return { lat, lon, key: val.Id }
@@ -100,13 +103,15 @@ const SelectLocationPopup: FC<P> = observer(p => {
             />
           </div>
           <div className={styles.popup_area}>
-            <AskLocation onClick={requestGeolocation} />
             <PopupHeader />
-            <SelectOrgForm 
-              clickedOrgID={clickedOrgID}
-              setClickedOrgID={setClickedOrgID} 
-              onContinue={p.onContinue}
-            />
+            <Container>
+              <AskLocation onClick={requestGeolocation} />
+              <SelectOrgForm
+                clickedOrgID={clickedOrgID}
+                setClickedOrgID={setClickedOrgID}
+                onContinue={p.onContinue}
+              />
+            </Container>
           </div>
         </div>
     }
@@ -120,45 +125,47 @@ const SelectLocationPopup: FC<P> = observer(p => {
       onMaskClick={p.close}
       bodyStyle={{ width: '100vw', height: '100%' }}
     >
-      <div style={{ position: 'relative' }}>
-        <Space
-          style={{
-            position: 'absolute',
-            width: 'calc(100vw - 1rem)',
-            marginTop: '0.75rem',
-            padding: '0 0.5rem',
-            zIndex: 100
-          }}
-          justify='between'
-        >
-          <Button
-            onClick={p.close}
-            shape='rounded'
+      <Container>
+        <div style={{ position: 'relative' }}>
+          <Space
             style={{
-              height: '38px',
-              width: '38px',
+              position: 'absolute',
+              width: 'calc(100% - 1rem)',
+              marginTop: '0.75rem',
+              padding: '0 0.5rem',
+              zIndex: 100
             }}
+            justify='between'
           >
-            <span style={{ marginLeft: '-4px' }} >
-              <IconClose
-                width={21}
-                height={23}
-                color={"var(--громкий-текст)"}
-              />
-            </span>
-          </Button>
-          <ToggleSelector
-            options={options}
-            value={receptionType}
-            backgroundVar={'--tg-theme-bg-color'}
-            buttonBackgroundVar={'--tg-theme-bg-color'}
-            buttonActiveBackgroundVar={'--gurmag-accent-color'}
-            colorVar={'--громкий-текст'}
-            activeColorVar={'--gur-custom-button-text-color'}
-            onChange={setReceptionType}
-          />
-        </Space>
-      </div>
+            <Button
+              onClick={p.close}
+              shape='rounded'
+              style={{
+                height: '38px',
+                width: '38px',
+              }}
+            >
+              <span style={{ marginLeft: '-4px' }} >
+                <IconClose
+                  width={21}
+                  height={23}
+                  color={"var(--громкий-текст)"}
+                />
+              </span>
+            </Button>
+            <ToggleSelector
+              options={options}
+              value={receptionType}
+              backgroundVar={'--tg-theme-bg-color'}
+              buttonBackgroundVar={'--tg-theme-bg-color'}
+              buttonActiveBackgroundVar={'--gurmag-accent-color'}
+              colorVar={'--громкий-текст'}
+              activeColorVar={'--gur-custom-button-text-color'}
+              onChange={setReceptionType}
+            />
+          </Space>
+        </div>
+      </Container>
       {getContent(receptionType)}
     </Popup>
   )

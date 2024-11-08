@@ -1,11 +1,13 @@
 import { DatePicker, Input, Button, Form, NavBar, Popup } from "antd-mobile"
 import { observer } from "mobx-react-lite"
-import moment from "moment"
 import { FC, useState, useEffect } from "react"
 import { useGoUTM, useStore } from "../../../features/hooks"
 import styles from '../form.module.css'
 import { FullscreenLoading } from "../../common/Loading/Loading"
 import InputMask from 'react-input-mask';
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
+import Container from 'react-bootstrap/Container'
 
 
 const Registration: FC = observer(() => {
@@ -24,11 +26,11 @@ const Registration: FC = observer(() => {
   }, [name, birthday])
 
   function submit() {
-    const [DD,MM,YYYY] = birthday.split(".")
+    const [DD, MM, YYYY] = birthday.split(".")
     auth.registration.run({
       name,
-      birthday: YYYY&&MM&&DD
-        ? YYYY+MM+DD
+      birthday: YYYY && MM && DD
+        ? YYYY + MM + DD
         : '19710101'
     })
   }
@@ -50,57 +52,63 @@ const Registration: FC = observer(() => {
         confirmText='Сохранить'
         cancelText='Закрыть'
       />
-      <NavBar onBack={() => { go('/') }}>
-        Расскажите о себе
-      </NavBar>
-      <Form>
-        <Form.Item
-          label='Как вас зовут?'
-          name='name'
-          className={styles.addr_from_input}
-        >
-          <Input
-            placeholder='Ваше имя'
-            value={name}
-            onChange={val => { setName(val) }}
-          />
-        </Form.Item>
-        <Form.Item
-          label='Когда у вас день рождения?'
-          name='birthday'
-          className={styles.addr_from_input}
-        >
-          <InputMask
-            maskChar={null}
-            mask="99.99.9999"
-            value={birthday}
-            onChange={setBirthDay as any}
-          >
-            {/* @ts-ignore */}
-            {(inputProps: any) =>
-              <Input 
-                {...inputProps}
-                type='tel'
-                placeholder='ДД.ММ.ГГГГ'
-              />
-            }
-          </InputMask>
-          {/* <span onClick={() => setShowBirthdayInput(true)}>
-            {birthday.length
-              ? moment(birthday).format('DD-MM-YYYY')
-              : 'ДД-ММ-ГГГГ'
-            }
-          </span> */}
-        </Form.Item>
-        <Button
-          disabled={isDisabled}
-          shape='rounded'
-          onClick={submit}
-          className={styles.submit_button}
-        >
-          Отправить
-        </Button>
-      </Form>
+      <Container>
+        <NavBar onBack={() => { go('/') }}>
+          Расскажите о себе
+        </NavBar>
+        <Form>
+          <Row>
+            <Col md={6}>
+              <Form.Item
+                label='Как вас зовут?'
+                name='name'
+                className={styles.addr_from_input}
+              >
+                <Input
+                  placeholder='Ваше имя'
+                  value={name}
+                  onChange={val => { setName(val) }}
+                />
+              </Form.Item>
+            </Col>
+            <Col md={6}>
+              <Form.Item
+                label='Когда у вас день рождения?'
+                name='birthday'
+                className={styles.addr_from_input}
+              >
+                <InputMask
+                  maskChar={null}
+                  mask="99.99.9999"
+                  value={birthday}
+                  onChange={setBirthDay as any}
+                >
+                  {/* @ts-ignore */}
+                  {(inputProps: any) =>
+                    <Input
+                      {...inputProps}
+                      type='tel'
+                      placeholder='ДД.ММ.ГГГГ'
+                    />
+                  }
+                </InputMask>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row className="justify-content-md-center">
+            <Col md={6}>
+              <Button
+                disabled={isDisabled}
+                shape='rounded'
+                onClick={submit}
+                className={styles.submit_button}
+              >
+                Отправить
+              </Button>
+            </Col>
+          </Row>
+        </Form>
+      </Container>
     </Popup>
   )
 })
