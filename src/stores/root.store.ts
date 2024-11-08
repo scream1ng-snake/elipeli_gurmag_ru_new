@@ -6,6 +6,7 @@ import { CartStore, CouseInCart } from "./cart.store";
 import { ReceptionStore } from "./reception.store";
 import UserStore from "./user.store";
 import { getItem } from "../features/local-storage";
+import bridge from "@vkontakte/vk-bridge";
 
 export default class RootStore {
   constructor() {
@@ -73,6 +74,9 @@ export default class RootStore {
     if(isInTelegram()) {
       logger.log('мы в телеге', 'root')
       this.appType = 'TG_BROWSER'
+    } else if (bridge?.isIframe() || bridge?.isWebView()) {
+      logger.log('мы в VK', 'root')
+      this.appType = 'VK'
     } else {
       logger.log('мы в браузере', 'root')
       this.appType = 'WEB_BROWSER'
@@ -92,5 +96,6 @@ export const AppInstances = {
   // MOBILE: "MOBILE",
   WEB_BROWSER: "WEB_BROWSER",
   TG_BROWSER: "TG_BROWSER",
+  VK: "VK",
 } as const;
 export type AppInstance = typeof AppInstances[keyof typeof AppInstances];

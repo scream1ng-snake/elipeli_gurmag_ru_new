@@ -1,4 +1,4 @@
-import { Avatar, Result, Space, Image } from 'antd-mobile'
+import { Avatar, Result, Space, Image, Ellipsis, Rate } from 'antd-mobile'
 import { ClockCircleOutline } from 'antd-mobile-icons'
 import { observer } from 'mobx-react-lite'
 import { FC, useMemo, CSSProperties } from 'react'
@@ -55,6 +55,10 @@ const Cooks: FC = observer(() => {
 const CookItem: FC<{ cook: Cook }> = observer(({ cook }) => {
   const { reception: { employees } } = useStore();
 
+  // const cookNameStyle = {
+  //   color: 'var(--громкий-текст)', 
+  //   fontSize: '18px'
+  // }
   return (
     <Space
       style={wrapperStyle}

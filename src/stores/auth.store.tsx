@@ -9,6 +9,7 @@ import { ExclamationCircleFill as Icon } from "antd-mobile-icons";
 import Pizza from '../assets/Pizza.png'
 import Popup from "../features/modal";
 import Metrics from "../features/Metrics";
+import bridge from "@vkontakte/vk-bridge";
 
 export const AuthStates = {
   CHECKING_AUTH: "CHECKING_AUTH",
@@ -82,6 +83,20 @@ export class AuthStore {
         if (tgId) this.root.user.setID(tgId)
         break;
       }
+      case 'VK': {
+        const data = await bridge.send('VKWebAppGetUserInfo')
+
+        const result = data.id
+          ? await this.root.user.loadUserInfo.run(orgId, 'vk' + data.id)
+          : await this.root.user.loadUserInfo.run(orgId, 0)
+
+        result
+          ? this.setState('AUTHORIZED')
+          : this.setState('NOT_AUTHORIZED')
+
+        if (data.id) this.root.user.setID('vk' + data.id.toString())
+        break;
+      }
       case 'WEB_BROWSER':
         const webId = localStorage.getItem('webId')
         const result = webId
@@ -128,6 +143,15 @@ export class AuthStore {
             this.root.user.setID(result.UserId)
             state = result.State
           }
+          break
+        }
+        case 'VK': {
+          const userId = this.root.user.ID
+          const result = await http.post<any, resultType>(
+            '/checkUserPhone',
+            { phone, userId }
+          )
+          if (result?.length) state = result
           break
         }
       }
