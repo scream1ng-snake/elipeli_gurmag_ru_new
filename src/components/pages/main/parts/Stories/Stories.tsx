@@ -1,7 +1,7 @@
-import { Button, Image, Popup, Space } from 'antd-mobile'
-import { FC, useState } from 'react'
+import { Button, Image, Popup, Skeleton, Space } from 'antd-mobile'
+import { FC, useCallback, useState } from 'react'
 import styles from './Stories.module.css'
-import WatchStory  from 'react-insta-stories';
+import WatchStory from 'react-insta-stories';
 import { Optional } from '../../../../../features/helpers';
 import { CloseOutline } from 'antd-mobile-icons';
 import { observer } from 'mobx-react-lite';
@@ -23,7 +23,7 @@ const Stories: FC = observer(() => {
   const go = useGoUTM()
   const { reception: { menu } } = useStore()
   const [selectedStory, setSelectedStory] = useState<Optional<WebHistoty>>(null)
-  const closeStory = () => { setSelectedStory(null) }
+  const closeStory = useCallback(() => { setSelectedStory(null) }, [])
 
   return <>
     {selectedStory
@@ -57,10 +57,10 @@ const Stories: FC = observer(() => {
                       ? window.location.href = slide.link as string
                       : go(slide.link as string)
                   }}
-                  style={{ 
-                    position: 'absolute', 
-                    bottom: 22, 
-                    left: 22, 
+                  style={{
+                    position: 'absolute',
+                    bottom: 22,
+                    left: 22,
                     right: 22,
                     padding: 10
                   }}
@@ -86,25 +86,40 @@ const Stories: FC = observer(() => {
         scrollbarWidth: 'none',
       }}
     >
-      {menu.stories.map((story, index) =>
-        <div key={index} className={styles.story_cover_item}>
-          <Image
-            onClick={() => { setSelectedStory(story) }}
-            src={config.staticApi
-              + "/api/v2/image/FileImage?fileId="
-              + story.ImageFront
-            }
-            style={{
-              width: '77px',
-              height: '95px',
-              objectFit: 'cover'
-            }}
-          />
-          <p>{story.NameHistory}</p>
-        </div>
-      )}
+      {menu.loadMenu.state === 'COMPLETED'
+        ? menu.stories.map((story, index) =>
+          <div key={index} className={styles.story_cover_item}>
+            <Image
+              onClick={() => { setSelectedStory(story) }}
+              src={config.staticApi
+                + "/api/v2/image/FileImage?fileId="
+                + story.ImageFront
+              }
+              placeholder={<StoryImgPreloader />}
+              fallback={<StoryImgPreloader />}
+              style={{
+                width: '77px',
+                height: '95px',
+                objectFit: 'cover'
+              }}
+            />
+            <p>{story.NameHistory}</p>
+          </div>
+        )
+        : new Array(4).fill(null).map((_, index) => <StoryImgPreloader key={index} />)
+      }
     </Space>
   </>
 })
+
+const StoryImgPreloader: FC = () => <Skeleton
+  animated
+  style={{
+    width: '77px',
+    height: '95px',
+    objectFit: 'cover'
+  }}
+  className={styles.story_cover_item}
+/>
 
 export default Stories

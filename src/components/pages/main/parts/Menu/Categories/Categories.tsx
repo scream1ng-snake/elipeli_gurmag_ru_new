@@ -1,27 +1,26 @@
 import { observer } from "mobx-react-lite"
-import { CSSProperties, FC } from "react"
+import { CSSProperties, FC, useCallback } from "react"
 import styles from './Categories.module.css'
-import { useGoUTM, useStore, useTheme } from "../../../../../../features/hooks";
-import { Divider, Image, Rate, Result, Skeleton, Space, Tag, Toast } from "antd-mobile";
-import { AddOutline, CheckOutline, SmileOutline } from "antd-mobile-icons";
+import { useGoUTM, useStore } from "../../../../../../features/hooks";
+import { Image, Result, Skeleton, Toast } from "antd-mobile";
+import { SmileOutline } from "antd-mobile-icons";
 import { CourseItem } from "../../../../../../stores/menu.store";
 import config from "../../../../../../features/config";
 import IconStar from '../../../../../../assets/icon_star.svg'
 import ImageReviews from '../../../../../../assets/image_reviews.svg'
 import CustomButton from '../../../../../special/CustomButton'
-import { useNavigate } from "react-router-dom";
 import Metrics from "../../../../../../features/Metrics";
 
-const Categories: FC = observer(function() {
+const Categories: FC = observer(function () {
   const { reception: { menu } } = useStore()
   const { categories, dishSearcher, loadMenu } = menu;
 
-  if(loadMenu.state === 'COMPLETED') {
+  if (loadMenu.state === 'COMPLETED') {
     return (
       <section className={styles.categories_wrapper}>
-        {dishSearcher.isSearching 
+        {dishSearcher.isSearching
           ? <div>
-            {dishSearcher.result.length 
+            {dishSearcher.result.length
               ? <h2>{'Найдено ' + dishSearcher.result.length + ' блюд'}</h2>
               : <Result
                 icon={<SmileOutline />}
@@ -33,16 +32,16 @@ const Categories: FC = observer(function() {
             {
               dishSearcher.result.length
                 ? <div className={styles.courses_list}>
-                    {dishSearcher.result.map((course, index) =>
-                      <CourseItemComponent 
-                        key={index}
-                        course={course}
-                      />
-                    )}
+                  {dishSearcher.result.map((course, index) =>
+                    <CourseItemComponent
+                      key={index}
+                      course={course}
+                    />
+                  )}
                 </div>
                 : null
             }
-            
+
           </div>
           : categories.map((category, index) =>
             <div key={index} id={String(category.VCode)}>
@@ -50,7 +49,7 @@ const Categories: FC = observer(function() {
               <br />
               <div className={styles.courses_list}>
                 {category.CourseList.map((course, index) =>
-                  <CourseItemComponent 
+                  <CourseItemComponent
                     key={`${category.Name}-${course.Name}-${index}`}
                     course={course}
                   />
@@ -66,7 +65,7 @@ const Categories: FC = observer(function() {
     const preloder = {
       label: { width: "16px", height: "16px" },
       text: { width: "40px", height: "10px" },
-      
+
       title: { margin: '1rem' },
       image: { height: "134px", width: "100%" },
       count: { marginTop: '4.86px', marginBottom: '0.86px', width: "84px", height: "10px" },
@@ -82,7 +81,7 @@ const Categories: FC = observer(function() {
           <div className={styles.courses_list}>
             {new Array(2).fill(null).map((_, index) =>
               <div className={styles.course_item} key={index}>
-                <Skeleton animated style={preloder.image}/>
+                <Skeleton animated style={preloder.image} />
                 <div className={styles.item_bady}>
                   <div
                     className={styles.item_bottom_wrapper}
@@ -91,7 +90,7 @@ const Categories: FC = observer(function() {
                       className={styles.item_bottom_content}
                     >
                       <div className={styles.count_text}>
-                      <Skeleton animated style={preloder.count} />
+                        <Skeleton animated style={preloder.count} />
                       </div>
                       <div className={styles.price_text}>
                         <Skeleton animated style={preloder.price} />
@@ -105,7 +104,7 @@ const Categories: FC = observer(function() {
                         <Skeleton animated style={preloder.weight} />
                       </div>
                     </div>
-                    <div style={{margin: '0px -4px'}}>
+                    <div style={{ margin: '0px -4px' }}>
                       <Skeleton animated style={preloder.button} />
                     </div>
                   </div>
@@ -129,14 +128,14 @@ const iconStyle: CSSProperties = {
 }
 export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
   const go = useGoUTM()
-  const { reception: { menu }} = useStore();
-  return(
+  const watchCourse = useCallback(() => go('/menu/' + course.VCode), [])
+  return (
     <div className={styles.course_item + ' course_item_card'}>
       <Image
         lazy
         src={`${config.staticApi}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}
-        onClick={() => go('/menu/' + course.VCode)}
-        placeholder={<Skeleton style={{ width: '100%', height: '134px' }} animated/>}
+        onClick={watchCourse}
+        placeholder={<Skeleton style={{ width: '100%', height: '134px' }} animated />}
         fit='cover'
         width="auto"
         height="134px"
@@ -145,37 +144,33 @@ export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ cours
           "--width": "auto"
         }}
       />
-      {/* <div className={styles.image_text}>
-        {'Блюдо'}
-      </div> */}
-      <CardBodyComponent course={course} />
+      <CardBodyComponent course={course} watchCourse={watchCourse} />
     </div>
   )
 })
 
-const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
-  const go = useGoUTM()
-  const { theme } = useTheme()
-  const { auth, reception } = useStore()
-  const { reception: { menu }, cart } = useStore()
-  function addToCart(e?: any) {
+const CardBodyComponent: FC<{ course: CourseItem, watchCourse: () => void }> = observer(({ course, watchCourse }) => {
+  const { reception: { menu, selectedOrgID, nearestOrgForDelivery }, cart, auth } = useStore()
+
+  const handleAddToCart = useCallback((e?: any) => {
+    if (!nearestOrgForDelivery && !selectedOrgID) auth.bannerAskAdress.open()
     e?.stopPropagation()
     cart.addCourseToCart(course)
     Metrics.addToCart(course)
     Toast.show({
-      position: 'center', 
+      position: 'center',
       content: 'Добавлено'
     })
-  }
-  return(
+  }, [])
+
+  const watchReviews = useCallback(() => menu.courseReviewsPopup.watch(course), [])
+  return (
     <div className={styles.item_bady} style={{ position: 'relative' }}>
-      <div 
-        className={styles.item_top_wrapper}
-      >
+      <div className={styles.item_top_wrapper}>
         <div className={styles.rating_wrapper}>
-          <div 
+          <div
             className={styles.rating}
-            onClick={() => menu.courseReviewsPopup.watch(course)}
+            onClick={watchReviews}
           >
             <Image
               src={IconStar}
@@ -194,26 +189,22 @@ const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
             width={44}
             height={35}
             fit='contain'
-            onClick={() => menu.courseReviewsPopup.watch(course)}
-            style={{cursor: 'pointer'}}
+            onClick={watchReviews}
+            style={{ cursor: 'pointer' }}
           />
         </div>
       </div>
-      <div 
-        className={styles.item_bottom_wrapper}
-      >
-        <div 
-          className={styles.item_bottom_content}
-        >
+      <div className={styles.item_bottom_wrapper}>
+        <div className={styles.item_bottom_content}>
           <div className={styles.count_text}>
             {`В наличии ${(!course.NoResidue && course.EndingOcResidue > 0) ? course.EndingOcResidue : 0} шт`}
           </div>
           <div className={styles.price_text}>
             <span>{`${course.Price} ₽`}</span>
           </div>
-          <h3 
+          <h3
             className={styles.title_text}
-            onClick={() => go('/menu/' + course.VCode)}
+            onClick={watchCourse}
           >
             <span>{course.Name}</span>
           </h3>
@@ -221,18 +212,10 @@ const CardBodyComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
             <span>{course.Weigth}</span>
           </div>
         </div>
-        <div style={{margin: '0px -4px'}}>
+        <div style={{ margin: '0px -4px' }}>
           <CustomButton
             text={cart.isInCart(course) ? ('' + cart.findItem(course.VCode)?.quantity) : '+'}
-            onClick={
-              () => {
-                if (!reception.nearestOrgForDelivery && !reception.selectedOrgID) {
-                  auth.bannerAskAdress.open();
-                }
-
-                addToCart();
-              }
-            }
+            onClick={handleAddToCart}
             height={'24px'}
             maxWidth={'auto'}
             marginTop={'0px'}

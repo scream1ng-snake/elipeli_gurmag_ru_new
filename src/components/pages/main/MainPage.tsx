@@ -47,7 +47,7 @@ const MainPage: FC = observer(() => {
       <ReceptionSwitcher />
       <Container><MenuTabsFixed /></Container>
     </Fixed>
-    <Container className={styles.gur_main_content}>
+    <Container fluid='xl' className={styles.gur_main_content}>
       <AskLocation />
       <AskAuthorize />
       <Stories />
