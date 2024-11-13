@@ -1,15 +1,15 @@
-import { Skeleton, Space } from "antd-mobile"
+import { Skeleton } from "antd-mobile"
 
 export const LoaderTitle = () =>
-  <Skeleton animated style={{ marginTop: '1rem', marginLeft: '1rem', height: '18px', width: '150px' }} />
+  <Skeleton animated style={{ height: 22.27, width: 100, borderRadius:13 }} />
 
 
 export const ImagePreloder = () =>
-  <Skeleton 
-    animated 
+  <Skeleton
+    animated
     style={{
-      width:140,
-      height:90,
+      width: 140,
+      height: 90,
       objectFit: 'cover'
-    }} 
+    }}
   />

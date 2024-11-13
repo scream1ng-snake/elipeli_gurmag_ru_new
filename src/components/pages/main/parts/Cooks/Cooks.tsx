@@ -1,49 +1,28 @@
-import { Avatar, Result, Space, Image, Ellipsis, Rate } from 'antd-mobile'
-import { ClockCircleOutline } from 'antd-mobile-icons'
+import { Space, Image, Rate } from 'antd-mobile'
 import { observer } from 'mobx-react-lite'
-import { FC, useMemo, CSSProperties } from 'react'
+import { FC, CSSProperties } from 'react'
 import config from '../../../../../features/config'
 import { useStore } from '../../../../../features/hooks'
 import { Cook } from '../../../../../stores/employees.store'
 import CookReviewPopup from '../../../../popups/CookReviewPopup'
-import { Loader, LoaderTitle } from './preloders'
+import { ImgPlaceholder, Loader, LoaderTitle } from './preloders'
 import { wrapper_styles, list_styles, wrapperStyle, avatarStyle } from './styles'
-import ImageCircleBaker from '../../../../../assets/image_circle_baker@2x.png'
 const Cooks: FC = observer(() => {
-  const { reception: { employees, OrgForMenu, organizations } } = useStore()
-
-  const organization = useMemo(
-    () => organizations.find(o => o.Id === OrgForMenu),
-    [OrgForMenu]
-  )
-
-
-  function Content() {
-    return <>
-      {!employees.cooks.length
-        ? <Result
-          style={{ width: '100%' }}
-          icon={<ClockCircleOutline />}
-          status='success'
-          title='Упс'
-          description={`Сегодня на ${organization?.Name ?? "заброшенная точка"} никто не готовит((`}
-        />
-        : null
-      }
-      {employees.cooks.map(cook =>
-        <CookItem key={cook.UserId} cook={cook} />
-      )}
-    </>
-  }
+  const { reception: { employees } } = useStore()
+  const isLoadDone = employees.loadCooks.state === 'COMPLETED'
   return <div style={wrapper_styles}>
     <CookReviewPopup />
-    {employees.loadCooks.state === 'COMPLETED'
-      ? <h2>Magic family</h2>
+    {isLoadDone
+      ? employees.cooks.length
+        ? <h2>Magic family</h2>
+        : null
       : <LoaderTitle />
     }
     <div style={list_styles}>
-      {employees.loadCooks.state === 'COMPLETED'
-        ? Content()
+      {isLoadDone
+        ? employees.cooks.map(cook =>
+          <CookItem key={cook.UserId} cook={cook} />
+        )
         : <Loader />
       }
     </div>
@@ -55,10 +34,6 @@ const Cooks: FC = observer(() => {
 const CookItem: FC<{ cook: Cook }> = observer(({ cook }) => {
   const { reception: { employees } } = useStore();
 
-  // const cookNameStyle = {
-  //   color: 'var(--громкий-текст)', 
-  //   fontSize: '18px'
-  // }
   return (
     <Space
       style={wrapperStyle}
@@ -68,37 +43,60 @@ const CookItem: FC<{ cook: Cook }> = observer(({ cook }) => {
       key={cook.UserId}
       onClick={() => employees.watchCockPopup.watch(cook)}
     >
-      <Avatar
-        src={config.staticApi + '/api/v2/image/Cook?vcode=' + cook.UserId}
-        style={avatarStyle as CSSProperties}
-        fallback={
-          <Image
-            style={{margin: -1}}
-            src={ImageCircleBaker}
-            width={70}
-            height={70}
-            fit='contain'
-          />
-        }
-      />
-      {/* <span style={cookNameStyle}>{cook.FirstName}</span>
-      <Ellipsis
-        content={cook.NameWork}
-        style={{
-          color: 'var(--тихий-текст)',
-          fontSize: '12px',
-        }}
-      />
-      <Space align="center" style={{ '--gap': '3px' }}>
-        <div style={{ fontSize: '20px' }} >{Math.ceil(cook.Rating * 10) / 10}</div>
-        <Rate
-          allowHalf
-          readOnly
-          count={1}
-          defaultValue={cook.Rating}
-          style={{ '--star-size': '10px' }}
+      <div style={{ position: 'relative' }}>
+        <div
+          style={{
+            position: 'absolute',
+            left: '-1rem',
+            bottom: '-0.25rem',
+          }}
+        >
+          <div style={{ position: 'relative' }}>
+            <p
+              style={{
+                position: 'absolute',
+                fontFamily: 'Roboto',
+                fontSize: 12,
+                fontWeight: 400,
+                lineHeight: '14.06px',
+                top:"calc(50% - 5px)",
+                width:'100%',
+                zIndex:100,
+                textAlign:'center',
+                color:'black'
+              }}
+            >
+              {Math.ceil(cook.Rating * 10) / 10}
+            </p>
+            <Rate
+              allowHalf
+              readOnly
+              count={1}
+              defaultValue={cook.Rating}
+              style={{ '--star-size': '42px' }}
+            />
+          </div>
+        </div>
+
+        <Image
+          src={config.staticApi + '/api/v2/image/Cook?vcode=' + cook.UserId}
+          style={avatarStyle as CSSProperties}
+          fit='cover'
+          placeholder={<ImgPlaceholder />}
+          fallback={<ImgPlaceholder />}
         />
-      </Space> */}
+      </div>
+      <span 
+        style={{
+          fontFamily: 'Roboto',
+          fontSize: 11,
+          fontWeight: 600,
+          lineHeight: '12.89px',
+          color:'var(--тихий-текст)'
+        }}
+      >
+        {cook.FirstName}
+      </span>
     </Space>
   )
 })

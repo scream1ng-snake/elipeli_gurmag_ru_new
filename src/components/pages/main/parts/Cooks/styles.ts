@@ -15,10 +15,10 @@ export const wrapper_styles: CSSProperties = {
   marginBottom: '26px',
 }
 
-export const wrapperStyle = {
+export const wrapperStyle: CSSProperties | any = {
   width: '33%',
-  margin: '0 0.25rem',
-  '--gap': '3px',
+  margin: '0 5px',
+  '--gap': '-8px',
 }
 export const avatarStyle = {
   width: '70px',

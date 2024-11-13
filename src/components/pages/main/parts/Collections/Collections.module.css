@@ -9,11 +9,3 @@
   overflow: hidden;
   position: relative;
 }
-.selection_cover_item > p {
-  position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
-  font-size: 18px;
-  font-weight: 600;
-  color: white;
-}

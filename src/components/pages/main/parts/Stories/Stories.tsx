@@ -82,7 +82,7 @@ const Stories: FC = observer(() => {
         background: 'var(--tg-theme-bg-color)',
         overflowX: 'scroll',
         '--gap-horizontal': '-7px',
-        width: 'calc(100% - 8px)',
+        width: '100%',
         scrollbarWidth: 'none',
       }}
     >
@@ -98,8 +98,8 @@ const Stories: FC = observer(() => {
               placeholder={<StoryImgPreloader />}
               fallback={<StoryImgPreloader />}
               style={{
-                width: '77px',
-                height: '95px',
+                width: 89,
+                height: 115,
                 objectFit: 'cover'
               }}
             />
@@ -115,8 +115,8 @@ const Stories: FC = observer(() => {
 const StoryImgPreloader: FC = () => <Skeleton
   animated
   style={{
-    width: '77px',
-    height: '95px',
+    width: 89,
+    height: 115,
     objectFit: 'cover'
   }}
   className={styles.story_cover_item}
