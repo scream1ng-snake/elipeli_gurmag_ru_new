@@ -6,7 +6,6 @@ import type {
   Action
 } from 'antd-mobile/es/components/action-sheet'
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
 import BackIcon from "../icons/Back";
 import { CloseOutline } from "antd-mobile-icons";
 import { Message2 } from "../../stores/auth.store";

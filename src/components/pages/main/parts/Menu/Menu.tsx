@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { CSSProperties, FC, useState } from "react"
+import { CSSProperties, FC, useCallback, useState } from "react"
 import styles from './Menu.module.css'
 import CourseReviewPopup from "../../../../popups/CourseReviewPopup.tsx"
 import { useStore } from "../../../../../features/hooks"
@@ -55,7 +55,7 @@ const labelStyle: CSSProperties = {
 const Category: FC<{ category: CategoryCourse }> = ({ category }) => {
   const [err, setErr] = useState(false)
   const { reception: { menu }} = useStore()
-  const watchCategory = () => menu.categoryPopup.watch(category)
+  const watchCategory = useCallback(() => menu.categoryPopup.watch(category), [])
   return <Col style={colStyle} xs={4} sm={3} md={2}>
     {err &&
       <span style={labelStyle}>
@@ -63,6 +63,7 @@ const Category: FC<{ category: CategoryCourse }> = ({ category }) => {
       </span>
     }
     <Image
+      lazy
       fallback={<Skeleton style={imgStyle} />}
       placeholder={<Skeleton style={imgStyle} animated />}
       src={config.staticApi

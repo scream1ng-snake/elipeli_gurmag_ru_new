@@ -2,11 +2,9 @@ import { Button, Popup, Space } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { FC } from "react"
 import { useGoUTM, useStore } from "../../features/hooks"
-import { useNavigate } from "react-router-dom"
-import { receptionTypes } from "../../stores/reception.store"
 
 const popup = { 
-  width: 'calc(100vw - 2rem)', 
+  width: '100vw', 
   padding: '1rem',
   borderTopLeftRadius: 13,
   borderTopRightRadius: 13,

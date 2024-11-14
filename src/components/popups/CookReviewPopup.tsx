@@ -16,6 +16,7 @@ const CookReviewPopup: FC = observer(function () {
     visible={watchCockPopup.show}
     onClose={watchCockPopup.close}
     closeOnMaskClick
+    closeOnSwipe
     bodyStyle={styles.review_popup}
   >
     {
@@ -91,7 +92,7 @@ const styles = {
   review_popup: {
     borderTopLeftRadius: '13px',
     borderTopRightRadius: '13px',
-    width: 'calc(100vw - 1rem)',
+    width: '100vw',
     padding: '1rem 0.5rem 0.5rem 0.5rem'
   },
   review_content: { 

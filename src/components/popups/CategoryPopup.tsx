@@ -1,7 +1,7 @@
 import { CapsuleTabs, Popup, Skeleton } from 'antd-mobile'
 import { toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
-import { CSSProperties, FC, useCallback } from 'react'
+import { CSSProperties, FC, useCallback, useMemo } from 'react'
 import { useStore } from '../../features/hooks'
 import Container from 'react-bootstrap/Container'
 import BackIcon from '../icons/Back'
@@ -16,7 +16,7 @@ const CategoryPopup: FC = observer(function () {
   const { categoryPopup } = menu
 
   const isLoading = menu.loadMenu.state === 'LOADING'
-  const currentCategory = toJS(categoryPopup.content)
+  const currentCategory = useMemo(() => toJS(categoryPopup.content), [categoryPopup.content])
 
   const watchCategory = useCallback((vcode: string) => {
     const targetCategory = menu.categories.find(c => String(c.VCode) === vcode)
@@ -65,7 +65,7 @@ const CategoryPopup: FC = observer(function () {
 const style: Record<string, CSSProperties> = {
   cat_popup: {
     width: '100vw',
-    height: '100vh',
+    height: '100%',
     overflowY: 'scroll',
     fontFamily: 'Arial',
     fontSize: 13,
