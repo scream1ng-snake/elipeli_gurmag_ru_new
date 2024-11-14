@@ -12,15 +12,15 @@ export const list_styles: CSSProperties = {
 }
 export const wrapper_styles: CSSProperties = {
   /* padding: '0.5rem 0 0.5rem 0.5rem', */
-  marginBottom: '26px',
+  marginBottom:12,
 }
 
 export const wrapperStyle: CSSProperties | any = {
   width: '33%',
-  margin: '0 5px',
+  margin: '0 10px',
   '--gap': '-8px',
 }
-export const avatarStyle = {
+export const avatarStyle: CSSProperties = {
   width: '70px',
   height: '70px',
   borderRadius: '35px',

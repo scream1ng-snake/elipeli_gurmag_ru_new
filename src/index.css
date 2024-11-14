@@ -302,3 +302,25 @@ dl, ol, ul {
   stroke: var(--громкий-текст);
 }
 /* ^ Модалка товара */
+
+.adm-scroll-mask-right {
+  background: linear-gradient(to left, var(--tg-theme-secondary-bg-color), rgba(255, 255, 255, 0)) !important;
+}
+.adm-scroll-mask-left {
+  background: linear-gradient(to right, var(--tg-theme-secondary-bg-color), rgba(255, 255, 255, 0)) !important;
+}
+.adm-capsule-tabs-tab-active {
+  color: white !important;
+  background-color: rgba(44, 46, 58, 1) !important;
+}
+
+.header_capsule .adm-capsule-tabs-tab:not(.adm-capsule-tabs-tab-active) {
+  background: var(--tg-theme-bg-color) !important;
+}
+.header_capsule .adm-capsule-tabs-tab {
+  padding: 10px 14px !important;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 14.95px;
+}

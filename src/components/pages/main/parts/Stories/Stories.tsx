@@ -25,6 +25,7 @@ const Stories: FC = observer(() => {
   const [selectedStory, setSelectedStory] = useState<Optional<WebHistoty>>(null)
   const closeStory = useCallback(() => { setSelectedStory(null) }, [])
 
+  if(menu.loadMenu.state === 'COMPLETED' && !menu.stories.length) return null
   return <>
     {selectedStory
       ? <Popup

@@ -13,6 +13,7 @@ const Collections: FC = observer(() => {
 
   const watchAllCollections = useCallback(() => { go('/collections') }, [])
 
+  if(menu.loadMenu.state === 'COMPLETED' && !menu.selections.length) return null
   return <div className={styles.collections_wrapper}>
     {menu.loadMenu.state === 'COMPLETED'
       ? <h2 onClick={watchAllCollections}>Подборки</h2>

@@ -5,11 +5,12 @@ import config from '../../../../../features/config'
 import { useStore } from '../../../../../features/hooks'
 import { Cook } from '../../../../../stores/employees.store'
 import CookReviewPopup from '../../../../popups/CookReviewPopup'
-import { ImgPlaceholder, Loader, LoaderTitle } from './preloders'
+import { CookSkeleton, ImgPlaceholder, Loader, LoaderTitle } from './preloders'
 import { wrapper_styles, list_styles, wrapperStyle, avatarStyle } from './styles'
 const Cooks: FC = observer(() => {
   const { reception: { employees } } = useStore()
   const isLoadDone = employees.loadCooks.state === 'COMPLETED'
+  if(employees.loadCooks.state === 'COMPLETED' && !employees.cooks.length) return null
   return <div style={wrapper_styles}>
     <CookReviewPopup />
     {isLoadDone
@@ -61,7 +62,7 @@ const CookItem: FC<{ cook: Cook }> = observer(({ cook }) => {
                 lineHeight: '14.06px',
                 top:"calc(50% - 5px)",
                 width:'100%',
-                zIndex:100,
+                zIndex:1,
                 textAlign:'center',
                 color:'black'
               }}

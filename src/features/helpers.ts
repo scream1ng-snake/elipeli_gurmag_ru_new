@@ -129,3 +129,15 @@ export class Searcher {
   }
 }
 
+function splitIntoChunks<T>(array: T[], chunkSize: number): T[][] {
+  if (array == null) return [];
+  const chunk = chunkSize <= 0 ? 5 : chunkSize;
+  const chunks = [];
+
+  for (let i = 0; i < array.length; i += chunk) {
+    chunks.push(array.slice(i, i + chunk));
+  }
+  return chunks;
+}
+
+export default splitIntoChunks;

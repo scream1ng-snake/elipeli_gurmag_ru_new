@@ -10,7 +10,14 @@
 .courses_list {
   display: flex;
   flex-wrap: wrap;
-  margin-right: 15px;
+  padding-top: 25px;
+  padding-left: 17px;
+  padding-right: 17px;
+  background: var(--tg-theme-bg-color);
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  width: 100%;
+  height: 100%;
 }
 
 .course_item {

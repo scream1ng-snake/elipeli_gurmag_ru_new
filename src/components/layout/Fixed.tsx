@@ -6,7 +6,7 @@ const Fixed: FC<{ children: ReactNode }> = props => {
     <div
       style={{
         position: 'fixed',
-        zIndex: 1,
+        zIndex: 100,
         background: 'var(--tg-theme-secondary-bg-color)',
         width: '100%',
         borderBottomLeftRadius: '15px',

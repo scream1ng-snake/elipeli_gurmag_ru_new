@@ -18,6 +18,7 @@ const CourseReviewPopup: FC = observer(function () {
     visible={courseReviewsPopup.show}
     onClose={courseReviewsPopup.close}
     closeOnMaskClick
+    closeOnSwipe
     bodyStyle={styles.review_popup}
   >
     {
@@ -93,7 +94,7 @@ const styles = {
   review_popup: {
     borderTopLeftRadius: '13px',
     borderTopRightRadius: '13px',
-    width: 'calc(100vw - 1rem)',
+    width: '100%',
     padding: '1rem 0.5rem 0.5rem 0.5rem'
   },
   review_content: { 

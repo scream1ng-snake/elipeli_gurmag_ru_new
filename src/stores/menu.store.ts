@@ -68,6 +68,9 @@ class MenuStore {
     },
   })
 
+  /** попап для просмотра категории */
+  categoryPopup = new Popup<CategoryCourse>()
+
   /** фиксированная менюшка с категориями */
   categoriesBar = new Popup()
 
@@ -175,6 +178,8 @@ export type CategoryCourse = {
   CourseList: CourseItem[],
   /** пока нигде не используется */
   Quality: number,
+  /** "2A1315B1-2430-4817-8806-31FD61E5B7F3" | null */
+  Image: Optional<string>
 }
 
 

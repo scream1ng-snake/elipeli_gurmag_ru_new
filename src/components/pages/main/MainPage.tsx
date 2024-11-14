@@ -8,7 +8,6 @@ import Stories from "./parts/Stories/Stories"
 import Menu from "./parts/Menu/Menu"
 import BottomNavigation from "../../common/BottomNav/BottomNav"
 import Fixed from "../../layout/Fixed"
-import { MenuTabsFixed } from "./parts/Menu/MenuTabs/MenuTabs"
 import styles from './styles.module.css'
 import { useGoUTM, useStore } from '../../../features/hooks'
 import AskLocation from "../../popups/AskLocation"
@@ -45,7 +44,6 @@ const MainPage: FC = observer(() => {
     <ItemModal close={() => { go('/') }} />
     <Fixed>
       <ReceptionSwitcher />
-      <Container><MenuTabsFixed /></Container>
     </Fixed>
     <Container fluid='xl' className={styles.gur_main_content}>
       <AskLocation />
