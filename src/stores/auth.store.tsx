@@ -115,7 +115,7 @@ export class AuthStore {
   }
 
   /** тут авторизуемся по номеру телефона */
-  authorize = new Request(async (_, setState, phone: string) => {
+  authorize = new Request(async (_, setState, phone: string, vkConfirmed: boolean) => {
     setState('LOADING')
     this.setState('AUTHORIZING')
     logger.log(this.state + ' ' + this.stage, 'auth-store')
@@ -147,10 +147,21 @@ export class AuthStore {
         }
         case 'VK': {
           const userId = this.root.user.ID
-          const result = await http.post<any, resultType>(
-            '/checkUserPhoneVk',
-            { phone, userId }
-          )
+          let result
+          // если этот номер точно дал вк
+          // тогда вызываем другую апишку 
+          // которая не требует смс кода
+          if (vkConfirmed) {
+            result = await http.post<any, resultType>(
+              '/checkUserPhoneVk',
+              { phone, userId }
+            )
+          } else {
+            result = await http.post<any, resultType>(
+              '/checkUserPhone',
+              { phone, userId }
+            )
+          }
           if (result?.length) state = result
           break
         }
@@ -160,7 +171,7 @@ export class AuthStore {
         if (state !== 'no_client') {
           this.setAccountState(state)
           this.setConfirmedPhone(phone)
-          if(this.root.instance === 'VK') {
+          if (this.root.instance === 'VK' && vkConfirmed) {
             this.inputSmsCode.run('0000')
           } else {
             this.setStage('INPUT_SMS_CODE')
