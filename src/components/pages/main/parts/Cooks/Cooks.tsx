@@ -5,7 +5,7 @@ import config from '../../../../../features/config'
 import { useStore } from '../../../../../features/hooks'
 import { Cook } from '../../../../../stores/employees.store'
 import CookReviewPopup from '../../../../popups/CookReviewPopup'
-import { CookSkeleton, ImgPlaceholder, Loader, LoaderTitle } from './preloders'
+import { ImgPlaceholder, Loader, LoaderTitle } from './preloders'
 import { wrapper_styles, list_styles, wrapperStyle, avatarStyle } from './styles'
 const Cooks: FC = observer(() => {
   const { reception: { employees } } = useStore()

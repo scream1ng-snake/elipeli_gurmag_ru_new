@@ -10,7 +10,6 @@ import styles from '../pages/main/parts/Menu/Categories/Categories.module.css'
 import { CourseItemComponent } from '../pages/main/parts/Menu/Categories/Categories'
 import { BottomNavigation } from '../common/BottomNav/BottomNav'
 
-/** отзывы на блюдо */
 const CategoryPopup: FC = observer(function () {
   const { reception: { menu } } = useStore()
   const { categoryPopup } = menu

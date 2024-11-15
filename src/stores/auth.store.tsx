@@ -148,7 +148,7 @@ export class AuthStore {
         case 'VK': {
           const userId = this.root.user.ID
           const result = await http.post<any, resultType>(
-            '/checkUserPhone',
+            '/checkUserPhoneVk',
             { phone, userId }
           )
           if (result?.length) state = result
@@ -158,9 +158,13 @@ export class AuthStore {
       //@ts-ignore
       if (state) {
         if (state !== 'no_client') {
-          this.setStage('INPUT_SMS_CODE')
           this.setAccountState(state)
           this.setConfirmedPhone(phone)
+          if(this.root.instance === 'VK') {
+            this.inputSmsCode.run('0000')
+          } else {
+            this.setStage('INPUT_SMS_CODE')
+          }
         } else {
           this.setAccountState(state)
           this.setStage('INPUT_TELEPHONE')

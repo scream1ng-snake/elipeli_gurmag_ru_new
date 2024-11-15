@@ -43,7 +43,7 @@ const InputNumber: FC = observer(() => {
       <NavBar onBack={() => { go('/') }}>
         Вход по номеру
       </NavBar>
-      {auth.authorize.state === 'LOADING'
+      {auth.authorize.state === 'LOADING' || auth.inputSmsCode.state === 'LOADING'
         ? <FullscreenLoading />
         : null
       }
