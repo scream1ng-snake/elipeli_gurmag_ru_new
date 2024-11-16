@@ -39,7 +39,8 @@ const colStyle: CSSProperties = {
 }
 const imgStyle: CSSProperties = {
   width: '100%',
-  height: 142,
+  height: 'auto',
+  aspectRatio: '351/491',
   borderRadius: 10,
 }
 const labelStyle: CSSProperties = {
@@ -56,7 +57,7 @@ const Category: FC<{ category: CategoryCourse }> = ({ category }) => {
   const [err, setErr] = useState(false)
   const { reception: { menu }} = useStore()
   const watchCategory = useCallback(() => menu.categoryPopup.watch(category), [])
-  return <Col style={colStyle} xs={4} sm={3} md={2}>
+  return <Col style={colStyle} xs={4} sm={3} md={2} xl={1}>
     {err &&
       <span style={labelStyle}>
         {category.Name}
@@ -78,12 +79,7 @@ const Category: FC<{ category: CategoryCourse }> = ({ category }) => {
   </Col>
 }
 const CategoryPlaceholder: FC = () => <Col style={colStyle} xs={4} sm={3} md={2}>
-  <Image
-    fallback={<Skeleton style={imgStyle} animated />}
-    placeholder={<Skeleton style={imgStyle} animated />}
-    src=''
-    style={imgStyle}
-  />
+  <Skeleton style={imgStyle} animated />
 </Col>
 
 
