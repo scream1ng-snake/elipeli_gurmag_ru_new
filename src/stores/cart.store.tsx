@@ -380,20 +380,40 @@ export class CartStore {
     const { receptionType, address, location, currentOrgID } = this.root.reception
     switch (receptionType) {
       case 'delivery':
-        if (!location?.[0]) {
-          Toast.show('Местоположение не указано')
+        if (!location?.lat) {
+          if(address.road && address.house_number) {
+            await this.root.reception.setCordinatesByAddress(address)
+          } else {
+            Toast.show('Укажите местоположение заного')
+            this.root.reception.selectLocationPopup.open()
+          }
           return
         }
-        if (!location?.[1]) {
-          Toast.show('Местоположение не указано')
+        if (!location?.lon) {
+          if(address.road && address.house_number) {
+            await this.root.reception.setCordinatesByAddress(address)
+          } else {
+            Toast.show('Местоположение не указано, укажите его снова')
+            this.root.reception.selectLocationPopup.open()
+          }
           return
         }
         if (!address.road) {
-          Toast.show('Адрес не указан')
+          if(location.lat && location.lon) {
+            await this.root.reception.setAddrByCordinates(location)
+          } else {
+            Toast.show('Адрес не указан, укажите его снова')
+            this.root.reception.selectLocationPopup.open()
+          }
           return
         }
         if (!address.house_number) {
-          Toast.show('Адрес не указан')
+          if(location.lat && location.lon) {
+            await this.root.reception.setAddrByCordinates(location)
+          } else {
+            Toast.show('Адрес не указан, укажите его еще раз')
+            this.root.reception.selectLocationPopup.open()
+          }
           return
         }
         if (!this.slots.selectedSlot) {
@@ -404,11 +424,13 @@ export class CartStore {
       case 'pickup':
         if(!currentOrgID) {
           Toast.show('Точка самовывоза не выбрана')
+          this.root.reception.selectLocationPopup.open()
           return
         }
         break
       case 'initial':
         Toast.show('Способ получения не выбран')
+        this.root.reception.selectLocationPopup.open()
         return
     }
     /** если заказ нужен на сегодня */
@@ -447,8 +469,8 @@ export class CartStore {
           doorCode: reception.address.doorCode,
           addrComment: reception.address.addrComment,
           incorrectAddr: reception.address.incorrectAddr,
-          lat: reception.location?.[1],
-          lon: reception.location?.[0]
+          lat: reception.location?.lat,
+          lon: reception.location?.lon
         })
         this.detailPopup.close()
         this.congratilations.open()

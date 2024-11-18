@@ -53,7 +53,7 @@ class EmployeesStore {
   watchCockPopup = new Popup<Cook, CookReview[]>({
     onOpen: async (cook, save) => {
       const reviews = await this.loadCookReviews.run(cook)
-      if(reviews[0]) save(reviews[0])
+      if(reviews?.[0]) save(reviews[0])
     },
   })
 }

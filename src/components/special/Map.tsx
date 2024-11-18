@@ -16,15 +16,17 @@ import IconStyle from 'ol/style/Icon'
 import { useTheme } from '../../features/hooks'
 import { Optional } from '../../features/helpers'
 import { observer } from 'mobx-react-lite'
+import { Location } from '../../stores/reception.store'
 
+/** [долгота, широта] */
 const center = [55.947417612394574, 54.72572230097609]
 var previousMarker: any
 var map: Map
 
 
 interface props {
-  onSelect: (cordinates: [number, number]) => void
-  value: Optional<[number, number]>
+  onSelect: (cordinates: Location) => void
+  value: Optional<Location>
 }
 const ReactMap: FC<props> = p => {
   const { theme } = useTheme()
@@ -54,21 +56,9 @@ const ReactMap: FC<props> = p => {
       });
     }
     map.on('singleclick', e => {
-      // const newLayer = new VectorLayer({
-      //   className: e.coordinate.join(', '),
-      //   source: new VectorSource(),
-      //   style: { 'icon-src': Marker, 'icon-height': 40, 'icon-anchor': [0.5, 1] },
-      // })
-      // map.getView().setCenter(e.coordinate)
-      // if (previousMarker) map.removeLayer(previousMarker)
-
-      // map.addLayer(newLayer)
-
-      // let marker = new Feature(new Point(e.coordinate));
-      // newLayer.getSource()?.addFeature(marker)
-
-      // previousMarker = newLayer
-      p.onSelect(e.coordinate as [number, number])
+      const lat = e.coordinate[1]
+      const lon = e.coordinate[0]
+      p.onSelect({ lat, lon })
     })
     return () => {
       if (previousMarker) map.removeLayer(previousMarker)
@@ -77,16 +67,16 @@ const ReactMap: FC<props> = p => {
   useEffect(() => {
     if (p.value) {
       const newLayer = new VectorLayer({
-        className: p.value.join(', '),
+        className: [p.value.lon, p.value.lat].join(', '),
         source: new VectorSource(),
         style: { 'icon-src': Marker, 'icon-height': 40, 'icon-anchor': [0.5, 1] },
       })
-      map.getView().setCenter(p.value)
+      map.getView().setCenter([p.value.lon, p.value.lat])
       if (previousMarker) map.removeLayer(previousMarker)
 
       map.addLayer(newLayer)
 
-      let marker = new Feature(new Point(p.value));
+      let marker = new Feature(new Point([p.value.lon, p.value.lat]));
       newLayer.getSource()?.addFeature(marker)
 
       previousMarker = newLayer
@@ -94,8 +84,6 @@ const ReactMap: FC<props> = p => {
   }, [p.value])
   return <div id="map" style={fullscreen} />
 }
-
-
 type radioItem = { lat: number, lon: number, key: number }
 interface radioProps {
   items: radioItem[]

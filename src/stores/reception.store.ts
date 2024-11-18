@@ -68,8 +68,11 @@ export class ReceptionStore {
     minWidth: '134px',
   }]
 
-  location: Optional<[number, number]> = null
-  setLocation = (l: [number,number]) => {
+  location: Optional<Location> = localStorage.getItem('lctn')
+    ? JSON.parse(localStorage.getItem('lctn') as string) as Location
+    : null
+  setLocation = (l: Location) => {
+    localStorage.setItem('lctn', JSON.stringify(l))
     this.location = l
   }
 
@@ -99,14 +102,14 @@ export class ReceptionStore {
    * by [lat, lon]
    * @param cord 
    */
-  setAddrByCordinates = async (cord: [number, number]) => {
-    const { nearestDeliveryPoint, distance } = this.getNearestDeliveryPoint(cord[1], cord[0])
+  setAddrByCordinates = async (cord: Location) => {
+    const { nearestDeliveryPoint, distance } = this.getNearestDeliveryPoint(cord.lat, cord.lon)
     
     if(nearestDeliveryPoint && distance) {
       if(distance < 10) {
-        const [lon,lat] = cord
-        const address: NominatimReverseResponse['address'] = await this.reverseGeocoderApi.run(lat, lon)
-        if(typeof address === 'object' && address.hasOwnProperty('road') && address.hasOwnProperty('house_number')) {
+        const { lon,lat } = cord
+        const address = await this.reverseGeocoderApi.run(lat, lon)
+        if(address && typeof address === 'object' && address.hasOwnProperty('road') && address.hasOwnProperty('house_number')) {
           const { road, house_number } = address
           this.setLocation(cord)
           this.setAddress({ road, house_number })
@@ -134,11 +137,17 @@ export class ReceptionStore {
   setCordinatesByAddress = async ({ road, house_number }: Address) => {
     const result = await this.geocoderApi.run('Уфа, ' + road + ' ' + house_number)
     if(result) {
-      const [lon, lat]: [number, number] = result
+      const { lat, lon } = result
       const { nearestDeliveryPoint, distance } = this.getNearestDeliveryPoint(lat, lon)
+      console.log('Уфа, ' + road + ' ' + house_number)
+      console.log(lat)
+      console.log(lon)
+      console.log(result)
+      console.log(nearestDeliveryPoint?.Name)
+      console.log(distance)
       if(nearestDeliveryPoint && distance) {
         if(distance < 10) {
-          this.setLocation([lat, lon])
+          this.setLocation(result)
           this.setAddress({ road, house_number })
           this.setNearestOrg(nearestDeliveryPoint.Id)
           this.setNearestOrgDistance(distance)
@@ -371,7 +380,7 @@ export class ReceptionStore {
         let { lat, lon } = result?.[0]
         logger.log(`geocoderApi: Нашли кординаты lat = ${lat} lon = ${lon} для ${address}`, 'Reception-Store')
         setState('COMPLETED')
-        return [Number(lat), Number(lon)]
+        return { lat: Number(lat), lon: Number(lon)}
       } else {
         throw new Error('геокодер не вернул кординаты')
       }
@@ -407,10 +416,10 @@ export class ReceptionStore {
   requestGeolocation = () => {
     if (navigator && "geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(({ coords }) => {
-        this.setAddrByCordinates([
-          coords.longitude,
-          coords.latitude, 
-        ])
+        this.setAddrByCordinates({
+          lon: coords.longitude,
+          lat: coords.latitude, 
+        })
       })
       logger.log('местоположение разрешено', 'reception')
     } else {
@@ -559,3 +568,4 @@ type Address = {
   addrComment?: string | undefined,
   incorrectAddr?: boolean | undefined,
 }
+export type Location = { lat: number, lon: number }

@@ -4,14 +4,14 @@ import { ReactNode } from "react";
 export type Optional<T> = T | null;
 export type Undef<T> = T | undefined;
 
-type F<B extends unknown[]> = (state: LoadStatesType, setState: (newState: LoadStatesType) => any, ...args: B) => Promise<any>
-export class Request<A extends unknown[]> {
+type F<B extends unknown[], O> = (state: LoadStatesType, setState: (newState: LoadStatesType) => void, ...args: B) => Promise<O>
+export class Request<A extends unknown[], B> {
   run
   state: LoadStatesType = 'INITIAL'
   setState = (s: LoadStatesType) => {
     this.state = s
   }
-  constructor(run:F<A>) {
+  constructor(run:F<A, B>) {
     this.run = (...args: A) => run(this.state, this.setState, ...args)
     makeAutoObservable(this)
   }

@@ -82,6 +82,10 @@ const SelectLocationPopup: FC<P> = observer(p => {
         </div>
 
       case 'pickup':
+        const items = addrsBindings.map(val => {
+          const [lat, lon] = val.pos.split(' ').map(Number)
+          return { lat, lon, key: val.Id }
+        })
         return <div className={styles.container}>
           <div className={styles.map_area}>
             {isMapSearching
@@ -96,10 +100,8 @@ const SelectLocationPopup: FC<P> = observer(p => {
                   ? setClickedOrgID(s.key)
                   : setClickedOrgID(null)
               }}
-              items={addrsBindings.map(val => {
-                const [lat, lon] = val.pos.split(' ').map(Number)
-                return { lat, lon, key: val.Id }
-              })}
+              items={items}
+              defaultSelected={items.find(val => val.key === clickedOrgID)}
             />
           </div>
           <div className={styles.popup_area}>
