@@ -1,10 +1,12 @@
 #!/bin/bash
-echo "update started"
+echo "[update]:"
 git pull
-echo "actual changes loaded from remote"
+echo "[update] - done, actual changes loaded from remote"
+echo "[install deps]:"
 npm i
-echo "deps installed"
+echo "[install deps] - done"
+echo "[building]:"
 npm run build
-echo "last commit builded"
-serve -s build -l 6564
-echo "static serve started" 
+echo "[building] - done, last commit builded"
+echo "[NGINX]: starting"
+/usr/sbin/nginx -g 'daemon off;'
