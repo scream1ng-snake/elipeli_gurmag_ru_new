@@ -1,4 +1,4 @@
-import { Button, Image, Popup, Space, Toast } from "antd-mobile"
+import { Button, Image, Space, Toast } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { CSSProperties, FC } from "react"
 import { useGoUTM, useStore } from "../../features/hooks"
@@ -10,9 +10,9 @@ import Shtorka from "../common/Shtorka/Shtorka"
 import Col from "react-bootstrap/Col"
 import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
+import AdaptivePopup from "../common/Popup/Popup"
 
 const popup = {
-  width: '100vw',
   padding: '0.75rem 0',
   borderTopLeftRadius: 15,
   borderTopRightRadius: 15,
@@ -39,12 +39,12 @@ const AskAuthorize: FC = observer(() => {
   const { bannerAuthForGift: { show, close } } = auth
 
   return (
-    <Popup
+    <AdaptivePopup
       visible={show}
-      closeOnMaskClick
       onClose={close}
       bodyStyle={popup}
-      closeOnSwipe
+      noBottomNav
+      noCloseBtn
     >
       <Shtorka />
 
@@ -110,7 +110,7 @@ const AskAuthorize: FC = observer(() => {
           </Col>
         </Row>
       </Container>
-    </Popup >
+    </AdaptivePopup>
   )
 })
 

@@ -9,6 +9,8 @@ import BackIcon from '../icons/Back'
 import styles from '../pages/main/parts/Menu/Categories/Categories.module.css'
 import { CourseItemComponent } from '../pages/main/parts/Menu/Categories/Categories'
 import { BottomNavigation } from '../common/BottomNav/BottomNav'
+import AskAuthorize from './AskAuthorize'
+import AskLocation from './AskLocation'
 
 const CategoryPopup: FC = observer(function () {
   const { reception: { menu } } = useStore()
@@ -27,8 +29,11 @@ const CategoryPopup: FC = observer(function () {
     onClose={categoryPopup.close}
     closeOnMaskClick
     closeOnSwipe
+    disableBodyScroll
     bodyStyle={style.cat_popup}
   >
+    <AskAuthorize />
+    <AskLocation />
     {
       isLoading
         ? <Preloader />
