@@ -62,7 +62,7 @@ export const BottomNavigation: FC<{ style?: CSSProperties }> = observer(p => {
   }
 
   return (
-    <TabBar style={styles} activeKey={pathname} onChange={value => setRouteActive(value)}>
+    <TabBar className="d-xs-block d-sm-none" style={styles} activeKey={pathname} onChange={value => setRouteActive(value)}>
       {tabs.map(item => (
         <TabBar.Item key={item.key} icon={item.icon} title={item.title} badge={item.badge} />
       ))}
