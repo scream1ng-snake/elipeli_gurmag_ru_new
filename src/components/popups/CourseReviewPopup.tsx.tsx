@@ -2,8 +2,9 @@ import { Avatar, List, Popup, Rate, Skeleton } from 'antd-mobile'
 import { toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import moment from 'moment'
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import { useStore } from '../../features/hooks'
+import AdaptivePopup from '../common/Popup/Popup'
 
 /** отзывы на блюдо */
 const CourseReviewPopup: FC = observer(function () {
@@ -11,15 +12,15 @@ const CourseReviewPopup: FC = observer(function () {
   const { courseReviewsPopup } = menu
 
   const isLoading = menu.loadCourseReviews.state === 'LOADING'
-  const currentCouse = toJS(courseReviewsPopup.content)
-  const reviews = toJS(courseReviewsPopup.saved)
+  const currentCouse = useMemo(() => toJS(courseReviewsPopup.content), [courseReviewsPopup.content])
+  const reviews = useMemo(() => toJS(courseReviewsPopup.saved), [courseReviewsPopup.saved])
 
-  return <Popup
+  return <AdaptivePopup
     visible={courseReviewsPopup.show}
     onClose={courseReviewsPopup.close}
-    closeOnMaskClick
-    closeOnSwipe
     bodyStyle={styles.review_popup}
+    noBottomNav
+    noCloseBtn
   >
     {
       isLoading
@@ -78,7 +79,7 @@ const CourseReviewPopup: FC = observer(function () {
             </List>
           </div>
     }
-  </Popup>
+  </AdaptivePopup>
 })
 
 const styles = {

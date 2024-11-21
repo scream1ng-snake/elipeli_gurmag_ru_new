@@ -29,7 +29,6 @@ const Menu: FC = observer(() => {
         )
       }
     </Row>
-    {/* <Categories /> */}
   </div>
 })
 
@@ -57,7 +56,7 @@ const Category: FC<{ category: CategoryCourse }> = ({ category }) => {
   const [err, setErr] = useState(false)
   const { reception: { menu }} = useStore()
   const watchCategory = useCallback(() => menu.categoryPopup.watch(category), [])
-  return <Col style={colStyle} xs={4} sm={3} md={2} xl={1}>
+  return <Col style={colStyle} xs={4} sm={3} md={2} xl={2}>
     {err &&
       <span style={labelStyle}>
         {category.Name}

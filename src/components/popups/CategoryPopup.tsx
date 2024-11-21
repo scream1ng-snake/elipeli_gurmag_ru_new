@@ -11,8 +11,11 @@ import { CourseItemComponent } from '../pages/main/parts/Menu/Categories/Categor
 import { BottomNavigation } from '../common/BottomNav/BottomNav'
 import AskAuthorize from './AskAuthorize'
 import AskLocation from './AskLocation'
+import { ItemModal } from './Course'
+import { useNavigate } from 'react-router-dom'
 
 const CategoryPopup: FC = observer(function () {
+  const go = useNavigate()
   const { reception: { menu } } = useStore()
   const { categoryPopup } = menu
 
@@ -31,7 +34,9 @@ const CategoryPopup: FC = observer(function () {
     closeOnSwipe
     disableBodyScroll
     bodyStyle={style.cat_popup}
+
   >
+    <ItemModal close={() => { go('/') }} />
     <AskAuthorize />
     <AskLocation />
     {

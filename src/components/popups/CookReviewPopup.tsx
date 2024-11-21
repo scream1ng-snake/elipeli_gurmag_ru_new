@@ -1,9 +1,10 @@
-import { Avatar, List, Popup, Rate, Skeleton } from 'antd-mobile'
+import { Avatar, List, Rate, Skeleton } from 'antd-mobile'
 import { toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import moment from 'moment'
 import { FC } from 'react'
 import { useStore } from '../../features/hooks'
+import AdaptivePopup from '../common/Popup/Popup'
 
 const CookReviewPopup: FC = observer(function () {
   const { reception: { employees } } = useStore()
@@ -12,11 +13,9 @@ const CookReviewPopup: FC = observer(function () {
   const currentCook = toJS(watchCockPopup.content)
   const reviews = toJS(watchCockPopup.saved)
 
-  return <Popup
+  return <AdaptivePopup
     visible={watchCockPopup.show}
     onClose={watchCockPopup.close}
-    closeOnMaskClick
-    closeOnSwipe
     bodyStyle={styles.review_popup}
   >
     {
@@ -76,7 +75,7 @@ const CookReviewPopup: FC = observer(function () {
             </List>
           </div>
     }
-  </Popup>
+  </AdaptivePopup>
 })
 
 const styles = {
@@ -90,9 +89,8 @@ const styles = {
     color: 'var(--тихий-текст)' 
   },
   review_popup: {
-    borderTopLeftRadius: '13px',
-    borderTopRightRadius: '13px',
-    width: '100vw',
+    borderTopLeftRadius:15,
+    borderTopRightRadius:15,
     padding: '1rem 0.5rem 0.5rem 0.5rem'
   },
   review_content: { 

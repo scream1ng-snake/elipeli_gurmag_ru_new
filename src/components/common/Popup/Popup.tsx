@@ -5,7 +5,7 @@ import Shtorka from "../Shtorka/Shtorka";
 
 interface Props {
   visible: boolean
-  bodyStyle: CSSProperties
+  bodyStyle?: CSSProperties
   onClose?: () => void
   children: ReactNode
   noBottomNav?: boolean,

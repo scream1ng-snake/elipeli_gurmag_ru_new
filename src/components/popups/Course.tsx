@@ -15,6 +15,7 @@ import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import { Skeleton } from "antd-mobile/es/components/skeleton/skeleton"
+import CourseReviewPopup from "./CourseReviewPopup.tsx"
 
 export const ItemModal: FC<{ close?: () => void }> = observer(p => {
   const { reception: { menu, nearestOrgForDelivery, selectedOrgID }, cart, auth } = useStore();
@@ -59,6 +60,7 @@ export const ItemModal: FC<{ close?: () => void }> = observer(p => {
         style={{ height: '100%' }}
         bodyClassName={'item_modal'}
       >
+        <CourseReviewPopup />
         <div className='item_modal_wrapper container p-0'>
           <div style={{ position: 'relative' }}>
             <Button
