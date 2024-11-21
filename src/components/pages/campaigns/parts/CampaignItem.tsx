@@ -11,29 +11,66 @@ const Campaign: FC<pops> = observer(({ actia }) => {
   const styles: Record<string, CSSProperties> = {
     border: {
       border: '2px solid var(--adm-color-border)',
-      borderRadius: 12,
+      borderRadius: 20,
       overflow: 'hidden',
-      boxSizing: 'border-box',
-      marginTop: 20
+      boxSizing: 'content-box',
+      marginTop: 20,
+      height: 'calc(100% - 24px)',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: "space-between",
     },
     img: {
-      height: "115px",
-      width: 'auto'
+      aspectRatio: '1147/409',
+      width: '100%',
+      height: 'auto',
     }
   }
   return (
     <div style={styles.border}>
-      <Image
-        fallback={<Skeleton style={styles.img} animated />}
-        placeholder={<Skeleton style={styles.img} animated />}
-        src={config.staticApi
-          + "/api/v2/image/FileImage?fileId="
-          + actia.compresimage
-        }
-        onContainerClick={() => go('/campaigns/' + actia.VCode)}
-        style={styles.img}
-        fit='cover'
-      />
+      <div>
+        <Image
+          fallback={<Skeleton style={styles.img} animated />}
+          placeholder={<Skeleton style={styles.img} animated />}
+          src={config.staticApi
+            + "/api/v2/image/FileImage?fileId="
+            + actia.compresimage
+          }
+          onContainerClick={() => go('/campaigns/' + actia.VCode)}
+          style={styles.img}
+          fit='cover'
+        />
+        <div
+          style={{
+            padding: '10px 19px 19px 19px',
+            fontFamily: 'Nunito',
+            fontSize: 19,
+            fontWeight: 600,
+            lineHeight: '25.92px',
+            letterSpacing: '-0.05em',
+            textAlign: 'left'
+          }}
+        >
+          <p>{Prepare(actia.Name)}</p>
+          <p
+            style={{
+              marginTop: 10,
+              fontFamily: 'Roboto',
+              fontSize: '13px',
+              fontWeight: '500',
+              lineHeight: '18px',
+              letterSpacing: '0.03em',
+              textAlign: 'left',
+              color: 'rgba(139, 141, 140, 1)',
+              textIndent: '1rem'
+            }}
+          >
+
+            {Prepare(actia.Description).split('\n').map((txt, index) => <p key={index}>{txt}</p>)}
+          </p>
+
+        </div>
+      </div>
       <div
         style={{
           padding: '10px 19px 19px 19px',
@@ -45,23 +82,6 @@ const Campaign: FC<pops> = observer(({ actia }) => {
           textAlign: 'left'
         }}
       >
-        <p>{Prepare(actia.Name)}</p>
-        <p
-          style={{
-            marginTop: 10,
-            fontFamily: 'Roboto',
-            fontSize: '13px',
-            fontWeight: '500',
-            lineHeight: '18px',
-            letterSpacing: '0.03em',
-            textAlign: 'left',
-            color: 'rgba(139, 141, 140, 1)',
-            textIndent: '1rem'
-          }}
-        >
-
-          {Prepare(actia.Description).split('\n').map((txt, index) => <p key={index}>{txt}</p>)}
-        </p>
         <Button
           style={{
             width: "100%",
@@ -73,8 +93,8 @@ const Campaign: FC<pops> = observer(({ actia }) => {
             color: 'rgba(215, 133, 52, 1)',
             background: 'rgba(255, 238, 206, 1)',
             border: 'none',
-            padding: '7px  15px'
-          }}
+            padding: '7px  15px',
+          } as CSSProperties}
           shape='rounded'
           onClick={() => go('/campaigns/' + actia.VCode)}
         >

@@ -9,11 +9,14 @@ import { useGoUTM, useStore } from "../../../features/hooks"
 import Campaign from "./parts/CampaignItem"
 import { logger } from "../../../features/logger"
 import CampaignPopup from "../../popups/CampaignPopup"
+import Container from "react-bootstrap/Container"
+import Col from "react-bootstrap/Col"
+import Row from "react-bootstrap/Row"
 
 const CampaignsPage: FC = observer(() => {
   const go = useGoUTM()
   const { pathname } = useLocation()
-  const { user: { info, campaignPopup, loadUserInfo }, auth } = useStore()
+  const { user: { info, campaignPopup, loadUserInfo } } = useStore()
 
   const params = useParams<{ VCode: string }>();
 
@@ -31,28 +34,37 @@ const CampaignsPage: FC = observer(() => {
     }
   }, [info.allCampaign, pathname])
   return <Wrapper styles={{ background: 'var(--tg-theme-bg-color)' }}>
-    <CampaignPopup />
-    <NavBar
-      onBack={() => go('/')}
-      backIcon={
-        <Image
-          src={bigLogo}
-          height={32}
-          width={122}
-          fit='contain'
-        />
-      }
-      style={{ height: 60, padding: '0 20px', textAlign: 'left' }}
-    >
-    </NavBar>
-    <div style={{ padding: '0 20px' }}>
-      <h2>Акции</h2>
-      {info.allCampaign
-        .filter(ac => !ac.promocode)
-        .map((actia, index) => <Campaign key={index} actia={actia} />)
-      }
-    </div>
-    <BottomNav />
+    <Container fluid='xl' className="p-0">
+      <CampaignPopup />
+      <NavBar
+        onBack={() => go('/')}
+        backIcon={
+          <Image
+            src={bigLogo}
+            height={32}
+            width={122}
+            fit='contain'
+          />
+        }
+        style={{ height: 60, padding: '0 20px', textAlign: 'left' }}
+      >
+      </NavBar>
+      <div style={{ padding: '0 20px' }}>
+        <h2>Акции</h2>
+        <Row>
+          {info.allCampaign
+            .filter(ac => !ac.promocode)
+            .map((actia, index) =>
+              <Col key={index} xs={12} sm={6} md={4} xl={3} xxl={2}>
+                <Campaign actia={actia} />
+              </Col>
+            )
+          }
+        </Row>
+
+      </div>
+      <BottomNav />
+    </Container>
   </Wrapper>
 })
 
