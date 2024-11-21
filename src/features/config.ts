@@ -7,7 +7,7 @@ class Config {
       : this.api
   }
   api = 'https://elipelisr.lexcloud.ru/elipelibot'
-  staticApi = this.api
+  staticApi = 'https://elipelisr.craimez.ru/elipelibot'
   testApi = 'https://elipelisr.lexcloud.ru/elipelibottest'
 }
 

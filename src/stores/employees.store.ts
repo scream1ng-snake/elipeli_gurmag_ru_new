@@ -67,6 +67,7 @@ export type Cook = {
   Rating: number,
   FirstName: string,
   NameWork: string,
+  Image: string
 }
 
 

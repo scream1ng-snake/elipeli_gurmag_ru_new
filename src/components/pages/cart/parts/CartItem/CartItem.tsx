@@ -18,7 +18,7 @@ const CartItem: FC<P> = observer(props => {
   return (
     <List.Item
       className={styles.cartItem}
-      prefix={<CartImage VCode={courseInCart.couse.VCode} />}
+      prefix={<CartImage couseInCart={courseInCart} />}
       description={
         <div className={styles.PriceWeight}>
           <PriceCart courseInCart={courseInCart} />
@@ -57,14 +57,13 @@ const CartItem: FC<P> = observer(props => {
 }
 )
 
-const CartImage: FC<{ VCode: number }> = p => {
+const CartImage: FC<{ couseInCart: CouseInCart }> = p => {
   const Loader: FC = () => <Skeleton className={styles.cartImg} style={{ margin:0 }} animated/>
   return (
     <Image
       src={config.staticApi
-        + '/api/v2/image/Material?vcode='
-        + p.VCode
-        + '&compression=true'
+        + '/api/v2/image/FileImage?fileId='
+        + p.couseInCart.couse.CompressImages?.[0]
       }
       className={styles.cartImg}
       placeholder={<Loader />}

@@ -116,8 +116,8 @@ export const ItemModal: FC<{ close?: () => void }> = observer(p => {
                         className="item_modal_image_item"
                         // style={{ width: '100%', height: '263px', maxHeight: '33vh' }}
                         src={config.staticApi
-                          + "/api/v2/image/Material?vcode="
-                          + currentCouse.VCode
+                          + "/api/v2/image/FileImage?fileId="
+                          + currentCouse.Images?.[0]
                         }
                       />
                     </Swiper.Item>

@@ -133,7 +133,7 @@ export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ cours
     <div className={styles.course_item + ' course_item_card'}>
       <Image
         lazy
-        src={`${config.staticApi}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}
+        src={`${config.staticApi}/api/v2/image/FileImage?fileId=${course.CompressImages?.[0]}`}
         onClick={watchCourse}
         placeholder={<Skeleton style={{ width: '100%', height: '134px' }} animated />}
         fit='cover'

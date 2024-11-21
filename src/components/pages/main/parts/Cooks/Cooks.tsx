@@ -80,7 +80,7 @@ const CookItem: FC<{ cook: Cook }> = observer(({ cook }) => {
         </div>
 
         <Image
-          src={config.staticApi + '/api/v2/image/Cook?vcode=' + cook.UserId}
+          src={config.staticApi + '/api/v2/image/FileImage?fileId=' + cook.Image} 
           style={avatarStyle as CSSProperties}
           fit='cover'
           placeholder={<ImgPlaceholder />}
