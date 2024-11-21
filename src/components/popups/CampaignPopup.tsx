@@ -1,32 +1,34 @@
-import { Button, Image, Popup } from "antd-mobile"
+import { Button, Image } from "antd-mobile"
 import { observer } from "mobx-react-lite"
-import { FC } from "react"
+import { FC, useCallback, useMemo } from "react"
 import { useGoUTM, useStore } from "../../features/hooks"
 import { toJS } from "mobx"
 import config from "../../features/config"
 import { AllCampaignUser } from "../../stores/cart.store"
 import { ItemModal } from "./Course"
-import { BottomNavigation } from "../common/BottomNav/BottomNav"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
+import AdaptivePopup from "../common/Popup/Popup"
 
 const CampaignPopup: FC = observer(() => {
   const { user: { campaignPopup } } = useStore()
   const go = useGoUTM()
-  function close() {
+  const close = useCallback(function () {
     campaignPopup.close()
     go('/campaigns')
-  }
-  const campaign = toJS(campaignPopup.content) as AllCampaignUser
-  return <Popup
-    closeOnSwipe
-    closeOnMaskClick
-    showCloseButton
+  }, [])
+  const campaign = useMemo(
+    () => toJS(campaignPopup.content) as AllCampaignUser,
+    [campaignPopup.content]
+  )
+
+
+  return <AdaptivePopup
     visible={campaignPopup.show}
     bodyStyle={{
       borderTopLeftRadius: 15,
       borderTopRightRadius: 15,
-      padding: '40px 20px 0 20px',
+      padding: '40px 20px 20px 20px',
       width: 'calc(100%)',
       maxHeight: 'calc(100%)',
       overflowY: 'scroll',
@@ -90,13 +92,12 @@ const CampaignPopup: FC = observer(() => {
           onClick={close}
         >
           Закрыть
-        </Button></Col>
+        </Button>
+      </Col>
     </Row>
-
-
-    <BottomNavigation style={{ position: 'sticky', bottom: 0, zIndex: 100 }} />
-  </Popup>
+  </AdaptivePopup>
 })
+
 
 const Prepare = (str?: string) => str?.replace(/ *\{[^}]*\} */g, "") || ''
 export default CampaignPopup
