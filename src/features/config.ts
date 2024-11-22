@@ -6,7 +6,7 @@ class Config {
       ? this.testApi
       : this.api
   }
-  api = 'https://elipelisr.lexcloud.ru/elipelibot'
+  api = 'https://elipelisr.craimez.ru/elipelibot'
   staticApi = 'https://elipelisr.craimez.ru/elipelibot'
   testApi = 'https://elipelisr.lexcloud.ru/elipelibottest'
 }
