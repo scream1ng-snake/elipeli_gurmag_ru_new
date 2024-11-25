@@ -20,12 +20,18 @@ const CategoryPopup: FC = observer(function () {
   const { categoryPopup } = menu
 
   const isLoading = menu.loadMenu.state === 'LOADING'
-  const currentCategory = useMemo(() => toJS(categoryPopup.content), [categoryPopup.content])
+  const currentCategory = useMemo(
+    () => {
+      const targetCategory = menu.categories.find(c => c.VCode === toJS(categoryPopup.content)?.VCode) 
+      return targetCategory
+    }, 
+    [categoryPopup.content, menu.categories.length]
+  )
 
   const watchCategory = useCallback((vcode: string) => {
     const targetCategory = menu.categories.find(c => String(c.VCode) === vcode)
     if (targetCategory) categoryPopup.watch(targetCategory)
-  }, [])
+  }, [menu.categories.length])
 
   return <Popup
     visible={categoryPopup.show}

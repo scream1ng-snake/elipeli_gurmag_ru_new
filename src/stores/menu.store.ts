@@ -35,7 +35,7 @@ class MenuStore {
   loadMenu = new Request(async (state, setState, orgID: number) => {
     setState('LOADING')
     try {
-      const data: Undef<V3_userInfoResponse> = await http.get('/getUserMenu_v3/' + orgID);
+      const data: Undef<V3_userInfoResponse> = await http.get('/getUserMenu_v4/' + orgID);
       if(data?.BaseMenu && data?.PopularMenu) {
         this.setCategories(data.BaseMenu)
         this.setPopular(data.PopularMenu)
@@ -43,6 +43,11 @@ class MenuStore {
         this.setStories(data.WebHistoty)
       }
       setState('COMPLETED');
+      const dataBg: Undef<V3_userInfoResponse> = await http.get('/getUserMenu_v3/' + orgID);
+      if(dataBg?.BaseMenu && dataBg?.PopularMenu) {
+        this.setCategories([])
+        this.setCategories(dataBg.BaseMenu)
+      }
     } catch (err) {
       logger.error(err, 'reception')
       setState('FAILED')
