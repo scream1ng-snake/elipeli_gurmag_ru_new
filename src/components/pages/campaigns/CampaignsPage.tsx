@@ -53,7 +53,7 @@ const CampaignsPage: FC = observer(() => {
         <h2>Акции</h2>
         <Row>
           {info.allCampaign
-            .filter(ac => !ac.promocode)
+            .filter(ac => ac.showintgregistry)
             .map((actia, index) =>
               <Col key={index} xs={12} sm={6} md={4} xl={3} xxl={2}>
                 <Campaign actia={actia} />

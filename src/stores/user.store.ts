@@ -171,6 +171,7 @@ type AllCampaignUser = {
   promocode: string,
   image: string,
   compresimage: string,
+  showintgregistry: boolean
 }
 export default UserStore
 
