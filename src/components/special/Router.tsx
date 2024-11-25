@@ -3,7 +3,8 @@ import {
   Routes,
   BrowserRouter,
   useSearchParams,
-  useLocation
+  useLocation,
+  HashRouter
 } from 'react-router-dom';
 import { FC, useEffect } from 'react';
 import { Checker } from './AuthCheck';
@@ -86,8 +87,8 @@ const routes: Array<{
     },
   ]
 
-export const RouterComponent: FC = () => <BrowserRouter>
-  <Routes>
+function getRoutes() {
+  return <Routes>
     {routes.map((route) =>
       <Route
         key={route.path}
@@ -105,14 +106,19 @@ export const RouterComponent: FC = () => <BrowserRouter>
       />
     )}
   </Routes>
-</BrowserRouter>
+}
+export const RouterComponent: FC = () => {
+  const { instance } = useStore()
+  return instance === 'VK'
+    ? <HashRouter>{getRoutes()}</HashRouter>
+    : <BrowserRouter>{getRoutes()}</BrowserRouter>
+}
 
 
 
 const Metrics: FC<any> = p => {
   const { pathname, search } = useLocation()
   useEffect(() => {
-    console.log('new script')
     const YaScript = document.createElement('script')
     YaScript.type = 'text/javascript'
     YaScript.innerHTML = `
@@ -124,7 +130,7 @@ const Metrics: FC<any> = p => {
     })
       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-    console.log(ym)
+    
     ym(98171988, "init", {
       clickmap: true,
       trackLinks: true,
@@ -132,7 +138,7 @@ const Metrics: FC<any> = p => {
       webvisor: true,
       ecommerce: "dataLayer"
     });
-    console.log(window.dataLayer)
+    
     `
     document.head.appendChild(YaScript)
 
