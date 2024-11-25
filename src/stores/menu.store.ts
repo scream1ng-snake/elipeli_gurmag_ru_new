@@ -134,6 +134,7 @@ type V3_userInfoResponse = {
 }
 
 export type WebHistoty = {
+  VCode: string,
   NameHistory: string,
   ImageFront: string,
   listSlides: {

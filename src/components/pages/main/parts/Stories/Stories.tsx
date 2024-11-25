@@ -1,5 +1,5 @@
-import { Button, Image, Popup, Skeleton, Space } from 'antd-mobile'
-import { FC, useCallback, useState } from 'react'
+import { Button, Image, Popup, Skeleton, Space, Toast } from 'antd-mobile'
+import { FC, useCallback, useEffect, useState } from 'react'
 import styles from './Stories.module.css'
 import WatchStory from 'react-insta-stories';
 import { Optional } from '../../../../../features/helpers';
@@ -8,6 +8,8 @@ import { observer } from 'mobx-react-lite';
 import { useGoUTM, useStore } from '../../../../../features/hooks';
 import { WebHistoty } from '../../../../../stores/menu.store';
 import config from '../../../../../features/config';
+import { useLocation, useParams } from 'react-router-dom';
+import { logger } from '../../../../../features/logger';
 
 
 const W100pxH100px = { height: '100%', width: '100%' }
@@ -23,9 +25,27 @@ const Stories: FC = observer(() => {
   const go = useGoUTM()
   const { reception: { menu } } = useStore()
   const [selectedStory, setSelectedStory] = useState<Optional<WebHistoty>>(null)
-  const closeStory = useCallback(() => { setSelectedStory(null) }, [])
+  const closeStory = useCallback(() => { 
+    go("/")
+    setSelectedStory(null) 
+  }, [])
 
-  if(menu.loadMenu.state === 'COMPLETED' && !menu.stories.length) return null
+  const params = useParams<{ storyId: string }>()
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    if (params.storyId && menu.loadMenu.state === 'COMPLETED') {
+      const history = menu.stories.find(store => store.VCode == params.storyId)
+      if (history) {
+        setSelectedStory(history)
+      } else {
+        logger.log('story vcode ' + params.storyId + ' not found', 'campaign-page')
+        Toast.show('Такой истории уже нет')
+        go('/')
+      }
+    }
+  }, [menu.loadMenu.state, pathname])
+  if (menu.loadMenu.state === 'COMPLETED' && !menu.stories.length) return null
   return <>
     {selectedStory
       ? <Popup
@@ -91,7 +111,10 @@ const Stories: FC = observer(() => {
         ? menu.stories.map((story, index) =>
           <div key={index} className={styles.story_cover_item}>
             <Image
-              onClick={() => { setSelectedStory(story) }}
+              onClick={() => { 
+                setSelectedStory(story)
+                go('/stories/' + story.VCode) 
+              }}
               src={config.staticApi
                 + "/api/v2/image/FileImage?fileId="
                 + story.ImageFront

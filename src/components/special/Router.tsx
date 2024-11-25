@@ -85,6 +85,11 @@ const routes: Array<{
       private: false,
       element: <CampaignsPage />
     },
+    {
+      path: "/stories/:storyId",
+      private: false,
+      element: <MainPage />
+    }
   ]
 
 function getRoutes() {
