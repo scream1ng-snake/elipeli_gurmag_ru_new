@@ -11,7 +11,6 @@ import CustomButton from "../special/CustomButton"
 import IconStar from '../../assets/icon_star.svg'
 import ImageReviewsModal from '../../assets/image_reviews_modal.svg'
 import Metrics from "../../features/Metrics"
-import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import { Skeleton } from "antd-mobile/es/components/skeleton/skeleton"
@@ -166,9 +165,12 @@ export const ItemModal: FC<{ close?: () => void }> = observer(p => {
                   <h1 className="item_modal_title_text">
                     {currentCouse.Name}
                   </h1>
-                  <div className="item_modal_count_text">
-                    {`В наличии ${(!currentCouse.NoResidue && currentCouse.EndingOcResidue > 0) ? currentCouse.EndingOcResidue : 0} шт`}
-                  </div>
+                  {!currentCouse.NoResidue
+                    ? <div className="item_modal_count_text">
+                      {'В наличии ' + currentCouse.EndingOcResidue + ' шт'}
+                    </div>
+                    : null
+                  }
                   <Space
                     style={{ '--gap': '20px', width: '100%', marginTop: '4.78px' }}
                     align={'center'}
