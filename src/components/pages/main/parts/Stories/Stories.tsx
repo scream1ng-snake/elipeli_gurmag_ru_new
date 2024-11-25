@@ -1,5 +1,5 @@
 import { Button, Image, Popup, Skeleton, Space, Toast } from 'antd-mobile'
-import { FC, useCallback, useEffect, useState } from 'react'
+import { CSSProperties, FC, useCallback, useEffect, useState } from 'react'
 import styles from './Stories.module.css'
 import WatchStory from 'react-insta-stories';
 import { Optional } from '../../../../../features/helpers';
@@ -12,7 +12,13 @@ import { useLocation, useParams } from 'react-router-dom';
 import { logger } from '../../../../../features/logger';
 
 
-const W100pxH100px = { height: '100%', width: '100%' }
+const W100pxH100px: CSSProperties = { 
+  height: '100%', 
+  width: 'auto', 
+  aspectRatio: '733/1300', 
+  left: '50%',
+  translate:'-50%'
+}
 const storyStyles = {
   width: '100vw',
   height: '100vh',
@@ -58,7 +64,7 @@ const Stories: FC = observer(() => {
         </div>
         <WatchStory
           storyStyles={storyStyles}
-          onAllStoriesEnd={closeStory}
+          // onAllStoriesEnd={closeStory}
           stories={selectedStory.listSlides.map(slide => ({
             url: config.staticApi
               + "/api/v2/image/FileImage?fileId="
