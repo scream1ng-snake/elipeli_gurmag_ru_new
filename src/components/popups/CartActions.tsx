@@ -1,4 +1,4 @@
-import { ActionSheet, Button, Dialog, Image, Popup, Space, Toast } from "antd-mobile";
+import { ActionSheet, Button, Dialog, Image, Space, Toast } from "antd-mobile";
 import { observer } from "mobx-react-lite";
 import { CSSProperties, FC } from "react";
 import { useGoUTM, useStore } from "../../features/hooks";
@@ -10,27 +10,38 @@ import BackIcon from "../icons/Back";
 import { CloseOutline } from "antd-mobile-icons";
 import { Message2 } from "../../stores/auth.store";
 import { copyToClipboard } from "../../features/helpers";
-import Pizza from '../../assets/pizza_huizza.png'
 import Shtorka from "../common/Shtorka/Shtorka";
 
+import Col from "react-bootstrap/Col"
+import Container from "react-bootstrap/Container"
+import Row from "react-bootstrap/Row"
+import AdaptivePopup from "../common/Popup/Popup"
+import kruvasan from '../../assets/kruAssAn.png'
 
-const popup = {
-  width: 'calc(100vw - 2rem)',
-  padding: '0.75rem 1rem',
+
+const popup: CSSProperties = {
+  padding: '0.75rem 0',
   borderTopLeftRadius: 15,
   borderTopRightRadius: 15,
+  background: 'linear-gradient(0deg, rgba(242,227,188,1) 0%, rgba(254,253,251,1) 100%)',
+  color: 'black',
 }
 
-const boldText = { fontSize: 17, fontWeight: 700, lineHeight: '18.5px' }
-const normalText = { fontSize: 16, fontWeight: 400, lineHeight: '17.5px' }
+const boldText: CSSProperties = { fontSize: 17, fontWeight: 700, lineHeight: '18.5px' }
+const normalText: CSSProperties = { fontSize: 16, fontWeight: 400, lineHeight: '17.5px' }
 const badge = {
   background: 'rgba(1, 98, 65, 1)',
-  borderRadius: 10,
+  borderRadius: 15,
   position: 'absolute',
   padding: '0.5rem 1rem',
   color: 'white',
+  marginLeft: '2rem',
   fontSize: 14,
-  '--gap': '-10'
+  display:'flex',
+  lineHeight: '1',
+  flexDirection:'column',
+  alignItems:'center',
+  justifyContent:'center',
 } as CSSProperties
 export const NiceToMeetYooPopup: FC = observer(() => {
   const { auth: { niceToMeetYooPopup: { show, close, content } } } = useStore()
@@ -43,69 +54,76 @@ export const NiceToMeetYooPopup: FC = observer(() => {
   if (content) {
     text = JSON.parse(content.replaceAll("\\\"", "\""))
   }
-  return <Popup
+  return <AdaptivePopup
     visible={show}
-    closeOnMaskClick
     onClose={close}
     bodyStyle={popup}
+    noBottomNav
+    noCloseBtn
   >
     <Shtorka />
 
-    <Space style={{ width: '100%' }} justify='between' align='center'>
-      <BackIcon onClick={close} />
-      <CloseOutline onClick={close} fontSize={20} />
-    </Space>
-
-    <br />
-    <br />
-    <p style={boldText}>{text.title.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
-    <br />
-    <p style={normalText}>{text.body1.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
-    <br />
-    <p style={normalText}>{text.body2.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
-    <br />
-    <div style={{ position: 'relative' }}>
-      {!text.promo.length
-        ? null
-        : <Space
-          direction='vertical'
-          style={badge}
-          align='center'
-          justify='center'
-          onClick={() => {
-            copyToClipboard(text.promo)
-            Toast.show('Промокод скопирован')
-          }}
-        >
-          <span>Промокод</span>
-          <span style={{ fontSize: 30 }}>{text.promo}</span>
-        </Space>
-      }
-      <Image 
-        src={Pizza}
-        style={{ marginRight: '-1rem' }} 
-      />
-      <Button
-        fill='outline'
-        onClick={() => {
-          close()
-          copyToClipboard(text.promo)
-          Toast.show('Промокод скопирован')
-        }}
-        style={{
-          width: '100%',
-          background: 'rgba(1, 98, 65, 1)',
-          color: 'white',
-          fontSize: 16,
-          fontWeight: 600,
-          borderRadius: 10,
-          padding: '0.75rem', position: 'absolute', bottom: '1rem'
-        }}
-      >
-        Получить подарок!
-      </Button>
-    </div>
-  </Popup >
+    <Container>
+      <Space style={{ width: '100%' }} justify='between' align='center'>
+        <BackIcon onClick={close} />
+        <CloseOutline onClick={close} fontSize={20} />
+      </Space>
+      <Row>
+        <Col xs={{ span: 12 }} md={{ span: 6 }} className="text-md-left tCenter">
+          <br />
+          <p style={boldText}>{text.title.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
+          <br />
+          <p style={normalText}>{text.body1.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
+          <br />
+          <p style={normalText}>{text.body2.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
+          <br />
+        </Col>
+        <Col xs={{ span: 12 }} md={{ span: 6 }} className="p-0">
+          <div style={{ position: 'relative' }}>
+            {!text.promo.length
+              ? null
+              : <div
+                style={badge}
+                onClick={() => {
+                  copyToClipboard(text.promo)
+                  Toast.show('Промокод скопирован')
+                }}
+              >
+                <span>Промокод</span>
+                <span style={{ fontSize: 30 }}>{text.promo}</span>
+              </div>
+            }
+            <Image
+              style={{ marginBottom: -45 }}
+              src={kruvasan}
+            />
+          </div>
+        </Col>
+        <Col xs={{ order: 3 }} md={{ order: 3 }}>
+          <Button
+            fill='outline'
+            onClick={() => {
+              close()
+              copyToClipboard(text.promo)
+              Toast.show('Промокод скопирован')
+            }}
+            style={{
+              width: 'calc(100% - 2rem)',
+              background: 'rgba(1, 98, 65, 1)',
+              color: 'white',
+              fontSize: 16,
+              fontWeight: 600,
+              borderRadius: 10,
+              padding: '0.75rem',
+              margin: '0 1rem'
+            }}
+          >
+            Получить подарок!
+          </Button>
+        </Col>
+      </Row>
+    </Container>
+  </AdaptivePopup>
 })
 
 export const Congratilations: FC = observer(() => {

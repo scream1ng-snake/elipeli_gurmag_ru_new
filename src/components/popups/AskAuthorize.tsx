@@ -4,19 +4,19 @@ import { CSSProperties, FC } from "react"
 import { useGoUTM, useStore } from "../../features/hooks"
 import BackIcon from "../icons/Back"
 import { CloseOutline } from "antd-mobile-icons"
-import { copyToClipboard } from "../../features/helpers"
-import Ekler from '../../assets/Ekler.png'
+// import { copyToClipboard } from "../../features/helpers"
 import Shtorka from "../common/Shtorka/Shtorka"
 import Col from "react-bootstrap/Col"
 import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import AdaptivePopup from "../common/Popup/Popup"
+import kruvasan from '../../assets/kruAssAn.png'
 
-const popup = {
+const popup: CSSProperties = {
   padding: '0.75rem 0',
   borderTopLeftRadius: 15,
   borderTopRightRadius: 15,
-  background: 'rgba(247, 187, 15, 1)',
+  background: 'linear-gradient(0deg, rgba(242,227,188,1) 0%, rgba(254,253,251,1) 100%)',
   color: 'black',
 }
 
@@ -54,23 +54,20 @@ const AskAuthorize: FC = observer(() => {
           <CloseOutline onClick={close} fontSize={20} />
         </Space>
         <Row>
-          <Col xs={{ span: 12, order: 1 }} md={{ span: 6, order: 2 }}>
+          <Col xs={{ span: 12 }} md={{ span: 6 }}>
 
 
             <br />
             <br />
-            <p style={bigText}>Волшебный</p>
-            <p style={bigText}>Шоколадный эклер</p>
+            <p style={bigText}>Восхитительный</p>
+            <p style={bigText}>Миндальный круассан</p>
             <br />
             <p style={smallText}>В ПОДАРОК</p>
             <p style={smallText}>ПРИ РЕГИСТРАЦИИ!</p>
-            <br />
-            <br />
-            <br />
           </Col>
-          <Col xs={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }}>
+          <Col xs={{ span: 12 }} md={{ span: 6 }} className="p-0">
             <div>
-              <Space
+              {/* <Space
                 direction='vertical'
                 style={badge}
                 align='center'
@@ -82,8 +79,8 @@ const AskAuthorize: FC = observer(() => {
               >
                 <span>Промокод</span>
                 <span style={{ fontSize: 30 }}>1703</span>
-              </Space>
-              <Image src={Ekler} />
+              </Space> */}
+              <Image src={kruvasan} />
             </div>
             <br />
           </Col>
