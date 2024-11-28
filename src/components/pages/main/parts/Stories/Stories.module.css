@@ -1,3 +1,19 @@
+@media screen and (min-width: 0px) { 
+  .watch_story_popup {
+    height: 100%;
+    width: 100%;
+  }
+}
+@media screen and (min-width: 768px) { 
+  .watch_story_popup {
+    height: 100%; 
+    width: auto; 
+    aspect-ratio: 733/1300;
+    left: 50%;
+    translate:-50%;
+  }
+}
+
 .story_cover_item {
   margin: 0 1rem 0 0;
   border-radius: 13px;

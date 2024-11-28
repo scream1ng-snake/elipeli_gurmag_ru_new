@@ -11,18 +11,10 @@ import config from '../../../../../features/config';
 import { useLocation, useParams } from 'react-router-dom';
 import { logger } from '../../../../../features/logger';
 
-
-const W100pxH100px: CSSProperties = { 
-  height: '100%', 
-  width: 'auto', 
-  aspectRatio: '733/1300', 
-  left: '50%',
-  translate:'-50%'
-}
 const storyStyles = {
   width: '100vw',
   height: '100vh',
-  objectFit: 'cover',
+  objectFit: 'contain',
   margin: 0
 }
 
@@ -56,7 +48,7 @@ const Stories: FC = observer(() => {
     {selectedStory
       ? <Popup
         visible={!!selectedStory}
-        bodyStyle={W100pxH100px}
+        bodyClassName={styles.watch_story_popup}
         onClose={closeStory}
       >
         <div className={styles.closeBtn_relative}>
@@ -64,7 +56,7 @@ const Stories: FC = observer(() => {
         </div>
         <WatchStory
           storyStyles={storyStyles}
-          onAllStoriesEnd={closeStory}
+          // onAllStoriesEnd={closeStory}
           stories={selectedStory.listSlides.map(slide => ({
             url: config.staticApi
               + "/api/v2/image/FileImage?fileId="
