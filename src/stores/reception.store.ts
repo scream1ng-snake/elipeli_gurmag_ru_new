@@ -386,7 +386,7 @@ export class ReceptionStore {
       })
       if (result?.response?.GeoObjectCollection?.featureMember?.length) {
         const { GeoObject } = result.response.GeoObjectCollection.featureMember[0]
-        const [lat, lon] = GeoObject.Point.pos.split(' ')
+        const [lon, lat] = GeoObject.Point.pos.split(' ')
         logger.log(`geocoderApi: Нашли кординаты lat = ${lat} lon = ${lon} для ${address}`, 'Reception-Store')
         setState('COMPLETED')
         return { lat: Number(lat), lon: Number(lon)}

@@ -11,7 +11,7 @@ import { toJS } from 'mobx'
 /** [долгота, широта] */
 const center1 = [54.72572230097609, 55.947417612394574]
 const center2 = [54.77072405355034, 56.038447129765]
-const zoom1 = 13
+const zoom1 = 12
 const zoom2 = 11
 
 

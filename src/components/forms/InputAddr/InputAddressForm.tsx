@@ -37,6 +37,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
             reception.setAddressForAdditionalFields(form);
           }
         }
+        debounced.cancel()
       },
       900
     ),
@@ -57,8 +58,8 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
       addrComment: '',
       incorrectAddr: false,
     },
-    mode: 'all',
-    reValidateMode: 'onChange',
+    mode: 'onChange',
+    // reValidateMode: 'none',
     resolver: (value, ctx, options) => {
       const promise = value.multiapartment
         // @ts-ignore
