@@ -3,7 +3,7 @@ import { LocationOutline } from 'antd-mobile-icons'
 import { observer } from 'mobx-react-lite'
 import { FC, useState } from 'react'
 import { useStore } from '../../features/hooks'
-import { ReceptionType } from '../../stores/reception.store'
+import { apikey, ReceptionType } from '../../stores/reception.store'
 import Maps from '../special/Map'
 import InputAddressForm from '../forms/InputAddr/InputAddressForm'
 import styles from './SelectLocation.module.css'
@@ -14,7 +14,6 @@ import ToggleSelector from '../special/ToggleSelector'
 import { IconClose } from '../icons/IconClose'
 import Container from "react-bootstrap/Container"
 import { YMaps } from '@pbe/react-yandex-maps'
-const apikey = 'b76c1fb9-de2c-4f5a-8621-46681c107466'
 
 type P = {
   show: boolean,

@@ -11,6 +11,7 @@ import IconBtnDelivery from '../assets/icon_btn_delivery@2x.png'
 import IconBtnPickup from '../assets/icon_btn_pickup@2x.png'
 import _ from 'lodash'
 
+export const apikey = 'b76c1fb9-de2c-4f5a-8621-46681c107466'
 export class ReceptionStore {
   root: RootStore;
 
@@ -109,8 +110,12 @@ export class ReceptionStore {
       if(distance < 10) {
         const { lon,lat } = cord
         const address = await this.reverseGeocoderApi.run(lat, lon)
-        if(address && typeof address === 'object' && address.hasOwnProperty('road') && address.hasOwnProperty('house_number')) {
-          const { road, house_number } = address
+        if(address?.Components.length
+          && address.Components.find(comp => comp.kind === 'street')
+          && address.Components.find(comp => comp.kind === 'house')
+        ) {
+          const road = address.Components.find(comp => comp.kind === 'street')?.name as string
+          const house_number = address.Components.find(comp => comp.kind === 'house')?.name as string
           this.setLocation(cord)
           this.setAddress({ road, house_number })
           this.setNearestOrg(nearestDeliveryPoint.Id)
@@ -371,13 +376,17 @@ export class ReceptionStore {
   geocoderApi = new Request(async (state, setState, address: string) => {
     try {
       setState('LOADING')
-      const result: NominatimGeocodeResponse = await http.get(
-        'https://nominatim.openstreetmap.org/search', {
-        q: address,
-        format: 'json'
+      const result: YandexGeocodeResponse = await http.get(
+        'https://geocode-maps.yandex.ru/1.x', {
+        apikey,
+        geocode: address,
+        format: 'json',
+        lang: 'ru_RU',
+        kind: 'house'
       })
-      if (result?.[0]) {
-        let { lat, lon } = result?.[0]
+      if (result?.response?.GeoObjectCollection?.featureMember?.length) {
+        const { GeoObject } = result.response.GeoObjectCollection.featureMember[0]
+        const [lat, lon] = GeoObject.Point.pos.split(' ')
         logger.log(`geocoderApi: Нашли кординаты lat = ${lat} lon = ${lon} для ${address}`, 'Reception-Store')
         setState('COMPLETED')
         return { lat: Number(lat), lon: Number(lon)}
@@ -394,15 +403,18 @@ export class ReceptionStore {
   reverseGeocoderApi = new Request(async (state, setState, lat: number, lon: number) => {
     try {
       setState('LOADING')
-      const result: NominatimReverseResponse = await http.get(
-        'https://nominatim.openstreetmap.org/reverse', {
-        lat,
-        lon,
-        format: 'json'
+      const result: YandexGeocodeResponse = await http.get(
+        'https://geocode-maps.yandex.ru/1.x', {
+        apikey,
+        geocode: `${lon}, ${lat}`,
+        format: 'json',
+        lang: 'ru_RU',
+        kind: 'house'
       })
-      if(result?.address) {
+      if (result?.response?.GeoObjectCollection?.featureMember?.length) {
+        const { GeoObject } = result.response.GeoObjectCollection.featureMember[0]
         setState('COMPLETED')
-        return result.address
+        return GeoObject.metaDataProperty.GeocoderMetaData.Address
       } else {
         throw new Error('адрес не нашли')
       }
@@ -458,101 +470,117 @@ export type Organization = {
   isCK: boolean,
 }
 
-type NominatimGeocodeResponse = [
-  {
-    place_id: number,
-    licence: string,
-    osm_type: string,
-    osm_id: number,
-    /** example "54.70161865" */
-    lat: string,
-    /** example "56.0027922177958" */
-    lon: string,
-    /** example "building" */
-    class: string,
-    /** example "yes" */
-    type: string,
-    place_rank: number,
-    importance: number,
-    /** example "building" */
-    addresstype: string,
-    name: string,
-    display_name: string,
-    /**
-     * [
-        "54.7010415",
-        "54.7021239",
-        "56.0022407",
-        "56.0032648",
-      ]
-     */
-    boundingbox: string[]
+
+type YandexGeocodeResponse = {
+  response: {
+    GeoObjectCollection: {
+      metaDataProperty: {
+        GeocoderResponseMetaData: {
+          Point: {
+            /** example "56.002691 54.70186" */
+            pos: string
+          },
+          /** example "56.002691,54.70186" */
+          request: string,
+          /** example "10" */
+          results: string,
+          /** example "10" */
+          found: string
+        }
+      },
+      featureMember: Array<GeoObject>
+    }
   }
-]
-
-type NominatimReverseResponse = {
-  place_id: number,
-  licence: string,
-  osm_type: string,
-  osm_id: number,
-  /** example: "54.70166155" */
-  lat: string,
-  /** example: "56.0027805177958" */
-  lon: string,
-  class: string,
-  type: string,
-  place_rank: number,
-  importance: number,
-  addresstype: string,
-  name: string,
-  /** example: "20, улица Рабкоров, 
-   * Зелёная Роща, 
-   * Кировский район, 
-   * Уфа, 
-   * городской округ Уфа, 
-   * Башкортостан, 
-   * Приволжский федеральный округ, 
-   * 450000, Россия" 
-   * */
-  display_name: string,
-  address: {
-      /** example: "20" */
-      house_number: string,
-
-      /** example: "улица Рабкоров" */
-      road: string,
-
-      /** example: "Зелёная Роща" */
-      suburb: string,
-
-      /** example: "Кировский район" */
-      city_district: string,
-
-      /** example: "Уфа" */
-      city: string,
-
-      /** example: "городской округ Уфа" */
-      county: string,
-
-      /** example: "Башкортостан" */
-      state: string,
-
-      /** example: "RU-BA" */
-      "ISO3166-2-lvl4": string,
-
-      /** example: "Приволжский федеральный округ" */
-      region: string,
-
-      /** example: "450000" */
-      postcode: string,
-
-      /** example: "Россия" */
-      country: string,
-
-      /** example: "ru" */
-      country_code: string,
-  },
-  boundingbox: string[]
+}
+type GeoObject = {
+  GeoObject: {
+    metaDataProperty: {
+      GeocoderMetaData: {
+        /** example "exact" */
+        precision: string,
+        /** example "Россия, Республика Башкортостан, Уфа, улица Рабкоров, 20" */
+        text: string,
+        /** example "house" */
+        kind: string,
+        Address: {
+          /** example "RU" */
+          country_code: string,
+          /** example "Россия, Республика Башкортостан, Уфа, улица Рабкоров, 20" */
+          formatted: string,
+          /** example "450092" */
+          postal_code?: string,
+          Components: Array<{
+            /** example "house" */
+            kind: string,
+            /** example "20" */
+            name: string
+          }>
+        },
+        AddressDetails: {
+          Country: {
+            /** example "Россия, Республика Башкортостан, Уфа, улица Рабкоров, 20" */
+            AddressLine: string,
+            /** example "RU" */
+            CountryNameCode: string,
+            /** example "Россия" */
+            CountryName: string,
+            AdministrativeArea?: {
+              /** example "Республика Башкортостан" */
+              AdministrativeAreaName: string,
+              SubAdministrativeArea?: {
+                /** example "городской округ Уфа" */
+                SubAdministrativeAreaName?: string,
+                /** example "Республика Башкортостан" */
+                AdministrativeAreaName?: string,
+                Locality?: {
+                  /** example "Уфа" */
+                  LocalityName: string,
+                  Thoroughfare?: {
+                    /** example "улица Рабкоров" */
+                    ThoroughfareName: string,
+                    Premise?: {
+                      /** example "20" */
+                      PremiseNumber: string,
+                      PostalCode: {
+                        /** example "450092" */
+                        PostalCodeNumber: string
+                      }
+                    }
+                  },
+                  DependentLocality?: {
+                    /** example "Кировский район" */
+                    DependentLocalityName: string,
+                    DependentLocality?: {
+                      /** example "Кировский район" */
+                      DependentLocalityName: string,
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    /** example "улица Рабкоров, 20" */
+    name: string,
+    /** example "Уфа, Республика Башкортостан, Россия" */
+    description?: string,
+    boundedBy: {
+      Envelope: {
+        /** example "55.998585 54.699482" */
+        lowerCorner: string,
+        /** example "56.006796 54.704238" */
+        upperCorner: string,
+      }
+    },
+    /** example "ymapsbm1://geo?data=IgoNwQJgQhW0zlpC" */
+    uri: string,
+    Point: {
+      /** example "56.002691 54.70186" */
+      pos: string
+    }
+  }
 }
 
 type Address = {
