@@ -72,6 +72,8 @@ const SelectOrgForm: FC<Pr> = observer(p => {
           <Input placeholder='Найти заведение' onClick={selectOrgPopup.open} />
         </Form.Item>
         : <Form.Item
+          onClick={selectOrgPopup.open} 
+          clickable={false}
           extra={<p>9:30 - 21:30</p>}
           className={styles.addr_from_input}
           label={isWorkingNow

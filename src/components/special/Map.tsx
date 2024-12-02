@@ -1,89 +1,67 @@
-import { FC, useEffect, useState } from 'react'
-import Map from 'ol/Map.js'
-import TileLayer from 'ol/layer/Tile'
-import { OSM } from 'ol/source'
-import { View } from 'ol'
-import { Point } from 'ol/geom'
-import { useGeographic } from 'ol/proj'
-import VectorLayer from 'ol/layer/Vector'
-import VectorSource from 'ol/source/Vector'
-import Feature from 'ol/Feature'
+import { FC, useEffect, useMemo, useRef, useState } from 'react'
 import Marker from '../../assets/marker.png'
 import GreyMarker from '../../assets/grey_marker.png'
-import Select from 'ol/interaction/Select'
-import Style from 'ol/style/Style'
-import IconStyle from 'ol/style/Icon'
 import { useTheme } from '../../features/hooks'
-import { Optional } from '../../features/helpers'
+import { Optional, Undef } from '../../features/helpers'
 import { observer } from 'mobx-react-lite'
 import { Location } from '../../stores/reception.store'
+import { YMaps, Map, Placemark, useYMaps } from '@pbe/react-yandex-maps';
+import { toJS } from 'mobx'
 
 /** [долгота, широта] */
-const center = [55.947417612394574, 54.72572230097609]
-var previousMarker: any
-var map: Map
+const center1 = [54.72572230097609, 55.947417612394574]
+const center2 = [54.77072405355034, 56.038447129765]
+const zoom1 = 13
+const zoom2 = 11
 
 
+var prevousMarker: Undef<ymaps.IGeoObject | ymaps.ObjectManager>
 interface props {
   onSelect: (cordinates: Location) => void
   value: Optional<Location>
 }
 const ReactMap: FC<props> = p => {
-  const { theme } = useTheme()
-  useGeographic();
-  useEffect(() => {
-    const tile = new TileLayer({ source: new OSM() })
-    map = new Map({
-      target: 'map',
-      controls: [],
-      view: new View({ center, zoom: 13 }),
-      layers: [tile]
-    })
-    if (theme === 'dark') {
-      tile.on('prerender', (evt) => {
-        if (evt.context) {
-          const context = evt.context as CanvasRenderingContext2D;
-          context.filter = 'grayscale(80%) invert(100%) ';
-          context.globalCompositeOperation = 'source-over';
-        }
-      });
+  const mapRef = useRef(null)
+  const ymaps = useYMaps(['Map', 'Placemark'])
+  const [map, setMap] = useState<Optional<ymaps.Map>>(null)
 
-      tile.on('postrender', (evt) => {
-        if (evt.context) {
-          const context = evt.context as CanvasRenderingContext2D;
-          context.filter = 'none';
-        }
-      });
-    }
-    map.on('singleclick', e => {
-      const lat = e.coordinate[1]
-      const lon = e.coordinate[0]
+  useEffect(() => {
+    if (!ymaps || !mapRef?.current) return
+
+    const map = new ymaps.Map(mapRef.current, { center: center1, zoom: zoom1 })
+    map.events.add('click', e => {
+      const coords = e.get("coords")
+      const lat = coords[0]
+      const lon = coords[1]
       p.onSelect({ lat, lon })
     })
-    return () => {
-      if (previousMarker) map.removeLayer(previousMarker)
-    }
-  }, [])
+    setMap(map)
+    return () => map?.destroy()  
+  }, [ymaps])
+
   useEffect(() => {
-    if (p.value) {
-      const newLayer = new VectorLayer({
-        className: [p.value.lon, p.value.lat].join(', '),
-        source: new VectorSource(),
-        style: { 'icon-src': Marker, 'icon-height': 40, 'icon-anchor': [0.5, 1] },
-      })
-      map.getView().setCenter([p.value.lon, p.value.lat])
-      if (previousMarker) map.removeLayer(previousMarker)
-
-      map.addLayer(newLayer)
-
-      let marker = new Feature(new Point([p.value.lon, p.value.lat]));
-      newLayer.getSource()?.addFeature(marker)
-
-      previousMarker = newLayer
+    if(p.value?.lat && p.value?.lon) {
+      const { lat, lon } = p.value
+      if(ymaps && map) {
+        map.setCenter([lat, lon])
+        const marker = new ymaps.Placemark([lat, lon], {}, { 
+          iconImageHref: Marker, 
+          iconLayout: 'default#image',
+          iconImageSize: [40, 40],
+          iconOffset: [-20,0]
+        })
+        map.geoObjects.add(marker)
+        if(prevousMarker) map.geoObjects.remove(prevousMarker)
+        prevousMarker = marker
+      }
     }
-  }, [p.value])
-  return <div id="map" style={fullscreen} />
+  }, [p.value?.lat, p.value?.lon, map])
+
+  return <div ref={mapRef} style={fullscreen} />
 }
+
+
+
 type radioItem = { lat: number, lon: number, key: number }
 interface radioProps {
   items: radioItem[]
@@ -91,74 +69,38 @@ interface radioProps {
   onSwitch: (r: radioItem | null) => void
 }
 const ReactMapRadio: FC<radioProps> = observer(p => {
-  const { theme } = useTheme()
   const [selectedItem, setSelectedItem] = useState(p.defaultSelected ?? null)
-  useGeographic();
+  const [map, setMap] = useState<Optional<ymaps.Map>>(null)
+  const mapRef = useRef(null)
+  const ymaps = useYMaps(['Map', 'Placemark'])
+
   useEffect(() => {
-    const tile = new TileLayer({ source: new OSM() })
-    const map = new Map({
-      target: 'map',
-      controls: [],
-      view: new View({
-        center: p.defaultSelected
-          ? [p.defaultSelected.lat, p.defaultSelected.lon]
-          : [56.038447129765, 54.77072405355034],
-        zoom: 11,
-      }),
-      layers: [tile]
-    })
-    if (theme === 'dark') {
-      tile.on('prerender', (evt) => {
-        if (evt.context) {
-          const context = evt.context as CanvasRenderingContext2D;
-          context.filter = 'grayscale(80%) invert(100%) ';
-          context.globalCompositeOperation = 'source-over';
-        }
-      });
+    if (!ymaps || !mapRef?.current) return
+    const map: ymaps.Map = new ymaps.Map(mapRef.current, { center: center2, zoom: zoom2 })
+    setMap(map)
+    return () => map?.destroy()  
+  }, [ymaps])
 
-      tile.on('postrender', (evt) => {
-        if (evt.context) {
-          const context = evt.context as CanvasRenderingContext2D;
-          context.filter = 'none';
-        }
-      });
-    }
-
-    let selectClick = new Select({
-      style: new Style({
-        'image': new IconStyle({ 'src': Marker, 'height': 44, 'anchor': [0.5, 1] })
-      })
-    })
-    map.addInteraction(selectClick)
-    selectClick.on('select', e => {
-      if (e.selected.length) {
-        let layer = selectClick.getLayer(e.selected[0]);
-        const clicked = p.items.find(item =>
-          String(item.key) === layer.getClassName()
-        )
-        if (clicked) {
-          p.onSwitch(clicked)
-          setSelectedItem(clicked)
-          map.getView().setCenter([clicked.lat, clicked.lon])
-        }
-      } else {
-        p.onSwitch(null)
-        setSelectedItem(null)
-      }
-    })
-
+  useEffect(() => {
+    if(!ymaps || !map) return
+    map.geoObjects.removeAll()
     for (const poimt of p.items) {
-      const newLayer = new VectorLayer({
-        source: new VectorSource(),
-        style: { 'icon-src': GreyMarker, 'icon-height': 38, 'icon-anchor': [0.5, 1] },
-        className: String(poimt.key),
+      const { lat, lon } = poimt
+      const marker = new ymaps.Placemark([lon,lat], {}, { 
+        iconImageHref: p.defaultSelected?.key === poimt.key
+          ? Marker
+          : GreyMarker,
+        iconLayout: 'default#image',
+        iconImageSize: [40, 40],
+        iconOffset: [-20,0]
       })
-      map.addLayer(newLayer)
-      let marker = new Feature(new Point([poimt.lat, poimt.lon]));
-      newLayer.getSource()?.addFeature(marker)
+      marker.events.add('click', e => {
+        p.onSwitch(poimt)
+      })
+      map.geoObjects.add(marker)
     }
-  }, [])
-  return <div id="map" style={fullscreen} />
+  }, [p.defaultSelected?.key, map])
+  return <div ref={mapRef} style={fullscreen} />
 })
 
 const fullscreen = { width: '100vw', height: '100%' }

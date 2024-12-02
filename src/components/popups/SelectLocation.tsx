@@ -13,6 +13,8 @@ import { Optional } from '../../features/helpers'
 import ToggleSelector from '../special/ToggleSelector'
 import { IconClose } from '../icons/IconClose'
 import Container from "react-bootstrap/Container"
+import { YMaps } from '@pbe/react-yandex-maps'
+const apikey = 'b76c1fb9-de2c-4f5a-8621-46681c107466'
 
 type P = {
   show: boolean,
@@ -168,7 +170,9 @@ const SelectLocationPopup: FC<P> = observer(p => {
           </Space>
         </div>
       </Container>
-      {getContent(receptionType)}
+      <YMaps query={{ apikey }}>
+        {getContent(receptionType)}
+      </YMaps>
     </Popup>
   )
 })
