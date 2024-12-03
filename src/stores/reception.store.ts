@@ -139,21 +139,16 @@ export class ReceptionStore {
   }
 
   /** by address */
-  setCordinatesByAddress = async ({ road, house_number }: Address) => {
+  setCordinatesByAddress = async (address: Address) => {
+    const { road, house_number } = address
     const result = await this.geocoderApi.run('Уфа, ' + road + ' ' + house_number)
     if(result) {
       const { lat, lon } = result
       const { nearestDeliveryPoint, distance } = this.getNearestDeliveryPoint(lat, lon)
-      console.log('Уфа, ' + road + ' ' + house_number)
-      console.log(lat)
-      console.log(lon)
-      console.log(result)
-      console.log(nearestDeliveryPoint?.Name)
-      console.log(distance)
       if(nearestDeliveryPoint && distance) {
         if(distance < 10) {
           this.setLocation(result)
-          this.setAddress({ road, house_number })
+          this.setAddress(address)
           this.setNearestOrg(nearestDeliveryPoint.Id)
           this.setNearestOrgDistance(distance)
           console.log('найдена ближ. точка ' 

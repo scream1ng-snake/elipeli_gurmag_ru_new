@@ -69,12 +69,18 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
       //@ts-ignore
       promise.then(result => {
         setErrors(result.errors)
-
-        !Object.keys(result.errors).length
+        
+        if(!Object.keys(result.errors).length
           && Object.keys(result.values).length
-
-          ? debounced(result.values, options.names?.[0])
-          : debounced.cancel()
+        ) {
+          debounced(result.values, options.names?.[0])
+        } else {
+          if(!('house_number' in result.errors) && !('road' in result.errors)) {
+            debounced(value, options.names?.[0])
+          } else {
+            debounced.cancel()
+          }
+        }
       })
       return promise
     }
@@ -84,7 +90,11 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
     setValue('road', reception.address.road)
     setValue('house_number', reception.address.house_number)
 
-    setValue('multiapartment', reception.address.multiapartment)
+    if(reception.address.multiapartment === undefined) {
+      setValue('multiapartment', true)
+    } else {
+      setValue('multiapartment', reception.address.multiapartment)
+    }
     setValue('frame', reception.address.frame)
     setValue('entrance', reception.address.entrance)
     setValue('doorCode', reception.address.doorCode)
