@@ -1,12 +1,10 @@
-import { FC, useEffect, useMemo, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import Marker from '../../assets/marker.png'
 import GreyMarker from '../../assets/grey_marker.png'
-import { useTheme } from '../../features/hooks'
 import { Optional, Undef } from '../../features/helpers'
 import { observer } from 'mobx-react-lite'
 import { Location } from '../../stores/reception.store'
-import { YMaps, Map, Placemark, useYMaps } from '@pbe/react-yandex-maps';
-import { toJS } from 'mobx'
+import { useYMaps } from '@pbe/react-yandex-maps';
 
 /** [долгота, широта] */
 const center1 = [54.72572230097609, 55.947417612394574]
@@ -28,7 +26,16 @@ const ReactMap: FC<props> = p => {
   useEffect(() => {
     if (!ymaps || !mapRef?.current) return
 
-    const map = new ymaps.Map(mapRef.current, { center: center1, zoom: zoom1 })
+    const map = new ymaps.Map(
+      mapRef.current, 
+      { center: center1, zoom: zoom1, controls: [] }, 
+      {
+        copyrightUaVisible: false,
+        copyrightLogoVisible: false,
+        copyrightProvidersVisible: false,
+        suppressMapOpenBlock: true
+      }
+    )
     map.events.add('click', e => {
       const coords = e.get("coords")
       const lat = coords[0]
@@ -69,14 +76,22 @@ interface radioProps {
   onSwitch: (r: radioItem | null) => void
 }
 const ReactMapRadio: FC<radioProps> = observer(p => {
-  const [selectedItem, setSelectedItem] = useState(p.defaultSelected ?? null)
   const [map, setMap] = useState<Optional<ymaps.Map>>(null)
   const mapRef = useRef(null)
   const ymaps = useYMaps(['Map', 'Placemark'])
 
   useEffect(() => {
     if (!ymaps || !mapRef?.current) return
-    const map: ymaps.Map = new ymaps.Map(mapRef.current, { center: center2, zoom: zoom2 })
+    const map: ymaps.Map = new ymaps.Map(
+      mapRef.current, 
+      { center: center2, zoom: zoom2, controls: [] },
+      {
+        copyrightUaVisible: false,
+        copyrightLogoVisible: false,
+        copyrightProvidersVisible: false,
+        suppressMapOpenBlock: true
+      }
+    )
     setMap(map)
     return () => map?.destroy()  
   }, [ymaps])
