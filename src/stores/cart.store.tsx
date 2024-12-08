@@ -463,7 +463,6 @@ export class CartStore {
           house: reception.address.house_number,
           apartment: reception.address.apartment,
           description: this.note,
-          frame: reception.address.frame,
           entrance: reception.address.entrance,
           storey: reception.address.storey,
           doorCode: reception.address.doorCode,

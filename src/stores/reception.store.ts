@@ -10,6 +10,7 @@ import RootStore from "./root.store";
 import IconBtnDelivery from '../assets/icon_btn_delivery@2x.png'
 import IconBtnPickup from '../assets/icon_btn_pickup@2x.png'
 import _ from 'lodash'
+import SuggestitionStore from "./suggestition.store";
 
 export const apikey = 'b76c1fb9-de2c-4f5a-8621-46681c107466'
 export class ReceptionStore {
@@ -83,7 +84,6 @@ export class ReceptionStore {
       road: '',
       house_number: '',
       multiapartment: true,
-      frame: '',
       entrance: '',
       doorCode: '',
       storey: '',
@@ -91,13 +91,30 @@ export class ReceptionStore {
       addrComment: '',
       incorrectAddr: false,
     }
-  setAddressForAdditionalFields = (address: Address) => {
-    this.address = address
-    localStorage.setItem('data', JSON.stringify(address))
+  setAddressForAdditionalFields = (address: Omit<Address, 'road' | 'house_number'>) => {
+    this.address.multiapartment = address.multiapartment;
+    this.address.entrance = address.entrance;
+    this.address.doorCode = address.doorCode;
+    this.address.storey = address.storey;
+    this.address.apartment = address.apartment;
+    this.address.addrComment = address.addrComment;
+    this.address.incorrectAddr = address.incorrectAddr;
+
+    const saved = localStorage.getItem('data')
+    const oldAdress: Address = saved
+      ? JSON.parse(saved)
+      : {}
+    const newAddress = { ...oldAdress, ...address }
+    localStorage.setItem('data', JSON.stringify(newAddress))
   }
   setAddress = (address: Address) => {
     this.address = address
-    localStorage.setItem('data', JSON.stringify(address))
+    const saved = localStorage.getItem('data')
+    const oldAdress: Address = saved
+      ? JSON.parse(saved)
+      : {}
+    const newAddress = { ...oldAdress, ...address }
+    localStorage.setItem('data', JSON.stringify(newAddress))
   }
   /**
    * by [lat, lon]
@@ -210,20 +227,6 @@ export class ReceptionStore {
   /** все организации */
   organizations: Array<Organization> = [];
   setOrgs = (o: Organization[]) => { this.organizations = o }
-
-  /** точки с которых ведется доставка */
-  /* deliveryPoints: Organization[] = [
-    {
-      Id: 2,
-      Name: "Рабкоров_20",
-      isCK: false
-    },
-    {
-      Id: 140,
-      Name: "Российская_43",
-      isCK: false
-    }
-  ] */
 
   /** текущая организация */
   selectedOrgID: number = localStorage.getItem('currentOrg')
@@ -438,6 +441,7 @@ export class ReceptionStore {
 
   employees = new EmployeesStore(this)
   menu = new MenuStore(this)
+  suggestitions = new SuggestitionStore(this)
 }
 
 
@@ -578,17 +582,27 @@ type GeoObject = {
   }
 }
 
-type Address = {
+/**
+ * "street": Улица
+  "house": Дом 
+  "frame":, Корпус/литер
+  "entrance": Подъезд
+  "doorCode": Код на двери
+  "storey": Этаж
+  "apartment": Квартира
+  "addrComment": Комментарий к заказу
+  
+ */
+export type Address = {
   road: string,
   house_number: string,
   multiapartment?: boolean,
 
-  frame?: string | undefined,
-  entrance?: string | undefined,
-  doorCode?: string | undefined,
-  storey?: string | undefined,
-  apartment?: string | undefined,
-  addrComment?: string | undefined,
-  incorrectAddr?: boolean | undefined,
+  entrance?: string,
+  doorCode?: string,
+  storey?: string,
+  apartment?: string,
+  addrComment?: string,
+  incorrectAddr?: boolean,
 }
 export type Location = { lat: number, lon: number }

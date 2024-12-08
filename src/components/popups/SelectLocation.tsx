@@ -75,7 +75,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
           </div>
           <div className={styles.popup_area}>
             <PopupHeader />
-            <Container>
+            <Container className='p-0'>
               <AskLocation onClick={requestGeolocation} />
               <InputAddressForm onContinue={p.onContinue} />
             </Container>
@@ -107,7 +107,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
           </div>
           <div className={styles.popup_area}>
             <PopupHeader />
-            <Container>
+            <Container className='p-0'>
               <AskLocation onClick={requestGeolocation} />
               <SelectOrgForm
                 clickedOrgID={clickedOrgID}
@@ -128,7 +128,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
       onMaskClick={p.close}
       bodyStyle={{ width: '100vw', height: '100%' }}
     >
-      <Container>
+      <Container className='p-0'>
         <div style={{ position: 'relative' }}>
           <Space
             style={{

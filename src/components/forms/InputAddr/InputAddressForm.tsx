@@ -9,19 +9,10 @@ import { useStore } from '../../../features/hooks'
 import _ from 'lodash'
 import Red from '../../special/RedText'
 import CustomButton from '../../special/CustomButton'
-interface InputAddress {
-  road: string,
-  house_number: string,
-  multiapartment?: boolean,
+import { Address } from '../../../stores/reception.store'
+import { Undef } from '../../../features/helpers'
 
-  frame?: string,
-  entrance?: string,
-  doorCode?: string,
-  storey?: string,
-  apartment?: string,
-  addrComment?: string,
-  incorrectAddr?: boolean,
-}
+type InputAddress = Omit<Address, 'road' | 'house_number'> & { address: string }
 const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
   const [errors, setErrors] = useState<FieldErrors<InputAddress>>({})
   const { reception } = useStore()
@@ -29,28 +20,26 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
   const fullValidator = yupResolver(fullAddressSchema)
   const debounced = useMemo(
     () => _.debounce(
-      (form: InputAddress, formName: string | undefined) => {
+      (form: InputAddress, formName: Undef<keyof InputAddress>) => {
         if (formName) {
-          if (formName === 'road' || formName === 'house_number') {
-            reception.setCordinatesByAddress(form)
+          if (formName === 'address') {
+            reception.suggestitions.geoSuggest.run(form.address)
           } else {
-            reception.setAddressForAdditionalFields(form);
+            reception.setAddressForAdditionalFields(form)
           }
         }
         debounced.cancel()
       },
-      900
+      500
     ),
     []
   )
   const form = useForm<InputAddress>({
     criteriaMode: 'all',
     defaultValues: {
-      road: undefined,
-      house_number: '',
+      address: '',
       multiapartment: true,
 
-      frame: '',
       entrance: '',
       doorCode: '',
       storey: '',
@@ -69,13 +58,13 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
       //@ts-ignore
       promise.then(result => {
         setErrors(result.errors)
-        
-        if(!Object.keys(result.errors).length
+
+        if (!Object.keys(result.errors).length
           && Object.keys(result.values).length
         ) {
           debounced(result.values, options.names?.[0])
         } else {
-          if(!('house_number' in result.errors) && !('road' in result.errors)) {
+          if (!('house_number' in result.errors) && !('road' in result.errors)) {
             debounced(value, options.names?.[0])
           } else {
             debounced.cancel()
@@ -87,15 +76,16 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
   })
   const { setValue, getValues, control } = form
   useEffect(() => {
-    setValue('road', reception.address.road)
-    setValue('house_number', reception.address.house_number)
+    setValue('address', reception.address.house_number && reception.address.road
+      ? reception.address.road + ', ' + reception.address.house_number
+      : ''
+    )
 
-    if(reception.address.multiapartment === undefined) {
+    if (reception.address.multiapartment === undefined) {
       setValue('multiapartment', true)
     } else {
       setValue('multiapartment', reception.address.multiapartment)
     }
-    setValue('frame', reception.address.frame)
     setValue('entrance', reception.address.entrance)
     setValue('doorCode', reception.address.doorCode)
     setValue('storey', reception.address.storey)
@@ -106,14 +96,16 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
     form.clearErrors()
   }, [reception.address])
 
+
+
   return <Fragment>
     <div className={styles.city_label}>
       Уфа
     </div>
-    <Form 
-      className='gur-form' 
-      layout='vertical' 
-      style={{ '--border-top': 'none' }}
+    <Form
+      className='gur-form'
+      layout='vertical'
+      style={{ '--border-top': 'none', position: 'relative' }}
     >
       <Space
         style={{ '--gap': '5px', width: 'calc(100% - 32px)', margin: '8px 16px 8px' }}
@@ -121,73 +113,97 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         align={'center'}
         className={'gur-space'}
       >
+
         <Form.Item
-          label={errors.road?.message
-            ? <>{'Улица '}<Red>{'* ' + errors?.road?.message}</Red></>
-            : 'Улица'
+          label={errors.address?.message
+            ? <>{'Улица и дом '}<Red>{'* ' + errors?.address?.message}</Red></>
+            : 'Улица и дом'
           }
-          name='road'
+          name='address'
           className='gur-form__item'
-          style={errors.road?.message && redBorder}
+          style={errors.address?.message && redBorder}
         >
           <Controller
             control={control}
-            name='road'
-            render={({ field }) => (
+            name='address'
+            render={({ field }) => <>
               <Input
                 {...field}
                 disabled={reception.reverseGeocoderApi.state === 'LOADING'}
-                placeholder='Улица'
+                placeholder='Улица и дом'
                 clearable
               />
-            )}
+            </>}
           />
         </Form.Item>
       </Space>
-      <Space
-        style={{ '--gap': '5px', width: 'calc(100% - 32px)', margin: '8px 16px 8px' }}
-        justify='between'
-        align='center'
-        className='gur-space'
-      >
-        
-        <Form.Item
-          label={errors.house_number?.message
-            ? <>{'Дом '} <Red>{'* ' + errors?.house_number?.message}</Red></>
-            : 'Дом'
-          }
-          name='house_number'
-          className={styles.addr_from_input + ' gur-form__item'}
-          style={errors.house_number?.message && redBorder}
-          disabled={reception.reverseGeocoderApi.state === 'LOADING'}
-          extra={
-            <Controller
-              control={control}
-              name='multiapartment'
-              render={({ field }) => <>
-                <Checkbox
-                  checked={field.value}
-                  onChange={field.onChange}
-                  ref={field.ref}
-                  disabled={reception.reverseGeocoderApi.state === 'LOADING'}
-                />
-                <span style={{ margin: '0 0.5rem' }}>Многоквартирный</span>
-              </>
-              }
-            />}
+      {!reception.suggestitions.list.length
+        ? null
+        : <ul
+          style={{
+            listStyle: 'none',
+            position: 'absolute',
+            zIndex: 10000,
+            background: 'var(--tg-theme-bg-color)',
+            width: 'calc(100% - 32px)',
+            margin: '8px 16px',
+            borderBottom: '1px solid var(--gur-input-color)',
+            borderLeft: '1px solid var(--gur-input-color)',
+            borderRight: '1px solid var(--gur-input-color)',
+            borderTop: 'none',
+            maxHeight: 'calc(100% - 65px)',
+            overflow: 'scroll',
+            top: '47px',
+            borderBottomLeftRadius: 8,
+            borderBottomRightRadius: 8,
+          }}
         >
-          <Controller
-            control={control}
-            name='house_number'
-            render={({ field }) => (
-              <Input
-                {...field}
-                placeholder='Дом'
-                clearable
-              />
-            )}
-          />
-        </Form.Item>
+          {reception.suggestitions.list.map((item, index) =>
+            <li
+              key={index}
+              style={{ padding: '8px 16px', fontSize: 12 }}
+              onClick={() => {
+                const road = item.address.component.find(compt => compt.kind[0] === 'STREET')?.name
+                const house_number = item.address.component.find(compt => compt.kind[0] === 'HOUSE')?.name
+                if(road && house_number) {
+                  
+                  reception.suggestitions.setList([])
+                  setValue('address', item.title.text)
+                  const rest = getValues()
+                  const form: Address = {
+                    road,
+                    house_number,
+                    ...rest
+                  }
+                  reception.setCordinatesByAddress(form)
+                }
+              }}
+            >
+              {item.title.text}
+            </li>
+          )}
+        </ul>
+      }
+      <Space
+        style={{ '--gap': '5px', width: 'calc(100% - 32px)', margin: '8px 24px 8px' }}
+        justify={'between'}
+        align={'center'}
+        className={'gur-space'}
+      >
+        <Controller
+          control={control}
+          name='multiapartment'
+          render={({ field }) => <>
+            <Checkbox
+              checked={field.value}
+              onChange={field.onChange}
+              ref={field.ref}
+              disabled={reception.reverseGeocoderApi.state === 'LOADING'}
+            />
+            <span style={{ margin: '0 0.5rem', fontSize: 14 }}>Многоквартирный дом</span>
+          </>
+          }
+        />
       </Space>
       <Space
         style={{ '--gap': '5px', width: 'calc(100% - 42px)', margin: '0 16px 8px' }}
@@ -195,23 +211,24 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         align='center'
         className='gur-space gur-space_2'
       >
+
         <Form.Item
-          label={
-            errors.frame?.message
-              ? <>{'Дом '} <Red>{'* ' + errors?.frame?.message}</Red></>
-              : 'Корпус/литер'
+          label={errors?.doorCode?.message
+            ? <>{'Код на двери '}<Red>{'* ' + errors.doorCode?.message}</Red></>
+            : 'Код на двери'
           }
-          name='frame'
-          className='gur-form__item'
+          name='doorCode'
+          className={styles.addr_from_input + ' gur-form__item'}
           disabled={reception.reverseGeocoderApi.state === 'LOADING'}
+          style={errors.doorCode?.message && redBorder}
         >
           <Controller
             control={control}
-            name='frame'
+            name='doorCode'
             render={({ field }) => (
               <Input
                 {...field}
-                placeholder='Корпус/литер'
+                placeholder='Код на двери'
                 clearable
               />
             )}
@@ -244,30 +261,8 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         style={{ '--gap': '5px', width: 'calc(100% - 42px)', margin: '0 16px 8px' }}
         justify={'between'}
         align={'center'}
-        className={'gur-space gur-space_3'}
+        className={'gur-space gur-space_2'}
       >
-        <Form.Item
-          label={errors?.doorCode?.message
-            ? <>{'Код на двери '}<Red>{'* ' + errors.doorCode?.message}</Red></>
-            : 'Код на двери'
-          }
-          name='doorCode'
-          className={styles.addr_from_input + ' gur-form__item'}
-          disabled={reception.reverseGeocoderApi.state === 'LOADING'}
-          style={errors.doorCode?.message && redBorder}
-        >
-          <Controller
-            control={control}
-            name='doorCode'
-            render={({ field }) => (
-              <Input
-                {...field}
-                placeholder='Код на двери'
-                clearable
-              />
-            )}
-          />
-        </Form.Item>
         <Form.Item
           label={errors.storey?.message
             ? <>{'Этаж '}<Red>{'* ' + errors.storey?.message}</Red></>
@@ -346,7 +341,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
           text={'Доставить сюда'}
           onClick={function () {
             const vals = getValues()
-            reception.setAddress(vals)
+            // reception.setAddress(vals)
             p.onContinue()
           }}
           height={'35px'}
@@ -374,21 +369,15 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
 export default InputAddressForm
 
 const simpleAddressSchema = yup.object().shape({
-  road: yup
-    .string()
-    .required('Обязательное поле'),
-  house_number: yup
+  address: yup
     .string()
     .required('Обязательное поле'),
 })
 
 const fullAddressSchema = yup.object().shape({
-  road: yup
+  address: yup
     .string()
-    .required('Обязательное'),
-  house_number: yup
-    .string()
-    .required('Обязательное'),
+    .required('Обязательное поле'),
   entrance: yup
     .string()
     .required('Обязательное'),
@@ -399,16 +388,4 @@ const fullAddressSchema = yup.object().shape({
     .string()
     .required('Обязательное'),
 })
-
-/* 
-  "street": Улица
-  "house": Дом 
-  "frame":, Корпус/литер
-  "entrance": Подъезд
-  "doorCode": Код на двери
-  "storey": Этаж
-  "apartment": Квартира
-  "addrComment": Комментарий к заказу
-*/
-
 const redBorder = { border: '1px solid var(--adm-color-danger)' }
