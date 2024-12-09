@@ -23,7 +23,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
       (form: InputAddress, formName: Undef<keyof InputAddress>) => {
         if (formName) {
           if (formName === 'address') {
-            reception.suggestitions.geoSuggest.run(form.address)
+            reception.suggestitions.geoSuggest.run("Уфа, " + form.address)
           } else {
             reception.setAddressForAdditionalFields(form)
           }
