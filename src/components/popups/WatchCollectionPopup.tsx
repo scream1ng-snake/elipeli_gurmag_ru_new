@@ -27,12 +27,9 @@ export const CollectionPopup: FC = observer(p => {
   const currentCollection = toJS(menu.selectionPopup.content) as Optional<Selection>
 
   useEffect(() => {
-    console.log('qq')
     if (menu.loadMenu.state === 'COMPLETED') {
-      console.log('sasa')
       if (VCode) {
         const target = menu.getSelection(VCode)
-        console.log(toJS(target))
         target
           ? menu.selectionPopup.watch(target)
           : (Toast.show('Такой подборки не нашли(')
@@ -41,9 +38,6 @@ export const CollectionPopup: FC = observer(p => {
     }
   }, [menu.loadMenu.state, VCode, menu.categories.length, menu.loadMenuBg.state])
 
-  console.log('c length ' + menu.categories.length)
-  console.log('s length ' + menu.selections.length)
-  console.log('stote ' + menu.loadMenu.state)
   function getContent() {
     // смотрим одну подборку
     if (currentCollection) {

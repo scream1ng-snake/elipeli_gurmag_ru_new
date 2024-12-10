@@ -3,11 +3,9 @@ import { FC } from "react"
 import CartItem from "../CartItem/CartItem"
 import { useStore } from "../../../../../features/hooks"
 import Metrics from "../../../../../features/Metrics"
-import { toJS } from "mobx"
 
 const CartList: FC = () => {
   const { cart } = useStore()
-  console.log(toJS(cart.items))
   return <List>
     {cart.items.map((item, index) =>
       <CartItem

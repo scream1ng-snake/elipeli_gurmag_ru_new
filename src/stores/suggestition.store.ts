@@ -5,7 +5,7 @@ import { http } from "../features/http";
 import { logger } from "../features/logger";
 
 
-export const suggest_apikey = '8a2b4c15-2dd5-446b-913b-246f1759bed5'
+export const suggest_apikey = 'b247fbb6-0ff7-4840-b133-6a4a96d6aab2'
 
 class SuggestitionStore {
   constructor(readonly root: ReceptionStore) {
