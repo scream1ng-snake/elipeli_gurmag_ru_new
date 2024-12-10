@@ -63,9 +63,10 @@ const Pickup: FC = observer(() => {
 
 const Delivery: FC = observer(() => {
   const { cart, reception } = useStore()
-  const { selectLocationPopup: { open }, } = reception
+  const { selectLocationPopup: { open }, Location } = reception
 
-  const isValid = reception.address.road
+  const { road, house_number } = Location.confirmedAddress
+  const isValid = road && house_number
     && cart.slots.selectedSlot
     && cart.payment.method
     
@@ -75,13 +76,13 @@ const Delivery: FC = observer(() => {
     </h2>
     <Form.Item className={styles.addrInput} arrowIcon onClick={open}>
       <Input
-        value={ reception.address.road
-          ? reception.address.road + ' ' + reception.address.house_number
+        value={ road
+          ? road + ' ' + house_number
           : ''
         }
         placeholder='Укажите адрес доставки'
       />
-      {!reception.address.road && !reception.address.house_number
+      {!road && !house_number
         ? <Red>*адрес не выбран</Red>
         : null
       }

@@ -1,4 +1,4 @@
-import { Dialog, InputRef, Toast } from "antd-mobile";
+import { InputRef, Toast } from "antd-mobile";
 import { makeAutoObservable, reaction } from "mobx";
 import { Optional, Request, Undef } from "../features/helpers";
 import { http } from "../features/http";
@@ -12,8 +12,7 @@ import PaymentStore from "./payment.store";
 import { MutableRefObject } from "react";
 import Popup from "../features/modal";
 import moment from "moment";
-import { receptionCodes } from "./reception.store";
-import { NavigateFunction } from "react-router-dom";
+import { CITY_PREFIX, receptionCodes } from "./reception.store";
 import Metrics from "../features/Metrics";
 
 /** Блюдо в корзине как часть заказа */
@@ -377,39 +376,40 @@ export class CartStore {
   /** проверка перед отправкой (остатки и валидации) */
   prePostOrder = async () => {
     this.postOrder.setState('LOADING')
-    const { receptionType, address, location, currentOrgID } = this.root.reception
+    const { receptionType, currentOrgID, Location } = this.root.reception
+    const { confirmedAddress, confirmedLocation } = Location
     switch (receptionType) {
       case 'delivery':
-        if (!location?.lat) {
-          if(address.road && address.house_number) {
-            await this.root.reception.setCordinatesByAddress(address)
+        if (!confirmedLocation?.lat) {
+          if(confirmedAddress.road && confirmedAddress.house_number) {
+            await Location.setCordinatesByAddress(confirmedAddress)
           } else {
             Toast.show('Укажите местоположение заного')
             this.root.reception.selectLocationPopup.open()
           }
           return
         }
-        if (!location?.lon) {
-          if(address.road && address.house_number) {
-            await this.root.reception.setCordinatesByAddress(address)
+        if (!confirmedLocation?.lon) {
+          if(confirmedAddress.road && confirmedAddress.house_number) {
+            await Location.setCordinatesByAddress(confirmedAddress)
           } else {
             Toast.show('Местоположение не указано, укажите его снова')
             this.root.reception.selectLocationPopup.open()
           }
           return
         }
-        if (!address.road) {
-          if(location.lat && location.lon) {
-            await this.root.reception.setAddrByCordinates(location)
+        if (!confirmedAddress.road) {
+          if(confirmedLocation.lat && confirmedLocation.lon) {
+            await Location.setAddressByCoords(confirmedLocation)
           } else {
             Toast.show('Адрес не указан, укажите его снова')
             this.root.reception.selectLocationPopup.open()
           }
           return
         }
-        if (!address.house_number) {
-          if(location.lat && location.lon) {
-            await this.root.reception.setAddrByCordinates(location)
+        if (!confirmedAddress.house_number) {
+          if(confirmedLocation.lat && confirmedLocation.lon) {
+            await Location.setAddressByCoords(confirmedLocation)
           } else {
             Toast.show('Адрес не указан, укажите его еще раз')
             this.root.reception.selectLocationPopup.open()
@@ -452,24 +452,24 @@ export class CartStore {
           itemsInCart: this.items,
           currentOrg: reception.OrgForMenu.toString(),
           orderDate: this.date.toISOString(),
-          fullAddress: 'Уфа ' + reception.address.road + reception.address.house_number,
+          fullAddress: CITY_PREFIX + confirmedAddress.road + confirmedAddress.house_number,
           orderType: receptionCodes[reception.receptionType],
           promocode: this.confirmedPromocode,
 
           activeSlot: this.slots.selectedSlot
             ? Number(this.slots.selectedSlot.VCode)
             : undefined,
-          street: reception.address.road,
-          house: reception.address.house_number,
-          apartment: reception.address.apartment,
+          street: confirmedAddress.road,
+          house: confirmedAddress.house_number,
+          apartment: confirmedAddress.apartment,
           description: this.note,
-          entrance: reception.address.entrance,
-          storey: reception.address.storey,
-          doorCode: reception.address.doorCode,
-          addrComment: reception.address.addrComment,
-          incorrectAddr: reception.address.incorrectAddr,
-          lat: reception.location?.lat,
-          lon: reception.location?.lon
+          entrance: confirmedAddress.entrance,
+          storey: confirmedAddress.storey,
+          doorCode: confirmedAddress.doorCode,
+          addrComment: confirmedAddress.addrComment,
+          incorrectAddr: confirmedAddress.incorrectAddr,
+          lat: confirmedLocation?.lat,
+          lon: confirmedLocation?.lon
         })
         this.detailPopup.close()
         this.congratilations.open()

@@ -3,8 +3,8 @@ import Marker from '../../assets/marker.png'
 import GreyMarker from '../../assets/grey_marker.png'
 import { Optional, Undef } from '../../features/helpers'
 import { observer } from 'mobx-react-lite'
-import { Location } from '../../stores/reception.store'
 import { useYMaps } from '@pbe/react-yandex-maps';
+import { Location } from '../../stores/location.store'
 
 /** [долгота, широта] */
 const center1 = [54.72572230097609, 55.947417612394574]
@@ -69,7 +69,7 @@ const ReactMap: FC<props> = p => {
 
 
 
-type radioItem = { lat: number, lon: number, key: number }
+type radioItem = { lat: number, lon: number, Id: number }
 interface radioProps {
   items: radioItem[]
   defaultSelected?: radioItem
@@ -102,7 +102,7 @@ const ReactMapRadio: FC<radioProps> = observer(p => {
     for (const poimt of p.items) {
       const { lat, lon } = poimt
       const marker = new ymaps.Placemark([lon,lat], {}, { 
-        iconImageHref: p.defaultSelected?.key === poimt.key
+        iconImageHref: p.defaultSelected?.Id === poimt.Id
           ? Marker
           : GreyMarker,
         iconLayout: 'default#image',
@@ -114,7 +114,7 @@ const ReactMapRadio: FC<radioProps> = observer(p => {
       })
       map.geoObjects.add(marker)
     }
-  }, [p.defaultSelected?.key, map])
+  }, [p.defaultSelected?.Id, map])
   return <div ref={mapRef} style={fullscreen} />
 })
 

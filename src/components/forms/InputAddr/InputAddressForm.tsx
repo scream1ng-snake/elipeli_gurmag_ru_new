@@ -9,13 +9,14 @@ import { useStore } from '../../../features/hooks'
 import _ from 'lodash'
 import Red from '../../special/RedText'
 import CustomButton from '../../special/CustomButton'
-import { Address } from '../../../stores/reception.store'
 import { Undef } from '../../../features/helpers'
+import { Address } from '../../../stores/location.store'
+import { CITY_PREFIX } from '../../../stores/reception.store'
 
 type InputAddress = Omit<Address, 'road' | 'house_number'> & { address: string }
 const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
   const [errors, setErrors] = useState<FieldErrors<InputAddress>>({})
-  const { reception } = useStore()
+  const { reception, reception: { suggestitions, Location } } = useStore()
   const simpleValidator = yupResolver(simpleAddressSchema)
   const fullValidator = yupResolver(fullAddressSchema)
   const debounced = useMemo(
@@ -23,9 +24,9 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
       (form: InputAddress, formName: Undef<keyof InputAddress>) => {
         if (formName) {
           if (formName === 'address') {
-            reception.suggestitions.geoSuggest.run("Уфа, " + form.address)
+            suggestitions.geoSuggest.run(CITY_PREFIX + form.address)
           } else {
-            reception.setAddressForAdditionalFields(form)
+            Location.setAdditionalFields(form)
           }
         }
         debounced.cancel()
@@ -76,25 +77,25 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
   })
   const { setValue, getValues, control } = form
   useEffect(() => {
-    setValue('address', reception.address.house_number && reception.address.road
-      ? reception.address.road + ', ' + reception.address.house_number
+    setValue('address', Location.inputingAddress.house_number && Location.inputingAddress.road
+      ? Location.inputingAddress.road + ', ' + Location.inputingAddress.house_number
       : ''
     )
 
-    if (reception.address.multiapartment === undefined) {
+    if (Location.inputingAddress.multiapartment === undefined) {
       setValue('multiapartment', true)
     } else {
-      setValue('multiapartment', reception.address.multiapartment)
+      setValue('multiapartment', Location.inputingAddress.multiapartment)
     }
-    setValue('entrance', reception.address.entrance)
-    setValue('doorCode', reception.address.doorCode)
-    setValue('storey', reception.address.storey)
-    setValue('apartment', reception.address.apartment)
-    setValue('addrComment', reception.address.addrComment)
+    setValue('entrance', Location.inputingAddress.entrance)
+    setValue('doorCode', Location.inputingAddress.doorCode)
+    setValue('storey', Location.inputingAddress.storey)
+    setValue('apartment', Location.inputingAddress.apartment)
+    setValue('addrComment', Location.inputingAddress.addrComment)
 
-    setValue('incorrectAddr', reception.address.incorrectAddr)
+    setValue('incorrectAddr', Location.inputingAddress.incorrectAddr)
     form.clearErrors()
-  }, [reception.address])
+  }, [Location.inputingAddress])
 
 
 
@@ -129,7 +130,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
             render={({ field }) => <>
               <Input
                 {...field}
-                disabled={reception.reverseGeocoderApi.state === 'LOADING'}
+                disabled={Location.reverseGeocoderApi.state === 'LOADING'}
                 placeholder='Улица и дом'
                 clearable
               />
@@ -175,7 +176,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
                     house_number,
                     ...rest
                   }
-                  reception.setCordinatesByAddress(form)
+                  Location.setCordinatesByAddress(form)
                 }
               }}
             >
@@ -198,7 +199,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
               checked={field.value}
               onChange={field.onChange}
               ref={field.ref}
-              disabled={reception.reverseGeocoderApi.state === 'LOADING'}
+              disabled={Location.reverseGeocoderApi.state === 'LOADING'}
             />
             <span style={{ margin: '0 0.5rem', fontSize: 14 }}>Многоквартирный дом</span>
           </>
@@ -219,7 +220,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
           }
           name='doorCode'
           className={styles.addr_from_input + ' gur-form__item'}
-          disabled={reception.reverseGeocoderApi.state === 'LOADING'}
+          disabled={Location.reverseGeocoderApi.state === 'LOADING'}
           style={errors.doorCode?.message && redBorder}
         >
           <Controller
@@ -242,7 +243,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
           name='entrance'
           className={'gur-form__item'}
           style={errors.entrance?.message && redBorder}
-          disabled={reception.reverseGeocoderApi.state === 'LOADING'}
+          disabled={Location.reverseGeocoderApi.state === 'LOADING'}
         >
           <Controller
             control={control}
@@ -270,7 +271,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
           }
           name='storey'
           className={styles.addr_from_input + ' gur-form__item'}
-          disabled={reception.reverseGeocoderApi.state === 'LOADING'}
+          disabled={Location.reverseGeocoderApi.state === 'LOADING'}
           style={errors.storey?.message && redBorder}
         >
           <Controller
@@ -292,7 +293,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
           }
           name='apartment'
           className={styles.addr_from_input + ' gur-form__item'}
-          disabled={reception.reverseGeocoderApi.state === 'LOADING'}
+          disabled={Location.reverseGeocoderApi.state === 'LOADING'}
           style={errors?.apartment?.message && redBorder}
         >
           <Controller
@@ -328,7 +329,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
             render={({ field }) => (
               <Input
                 {...field}
-                disabled={reception.reverseGeocoderApi.state === 'LOADING'}
+                disabled={Location.reverseGeocoderApi.state === 'LOADING'}
                 placeholder='Комментарий'
                 clearable
               />
@@ -339,9 +340,9 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
       <Form.Item>
         <CustomButton
           text={'Доставить сюда'}
-          onClick={function () {
-            const vals = getValues()
-            // reception.setAddress(vals)
+          onClick={() => {
+            Location.setConfirmedAddress()
+            Location.setConfirmedLocation()
             p.onContinue()
           }}
           height={'35px'}
@@ -358,8 +359,8 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
           appendImage={null}
           disabled={
             Boolean(Object.keys(errors).length)
-            || !reception.address.road.length
-            || !reception.address.house_number.length
+            || !Location.inputingAddress.road.length
+            || !Location.inputingAddress.house_number.length
           }
         />
       </Form.Item>

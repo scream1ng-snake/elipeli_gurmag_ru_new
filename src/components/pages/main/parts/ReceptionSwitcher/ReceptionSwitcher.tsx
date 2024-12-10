@@ -27,8 +27,8 @@ const ReceptionSwitcher: FC = observer(() => {
     receptionType,
     selectLocationPopup: { show, close, open },
     currentOrganizaion,
-    address,
   } = reception
+  const address = reception.Location.confirmedAddress
 
 
   const getHint = () =>

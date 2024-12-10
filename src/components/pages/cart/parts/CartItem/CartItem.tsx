@@ -14,7 +14,7 @@ type P = {
 const CartItem: FC<P> = observer(props => {
   const { courseInCart, add, remove } = props
 
-
+  console.log(courseInCart.couse.EndingOcResidue)
   return (
     <List.Item
       className={styles.cartItem}

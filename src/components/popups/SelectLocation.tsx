@@ -26,16 +26,19 @@ const SelectLocationPopup: FC<P> = observer(p => {
       receptionType,
       options,
       setReceptionType,
-      addrsBindings,
-      setAddrByCordinates,
-      location,
-      reverseGeocoderApi,
+      orgsCoords,
       loadOrganizations,
-      geocoderApi,
       currentOrgID,
-      requestGeolocation
+      Location
     }
   } = useStore()
+  const { 
+    setAddressByCoords,
+    inputingLocation,
+    reverseGeocoderApi,
+    geocoderApi,
+    requestGeolocation  
+  } = Location
 
   const [clickedOrgID, setClickedOrgID] = useState<Optional<number>>(currentOrgID)
 
@@ -69,8 +72,8 @@ const SelectLocationPopup: FC<P> = observer(p => {
               : null
             }
             <Maps.Picker
-              value={location}
-              onSelect={setAddrByCordinates}
+              value={inputingLocation}
+              onSelect={setAddressByCoords}
             />
           </div>
           <div className={styles.popup_area}>
@@ -83,10 +86,6 @@ const SelectLocationPopup: FC<P> = observer(p => {
         </div>
 
       case 'pickup':
-        const items = addrsBindings.map(val => {
-          const [lat, lon] = val.pos.split(' ').map(Number)
-          return { lat, lon, key: val.Id }
-        })
         return <div className={styles.container}>
           <div className={styles.map_area}>
             {isMapSearching
@@ -97,12 +96,12 @@ const SelectLocationPopup: FC<P> = observer(p => {
             }
             <Maps.RadioPicker
               onSwitch={(s) => {
-                s?.key
-                  ? setClickedOrgID(s.key)
+                s?.Id
+                  ? setClickedOrgID(s.Id)
                   : setClickedOrgID(null)
               }}
-              items={items}
-              defaultSelected={items.find(val => val.key === clickedOrgID)}
+              items={orgsCoords}
+              defaultSelected={orgsCoords.find(val => val.Id === clickedOrgID)}
             />
           </div>
           <div className={styles.popup_area}>

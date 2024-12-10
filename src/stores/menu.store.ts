@@ -42,15 +42,23 @@ class MenuStore {
         this.setSelections(data.SelectionMenu)
         this.setStories(data.WebHistoty)
       }
-      setState('COMPLETED');
-      const dataBg: Undef<V3_userInfoResponse> = await http.get('/getUserMenu_v3/' + orgID);
-      if(dataBg?.BaseMenu && dataBg?.PopularMenu) {
-        this.setCategories([])
-        this.setCategories(dataBg.BaseMenu)
-      }
+      setState('COMPLETED')
+      this.loadMenuBg.run(orgID)
     } catch (err) {
       logger.error(err, 'reception')
       setState('FAILED')
+    }
+  })
+
+  loadMenuBg = new Request(async (state, setState, orgID: number) => {
+    setState('LOADING')
+    const dataBg: Undef<V3_userInfoResponse> = await http.get('/getUserMenu_v3/' + orgID);
+    if(dataBg?.BaseMenu && dataBg?.PopularMenu) {
+      this.loadMenu.setState('LOADING')
+      this.setCategories(dataBg.BaseMenu)
+      this.setSelections(dataBg.SelectionMenu)
+      this.loadMenu.setState('COMPLETED')
+      setState('COMPLETED')
     }
   })
 

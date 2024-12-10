@@ -11,10 +11,13 @@ import IconBtnDelivery from '../assets/icon_btn_delivery@2x.png'
 import IconBtnPickup from '../assets/icon_btn_pickup@2x.png'
 import _ from 'lodash'
 import SuggestitionStore from "./suggestition.store";
+import LocationStore from "./location.store";
 
 export const apikey = 'b76c1fb9-de2c-4f5a-8621-46681c107466'
+export const CITY_PREFIX = 'Уфа, '
 export class ReceptionStore {
   root: RootStore;
+  Location = new LocationStore(this)
 
   /** выбранный тип обслуживания: доставка или самовывоз */
   receptionType: ReceptionType = localStorage.getItem('receptionType')
@@ -34,7 +37,7 @@ export class ReceptionStore {
   get needAskLocation() {
     const userLoaded = this.root.user.loadUserInfo.state === 'COMPLETED'
     return [this.receptionType === 'initial',
-      !this.address.road && this.receptionType === 'delivery' && userLoaded,
+      !this.Location.confirmedAddress.road && this.receptionType === 'delivery' && userLoaded,
       !this.currentOrganizaion && this.receptionType === 'pickup' && userLoaded
     ].includes(true)
   }
@@ -70,158 +73,11 @@ export class ReceptionStore {
     minWidth: '134px',
   }]
 
-  location: Optional<Location> = localStorage.getItem('lctn')
-    ? JSON.parse(localStorage.getItem('lctn') as string) as Location
-    : null
-  setLocation = (l: Location) => {
-    localStorage.setItem('lctn', JSON.stringify(l))
-    this.location = l
-  }
+  
 
-  address = localStorage.getItem('data')
-    ? JSON.parse(localStorage.getItem('data') as string) as Address
-    : {
-      road: '',
-      house_number: '',
-      multiapartment: true,
-      entrance: '',
-      doorCode: '',
-      storey: '',
-      apartment: '',
-      addrComment: '',
-      incorrectAddr: false,
-    }
-  setAddressForAdditionalFields = (address: Omit<Address, 'road' | 'house_number'>) => {
-    this.address.multiapartment = address.multiapartment;
-    this.address.entrance = address.entrance;
-    this.address.doorCode = address.doorCode;
-    this.address.storey = address.storey;
-    this.address.apartment = address.apartment;
-    this.address.addrComment = address.addrComment;
-    this.address.incorrectAddr = address.incorrectAddr;
-
-    const saved = localStorage.getItem('data')
-    const oldAdress: Address = saved
-      ? JSON.parse(saved)
-      : {}
-    const newAddress = { ...oldAdress, ...address }
-    localStorage.setItem('data', JSON.stringify(newAddress))
-  }
-  setAddress = (address: Address) => {
-    this.address = address
-    const saved = localStorage.getItem('data')
-    const oldAdress: Address = saved
-      ? JSON.parse(saved)
-      : {}
-    const newAddress = { ...oldAdress, ...address }
-    localStorage.setItem('data', JSON.stringify(newAddress))
-  }
-  /**
-   * by [lat, lon]
-   * @param cord 
-   */
-  setAddrByCordinates = async (cord: Location) => {
-    const { nearestDeliveryPoint, distance } = this.getNearestDeliveryPoint(cord.lat, cord.lon)
-    
-    if(nearestDeliveryPoint && distance) {
-      if(distance < 10) {
-        const { lon,lat } = cord
-        const address = await this.reverseGeocoderApi.run(lat, lon)
-        if(address?.Components.length
-          && address.Components.find(comp => comp.kind === 'street')
-          && address.Components.find(comp => comp.kind === 'house')
-        ) {
-          const road = address.Components.find(comp => comp.kind === 'street')?.name as string
-          const house_number = address.Components.find(comp => comp.kind === 'house')?.name as string
-          this.setLocation(cord)
-          this.setAddress({ road, house_number })
-          this.setNearestOrg(nearestDeliveryPoint.Id)
-          this.setNearestOrgDistance(distance)
-          console.log('найдена ближ. точка ' 
-            + nearestDeliveryPoint?.Name 
-            + ' для доставки в '
-            + road + ' ' + house_number
-            + ' на расстоянии ' 
-            + distance
-          )
-        } else {
-          Toast.show('Местоположение не найдено')
-        }
-      } else {
-        Toast.show("Адрес вне зоны обслуживания Gurmag")
-      }
-    } else {
-      Toast.show("Не удалось найти ближающее заведение для доставки")
-    }
-  }
-
-  /** by address */
-  setCordinatesByAddress = async (address: Address) => {
-    const { road, house_number } = address
-    const result = await this.geocoderApi.run('Уфа, ' + road + ' ' + house_number)
-    if(result) {
-      const { lat, lon } = result
-      const { nearestDeliveryPoint, distance } = this.getNearestDeliveryPoint(lat, lon)
-      if(nearestDeliveryPoint && distance) {
-        if(distance < 10) {
-          this.setLocation(result)
-          this.setAddress(address)
-          this.setNearestOrg(nearestDeliveryPoint.Id)
-          this.setNearestOrgDistance(distance)
-          console.log('найдена ближ. точка ' 
-            + nearestDeliveryPoint?.Name 
-            + ' для доставки в '
-            + road + ' ' + house_number
-            + ' на расстоянии ' 
-            + distance
-          )
-        } else {
-          Toast.show("Адрес вне зоны обслуживания Gurmag")
-        }
-      } else {
-        Toast.show("Не удалось найти ближающее заведение для доставки")
-      }
-    } else {
-      this.setAddress({ road, house_number, incorrectAddr: true })
-    }
-  }
-
-  /**
-   * найти ближ точку для доставки и расстояние до нее
-   * @param targetlat this.location[1]
-   * @param targetlon this.location[0]
-   */
-  private getNearestDeliveryPoint = (targetlat: number, targetlon: number) => {
-    let resultOrganization
-    let minDistance
-    let deliveryPoints: Organization[] = _.clone(this.root.reception.organizations);
-    for (const org of deliveryPoints) {
-      // для каждой организации захардкодил кординаты 
-      // каждый раз их узнавать заного смысла нет
-      const pointCords = this.addrsBindings
-        .find(o => o.Id === org.Id) as { Id: number, pos: string }
-
-
-      let lon, lat
-      
-      [lon, lat] = pointCords.pos
-        .split(' ')
-        .map(Number)
-
-      /** расстояние */
-      const distance = getDistance(targetlat, targetlon, lat, lon)
-      if (minDistance) {
-        if (distance < minDistance) {
-          minDistance = distance
-          resultOrganization = org
-        }
-      } else {
-        minDistance = distance
-        resultOrganization = org
-      }
-    }
-    return { nearestDeliveryPoint: resultOrganization, distance: minDistance }
-  }
+  
+  
+  
 
   
   /** все организации */
@@ -343,98 +199,44 @@ export class ReceptionStore {
   };
 
   /** известные кординаты точек выдачи */
-  addrsBindings = [
-    {
-      Id: 2,
-      pos: "56.002691 54.70186"
-    },
-    {
-      Id: 115,
-      pos: "56.059599 54.770162"
-    },
-    {
-      Id: 140,
-      pos: "56.03653 54.77791"
-    },
-    {
-      Id: 141,
-      pos: "55.928068 54.723413"
-    },
-    {
-      Id: 144,
-      pos: "56.131958 54.781597"
-    },
-    {
-      Id: 147,
-      pos: "56.099008 54.810361"
-    }
+  orgsCoords = [
+    { Id: 2, lat: 54.70186, lon: 56.002691 },
+    { Id: 115, lat: 54.770162, lon: 56.059599 },
+    { Id: 140, lat: 54.77791, lon: 56.03653 },
+    { Id: 141, lat: 54.723413, lon: 55.928068 },
+    { Id: 144, lat: 54.781597, lon: 56.131958 },
+    { Id: 147, lat: 54.810361, lon: 56.099008  }
   ]
 
-  /** get cordinates by address api */
-  geocoderApi = new Request(async (state, setState, address: string) => {
-    try {
-      setState('LOADING')
-      const result: YandexGeocodeResponse = await http.get(
-        'https://geocode-maps.yandex.ru/1.x', {
-        apikey,
-        geocode: address,
-        format: 'json',
-        lang: 'ru_RU',
-        kind: 'house'
-      })
-      if (result?.response?.GeoObjectCollection?.featureMember?.length) {
-        const { GeoObject } = result.response.GeoObjectCollection.featureMember[0]
-        const [lon, lat] = GeoObject.Point.pos.split(' ')
-        logger.log(`geocoderApi: Нашли кординаты lat = ${lat} lon = ${lon} для ${address}`, 'Reception-Store')
-        setState('COMPLETED')
-        return { lat: Number(lat), lon: Number(lon)}
-      } else {
-        throw new Error('геокодер не вернул кординаты')
-      }
-    } catch (e) {
-      setState('FAILED')
-      logger.error('Не нашли кординаты ' + e, 'geocoderApi')
-      return undefined
-    }
-  })
-  /** get address by cordinates api */
-  reverseGeocoderApi = new Request(async (state, setState, lat: number, lon: number) => {
-    try {
-      setState('LOADING')
-      const result: YandexGeocodeResponse = await http.get(
-        'https://geocode-maps.yandex.ru/1.x', {
-        apikey,
-        geocode: `${lon}, ${lat}`,
-        format: 'json',
-        lang: 'ru_RU',
-        kind: 'house'
-      })
-      if (result?.response?.GeoObjectCollection?.featureMember?.length) {
-        const { GeoObject } = result.response.GeoObjectCollection.featureMember[0]
-        setState('COMPLETED')
-        return GeoObject.metaDataProperty.GeocoderMetaData.Address
-      } else {
-        throw new Error('адрес не нашли')
-      }
-    } catch (e) {
-      setState('FAILED')
-      logger.error('не нашли адрес ' + e, 'reverseGeocoderApi')
-      return null
-    }
-  })
+  /**
+   * найти ближ точку для доставки и расстояние до нее
+   * @param targetlat
+   * @param targetlon
+   */
+  getNearestDeliveryOrg = (targetlat: number, targetlon: number) => {
+    let resultOrganization
+    let minDistance
+    let deliveryPoints: Organization[] = _.clone(this.root.reception.organizations);
+    for (const org of deliveryPoints) {
+      // для каждой организации захардкодил кординаты 
+      // каждый раз их узнавать заного смысла нет
+      let knowCoords = this.orgsCoords.find(({ Id }) => Id === org.Id)
+      if(!knowCoords) continue
+      const { lon, lat } = knowCoords
 
-  requestGeolocation = () => {
-    if (navigator && "geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(({ coords }) => {
-        this.setAddrByCordinates({
-          lon: coords.longitude,
-          lat: coords.latitude, 
-        })
-      })
-      logger.log('местоположение разрешено', 'reception')
-    } else {
-      logger.log('местоположение не доступно', 'reception')
+      /** расстояние */
+      const distance = getDistance(targetlat, targetlon, lat, lon)
+      if (minDistance) {
+        if (distance < minDistance) {
+          minDistance = distance
+          resultOrganization = org
+        }
+      } else {
+        minDistance = distance
+        resultOrganization = org
+      }
     }
+    return { nearestOrg: resultOrganization, distance: minDistance }
   }
 
   selectOrgPopup = new Popup()
@@ -470,139 +272,4 @@ export type Organization = {
 }
 
 
-type YandexGeocodeResponse = {
-  response: {
-    GeoObjectCollection: {
-      metaDataProperty: {
-        GeocoderResponseMetaData: {
-          Point: {
-            /** example "56.002691 54.70186" */
-            pos: string
-          },
-          /** example "56.002691,54.70186" */
-          request: string,
-          /** example "10" */
-          results: string,
-          /** example "10" */
-          found: string
-        }
-      },
-      featureMember: Array<GeoObject>
-    }
-  }
-}
-type GeoObject = {
-  GeoObject: {
-    metaDataProperty: {
-      GeocoderMetaData: {
-        /** example "exact" */
-        precision: string,
-        /** example "Россия, Республика Башкортостан, Уфа, улица Рабкоров, 20" */
-        text: string,
-        /** example "house" */
-        kind: string,
-        Address: {
-          /** example "RU" */
-          country_code: string,
-          /** example "Россия, Республика Башкортостан, Уфа, улица Рабкоров, 20" */
-          formatted: string,
-          /** example "450092" */
-          postal_code?: string,
-          Components: Array<{
-            /** example "house" */
-            kind: string,
-            /** example "20" */
-            name: string
-          }>
-        },
-        AddressDetails: {
-          Country: {
-            /** example "Россия, Республика Башкортостан, Уфа, улица Рабкоров, 20" */
-            AddressLine: string,
-            /** example "RU" */
-            CountryNameCode: string,
-            /** example "Россия" */
-            CountryName: string,
-            AdministrativeArea?: {
-              /** example "Республика Башкортостан" */
-              AdministrativeAreaName: string,
-              SubAdministrativeArea?: {
-                /** example "городской округ Уфа" */
-                SubAdministrativeAreaName?: string,
-                /** example "Республика Башкортостан" */
-                AdministrativeAreaName?: string,
-                Locality?: {
-                  /** example "Уфа" */
-                  LocalityName: string,
-                  Thoroughfare?: {
-                    /** example "улица Рабкоров" */
-                    ThoroughfareName: string,
-                    Premise?: {
-                      /** example "20" */
-                      PremiseNumber: string,
-                      PostalCode: {
-                        /** example "450092" */
-                        PostalCodeNumber: string
-                      }
-                    }
-                  },
-                  DependentLocality?: {
-                    /** example "Кировский район" */
-                    DependentLocalityName: string,
-                    DependentLocality?: {
-                      /** example "Кировский район" */
-                      DependentLocalityName: string,
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    /** example "улица Рабкоров, 20" */
-    name: string,
-    /** example "Уфа, Республика Башкортостан, Россия" */
-    description?: string,
-    boundedBy: {
-      Envelope: {
-        /** example "55.998585 54.699482" */
-        lowerCorner: string,
-        /** example "56.006796 54.704238" */
-        upperCorner: string,
-      }
-    },
-    /** example "ymapsbm1://geo?data=IgoNwQJgQhW0zlpC" */
-    uri: string,
-    Point: {
-      /** example "56.002691 54.70186" */
-      pos: string
-    }
-  }
-}
 
-/**
- * "street": Улица
-  "house": Дом 
-  "frame":, Корпус/литер
-  "entrance": Подъезд
-  "doorCode": Код на двери
-  "storey": Этаж
-  "apartment": Квартира
-  "addrComment": Комментарий к заказу
-  
- */
-export type Address = {
-  road: string,
-  house_number: string,
-  multiapartment?: boolean,
-
-  entrance?: string,
-  doorCode?: string,
-  storey?: string,
-  apartment?: string,
-  addrComment?: string,
-  incorrectAddr?: boolean,
-}
-export type Location = { lat: number, lon: number }
