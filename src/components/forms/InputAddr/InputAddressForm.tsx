@@ -95,7 +95,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
 
     setValue('incorrectAddr', Location.inputingAddress.incorrectAddr)
     form.clearErrors()
-  }, [Location.inputingAddress])
+  }, [Location.inputingAddress?.road, Location.inputingAddress?.house_number])
 
 
 
