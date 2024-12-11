@@ -101,7 +101,7 @@ const ReactMapRadio: FC<radioProps> = observer(p => {
     map.geoObjects.removeAll()
     for (const poimt of p.items) {
       const { lat, lon } = poimt
-      const marker = new ymaps.Placemark([lon,lat], {}, { 
+      const marker = new ymaps.Placemark([lat,lon], {}, { 
         iconImageHref: p.defaultSelected?.Id === poimt.Id
           ? Marker
           : GreyMarker,
