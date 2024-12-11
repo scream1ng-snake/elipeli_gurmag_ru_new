@@ -9,6 +9,7 @@ import OrderForm from "../forms/Order/OrderForm"
 import WaySelectorPopup from "./SelectPayMethod"
 import AskLocation from "./AskLocation"
 import CartActions from "./CartActions"
+import { FullscreenLoading } from "../common/Loading/Loading"
 
 const OrderDetailPopup: FC = observer(() => {
   const { cart, reception } = useStore()
@@ -33,6 +34,7 @@ const OrderDetailPopup: FC = observer(() => {
     bodyClassName={styles.detailPopup}
     position='bottom'
   >
+    {cart.postOrder.state === 'LOADING' && <FullscreenLoading />}
     <SelectLocationPopup
       show={show}
       close={close}
