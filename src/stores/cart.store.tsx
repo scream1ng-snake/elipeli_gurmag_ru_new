@@ -12,7 +12,7 @@ import PaymentStore from "./payment.store";
 import { MutableRefObject } from "react";
 import Popup from "../features/modal";
 import moment from "moment";
-import { CITY_PREFIX, receptionCodes } from "./reception.store";
+import { CITY_PREFIX, receptionCodes, receptionTypes } from "./reception.store";
 import Metrics from "../features/Metrics";
 
 /** Блюдо в корзине как часть заказа */
@@ -240,12 +240,31 @@ export class CartStore {
   /** пересчитать скидку */
   private applyDiscount(
     state: Pick<CartStore, 'items' | 'isEmpty' | 'totalPrice'>,
-    percentDiscounts: PercentDiscount[],
-    dishDiscounts: DishDiscount[],
-    allCampaign: AllCampaignUser[],
-    dishSet: DishSetDiscount[],
+    PercentDiscounts: PercentDiscount[],
+    DishDiscounts: DishDiscount[],
+    AllCampaign: AllCampaignUser[],
+    DishSet: DishSetDiscount[],
   ) {
     let new_state = { itemsInCart: state.items };
+    const { receptionType } = this.root.reception
+
+    let percentDiscounts: PercentDiscount[] = []
+    let dishDiscounts: DishDiscount[] = []
+    let allCampaign: AllCampaignUser[] = []
+    let dishSet: DishSetDiscount[] = []
+    if (receptionType === 'delivery') {
+      percentDiscounts = PercentDiscounts.filter(a => a.Delivery == 1);
+      dishDiscounts = DishDiscounts.filter(a => a.Delivery == 1);
+      allCampaign = AllCampaign.filter(a => a.Delivery == 1);
+      dishSet = DishSet.filter(a => a.dishes[0].Delivery == 1);
+    }
+
+    if (receptionType === 'pickup') {
+      percentDiscounts = percentDiscounts.filter(a => a.TakeOut == 1);
+      dishDiscounts = dishDiscounts.filter(a => a.TakeOut == 1);
+      allCampaign = allCampaign.filter(a => a.TakeOut == 1);
+      dishSet = dishSet.filter(a => a.dishes[0].TakeOut == 1);
+    }
 
     const campaign = this.root.user.info.allCampaign
       .find(camp => camp.promocode === this.inputPromocode)
@@ -351,14 +370,13 @@ export class CartStore {
       }
     }
 
-
     this.items = new_state.itemsInCart
     this.totalPrice = new_state.itemsInCart.reduce((acc, cur) =>
       acc + cur.priceWithDiscount, 0
     )
 
 
-    if(state.items.length) setItem('cartItems', state.items)
+    if (state.items.length) setItem('cartItems', state.items)
   }
 
   applyDiscountForCart(userInfo: UserInfoState) {
@@ -381,56 +399,70 @@ export class CartStore {
     switch (receptionType) {
       case 'delivery':
         if (!confirmedLocation?.lat) {
-          if(confirmedAddress.road && confirmedAddress.house_number) {
+          if (confirmedAddress.road && confirmedAddress.house_number) {
             await Location.setCordinatesByAddress(confirmedAddress)
           } else {
             Toast.show('Укажите местоположение заного')
             this.root.reception.selectLocationPopup.open()
           }
+          this.postOrder.setState('FAILED')
+          this.detailPopup.close()
           return
         }
         if (!confirmedLocation?.lon) {
-          if(confirmedAddress.road && confirmedAddress.house_number) {
+          if (confirmedAddress.road && confirmedAddress.house_number) {
             await Location.setCordinatesByAddress(confirmedAddress)
           } else {
             Toast.show('Местоположение не указано, укажите его снова')
             this.root.reception.selectLocationPopup.open()
           }
+          this.postOrder.setState('FAILED')
+          this.detailPopup.close()
           return
         }
         if (!confirmedAddress.road) {
-          if(confirmedLocation.lat && confirmedLocation.lon) {
+          if (confirmedLocation.lat && confirmedLocation.lon) {
             await Location.setAddressByCoords(confirmedLocation)
           } else {
             Toast.show('Адрес не указан, укажите его снова')
             this.root.reception.selectLocationPopup.open()
           }
+          this.postOrder.setState('FAILED')
+          this.detailPopup.close()
           return
         }
         if (!confirmedAddress.house_number) {
-          if(confirmedLocation.lat && confirmedLocation.lon) {
+          if (confirmedLocation.lat && confirmedLocation.lon) {
             await Location.setAddressByCoords(confirmedLocation)
           } else {
             Toast.show('Адрес не указан, укажите его еще раз')
             this.root.reception.selectLocationPopup.open()
           }
+          this.postOrder.setState('FAILED')
+          this.detailPopup.close()
           return
         }
         if (!this.slots.selectedSlot) {
           Toast.show('Слот не указан')
+          this.postOrder.setState('FAILED')
+          this.detailPopup.close()
           return
         }
         break
       case 'pickup':
-        if(!currentOrgID) {
+        if (!currentOrgID) {
           Toast.show('Точка самовывоза не выбрана')
           this.root.reception.selectLocationPopup.open()
+          this.detailPopup.close()
+          this.postOrder.setState('FAILED')
           return
         }
         break
       case 'initial':
         Toast.show('Способ получения не выбран')
         this.root.reception.selectLocationPopup.open()
+        this.detailPopup.close()
+        this.postOrder.setState('FAILED')
         return
     }
     /** если заказ нужен на сегодня */
@@ -475,6 +507,8 @@ export class CartStore {
         this.congratilations.open()
       } else {
         Toast.show('Вы не авторизовались')
+        this.detailPopup.close()
+        this.postOrder.setState('FAILED')
       }
     }
   }
@@ -554,7 +588,9 @@ export type PercentDiscount = {
   MaxSum: number,
   bonusRate: number,
   discountPercent: number,
-  promocode: string
+  promocode: string,
+  TakeOut: number,
+  Delivery: number,
 }
 
 export type DishDiscount = {
@@ -565,6 +601,8 @@ export type DishDiscount = {
   promocode: string,
   dish: number,
   price: number,
+  TakeOut: number,
+  Delivery: number,
 }
 
 export type DishSetDiscount = {
@@ -588,6 +626,9 @@ export type AllCampaignUser = {
   promocode: string,
   image: string,
   compresimage: string,
+  showintgregistry: boolean,
+  TakeOut: number,
+  Delivery: number,
 }
 
 /** заказ */
