@@ -5,7 +5,7 @@ import { useStore } from "../../../../../features/hooks"
 import Metrics from "../../../../../features/Metrics"
 
 const CartList: FC = () => {
-  const { cart } = useStore()
+  const { cart, vkMiniAppMetrics, user } = useStore()
   return <List>
     {cart.items.map((item, index) =>
       <CartItem
@@ -14,6 +14,7 @@ const CartList: FC = () => {
         add={() => {
           cart.addCourseToCart(item.couse)
           Metrics.addToCart(item.couse)
+          vkMiniAppMetrics.addToCart(user.ID || '')
         }}
         remove={() => cart.removeFromCart(item.couse.VCode)}
       />)}

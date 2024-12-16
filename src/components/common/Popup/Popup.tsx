@@ -14,13 +14,13 @@ interface Props {
 const AdaptivePopup: FC<Props> = props => {
   return <>
     <Popup
-      mask={false}
       closeOnSwipe
       closeOnMaskClick
       showCloseButton={!props.noCloseBtn}
       visible={props.visible}
       bodyStyle={props.bodyStyle}
       onClose={props.onClose}
+      maskClassName="d-xs-block d-sm-none"
       bodyClassName="d-xs-block d-sm-none"
       disableBodyScroll
     >
@@ -32,6 +32,7 @@ const AdaptivePopup: FC<Props> = props => {
       }
     </Popup>
     <CenterPopup
+      maskClassName="d-none d-sm-block"
       bodyClassName="d-none d-sm-block"
       closeOnMaskClick
       showCloseButton={!props.noCloseBtn}

@@ -56,7 +56,7 @@ const Stories: FC = observer(() => {
         </div>
         <WatchStory
           storyStyles={storyStyles}
-          // onAllStoriesEnd={closeStory}
+          onAllStoriesEnd={closeStory}
           stories={selectedStory.listSlides.map(slide => ({
             url: config.staticApi
               + "/api/v2/image/FileImage?fileId="

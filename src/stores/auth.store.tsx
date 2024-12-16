@@ -238,6 +238,7 @@ export class AuthStore {
           const COrg = this.root.reception.OrgForMenu
           this.root.user.loadUserInfo.run(COrg, userId)
           Metrics.registration()
+          this.root.vkMiniAppMetrics.registration(userId || '')
         } else {
           setQueryState('FAILED')
           this.setStage('INPUT_TELEPHONE')
@@ -274,6 +275,7 @@ export class AuthStore {
 
       const COrg = this.root.reception.OrgForMenu
       this.root.user.loadUserInfo.run(COrg, userId)
+      this.root.vkMiniAppMetrics.registration(userId || '')
       Metrics.registration()
     } else {
       setState('FAILED')
@@ -299,6 +301,8 @@ export class AuthStore {
   utm: Undef<string> = undefined
   get UTM() { return this.utm }
   set UTM(utm: Undef<string>) { this.utm = utm }
+
+  authRequired = new Popup()
 }
 
 

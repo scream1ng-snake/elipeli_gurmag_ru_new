@@ -508,6 +508,7 @@ export class CartStore {
       } else {
         Toast.show('Вы не авторизовались')
         this.detailPopup.close()
+        this.root.auth.authRequired.open()
         this.postOrder.setState('FAILED')
       }
     }
@@ -548,6 +549,7 @@ export class CartStore {
         this.clearCart()
         Metrics.buyYandex(course)
         Metrics.buy(this.totalPrice, order.itemsInCart.map(i => i.couse.VCode))
+        this.root.vkMiniAppMetrics.buy(this.root.user.ID || '')
       };
     } catch (e) {
       logger.log('Заказ блин не оформился', 'cart-store')

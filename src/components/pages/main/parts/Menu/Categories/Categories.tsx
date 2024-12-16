@@ -150,13 +150,14 @@ export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ cours
 })
 
 const CardBodyComponent: FC<{ course: CourseItem, watchCourse: () => void }> = observer(({ course, watchCourse }) => {
-  const { reception: { menu, selectedOrgID, nearestOrgForDelivery }, cart, auth } = useStore()
+  const { reception: { menu, selectedOrgID, nearestOrgForDelivery }, cart, auth, user,vkMiniAppMetrics } = useStore()
 
   const handleAddToCart = useCallback((e?: any) => {
     if (!nearestOrgForDelivery && !selectedOrgID) auth.bannerAskAdress.open()
     e?.stopPropagation()
     cart.addCourseToCart(course)
     Metrics.addToCart(course)
+    vkMiniAppMetrics.addToCart(user.ID || '')
     Toast.show({
       position: 'center',
       content: 'Добавлено'

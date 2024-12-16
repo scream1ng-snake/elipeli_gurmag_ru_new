@@ -2,6 +2,7 @@ import { CourseItem } from "../stores/menu.store";
 import { logger } from "./logger";
 import { CouseInCart, historyOrderItem } from "../stores/cart.store";
 import config from "./config";
+import bridge from "@vkontakte/vk-bridge";
 
 declare global {
   interface Window {
@@ -97,6 +98,48 @@ abstract class Metrics {
       // @ts-ignore
       ym?.(98171988,'reachGoal','add')
     }
+  }
+}
+
+export class VK_Metrics {
+  isVK: boolean | null = null
+  constructor() {
+    this.isVK = bridge?.isIframe() || bridge?.isWebView()
+  }
+  registration(custom_user_id: string) {
+    // @ts-ignore
+    if(this.isVK) bridge.send('VKWebAppTrackEvent', {
+      event_name: 'registration',
+      custom_user_id
+    })
+  }
+  login(custom_user_id: string) {
+    // @ts-ignore
+    if(this.isVK) bridge.send('VKWebAppTrackEvent', {
+      event_name: 'login',
+      custom_user_id
+    })
+  }
+  init(custom_user_id: string) {
+    // @ts-ignore
+    if(this.isVK) bridge.send('VKWebAppTrackEvent', {
+      event_name: 'mt_internal_launch ',
+      custom_user_id
+    })
+  }
+  addToCart(custom_user_id: string) {
+    // @ts-ignore
+    if(this.isVK) bridge.send('VKWebAppTrackEvent', {
+      event_name: 'add_to_cart',
+      custom_user_id
+    })
+  }
+  buy(custom_user_id: string) {
+    // @ts-ignore
+    if(this.isVK) bridge.send('VKWebAppTrackEvent', {
+      event_name: 'purchase',
+      custom_user_id
+    })
   }
 }
 

@@ -17,7 +17,7 @@ import { Skeleton } from "antd-mobile/es/components/skeleton/skeleton"
 import CourseReviewPopup from "./CourseReviewPopup.tsx"
 
 export const ItemModal: FC<{ close?: () => void }> = observer(p => {
-  const { reception: { menu, nearestOrgForDelivery, selectedOrgID }, cart, auth } = useStore();
+  const { reception: { menu, nearestOrgForDelivery, selectedOrgID }, cart, auth, vkMiniAppMetrics, user } = useStore();
   const { coursePopup } = menu
 
   const close = () => {
@@ -43,6 +43,7 @@ export const ItemModal: FC<{ close?: () => void }> = observer(p => {
         for (let i = 0; i < count; i++) {
           cart.addCourseToCart(currentCouse)
           Metrics.addToCart(currentCouse)
+          vkMiniAppMetrics.addToCart(user.ID || '')
         }
         setCount(1)
         coursePopup.close()

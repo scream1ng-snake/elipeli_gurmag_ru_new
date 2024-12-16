@@ -7,6 +7,7 @@ import { ReceptionStore } from "./reception.store";
 import UserStore from "./user.store";
 import { getItem } from "../features/local-storage";
 import bridge from "@vkontakte/vk-bridge";
+import { VK_Metrics } from "../features/Metrics";
 
 export default class RootStore {
   constructor() {
@@ -45,6 +46,7 @@ export default class RootStore {
   reception = new ReceptionStore(this)
   user = new UserStore(this)
   cart = new CartStore(this)
+  vkMiniAppMetrics = new VK_Metrics()
 
   disposeOrgID = reaction(
     () => this.reception.OrgForMenu,
@@ -61,7 +63,7 @@ export default class RootStore {
     this.whereWeAre()
     await this.reception.loadOrganizations.run();
     await this.auth.check();
-    
+    this.vkMiniAppMetrics.init(this.user.ID || '')
     if(this.auth.isFailed) {
       const orgId = this.reception.OrgForMenu
       this.reception.employees.loadCooks.run(orgId)

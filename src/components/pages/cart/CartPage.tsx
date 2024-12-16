@@ -1,9 +1,9 @@
 import { observer } from "mobx-react-lite"
 import { FC } from "react"
 import Wrapper from "../../layout/Wrapper"
-import { Button, Popup } from "antd-mobile"
+import { Button, Popup, Space } from "antd-mobile"
 import styles from './CartPage.module.css'
-import { useStore } from "../../../features/hooks"
+import { useGoUTM, useStore } from "../../../features/hooks"
 import CartList from "./parts/CartList/CartList"
 import CartHead from "./parts/CartHead/CartHead"
 import Promocode from "./parts/Promocode/Promocode"
@@ -11,12 +11,15 @@ import NoteToOrder from "./parts/NoteForOrder/NotForOrder"
 import OrderDetailPopup from "../../popups/OrderDetailPopup"
 import YoukassaPopup from "../../popups/YookassaPopup"
 import { Congratilations } from "../../popups/CartActions"
+import AuthRequiredPopap from "../../popups/AuthRequired"
+import AdaptivePopup from "../../common/Popup/Popup"
 
 const CartPage: FC = observer(() => {
-  const { cart } = useStore()
+  const { cart, auth } = useStore()
   return (
-    <Wrapper>
+    <>
       <YoukassaPopup />
+      <AuthRequiredPopap />
       <Popup
         visible
         position='bottom'
@@ -33,8 +36,8 @@ const CartPage: FC = observer(() => {
         <Promocode />
         <h3 className={styles.noteText}>Пожелание к заказу</h3>
         <NoteToOrder />
-        <Button 
-          shape='rounded' 
+        <Button
+          shape='rounded'
           color='primary'
           className={styles.orderButton}
           onClick={cart.detailPopup.open}
@@ -43,7 +46,7 @@ const CartPage: FC = observer(() => {
           {'Оформить заказ на ' + Round(cart.totalPrice) + ' ₽'}
         </Button>
       </Popup>
-    </Wrapper>
+    </>
   )
 })
 
