@@ -399,53 +399,49 @@ export class CartStore {
     switch (receptionType) {
       case 'delivery':
         if (!confirmedLocation?.lat) {
-          if (confirmedAddress.road && confirmedAddress.house_number) {
-            await Location.setCordinatesByAddress(confirmedAddress)
-          } else {
-            Toast.show('Укажите местоположение заного')
-            this.root.reception.selectLocationPopup.open()
-          }
+          Toast.show('Укажите местоположение заного')
           this.postOrder.setState('FAILED')
           this.detailPopup.close()
+          this.root.reception.Location.clearAddress()
+          this.root.reception.selectLocationPopup.open()
           return
         }
         if (!confirmedLocation?.lon) {
-          if (confirmedAddress.road && confirmedAddress.house_number) {
-            await Location.setCordinatesByAddress(confirmedAddress)
-          } else {
-            Toast.show('Местоположение не указано, укажите его снова')
-            this.root.reception.selectLocationPopup.open()
-          }
+          Toast.show('Местоположение не указано, укажите его снова')
           this.postOrder.setState('FAILED')
           this.detailPopup.close()
+          this.root.reception.Location.clearAddress()
+          this.root.reception.selectLocationPopup.open()
           return
         }
         if (!confirmedAddress.road) {
-          if (confirmedLocation.lat && confirmedLocation.lon) {
-            await Location.setAddressByCoords(confirmedLocation)
-          } else {
-            Toast.show('Адрес не указан, укажите его снова')
-            this.root.reception.selectLocationPopup.open()
-          }
+          Toast.show('Адрес не указан, укажите его снова')
           this.postOrder.setState('FAILED')
           this.detailPopup.close()
+          this.root.reception.Location.clearAddress()
+          this.root.reception.selectLocationPopup.open()
           return
         }
         if (!confirmedAddress.house_number) {
-          if (confirmedLocation.lat && confirmedLocation.lon) {
-            await Location.setAddressByCoords(confirmedLocation)
-          } else {
-            Toast.show('Адрес не указан, укажите его еще раз')
-            this.root.reception.selectLocationPopup.open()
-          }
+          Toast.show('Адрес не указан, укажите его еще раз')
           this.postOrder.setState('FAILED')
           this.detailPopup.close()
+          this.root.reception.Location.clearAddress()
+          this.root.reception.selectLocationPopup.open()
           return
         }
         if (!this.slots.selectedSlot) {
           Toast.show('Слот не указан')
           this.postOrder.setState('FAILED')
           this.detailPopup.close()
+          return
+        }
+        if(!this.root.reception.nearestOrgDistance || !this.root.reception.nearestOrgForDelivery) {
+          Toast.show('Укажите адрес снова')
+          this.postOrder.setState('FAILED')
+          this.detailPopup.close()
+          this.root.reception.Location.clearAddress()
+          this.root.reception.selectLocationPopup.open()
           return
         }
         break

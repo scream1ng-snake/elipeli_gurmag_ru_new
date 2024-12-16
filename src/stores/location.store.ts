@@ -53,6 +53,15 @@ class LocationStore {
   /** состояние для формы */
   inputingAddress: Address = initial
 
+  clearAddress() {
+    this.confirmedAddress = initial
+    this.inputingAddress = initial
+    this.confirmedLocation = null
+    this.inputingLocation = null
+    localStorage.removeItem(this.LOCATION_KEY)
+    localStorage.removeItem(this.ADDR_KEY)
+  }
+
   /** сетаем поля которые не влияют на положение маркера при вводе*/
   setAdditionalFields = (address: Omit<Address, 'road' | 'house_number'>) => {
     this.inputingAddress = { ...this.inputingAddress, ...address }
