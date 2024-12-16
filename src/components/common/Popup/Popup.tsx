@@ -40,6 +40,7 @@ const AdaptivePopup: FC<Props> = props => {
       bodyStyle={props.bodyStyle}
       onClose={props.onClose}
       disableBodyScroll
+      getContainer={document.body}
     >
       {props.children}
     </CenterPopup>

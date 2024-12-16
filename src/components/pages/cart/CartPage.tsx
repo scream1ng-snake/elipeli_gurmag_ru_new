@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { FC } from "react"
+import { FC, useEffect } from "react"
 import Wrapper from "../../layout/Wrapper"
 import { Button, Popup, Space } from "antd-mobile"
 import styles from './CartPage.module.css'
@@ -10,22 +10,31 @@ import Promocode from "./parts/Promocode/Promocode"
 import NoteToOrder from "./parts/NoteForOrder/NotForOrder"
 import OrderDetailPopup from "../../popups/OrderDetailPopup"
 import YoukassaPopup from "../../popups/YookassaPopup"
-import { Congratilations } from "../../popups/CartActions"
+import { Congratilations, NiceToMeetYooPopup } from "../../popups/CartActions"
 import AuthRequiredPopap from "../../popups/AuthRequired"
 import AdaptivePopup from "../../common/Popup/Popup"
 
 const CartPage: FC = observer(() => {
   const { cart, auth } = useStore()
+  useEffect(() => {
+    if(auth.isFailed) {
+      auth.authRequired.open()
+    } else {
+      auth.authRequired.close()
+    }
+  }, [auth.isFailed])
   return (
     <>
       <YoukassaPopup />
       <AuthRequiredPopap />
+      
       <Popup
         visible
         position='bottom'
         bodyClassName={styles.cartPopup}
         mask={false}
       >
+        
         <Congratilations />
         <OrderDetailPopup />
         <CartHead />
@@ -46,6 +55,7 @@ const CartPage: FC = observer(() => {
           {'Оформить заказ на ' + Round(cart.totalPrice) + ' ₽'}
         </Button>
       </Popup>
+      <NiceToMeetYooPopup />
     </>
   )
 })

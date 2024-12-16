@@ -2,20 +2,21 @@ import { observer } from 'mobx-react-lite';
 import { FC } from "react";
 import Wrapper from '../../layout/Wrapper';
 import { FullscreenLoading } from '../../common/Loading/Loading';
-import { useGoUTM, useStore } from '../../../features/hooks';
+import { useStore } from '../../../features/hooks';
 import InputNumber from '../../forms/InputTelephone/InputTelephone';
 import Registration from '../../forms/Registration/Registration';
 import InputSmsCode from '../../forms/InputSmsCode/InputSmsCode';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const LoginPage: FC = observer(() => {
-  const go = useGoUTM()
+  const navigate = useNavigate()
   const { auth } = useStore()
   function getContent() {
     switch (auth.stage) {
       case 'COMPLETED':
-        go('/')
+        navigate(-1)
         return null
       case 'INPUT_TELEPHONE':
         return <InputNumber />
