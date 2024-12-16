@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { CSSProperties, FC, useCallback, useState } from "react"
+import { CSSProperties, FC, useCallback, useEffect, useState } from "react"
 import styles from './Menu.module.css'
 import CourseReviewPopup from "../../../../popups/CourseReviewPopup.tsx"
 import { useStore } from "../../../../../features/hooks"
@@ -9,6 +9,7 @@ import Row from "react-bootstrap/Row"
 import { Image, Skeleton } from "antd-mobile"
 import config from "../../../../../features/config"
 import CategoryPopup from "../../../../popups/CategoryPopup"
+import { toJS } from "mobx"
 // import Categories from "./Categories/Categories"
 
 const Menu: FC = observer(() => {
@@ -55,7 +56,12 @@ const labelStyle: CSSProperties = {
 const Category: FC<{ category: CategoryCourse }> = ({ category }) => {
   const [err, setErr] = useState(false)
   const { reception: { menu }} = useStore()
-  const watchCategory = useCallback(() => menu.categoryPopup.watch(category), [])
+  const watchCategory = useCallback(() => { 
+    menu.categoryPopup.watch(category)
+  }, [category])
+  useEffect(() => {
+    setErr(false)
+  }, [category])
   return <Col style={colStyle} xs={4} sm={3} md={2} xl={2}>
     {err &&
       <span style={labelStyle}>
