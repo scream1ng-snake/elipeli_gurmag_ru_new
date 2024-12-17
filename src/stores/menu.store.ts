@@ -182,6 +182,7 @@ export type Selection = {
   CompressImages: undefined | string[],
   priceWithDiscount: any
   priceWithDiscountOld: any
+  CookingTime: Optional<number>
 }
 
 /** Тип категории с блюдами */

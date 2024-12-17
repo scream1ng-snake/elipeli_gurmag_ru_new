@@ -170,7 +170,11 @@ export const ItemModal: FC<{ close?: () => void }> = observer(p => {
                     ? <div className="item_modal_count_text">
                       {'В наличии ' + currentCouse.EndingOcResidue + ' шт'}
                     </div>
-                    : null
+                    : currentCouse.CookingTime
+                      ? <div className="item_modal_count_text">
+                        {'Готовим под заказ ' + currentCouse.CookingTime + ' мин.'}
+                      </div>
+                      : null
                   }
                   <Space
                     style={{ '--gap': '20px', width: '100%', marginTop: '4.78px' }}
