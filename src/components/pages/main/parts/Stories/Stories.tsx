@@ -69,7 +69,7 @@ const Stories: FC = observer(() => {
                 <Button
                   shape='rounded'
                   color='primary'
-                  fill='outline'
+                  
                   onClick={() => {
                     const isExternal = slide.link?.includes('http')
                     isExternal
@@ -81,7 +81,8 @@ const Stories: FC = observer(() => {
                     bottom: 22,
                     left: 22,
                     right: 22,
-                    padding: 10
+                    padding: 10,
+                    fontSize:20
                   }}
                 >
                   Смотреть
