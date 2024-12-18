@@ -245,6 +245,10 @@ dl, ol, ul {
   letter-spacing: 0.05em;
   color: var(--громкий-текст);
 }
+.item_modal_description_text > p {
+  text-indent: 22px;
+  margin-top: 3px;
+}
 
 .item_modal_stepper.adm-stepper {
   background-color: var(--tg-theme-secondary-bg-color);

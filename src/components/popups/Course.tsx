@@ -258,7 +258,7 @@ export const ItemModal: FC<{ close?: () => void }> = observer(p => {
                     Описание
                   </div>
                   <div className="item_modal_description_text">
-                    {currentCouse.CourseDescription}
+                    {currentCouse.CourseDescription.split('\n').map(str => <p>{str}</p>)}
                   </div>
                 </div>
               </div>
