@@ -246,6 +246,8 @@ export class CartStore {
     DishSet: DishSetDiscount[],
   ) {
     let new_state = { itemsInCart: state.items };
+    let CourseAllSum = 0
+    new_state.itemsInCart.forEach(a=> CourseAllSum += a.couse.Price * a.quantity);
     const { receptionType } = this.root.reception
 
     let percentDiscounts: PercentDiscount[] = []
@@ -253,17 +255,17 @@ export class CartStore {
     let allCampaign: AllCampaignUser[] = []
     let dishSet: DishSetDiscount[] = []
     if (receptionType === 'delivery') {
-      percentDiscounts = PercentDiscounts.filter(a => a.Delivery == 1);
-      dishDiscounts = DishDiscounts.filter(a => a.Delivery == 1);
-      allCampaign = AllCampaign.filter(a => a.Delivery == 1);
-      dishSet = DishSet.filter(a => a.dishes[0].Delivery == 1);
+      percentDiscounts = PercentDiscounts.filter(a => a.Delivery == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
+      dishDiscounts = DishDiscounts.filter(a => a.Delivery == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
+      allCampaign = AllCampaign.filter(a => a.Delivery == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
+      dishSet = DishSet.filter(a => a.dishes[0].Delivery == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
     }
 
     if (receptionType === 'pickup') {
-      percentDiscounts = percentDiscounts.filter(a => a.TakeOut == 1);
-      dishDiscounts = dishDiscounts.filter(a => a.TakeOut == 1);
-      allCampaign = allCampaign.filter(a => a.TakeOut == 1);
-      dishSet = dishSet.filter(a => a.dishes[0].TakeOut == 1);
+      percentDiscounts = PercentDiscounts.filter(a => a.TakeOut == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
+      dishDiscounts = DishDiscounts.filter(a => a.TakeOut == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
+      allCampaign = AllCampaign.filter(a => a.TakeOut == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
+      dishSet = DishSet.filter(a => a.dishes[0].TakeOut == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
     }
 
     const campaign = this.root.user.info.allCampaign
@@ -281,7 +283,10 @@ export class CartStore {
             if (count >= dishSet.dishCount) {
               Toast.show("Промокод активирован")
               this.confirmedPromocode = this.inputPromocode
-            } else { this.confirmedPromocode = null }
+            } else { 
+              this.confirmedPromocode = null
+              this.inputPromocode = '' 
+            }
           }
         })
       } else {
@@ -290,6 +295,7 @@ export class CartStore {
       }
     } else {
       this.confirmedPromocode = null
+      this.inputPromocode = ''
     }
 
     let curDishSets: any = [];
@@ -586,9 +592,11 @@ export type PercentDiscount = {
   MaxSum: number,
   bonusRate: number,
   discountPercent: number,
+  discountMoney: number,
   promocode: string,
   TakeOut: number,
   Delivery: number,
+  PresentAction: Optional<boolean>
 }
 
 export type DishDiscount = {
@@ -601,6 +609,9 @@ export type DishDiscount = {
   price: number,
   TakeOut: number,
   Delivery: number,
+  MinSum: number,
+  MaxSum: number,
+  PresentAction: Optional<boolean>,
 }
 
 export type DishSetDiscount = {
@@ -608,6 +619,9 @@ export type DishSetDiscount = {
   dishes: DishDiscount[],
   dishCount: number,
   promocode: string
+  PresentAction: Optional<boolean>,
+  MinSum: number,
+  MaxSum: number,
 }
 
 interface DishSetDiscountActive extends DishSetDiscount {
@@ -627,6 +641,9 @@ export type AllCampaignUser = {
   showintgregistry: boolean,
   TakeOut: number,
   Delivery: number,
+  PresentAction: Optional<boolean>,
+  MinSum: number,
+  MaxSum: number,
 }
 
 /** заказ */
