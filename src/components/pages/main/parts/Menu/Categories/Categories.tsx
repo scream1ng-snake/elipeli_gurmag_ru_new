@@ -201,7 +201,11 @@ const CardBodyComponent: FC<{ course: CourseItem, watchCourse: () => void }> = o
             ? <div className={styles.count_text}>
               {'В наличии ' + course.EndingOcResidue + ' шт'}
             </div>
-            : null
+            : course.CookingTime
+              ? <div className={styles.count_text}>
+                {'Готовим под заказ ' + course.CookingTime + ' мин.'}
+              </div>
+              : null
           }
           <div className={styles.price_text}>
             <span>{`${course.Price} ₽`}</span>

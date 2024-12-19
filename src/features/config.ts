@@ -8,7 +8,7 @@ class Config {
   }
   api = 'https://elipelisr.craimez.ru/elipelibot'
   staticApi = 'https://elipelisr.craimez.ru/elipelibot'
-  testApi = 'https://elipelisr.lexcloud.ru/elipelibottest'
+  testApi = 'https://elipelisr.craimez.ru/elipelibottest'
 }
 
 export default new Config() // eslint-disable-line

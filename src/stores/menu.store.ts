@@ -31,17 +31,19 @@ class MenuStore {
   stories: WebHistoty[] = []
   setStories(s: WebHistoty[]) { this.stories = s }
 
+  recomendations: RecomendationItem[] = []
+  setRecomendations(r: RecomendationItem[]) { this.recomendations = r }
+
 
   loadMenu = new Request(async (state, setState, orgID: number) => {
     setState('LOADING')
     try {
       const data: Undef<V3_userInfoResponse> = await http.get('/getUserMenu_v4/' + orgID);
-      if(data?.BaseMenu && data?.PopularMenu) {
-        this.setCategories(data.BaseMenu)
-        this.setPopular(data.PopularMenu)
-        this.setSelections(data.SelectionMenu)
-        this.setStories(data.WebHistoty)
-      }
+      this.setCategories(data?.BaseMenu ?? [])
+      this.setPopular(data?.PopularMenu ?? [])
+      this.setSelections(data?.SelectionMenu ?? [])
+      this.setStories(data?.WebHistoty ?? [])
+      this.setRecomendations(data?.ProductRecomendation ?? [])
       setState('COMPLETED')
       this.loadMenuBg.run(orgID)
     } catch (err) {
@@ -53,7 +55,7 @@ class MenuStore {
   loadMenuBg = new Request(async (state, setState, orgID: number) => {
     setState('LOADING')
     const dataBg: Undef<V3_userInfoResponse> = await http.get('/getUserMenu_v3/' + orgID);
-    if(dataBg?.BaseMenu && dataBg?.PopularMenu) {
+    if(dataBg?.BaseMenu && dataBg?.SelectionMenu) {
       this.loadMenu.setState('LOADING')
       this.setCategories(dataBg.BaseMenu)
       this.setSelections(dataBg.SelectionMenu)
@@ -144,6 +146,7 @@ type V3_userInfoResponse = {
   PopularMenu: CourseItem[]
   SelectionMenu: Selection[]
   WebHistoty: WebHistoty[]
+  ProductRecomendation: RecomendationItem[]
 }
 
 export type WebHistoty = {
@@ -183,6 +186,12 @@ export type Selection = {
   priceWithDiscount: any
   priceWithDiscountOld: any
   CookingTime: Optional<number>
+}
+export type RecomendationItem = CourseItem & {
+  /** "/collections/4" */
+  Link: string,
+  /** "Не забыли пиццу?" */
+  LinkName: string
 }
 
 /** Тип категории с блюдами */
