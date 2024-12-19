@@ -115,7 +115,8 @@ dl, ol, ul {
 /* v Модалка товара */
 .item_modal {
   background: none!important;
-  height: calc(100% - 30px);
+  /* min-height: calc(100% - 50px); */
+  max-height: calc(100% - 15px);
 }
 .item_modal_wrapper {
   display: flex;
@@ -244,6 +245,7 @@ dl, ol, ul {
   line-height: 18px;
   letter-spacing: 0.05em;
   color: var(--громкий-текст);
+  height: 100%;
 }
 .item_modal_description_text > p {
   text-indent: 22px;

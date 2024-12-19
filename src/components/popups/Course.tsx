@@ -162,6 +162,7 @@ export const ItemModal: FC<{ close?: () => void }> = observer(p => {
                     />
                   </div>
                 </div>
+                <div style={{ height: '100%', overflow: 'scroll', display: 'flex', flexDirection: 'column' }}>
                 <div className="item_modal_top_wrapper">
                   <h1 className="item_modal_title_text">
                     {currentCouse.Name}
@@ -260,6 +261,7 @@ export const ItemModal: FC<{ close?: () => void }> = observer(p => {
                   <div className="item_modal_description_text">
                     {currentCouse.CourseDescription.split('\n').map(str => <p>{str}</p>)}
                   </div>
+                </div>
                 </div>
               </div>
             </Col>
