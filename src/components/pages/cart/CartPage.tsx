@@ -42,9 +42,9 @@ const CartPage: FC = observer(() => {
         </h2>
         <CartList />
         <Promocode />
-        {/* <Recomendations /> */}
         <h3 className={styles.noteText}>Пожелание к заказу</h3>
         <NoteToOrder />
+        <Recomendations />
         <Button
           shape='rounded'
           color='primary'

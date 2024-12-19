@@ -19,9 +19,10 @@ export const CollectionPopup: FC = observer(p => {
   const { VCode } = useParams<{ VCode: string }>()
   const { reception: { menu } } = useStore()
 
-  const go = useGoUTM()
+  const go = useNavigate()
+  // const go = useGoUTM()
   function close() {
-    go('/')
+    go(-1)
     menu.selectionPopup.close()
   }
   const currentCollection = toJS(menu.selectionPopup.content) as Optional<Selection>

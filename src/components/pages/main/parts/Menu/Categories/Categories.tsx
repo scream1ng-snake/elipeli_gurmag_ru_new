@@ -4,7 +4,7 @@ import styles from './Categories.module.css'
 import { useGoUTM, useStore } from "../../../../../../features/hooks";
 import { Image, Result, Skeleton, Toast } from "antd-mobile";
 import { SmileOutline } from "antd-mobile-icons";
-import { CourseItem } from "../../../../../../stores/menu.store";
+import { CourseItem, RecomendationItem } from "../../../../../../stores/menu.store";
 import config from "../../../../../../features/config";
 import IconStar from '../../../../../../assets/icon_star.svg'
 import ImageReviews from '../../../../../../assets/image_reviews.svg'
@@ -233,6 +233,135 @@ const CardBodyComponent: FC<{ course: CourseItem, watchCourse: () => void }> = o
             fontWeight={'400'}
             fontSize={cart.isInCart(course) ? '14.5px' : '18.5px'}
             backgroundVar={'--gur-card-button-bg-color'}
+            colorVar={'--громкий-текст'}
+            appendImage={null}
+          />
+        </div>
+      </div>
+    </div>
+  )
+})
+
+export const RecomendationItemComponent: FC<{ course: RecomendationItem }> = observer(({ course }) => {
+  const go = useGoUTM()
+  // const watchCourse = useCallback(() => go('/menu/' + course.VCode), [])
+  return (
+    <div className={styles.recomendation_item + ' course_item_card'}>
+      <Image
+        lazy
+        src={`${config.staticApi}/api/v2/image/FileImage?fileId=${course.CompressImages?.[0]}`}
+        // onClick={watchCourse}
+        placeholder={<Skeleton style={{ width: '100%', height: '134px' }} animated />}
+        fit='cover'
+        width="auto"
+        height="134px"
+        style={{
+          "--height": "134px",
+          "--width": "auto"
+        }}
+      />
+      <RecomendationBodyComponent course={course} />
+    </div>
+  )
+})
+
+const RecomendationBodyComponent: FC<{ course: RecomendationItem }> = observer(({ course }) => {
+  const { reception: { menu, selectedOrgID, nearestOrgForDelivery }, cart, auth, user,vkMiniAppMetrics } = useStore()
+
+  const handleAddToCart = useCallback((e?: any) => {
+    if (!nearestOrgForDelivery && !selectedOrgID) auth.bannerAskAdress.open()
+    e?.stopPropagation()
+    cart.addCourseToCart(course)
+    Metrics.addToCart(course)
+    vkMiniAppMetrics.addToCart(user.ID || '')
+    Toast.show({
+      position: 'center',
+      content: 'Добавлено'
+    })
+  }, [])
+
+  const go = useGoUTM()
+
+  return (
+    <div className={styles.item_bady} style={{ position: 'relative' }}>
+      <div className={styles.item_top_wrapper}>
+        <div className={styles.rating_wrapper}>
+          <div
+            className={styles.rating}
+          >
+            <Image
+              src={IconStar}
+              width={10}
+              height={10}
+              fit='contain'
+            />
+            <div className={styles.rating_text} >
+              {Math.ceil(course.Quality * 10) / 10}
+            </div>
+          </div>
+        </div>
+        <div>
+          <Image
+            src={ImageReviews}
+            width={44}
+            height={35}
+            fit='contain'
+            style={{ cursor: 'pointer' }}
+          />
+        </div>
+      </div>
+      <div className={styles.item_bottom_wrapper}>
+        <div className={styles.item_bottom_content}>
+          {!course.NoResidue
+            ? <div className={styles.count_text}>
+              {'В наличии ' + course.EndingOcResidue + ' шт'}
+            </div>
+            : course.CookingTime
+              ? <div className={styles.count_text}>
+                {'Готовим под заказ ' + course.CookingTime + ' мин.'}
+              </div>
+              : null
+          }
+          <div className={styles.price_text}>
+            <span>{`${course.Price} ₽`}</span>
+          </div>
+          <h3
+            className={styles.title_text}
+          >
+            <span>{course.Name}</span>
+          </h3>
+          <div className={styles.weight_text}>
+            <span>{course.Weigth}</span>
+          </div>
+        </div>
+        <div style={{ margin: '0px -4px' }}>
+          <CustomButton
+            text={cart.isInCart(course) ? ('' + cart.findItem(course.VCode)?.quantity) : '+'}
+            onClick={handleAddToCart}
+            height={'24px'}
+            maxWidth={'auto'}
+            marginTop={'5px'}
+            marginBottom={'0px'}
+            marginHorizontal={'0px'}
+            paddingHorizontal={'0px'}
+            fontWeight={'400'}
+            fontSize={cart.isInCart(course) ? '14.5px' : '18.5px'}
+            backgroundVar={'--gur-card-button-bg-color'}
+            colorVar={'--громкий-текст'}
+            appendImage={null}
+          />
+          <CustomButton
+            text={course.LinkName}
+            onClick={() => go(course.Link)}
+            height={'24px'}
+            maxWidth={'auto'}
+            marginTop={'5px'}
+            marginBottom={'0px'}
+            marginHorizontal={'0px'}
+            paddingHorizontal={'0px'}
+            fontWeight={'700'}
+            fontSize={'12px'}
+            backgroundVar={'--gurmag-accent-color'}
             colorVar={'--громкий-текст'}
             appendImage={null}
           />

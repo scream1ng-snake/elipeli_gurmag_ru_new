@@ -3,62 +3,32 @@ import { observer } from "mobx-react-lite"
 import { CSSProperties, FC } from "react"
 import { useGoUTM, useStore } from "../../../../../features/hooks"
 import config from "../../../../../features/config"
-const styles: Record<string, CSSProperties> = {
+import { RecomendationItemComponent } from "../../../main/parts/Menu/Categories/Categories"
+import styles from '../../../main/parts/Menu/Categories/Categories.module.css'
+const css: Record<string, CSSProperties> = {
   headText: {
-    margin: '28px 14px 10px 14px',
+    margin: '22px 14px 10px 14px',
     fontSize: 18
   }
 }
 const Recomendations: FC = observer(() => {
-  const { reception: { menu } } = useStore()
-  const go = useGoUTM()
+  const { cart, reception: { menu } } = useStore()
+  const filtered_recomendations = menu.recomendations.filter(item => 
+    !Boolean(cart.items.find(itemInCart => itemInCart.couse.VCode === item.VCode))
+  )
   return <>
-    <h3 style={styles.headText}>Рекомендуем</h3>
-    <Space
-      style={{
-        background: 'var(--tg-theme-bg-color)',
-        overflowX: 'scroll',
-        '--gap-horizontal': '-7px',
-        width: '100%',
-        scrollbarWidth: 'none',
-      }}
-    >
-      {menu.recomendations.map((recomendation, index) =>
-        <Space key={index} direction='vertical' align='center' justify='center'>
-          <Image
-            src={config.staticApi
-              + "/api/v2/image/FileImage?fileId="
-              + recomendation.CompressImages?.[0]
-            }
-            style={{
-              width: 60,
-              height: 60,
-              objectFit: 'cover',
-              borderRadius:13
-            }}
-          />
-          <span style={{ fontSize:12 }}>{recomendation.Name}</span>
-          <Button 
-            size='small' 
-            color='primary' 
-            shape='rounded'
-            onClick={() => {}}
-          >
-            Добавить
-          </Button>
-          <Button 
-            size='small' 
-            color='primary' 
-            shape='rounded' 
-            fill='outline'
-            onClick={() => { go(recomendation.Link) }}
-          >
-            {recomendation.LinkName}
-          </Button>
-        </Space>
-      )
-      }
-    </Space>
+    {filtered_recomendations.length
+      ? <h3 style={css.headText}>Добавить в заказ?</h3>
+      : null
+    }
+    <div className={styles.recomendations_list}>
+      {filtered_recomendations.map((recomendation, index) =>
+        <RecomendationItemComponent
+          key={recomendation.VCode}
+          course={recomendation}
+        />
+      )}
+    </div>
   </>
 })
 export default Recomendations

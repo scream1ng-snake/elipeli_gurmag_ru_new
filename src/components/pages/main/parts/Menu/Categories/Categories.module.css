@@ -19,6 +19,16 @@
   width: 100%;
   height: 100%;
 }
+.recomendations_list {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 7px;
+  padding-right: 7px;
+  background: var(--tg-theme-bg-color);
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  width: 100%;
+}
 
 .course_item {
   position: relative;
@@ -35,8 +45,20 @@
   /* 247px = 134 (image) + 6 (border) + 107 (data) | было: */
   box-sizing: border-box;
 }
+.recomendation_item {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  background: var(--gur-card-bg-color);
+  border-radius: 15px; /* 8px; */
+  border: 3px solid var(--gur-card-bg-color);
+  margin: 0px 4px 10px;
+  height: 269px;
+  box-sizing: border-box;
+}
 
-.course_item .image_text {
+.course_item .image_text, .recomendation_item .image_text{
   position: absolute;
   top: 14px;
   left: 16px;
@@ -143,14 +165,14 @@
   margin-top: 10px;
   color: var(--тихий-текст);
 }
-.course_item .title {
+.course_item .title, .recomendation_item .title {
   margin-top: 12px;
   font-size: 16px;
   font-weight: 600;
   line-height: 21.8px;
 }
 
-.course_item>img {
+.course_item>img, .recomendation_item>img {
   height: 134px;
   width: auto;
   object-fit: cover;
@@ -175,42 +197,42 @@
 
 
 @media screen and (min-width: 300px) {
-  .course_item {
+  .course_item, .recomendation_item {
     width: calc(50% - 8px);
   }
 
-  .course_item>img {
+  .course_item>img, .recomendation_item>img {
     height: 134px;
   }
 }
 
 @media screen and (min-width: 768px) {
-  .course_item {
+  .course_item, .recomendation_item {
     width: calc(33% - 8px);
   }
 
-  .course_item>img {
+  .course_item>img, .recomendation_item>img {
     height: 140px;
   }
 }
 
 
 @media screen and (min-width: 1200px) {
-  .course_item {
+  .course_item, .recomendation_item {
     width: calc(25% - 8px);
   }
 
-  .course_item>img {
+  .course_item>img, .recomendation_item>img {
     height: 165px;
   }
 }
 
 @media screen and (min-width: 1400px) {
-  .course_item {
+  .course_item, .recomendation_item {
     width: calc(20% - 8px);
   }
 
-  .course_item>img {
+  .course_item>img, .recomendation_item>img {
     height: 180px;
   }
 }
