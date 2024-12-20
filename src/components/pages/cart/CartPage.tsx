@@ -75,7 +75,7 @@ const CartPage: FC = observer(() => {
           color='primary'
           className={styles.orderButton}
           onClick={cart.detailPopup.open}
-          disabled={!cart.items.length || (!!config.minPriceForDelivery && (cart.totalPrice < config.minPriceForDelivery))}
+          disabled={!cart.items.length || (!!config.minPriceForDelivery && (cart.totalPrice < config.minPriceForDelivery) && reception.receptionType === 'delivery')}
         >
           {'Оформить заказ на ' + Round(cart.totalPrice) + ' ₽'}
         </Button>
