@@ -38,7 +38,7 @@ const ReceptionSwitcher: FC = observer(() => {
       : receptionType === 'delivery'
         ? isWorkingNow 
           ? config.minPriceForDelivery
-            ? 'Доставка бесплатно от ' + config.minPriceForDelivery + ' руб.'
+            ? 'Доставка бесплатно. Заказ от ' + config.minPriceForDelivery + ' р.'
             : 'Доставка бесплатно' 
           : <Red>Сейчас не доставляем. Доставляем с 9.30 до 21.30</Red>
         : isWorkingNow 
