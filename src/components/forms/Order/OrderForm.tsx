@@ -63,6 +63,7 @@ const Pickup: FC = observer(() => {
 
 const Delivery: FC = observer(() => {
   const { cart, reception } = useStore()
+  const { datePick, date, setDate } = cart
   const { selectLocationPopup: { open }, Location } = reception
 
   const { road, house_number } = Location.confirmedAddress
@@ -71,6 +72,16 @@ const Delivery: FC = observer(() => {
     && cart.payment.method
     
   return <Form>
+    <DatePicker
+      cancelText='Закрыть'
+      confirmText='Подтвердить'
+      title='Выберите дату'
+      visible={datePick.show}
+      onClose={datePick.close}
+      onConfirm={setDate}
+      min={new Date()}
+      value={date}
+    />
     <h2 className={styles.receptionType}>
       На доставку
     </h2>
@@ -188,8 +199,22 @@ const Time: FC = observer(() => {
 })
 const Slots: FC = observer(() => {
   const { cart } = useStore()
+  const { datePick } = cart
   return <Form.Item
-    label='Время доставки'
+    label={
+      <Space align='center' style={{"--gap":'10px'}}>
+        <span>Время доставки</span>
+        <span 
+          onClick={() => datePick.open()}
+          style={{ color: 'var(--gurmag-accent-color)', textDecoration: 'underline', fontSize:17 }}
+        >
+          {moment(cart.date).isSame(new Date(), 'day')
+            ? 'Сегодня'
+            : moment(cart.date).format('DD-MM-YYYY')
+          }
+        </span>
+      </Space>
+    }
     className={styles.slotSelect}
   >
     <div className={styles.selectWrap}>

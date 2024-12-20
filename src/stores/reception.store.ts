@@ -12,6 +12,7 @@ import IconBtnPickup from '../assets/icon_btn_pickup@2x.png'
 import _ from 'lodash'
 import SuggestitionStore from "./suggestition.store";
 import LocationStore from "./location.store";
+import config from "../features/config";
 
 export const apikey = 'b76c1fb9-de2c-4f5a-8621-46681c107466'
 export const CITY_PREFIX = 'Уфа, '
@@ -162,6 +163,8 @@ export class ReceptionStore {
         content: errStr, 
         position: 'center'
       })
+    } finally {
+      if(config.isDev) this.organizations.push({ Id:143, isCK: false, Name:'Тестовая точка' })
     }
   })
 

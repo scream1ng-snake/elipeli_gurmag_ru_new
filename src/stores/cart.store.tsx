@@ -78,6 +78,16 @@ export class CartStore {
     })
 
     setInterval(this.checkOrderTime, 1000)
+
+    reaction(() => this.date, (cur, prev) => {
+      const today = new Date()
+      const curToday = moment(cur).isSame(today, 'day')
+      const prevToday = moment(prev).isSame(today, 'day')
+      if(curToday !== prevToday) {
+        this.slots.checkAvailableSlot() 
+        this.slots.selectedSlot = null
+      }
+    })
   }
 
 

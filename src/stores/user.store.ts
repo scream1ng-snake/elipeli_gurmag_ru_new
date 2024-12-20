@@ -140,9 +140,11 @@ type PercentDiscount = {
   MaxSum: number,
   bonusRate: number,
   discountPercent: number,
+  discountMoney: number,
   promocode: string,
   TakeOut: number,
   Delivery: number,
+  PresentAction: Optional<boolean>
 }
 
 type DishDiscount = {
@@ -155,6 +157,9 @@ type DishDiscount = {
   price: number,
   TakeOut: number,
   Delivery: number,
+  MinSum: number,
+  MaxSum: number,
+  PresentAction: Optional<boolean>,
 }
 
 type DishSetDiscount = {
@@ -162,6 +167,9 @@ type DishSetDiscount = {
   dishes: DishDiscount[],
   dishCount: number,
   promocode: string
+  PresentAction: Optional<boolean>,
+  MinSum: number,
+  MaxSum: number,
 }
 
 
@@ -177,7 +185,10 @@ type AllCampaignUser = {
   compresimage: string,
   showintgregistry: boolean,
   TakeOut: number,
-  Delivery: number
+  Delivery: number,
+  PresentAction: Optional<boolean>,
+  MinSum: number,
+  MaxSum: number,
 }
 export default UserStore
 

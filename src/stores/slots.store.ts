@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx"
+import { makeAutoObservable, reaction } from "mobx"
 import moment from "moment"
 import { Optional, Request } from "../features/helpers"
 import { http } from "../features/http"
@@ -61,7 +61,7 @@ class Slots {
   })
 
   /** проверяем доступные слоты  */
-  private checkAvailableSlot = () => {
+  checkAvailableSlot = () => {
     const isToday = moment(this.cart.date).isSame(new Date(), 'day')
     if (isToday) {
       this.availbaleSlots = this.list.filter(this.isSlotActive)
