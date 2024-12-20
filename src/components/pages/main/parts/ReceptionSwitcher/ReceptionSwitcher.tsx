@@ -16,6 +16,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { Gift } from '../../../../icons/Gift'
 import { Button, Space } from 'antd-mobile'
+import config from '../../../../../features/config'
 
 
 const ReceptionSwitcher: FC = observer(() => {
@@ -35,8 +36,14 @@ const ReceptionSwitcher: FC = observer(() => {
     receptionType === 'initial'
       ? 'или заберёте сами?'
       : receptionType === 'delivery'
-        ? isWorkingNow ? 'Доставка бесплатно' : <Red>Сейчас не доставляем. Доставляем с 9.30 до 21.30</Red>
-        : isWorkingNow ? 'Забрать из Гурмага' : <Red>Закрыто - Откроется в 9:30</Red>
+        ? isWorkingNow 
+          ? config.minPriceForDelivery
+            ? 'Доставка бесплатно от ' + config.minPriceForDelivery + ' руб.'
+            : 'Доставка бесплатно' 
+          : <Red>Сейчас не доставляем. Доставляем с 9.30 до 21.30</Red>
+        : isWorkingNow 
+          ? 'Забрать из Гурмага' 
+          : <Red>Закрыто - Откроется в 9:30</Red>
 
   const getAddress = () =>
     receptionType === 'initial'
