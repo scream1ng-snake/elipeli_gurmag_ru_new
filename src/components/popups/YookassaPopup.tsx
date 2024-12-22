@@ -2,6 +2,7 @@ import { Popup } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { FC } from "react"
 import { useStore } from "../../features/hooks"
+import { logger } from "../../features/logger"
 
 
 
@@ -11,6 +12,9 @@ const YoukassaPopup: FC = observer(() => {
 
   const hide = () => {
     checkoutWidget.destroy()
+    cart.postOrder.setState('FAILED')
+    cart.detailPopup.close()
+    logger.log('Платеж отменен', "Yookassa-Popup")
     youkassaPopup.close()
   }
   return (

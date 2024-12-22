@@ -14,6 +14,7 @@ import Popup from "../features/modal";
 import moment from "moment";
 import { CITY_PREFIX, receptionCodes, receptionTypes } from "./reception.store";
 import Metrics from "../features/Metrics";
+import GiftStore from "./gift.store";
 
 /** Блюдо в корзине как часть заказа */
 export type CouseInCart = {
@@ -87,6 +88,9 @@ export class CartStore {
         this.slots.checkAvailableSlot() 
         this.slots.selectedSlot = null
       }
+    })
+    reaction(() => this.totalPrice, cur => {
+      this.gift.totalPrice = cur
     })
   }
 
@@ -295,7 +299,6 @@ export class CartStore {
               this.confirmedPromocode = this.inputPromocode
             } else { 
               this.confirmedPromocode = null
-              this.inputPromocode = '' 
             }
           }
         })
@@ -305,7 +308,6 @@ export class CartStore {
       }
     } else {
       this.confirmedPromocode = null
-      this.inputPromocode = ''
     }
 
     let curDishSets: any = [];
@@ -592,6 +594,7 @@ export class CartStore {
 
   payment = new PaymentStore(this)
   slots = new Slots(this)
+  gift = new GiftStore(this)
 }
 
 
