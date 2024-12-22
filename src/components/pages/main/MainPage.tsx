@@ -18,6 +18,7 @@ import { logger } from "../../../features/logger"
 import AskAuthorize from "../../popups/AskAuthorize"
 import { NiceToMeetYooPopup } from "../../popups/CartActions"
 import Container from "react-bootstrap/Container"
+// import AmountScaleForGift from "./parts/AmountScale/AmountSCaleForGift"
 
 
 const MainPage: FC = observer(() => {
@@ -53,6 +54,7 @@ const MainPage: FC = observer(() => {
       <Cooks />
       <Menu />
     </Container>
+    {/* <AmountScaleForGift /> */}
     <BottomNavigation />
   </Wrapper>
 })
