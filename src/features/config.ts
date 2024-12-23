@@ -1,6 +1,6 @@
 class Config {
   enableLogs = true
-  isDev = !!(process.env.NODE_ENV === 'development')
+  isDev = !!(window.location.hostname === 'localhost' || window.location.hostname === 'glowing-truffle-8a37a0.netlify.app')
   get apiURL() {
     return this.isDev
       ? this.testApi

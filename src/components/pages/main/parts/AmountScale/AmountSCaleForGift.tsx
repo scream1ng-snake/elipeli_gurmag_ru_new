@@ -98,50 +98,6 @@ const AmountScaleForGift: FC = observer(() => {
       </Row>
     </Container>
   </div>
-  // return <div style={styles.wrapper}>
-  //   <GiftInfoPopup />
-  //   <Container>
-  //     <Row style={{ alignItems: 'center' }}>
-  //       <Col xs={'auto'}>
-  //         <Button
-  //           color={cart.gift.isGiftNotAvailable ? 'default' : 'success'}
-  //           fill='outline'
-  //           style={styles.btn}
-  //           onClick={() => { cart.giftInfoPopup.open() }}
-  //         >
-  //           <GiftOutline />
-  //           {'  Подарок'}
-  //         </Button>
-  //       </Col>
-  //       <Col>
-  //         <div style={{ position: "relative" }}>
-  //           <ProgressBar
-  //             percent={cart.gift.percent}
-  //             text={cart.gift.maxSum + ' руб'}
-
-  //             style={{
-  //               '--track-width': '26px',
-  //               '--fill-color': cart.gift.isGiftNotAvailable ? 'var(--adm-color-primary)' : 'var(--adm-color-success)'
-  //             }}
-  //             className="mt-2 mb-2"
-
-  //           />
-  //         </div>
-  //       </Col>
-  //       <Col md={4} xs={12}>
-  //         <Button
-  //           className="mb-2"
-  //           size='large'
-  //           color='primary'
-  //           style={styles.btn}
-  //           onClick={() => { go('/basket') }}
-  //         >
-  //           В корзину
-  //         </Button>
-  //       </Col>
-  //     </Row>
-  //   </Container>
-  // </div>
 })
 export default AmountScaleForGift
 

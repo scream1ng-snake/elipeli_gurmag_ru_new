@@ -22,7 +22,7 @@ import AmountScaleForGift from "./parts/AmountScale/AmountSCaleForGift"
 
 
 const MainPage: FC = observer(() => {
-  const { reception: { menu } } = useStore()
+  const { reception: { menu }, user } = useStore()
 
   const { VCode } = useParams<{ VCode: string }>()
   const go = useGoUTM()
@@ -40,6 +40,8 @@ const MainPage: FC = observer(() => {
     }
   }, [menu.loadMenu.state, VCode])
 
+  const PresentAction = user.info.allCampaign.filter(c => c.PresentAction)
+
   return <Wrapper>
     <NiceToMeetYooPopup />
     <ItemModal close={() => { go('/') }} />
@@ -54,7 +56,10 @@ const MainPage: FC = observer(() => {
       <Cooks />
       <Menu />
     </Container>
-    <AmountScaleForGift />
+    {PresentAction.length
+      ? <AmountScaleForGift />
+      : null
+    }
     <BottomNavigation />
   </Wrapper>
 })
