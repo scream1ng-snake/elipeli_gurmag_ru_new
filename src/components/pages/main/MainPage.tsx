@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { FC, useEffect } from "react"
+import { FC, useEffect, useMemo } from "react"
 import Wrapper from "../../layout/Wrapper"
 import Collections from "./parts/Collections/Collections"
 import Cooks from "./parts/Cooks/Cooks"
@@ -40,7 +40,9 @@ const MainPage: FC = observer(() => {
     }
   }, [menu.loadMenu.state, VCode])
 
-  const PresentAction = user.info.allCampaign.filter(c => c.PresentAction)
+  const PresentAction = useMemo(() => {
+    return user.info.allCampaign.filter(c => c.PresentAction)
+  }, [menu.loadMenu.state, VCode])
 
   return <Wrapper>
     <NiceToMeetYooPopup />

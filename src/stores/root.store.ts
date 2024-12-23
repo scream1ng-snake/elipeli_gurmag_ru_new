@@ -71,6 +71,7 @@ export default class RootStore {
         logger.log(`orgID changed from ${prevValue} to ${value}`, 'root')
         this.reception.employees.loadCooks.run(value)
         this.reception.menu.loadMenu.run(value)
+        if(this.user.ID) this.user.loadUserInfo.run(value, this.user.ID)
       }
     }
   )
