@@ -12,9 +12,8 @@ import PaymentStore from "./payment.store";
 import { MutableRefObject } from "react";
 import Popup from "../features/modal";
 import moment from "moment";
-import { CITY_PREFIX, receptionCodes, receptionTypes } from "./reception.store";
+import { CITY_PREFIX, receptionCodes } from "./reception.store";
 import Metrics from "../features/Metrics";
-import GiftStore from "./gift.store";
 
 /** Блюдо в корзине как часть заказа */
 export type CouseInCart = {
@@ -22,6 +21,7 @@ export type CouseInCart = {
   quantity: number;
   priceWithDiscount: number;
   campaign?: number | undefined;
+  present: boolean
 }
 
 export class CartStore {
@@ -73,24 +73,44 @@ export class CartStore {
 
   constructor(readonly root: RootStore) {
     makeAutoObservable(this, {}, { autoBind: true })
+    // в зависимоти от тотал прайса не позволяем использовать наличку
     reaction(() => this.totalPrice, price => {
       if (price > 1000 && this.payment.method === 'CASH')
         this.payment.method = null
     })
 
+    // проверяем рабочее время чтобы не заказать в прошлое
     setInterval(this.checkOrderTime, 1000)
 
+    // при изменении даты сразу подбираем слоты
     reaction(() => this.date, (cur, prev) => {
       const today = new Date()
       const curToday = moment(cur).isSame(today, 'day')
       const prevToday = moment(prev).isSame(today, 'day')
-      if(curToday !== prevToday) {
-        this.slots.checkAvailableSlot() 
+      if (curToday !== prevToday) {
+        this.slots.checkAvailableSlot()
         this.slots.selectedSlot = null
       }
     })
-    reaction(() => this.totalPrice, cur => {
-      this.gift.totalPrice = cur
+
+    // при каждом изменении тотал прайса применяем или убираем подарки
+    reaction(() => this.totalPrice, price => {
+      const { user, reception } = this.root
+      const PresentAction = user.info.allCampaign.filter(c => c.PresentAction)
+      PresentAction.forEach(p => {
+        if(p.MaxSum >= price && price >= p.MinSum) {
+          const detail = user.info.dishSet
+            .find(d => d.vcode === p.VCode)
+
+          if (detail) detail.dishes.forEach(d => {
+            const dihs = reception.menu.getDishByID(d.dish)
+            if (dihs) {
+              const isInCart = this.items.find(i => i.couse.VCode === dihs.VCode)
+              if(!isInCart) this.addCourseToCart(dihs, true)
+            }
+          })
+        }
+      })
     })
   }
 
@@ -164,7 +184,7 @@ export class CartStore {
     return Boolean(this.items.find(item => item.couse.VCode === course.VCode))
   }
 
-  addCourseToCart(couse: CourseItem) {
+  addCourseToCart(couse: CourseItem, present: boolean = false) {
     let { totalPrice, items, isEmpty } = this;
     const { info } = this.root.user;
     let isCourseAdded: Undef<CouseInCart>;
@@ -196,7 +216,8 @@ export class CartStore {
       const newItemInCart: CouseInCart = {
         couse,
         quantity: 1,
-        priceWithDiscount: couse.Price
+        priceWithDiscount: couse.Price,
+        present
       }
 
       items = [...items, newItemInCart]
@@ -261,7 +282,7 @@ export class CartStore {
   ) {
     let new_state = { itemsInCart: state.items };
     let CourseAllSum = 0
-    new_state.itemsInCart.forEach(a=> CourseAllSum += a.couse.Price * a.quantity);
+    new_state.itemsInCart.forEach(a => CourseAllSum += a.present ? 0 : a.couse.Price * a.quantity);
     const { receptionType } = this.root.reception
 
     let percentDiscounts: PercentDiscount[] = []
@@ -297,7 +318,7 @@ export class CartStore {
             if (count >= dishSet.dishCount) {
               Toast.show("Промокод активирован")
               this.confirmedPromocode = this.inputPromocode
-            } else { 
+            } else {
               this.confirmedPromocode = null
             }
           }
@@ -394,7 +415,9 @@ export class CartStore {
     )
 
 
-    if (state.items.length) setItem('cartItems', state.items)
+    if (state.items.length) {
+      setItem('cartItems', state.items.filter(i => !i.present))
+    }
   }
 
   applyDiscountForCart(userInfo: UserInfoState) {
@@ -454,7 +477,7 @@ export class CartStore {
           this.detailPopup.close()
           return
         }
-        if(!this.root.reception.nearestOrgDistance || !this.root.reception.nearestOrgForDelivery) {
+        if (!this.root.reception.nearestOrgDistance || !this.root.reception.nearestOrgForDelivery) {
           Toast.show('Укажите адрес снова')
           this.postOrder.setState('FAILED')
           this.detailPopup.close()
@@ -594,9 +617,9 @@ export class CartStore {
 
   payment = new PaymentStore(this)
   slots = new Slots(this)
-  gift = new GiftStore(this)
-}
 
+  giftInfoPopup = new Popup()
+}
 
 
 export type PercentDiscount = {

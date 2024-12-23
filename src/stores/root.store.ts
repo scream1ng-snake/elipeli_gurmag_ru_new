@@ -38,6 +38,22 @@ export default class RootStore {
               }
             })
           }
+          const { user, reception } = this
+          const PresentAction = user.info.allCampaign.filter(c => c.PresentAction)
+          PresentAction.forEach(p => {
+            if(p.MaxSum >= this.cart.totalPrice && this.cart.totalPrice >= p.MinSum) {
+              const detail = user.info.dishSet
+                .find(d => d.vcode === p.VCode)
+
+              if (detail) detail.dishes.forEach(d => {
+                const dihs = reception.menu.getDishByID(d.dish)
+                if (dihs) {
+                  const isInCart = this.cart.items.find(i => i.couse.VCode === dihs.VCode)
+                  if(!isInCart) this.cart.addCourseToCart(dihs, true)
+                }
+              })
+            }
+          })
         }
       }
     )
