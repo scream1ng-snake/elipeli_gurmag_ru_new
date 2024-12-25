@@ -103,7 +103,7 @@ export class CartStore {
 
         if (detail) {
           // если тотал прайс входит в сумму подарка
-          if (p.MaxSum >= price && price >= p.MinSum) {
+          if (p.MaxSum >= price && price > p.MinSum) {
             detail.dishes.forEach(d => {
               const couseInMenu = reception.menu.getDishByID(d.dish)
               if (couseInMenu) {
@@ -125,7 +125,7 @@ export class CartStore {
             })
           }
           // если тотал прайс меньше суммы этого подарка
-          if (price < p.MinSum) {
+          if (price <= p.MinSum) {
             detail.dishes.forEach(d => {
               const isInCart = this.items.find(i => i.couse.VCode === d.dish)
               if (isInCart?.present) this.removeFromCart(isInCart.couse.VCode)
