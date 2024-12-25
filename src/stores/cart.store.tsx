@@ -98,17 +98,39 @@ export class CartStore {
       const { user, reception } = this.root
       const PresentAction = user.info.allCampaign.filter(c => c.PresentAction)
       PresentAction.forEach(p => {
-        if(p.MaxSum >= price && price >= p.MinSum) {
-          const detail = user.info.dishSet
-            .find(d => d.vcode === p.VCode)
+        const detail = user.info.dishSet
+          .find(d => d.vcode === p.VCode)
 
-          if (detail) detail.dishes.forEach(d => {
-            const dihs = reception.menu.getDishByID(d.dish)
-            if (dihs) {
-              const isInCart = this.items.find(i => i.couse.VCode === dihs.VCode)
-              if(!isInCart) this.addCourseToCart(dihs, true)
-            }
-          })
+        if (detail) {
+          // если тотал прайс входит в сумму подарка
+          if (p.MaxSum >= price && price >= p.MinSum) {
+            detail.dishes.forEach(d => {
+              const couseInMenu = reception.menu.getDishByID(d.dish)
+              if (couseInMenu) {
+                const isInCart = this.items.find(i => i.couse.VCode === couseInMenu.VCode)
+                if (!isInCart) {
+                  this.addCourseToCart(couseInMenu, true)
+                } else {
+                  this.removeFromCart(isInCart.couse.VCode)
+                  this.addCourseToCart(couseInMenu, true)
+                }
+              }
+            })
+          }
+          // если тотал прайс больше суммы этого подарка
+          if (price > p.MaxSum) {
+            detail.dishes.forEach(d => {
+              const isInCart = this.items.find(i => i.couse.VCode === d.dish)
+              if (isInCart?.present) this.removeFromCart(isInCart.couse.VCode)
+            })
+          }
+          // если тотал прайс меньше суммы этого подарка
+          if (price < p.MinSum) {
+            detail.dishes.forEach(d => {
+              const isInCart = this.items.find(i => i.couse.VCode === d.dish)
+              if (isInCart?.present) this.removeFromCart(isInCart.couse.VCode)
+            })
+          }
         }
       })
     })

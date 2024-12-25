@@ -3,14 +3,14 @@ import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import ProgressBar from "react-bootstrap/ProgressBar"
-import { Button, Image, List, Space, Toast } from "antd-mobile"
+import { Button, Image, List, Space } from "antd-mobile"
 import { CheckOutline, GiftOutline } from "antd-mobile-icons"
 import { observer } from "mobx-react-lite"
 import { useGoUTM, useStore } from "../../../../../features/hooks"
 import AdaptivePopup from "../../../../common/Popup/Popup"
 import config from "../../../../../features/config"
 import { CourseItem } from "../../../../../stores/menu.store"
-import { PlusOutlined } from "@ant-design/icons"
+import BackIcon from "../../../../icons/Back"
 
 
 const styles: Record<string, CSSProperties> = {
@@ -40,14 +40,14 @@ const AmountScaleForGift: FC = observer(() => {
   const min = separatorLabels[0]
   const max = separatorLabels[separatorLabels.length - 1]
 
-  const offset = ((max / 70 * 100) - max) / 2
+  const offset = ((max / 86 * 100) - max) / 2
 
 
   return <div style={styles.wrapper}>
     <GiftInfoPopup />
     <Container>
       <Row style={{ alignItems: 'center' }} className="p-2">
-        <Col xs={'auto'}>
+        <Col xs={'auto'} className="p-1">
           <Button
             fill='outline'
             style={styles.btn}
@@ -57,12 +57,13 @@ const AmountScaleForGift: FC = observer(() => {
             {'  Подарок'}
           </Button>
         </Col>
-        <Col>
+        <Col className="p-1">
           <div style={{ position: "relative" }}>
             {separatorLabels.map((sum, index) => {
               const isLeftHalf = sum < (max / 2)
               const isCenter = sum === (max / 2)
-              const offsetPercent = (sum / max * 100) + (isCenter ? 0 : isLeftHalf ? 15 : -15)
+              const trtr = Math.abs((max / 2) - sum) / max * 7 * 2
+              const offsetPercent = (sum / max * 100) + (isCenter ? 0 : isLeftHalf ? trtr : -trtr)
               return <Space
                 key={index}
                 style={{ position: 'absolute', left: `${offsetPercent}%`, translate: '-50%', fontSize: 14, fontWeight: 900, color: 'black', "--gap": '0' }}
@@ -70,7 +71,7 @@ const AmountScaleForGift: FC = observer(() => {
                 align='center'
               >
                 <div style={{ background: 'black', width: 2, height: 15, marginTop: 3 }} />
-                <span style={{ textWrap: 'nowrap' }}>{sum + ' ₽'}</span>
+                <div style={{ textWrap: 'nowrap' }}>{sum}</div>
               </Space>
             })}
             <ProgressBar
@@ -115,8 +116,12 @@ const GiftInfoPopup = observer(() => {
       padding: '1rem',
       borderTopLeftRadius: 15,
       borderTopRightRadius: 15,
+      maxHeight: '100vh',
+      overflowY: 'scroll',
     }}
+    noCloseBtn
   >
+    <BackIcon onClick={giftInfoPopup.close} />
     {PresentAction.map(p => {
       const detail = user.info.dishSet
         .find(d => d.vcode === p.VCode)
@@ -132,15 +137,11 @@ const GiftInfoPopup = observer(() => {
 
 
       return <div key={p.VCode}>
-        <h2>{p.Name ?? 'нет названия'}</h2>
-        <p>{p.Description ?? 'нет описания'}</p>
-        {p.MaxSum && p.MinSum >= 0
-          ? <p>{`от ${p.MinSum} до ${p.MaxSum}`}</p>
-          : null
-        }
+        <h2 style={{ textIndent:20, margin: '1rem 0' }}>{p.Name}</h2>
+        <p style={{ textIndent:20 }}>{p.Description}</p>
         <List>
           {courses.map((giftCouse, index) => {
-            const isInCart = cart.items.find(i => i.couse.VCode === giftCouse.VCode)
+            const isInCart = cart.items.find(i => i.couse.VCode === giftCouse.VCode && i.present)
             return (
               <List.Item
                 key={index}

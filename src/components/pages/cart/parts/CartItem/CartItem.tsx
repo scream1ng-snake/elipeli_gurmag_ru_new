@@ -5,6 +5,8 @@ import { CouseInCart } from "../../../../../stores/cart.store";
 import config from "../../../../../features/config";
 import styles from './CartItem.module.css'
 import Red from "../../../../special/RedText";
+import { GiftOutline } from "antd-mobile-icons";
+import { Gift } from "../../../../icons/Gift";
 
 type P = {
   courseInCart: CouseInCart,
@@ -26,6 +28,7 @@ const CartItem: FC<P> = observer(props => {
       arrowIcon={
         <Space direction='vertical' align='center'>
           <Stepper
+            disabled={courseInCart.present}
             value={courseInCart.quantity}
             style={{ borderRadius: 13 }}
             onChange={val =>
@@ -56,18 +59,26 @@ const CartItem: FC<P> = observer(props => {
 )
 
 const CartImage: FC<{ couseInCart: CouseInCart }> = p => {
-  const Loader: FC = () => <Skeleton className={styles.cartImg} style={{ margin:0 }} animated/>
-  return (
-    <Image
-      src={config.staticApi
-        + '/api/v2/image/FileImage?fileId='
-        + p.couseInCart.couse.CompressImages?.[0]
+  const Loader: FC = () => <Skeleton className={styles.cartImg} style={{ margin: 0 }} animated />
+  return <>
+    <div style={{ position: 'relative' }}>
+      {p.couseInCart.present
+        ? <div style={{ position: 'absolute', right: -10, top: -10 }}>
+          <Gift />
+        </div>
+        : null
       }
-      className={styles.cartImg}
-      placeholder={<Loader />}
-      fallback={<Loader />}
-    />
-  )
+      <Image
+        src={config.staticApi
+          + '/api/v2/image/FileImage?fileId='
+          + p.couseInCart.couse.CompressImages?.[0]
+        }
+        className={styles.cartImg}
+        placeholder={<Loader />}
+        fallback={<Loader />}
+      />
+    </div>
+  </>
 }
 
 

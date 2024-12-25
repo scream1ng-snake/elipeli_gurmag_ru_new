@@ -41,17 +41,40 @@ export default class RootStore {
           const { user, reception } = this
           const PresentAction = user.info.allCampaign.filter(c => c.PresentAction)
           PresentAction.forEach(p => {
-            if(p.MaxSum >= this.cart.totalPrice && this.cart.totalPrice >= p.MinSum) {
-              const detail = user.info.dishSet
-                .find(d => d.vcode === p.VCode)
+            const detail = user.info.dishSet
+              .find(d => d.vcode === p.VCode)
 
-              if (detail) detail.dishes.forEach(d => {
-                const dihs = reception.menu.getDishByID(d.dish)
-                if (dihs) {
-                  const isInCart = this.cart.items.find(i => i.couse.VCode === dihs.VCode)
-                  if(!isInCart) this.cart.addCourseToCart(dihs, true)
-                }
-              })
+            const price = this.cart.totalPrice
+            if (detail) {
+              // если тотал прайс входит в сумму подарка
+              if (p.MaxSum >= price && price >= p.MinSum) {
+                detail.dishes.forEach(d => {
+                  const couseInMenu = reception.menu.getDishByID(d.dish)
+                  if (couseInMenu) {
+                    const isInCart = this.cart.items.find(i => i.couse.VCode === couseInMenu.VCode)
+                    if (!isInCart) {
+                      this.cart.addCourseToCart(couseInMenu, true)
+                    } else {
+                      this.cart.removeFromCart(isInCart.couse.VCode)
+                      this.cart.addCourseToCart(couseInMenu, true)
+                    }
+                  }
+                })
+              }
+              // если тотал прайс больше суммы этого подарка
+              if (price > p.MaxSum) {
+                detail.dishes.forEach(d => {
+                  const isInCart = this.cart.items.find(i => i.couse.VCode === d.dish)
+                  if (isInCart?.present) this.cart.removeFromCart(isInCart.couse.VCode)
+                })
+              }
+              // если тотал прайс меньше суммы этого подарка
+              if (price < p.MinSum) {
+                detail.dishes.forEach(d => {
+                  const isInCart = this.cart.items.find(i => i.couse.VCode === d.dish)
+                  if (isInCart?.present) this.cart.removeFromCart(isInCart.couse.VCode)
+                })
+              }
             }
           })
         }
