@@ -1,5 +1,5 @@
 import { InputRef, Toast } from "antd-mobile";
-import { makeAutoObservable, reaction } from "mobx";
+import { makeAutoObservable, reaction, toJS } from "mobx";
 import { Optional, Request, Undef } from "../features/helpers";
 import { http } from "../features/http";
 import { setItem } from "../features/local-storage";
@@ -103,32 +103,41 @@ export class CartStore {
 
         if (detail) {
           // если тотал прайс входит в сумму подарка
-          if (p.MaxSum >= price && price > p.MinSum) {
+          if (p.MaxSum > price && price >= p.MinSum) {
             detail.dishes.forEach(d => {
               const couseInMenu = reception.menu.getDishByID(d.dish)
               if (couseInMenu) {
-                const isInCart = this.items.find(i => i.couse.VCode === couseInMenu.VCode)
-                if (!isInCart) {
-                  this.addCourseToCart(couseInMenu, true)
+                const isGiftInCart = this.items.find(i => i.couse.VCode === d.dish && i.present)
+                if (isGiftInCart) {
+                  if (isGiftInCart?.quantity < detail.dishCount) {
+                    this.addCourseToCart(couseInMenu, true)
+                  }
                 } else {
-                  this.removeFromCart(isInCart.couse.VCode)
                   this.addCourseToCart(couseInMenu, true)
                 }
               }
             })
           }
           // если тотал прайс больше суммы этого подарка
-          if (price > p.MaxSum) {
+          if (price >= p.MaxSum) {
             detail.dishes.forEach(d => {
-              const isInCart = this.items.find(i => i.couse.VCode === d.dish)
-              if (isInCart?.present) this.removeFromCart(isInCart.couse.VCode)
+              const isGiftInCart = this.items.find(i => i.couse.VCode == d.dish && i.present)
+              if (isGiftInCart) {
+                new Array(isGiftInCart.quantity).fill(null).forEach(() => {
+                  this.removeFromCart(isGiftInCart.couse.VCode, true)
+                })
+              }
             })
           }
           // если тотал прайс меньше суммы этого подарка
-          if (price <= p.MinSum) {
+          if (price < p.MinSum) {
             detail.dishes.forEach(d => {
-              const isInCart = this.items.find(i => i.couse.VCode === d.dish)
-              if (isInCart?.present) this.removeFromCart(isInCart.couse.VCode)
+              const isGiftInCart = this.items.find(i => i.couse.VCode === d.dish && i.present)
+              if (isGiftInCart) {
+                new Array(isGiftInCart.quantity).fill(null).forEach(() => {
+                  this.removeFromCart(isGiftInCart.couse.VCode, true)
+                })
+              }
             })
           }
         }
@@ -209,69 +218,17 @@ export class CartStore {
   addCourseToCart(couse: CourseItem, present: boolean = false) {
     let { totalPrice, items, isEmpty } = this;
     const { info } = this.root.user;
-    let isCourseAdded: Undef<CouseInCart>;
 
-    isCourseAdded = this.findItem(couse.VCode);
+    if (present) {
+      let giftCouseAdded = this.items.find(c => c.couse.VCode === couse.VCode && c.present)
+      if (giftCouseAdded) {
+        giftCouseAdded.quantity++
 
-    if (isCourseAdded) {
-      // если блюдо уже есть 
-      // добавляем его
-      isCourseAdded.quantity++;
-
-      // оставляем его, но
-      // в большем количестве
-      items = items.map((item) =>
-        item.couse.VCode === couse.VCode
-          ? isCourseAdded as CouseInCart
-          : item
-      )
-      this.applyDiscount(
-        { totalPrice, items, isEmpty },
-        info.percentDiscounts,
-        info.dishDiscounts,
-        info.allCampaign,
-        info.dishSet,
-      )
-    } else {
-      // если блюда нет
-      // добавляем его
-      const newItemInCart: CouseInCart = {
-        couse,
-        quantity: 1,
-        priceWithDiscount: couse.Price,
-        present
-      }
-
-      items = [...items, newItemInCart]
-      this.applyDiscount(
-        { totalPrice, items, isEmpty },
-        info.percentDiscounts,
-        info.dishDiscounts,
-        info.allCampaign,
-        info.dishSet,
-      )
-    }
-  }
-
-  removeFromCart(VCode: number) {
-    let { totalPrice, items, isEmpty } = this;
-    const { info } = this.root.user;
-
-    let isCourseAdded: Undef<CouseInCart>;
-
-    isCourseAdded = this.findItem(VCode);
-
-    if (isCourseAdded) {
-      if (isCourseAdded?.quantity > 1) {
-        isCourseAdded.quantity--;
-
-        items = items.map(item =>
-          item.couse.VCode === VCode
-            ? isCourseAdded as CouseInCart
+        items = items.map((item) =>
+          item.couse.VCode === couse.VCode && item.present === true
+            ? giftCouseAdded as CouseInCart
             : item
         )
-
-
         this.applyDiscount(
           { totalPrice, items, isEmpty },
           info.percentDiscounts,
@@ -280,8 +237,31 @@ export class CartStore {
           info.dishSet,
         )
       } else {
-        items = items.filter(item =>
-          item.couse.VCode !== VCode
+        const newGiftInCart: CouseInCart = {
+          couse,
+          quantity: 1,
+          priceWithDiscount: couse.Price,
+          present: true
+        }
+
+        items = [...items, newGiftInCart]
+        this.applyDiscount(
+          { totalPrice, items, isEmpty },
+          info.percentDiscounts,
+          info.dishDiscounts,
+          info.allCampaign,
+          info.dishSet,
+        )
+      }
+    } else {
+      let usualCouseAdded = this.items.find(c => c.couse.VCode === couse.VCode && !c.present)
+      if (usualCouseAdded) {
+        usualCouseAdded.quantity++
+
+        items = items.map((item) =>
+          item.couse.VCode === couse.VCode && !item.present
+            ? usualCouseAdded as CouseInCart
+            : item
         )
         this.applyDiscount(
           { totalPrice, items, isEmpty },
@@ -290,6 +270,98 @@ export class CartStore {
           info.allCampaign,
           info.dishSet,
         )
+      } else {
+        const newCouseInCart: CouseInCart = {
+          couse,
+          quantity: 1,
+          priceWithDiscount: couse.Price,
+          present: false
+        }
+
+        items = [...items, newCouseInCart]
+        this.applyDiscount(
+          { totalPrice, items, isEmpty },
+          info.percentDiscounts,
+          info.dishDiscounts,
+          info.allCampaign,
+          info.dishSet,
+        )
+      }
+    }
+  }
+
+  removeFromCart(VCode: number, present: boolean) {
+    let { totalPrice, items, isEmpty } = this;
+    const { info } = this.root.user;
+
+    if (present) {
+      let giftCouseAdded = this.items.find(c => c.couse.VCode === VCode && c.present)
+
+      if (giftCouseAdded) {
+        if (giftCouseAdded.quantity > 1) {
+          giftCouseAdded.quantity--
+
+          items = items.map(item =>
+            item.couse.VCode === VCode && item.present === true
+              ? giftCouseAdded as CouseInCart
+              : item
+          )
+
+
+          this.applyDiscount(
+            { totalPrice, items, isEmpty },
+            info.percentDiscounts,
+            info.dishDiscounts,
+            info.allCampaign,
+            info.dishSet,
+          )
+        } else {
+          items = items.filter(item =>
+            item.couse.VCode !== VCode || (item.couse.VCode === VCode && item.present !== true)
+          )
+          this.applyDiscount(
+            { totalPrice, items, isEmpty },
+            info.percentDiscounts,
+            info.dishDiscounts,
+            info.allCampaign,
+            info.dishSet,
+          )
+        }
+      }
+
+    } else {
+      let usualCouseAdded = this.items.find(c => c.couse.VCode === VCode && !c.present)
+
+      if (usualCouseAdded) {
+        if (usualCouseAdded.quantity > 1) {
+          usualCouseAdded.quantity--
+
+          items = items.map(item =>
+            item.couse.VCode === VCode && !item.present
+              ? usualCouseAdded as CouseInCart
+              : item
+          )
+
+
+          this.applyDiscount(
+            { totalPrice, items, isEmpty },
+            info.percentDiscounts,
+            info.dishDiscounts,
+            info.allCampaign,
+            info.dishSet,
+          )
+        } else {
+          items = items.filter(item =>
+            item.couse.VCode !== VCode || (item.couse.VCode === VCode && item.present)
+          )
+          this.applyDiscount(
+            { totalPrice, items, isEmpty },
+            info.percentDiscounts,
+            info.dishDiscounts,
+            info.allCampaign,
+            info.dishSet,
+          )
+        }
       }
     }
   }
@@ -302,9 +374,10 @@ export class CartStore {
     AllCampaign: AllCampaignUser[],
     DishSet: DishSetDiscount[],
   ) {
-    let new_state = { itemsInCart: state.items };
-    let CourseAllSum = 0
+    let new_state = { itemsInCart: state.items.map(i => i)}
+    let CourseAllSum = 0;
     new_state.itemsInCart.forEach(a => CourseAllSum += a.present ? 0 : a.couse.Price * a.quantity);
+
     const { receptionType } = this.root.reception
 
     let percentDiscounts: PercentDiscount[] = []
@@ -312,17 +385,17 @@ export class CartStore {
     let allCampaign: AllCampaignUser[] = []
     let dishSet: DishSetDiscount[] = []
     if (receptionType === 'delivery') {
-      percentDiscounts = PercentDiscounts.filter(a => a.Delivery == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
-      dishDiscounts = DishDiscounts.filter(a => a.Delivery == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
-      allCampaign = AllCampaign.filter(a => a.Delivery == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
-      dishSet = DishSet.filter(a => a.dishes[0].Delivery == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
+      percentDiscounts = PercentDiscounts.filter(a => a.Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum);
+      dishDiscounts = DishDiscounts.filter(a => a.Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum);
+      allCampaign = AllCampaign.filter(a => a.Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum);
+      dishSet = DishSet.filter(a => a.dishes[0].Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum);
     }
 
     if (receptionType === 'pickup') {
-      percentDiscounts = PercentDiscounts.filter(a => a.TakeOut == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
-      dishDiscounts = DishDiscounts.filter(a => a.TakeOut == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
-      allCampaign = AllCampaign.filter(a => a.TakeOut == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
-      dishSet = DishSet.filter(a => a.dishes[0].TakeOut == 1 && a.MaxSum >= CourseAllSum && a.MinSum <= CourseAllSum);
+      percentDiscounts = PercentDiscounts.filter(a => a.TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum);
+      dishDiscounts = DishDiscounts.filter(a => a.TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum);
+      allCampaign = AllCampaign.filter(a => a.TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum);
+      dishSet = DishSet.filter(a => a.dishes[0].TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum);
     }
 
     const campaign = this.root.user.info.allCampaign
@@ -357,17 +430,20 @@ export class CartStore {
     //проверим все скидки, найдем наибольшую
     let maxPercentDiscount = { vcode: 0, MinSum: 0, MaxSum: 0, bonusRate: 0, discountPercent: 0 };
     percentDiscounts.forEach(a => {
-      if (maxPercentDiscount.vcode == 0 && (a.promocode == this.confirmedPromocode || a.promocode == null)) {
+      if (maxPercentDiscount.vcode == 0) {
         maxPercentDiscount = a;
-      } else if (maxPercentDiscount.discountPercent < a.discountPercent && (a.promocode == this.confirmedPromocode || a.promocode == null)) {
+      } else if (maxPercentDiscount.discountPercent < a.discountPercent) {
         maxPercentDiscount = a;
       }
     })
+
+
     //идём по всем блюдам в корзине
     for (let i = 0; i < new_state.itemsInCart.length; i++) {
 
       let courseItem = new_state.itemsInCart[i];
       if (courseItem.couse === undefined) courseItem.couse = courseItem.couse;
+      if (!courseItem.present) courseItem.present = false;
       courseItem.couse.priceWithDiscountOld = courseItem.couse.priceWithDiscount;
       courseItem.couse.priceWithDiscount = courseItem.couse.Price;
       //если есть процентная скидка, сразу её ставим
@@ -384,7 +460,7 @@ export class CartStore {
         //идём по всем блюдам сэта
         for (let k = 0; k < set.dishes.length; k++) {
           //если нашли блюдо из сэта, то увеличиваем счётчик сэта
-          if (courseItem.couse.VCode == set.dishes[k].dish) {
+          if (courseItem.couse.VCode == set.dishes[k].dish && set.PresentAction == courseItem.present) {
             let curDishSetObj = curDishSets.find((a: any) => a.vcode == set.vcode);
             if (curDishSetObj === undefined) {
               curDishSetObj = { ...set, countInCart: 0 };
@@ -421,7 +497,7 @@ export class CartStore {
       if (curDishSets[j].countInCart == curDishSets[j].dishCount && (curDishSets[j].dishes[0].promocode == this.confirmedPromocode || curDishSets[j].dishes[0].promocode == null)) {
         for (let i = 0; i < new_state.itemsInCart.length; i++) {
           let courseItem = new_state.itemsInCart[i];
-          let dishInSet = curDishSets[j].dishes.find((a: any) => a.dish == courseItem.couse.VCode);
+          let dishInSet = curDishSets[j].dishes.find((a: any) => a.dish == courseItem.couse.VCode && a.PresentAction == courseItem.present);
           if (dishInSet !== undefined) {
             courseItem.campaign = curDishSets[j].vcode;
             courseItem.priceWithDiscount = courseItem.quantity * dishInSet.price;

@@ -176,7 +176,7 @@ type DishSetDiscount = {
 type AllCampaignUser = {
   Name: string,
   Description: string,
-  VCode: number,
+  VCode: any,
   periodtype: string,
   isset: number,
   quantity: number,

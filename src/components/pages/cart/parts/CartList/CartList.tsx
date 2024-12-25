@@ -9,14 +9,14 @@ const CartList: FC = () => {
   return <List>
     {cart.items.map((item, index) =>
       <CartItem
-        key={index}
+        key={`${item.couse.VCode}_${item.quantity}_${item.present}`}
         courseInCart={item}
         add={() => {
           cart.addCourseToCart(item.couse)
           Metrics.addToCart(item.couse)
           vkMiniAppMetrics.addToCart(user.ID || '')
         }}
-        remove={() => cart.removeFromCart(item.couse.VCode)}
+        remove={() => cart.removeFromCart(item.couse.VCode, item.present)}
       />)}
   </List>
 }
