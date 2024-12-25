@@ -59,7 +59,7 @@ const MainPage: FC = observer(() => {
       <Menu />
     </Container>
     {PresentAction.length
-      ? <AmountScaleForGift />
+      ? <><AmountScaleForGift /> <div style={{ height:110 }} /></>
       : null
     }
     <BottomNavigation />

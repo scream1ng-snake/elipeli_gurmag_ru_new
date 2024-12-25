@@ -89,6 +89,11 @@ const routes: Array<{
       path: "/stories/:storyId",
       private: false,
       element: <MainPage />
+    },
+    {
+      path: "/categories/:category",
+      private: false,
+      element: <MainPage />
     }
   ]
 

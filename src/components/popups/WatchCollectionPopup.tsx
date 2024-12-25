@@ -22,7 +22,7 @@ export const CollectionPopup: FC = observer(p => {
   const go = useNavigate()
   // const go = useGoUTM()
   function close() {
-    go(-1)
+    go(-2)
     menu.selectionPopup.close()
   }
   const currentCollection = toJS(menu.selectionPopup.content) as Optional<Selection>

@@ -2,19 +2,36 @@ import { observer } from "mobx-react-lite"
 import { CSSProperties, FC, useCallback, useEffect, useState } from "react"
 import styles from './Menu.module.css'
 import CourseReviewPopup from "../../../../popups/CourseReviewPopup.tsx"
-import { useStore } from "../../../../../features/hooks"
+import { useGoUTM, useStore } from "../../../../../features/hooks"
 import { CategoryCourse } from "../../../../../stores/menu.store"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
-import { Image, Skeleton } from "antd-mobile"
+import { Image, Skeleton, Toast } from "antd-mobile"
 import config from "../../../../../features/config"
 import CategoryPopup from "../../../../popups/CategoryPopup"
 import { toJS } from "mobx"
+import { useLocation, useParams } from "react-router-dom"
+import { logger } from "../../../../../features/logger"
 // import Categories from "./Categories/Categories"
 
 const Menu: FC = observer(() => {
+  const go = useGoUTM()
+  const { category } = useParams<{ category: string }>()
   const { reception } = useStore()
-  const { loadMenu, categories } = reception.menu
+  const { loadMenu, categories, categoryPopup } = reception.menu
+
+  useEffect(() => {
+    if (category && loadMenu.state === 'COMPLETED') {
+      const categ = categories.find(cat => cat.VCode == Number(category))
+      if (categ) {
+        categoryPopup.watch(categ)
+      } else {
+        Toast.show('Товар не найден')
+        logger.log(`Товар с vcode ${categ} не найден`)
+        go('/')
+      }
+    }
+  }, [loadMenu.state, category])
 
   if (!categories.length && loadMenu.state === 'COMPLETED') return null
   return <div className={styles.Menu_wrapper}>
@@ -55,13 +72,7 @@ const labelStyle: CSSProperties = {
 }
 const Category: FC<{ category: CategoryCourse }> = ({ category }) => {
   const [err, setErr] = useState(false)
-  const { reception: { menu }} = useStore()
-  const watchCategory = useCallback(() => { 
-    menu.categoryPopup.watch(category)
-  }, [category])
-  useEffect(() => {
-    setErr(false)
-  }, [category])
+  const go = useGoUTM()
   return <Col style={colStyle} xs={4} sm={3} md={2} xl={2}>
     {err &&
       <span style={labelStyle}>
@@ -77,7 +88,9 @@ const Category: FC<{ category: CategoryCourse }> = ({ category }) => {
         + category.Image
       }
       onError={() => setErr(true)}
-      onContainerClick={watchCategory}
+      onContainerClick={() => {
+        go('/categories/' + category.VCode)
+      }}
       fit='cover'
       style={imgStyle}
     />

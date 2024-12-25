@@ -2,7 +2,7 @@ import { CapsuleTabs, Popup, Skeleton } from 'antd-mobile'
 import { toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { CSSProperties, FC, useCallback, useMemo } from 'react'
-import { useStore } from '../../features/hooks'
+import { useGoUTM, useStore } from '../../features/hooks'
 import Container from 'react-bootstrap/Container'
 import BackIcon from '../icons/Back'
 
@@ -15,7 +15,7 @@ import { ItemModal } from './Course'
 import { useNavigate } from 'react-router-dom'
 
 const CategoryPopup: FC = observer(function () {
-  const go = useNavigate()
+  const go = useGoUTM()
   const { reception: { menu } } = useStore()
   const { categoryPopup } = menu
 
@@ -30,7 +30,10 @@ const CategoryPopup: FC = observer(function () {
 
   const watchCategory = useCallback((vcode: string) => {
     const targetCategory = menu.categories.find(c => String(c.VCode) === vcode)
-    if (targetCategory) categoryPopup.watch(targetCategory)
+    if (targetCategory) {
+      categoryPopup.watch(targetCategory)
+      go('/categories/' + vcode)
+    }
   }, [menu.categories.length])
 
   return <Popup
@@ -52,7 +55,7 @@ const CategoryPopup: FC = observer(function () {
           ? null
           : <Container className='p-0' fluid='md'>
             <div style={style.header}>
-              <BackIcon onClick={categoryPopup.close} styles={{ marginLeft: 20 }} />
+              <BackIcon onClick={() => { categoryPopup.close(); go('/') }} styles={{ marginLeft: 20 }} />
               <CapsuleTabs onChange={watchCategory} activeKey={currentCategory?.VCode.toString()}>
                 {menu.categories.map((category) =>
                   <CapsuleTabs.Tab
