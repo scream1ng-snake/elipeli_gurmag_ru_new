@@ -141,3 +141,8 @@ function splitIntoChunks<T>(array: T[], chunkSize: number): T[][] {
 }
 
 export default splitIntoChunks;
+
+
+export function deepCopy<T>(item: T) {
+  return JSON.parse(JSON.stringify(item)) as T
+}

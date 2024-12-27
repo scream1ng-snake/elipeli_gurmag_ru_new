@@ -5,20 +5,20 @@ import { CouseInCart } from "../../../../../stores/cart.store";
 import config from "../../../../../features/config";
 import styles from './CartItem.module.css'
 import Red from "../../../../special/RedText";
-import { GiftOutline } from "antd-mobile-icons";
 import { Gift } from "../../../../icons/Gift";
 
 type P = {
   courseInCart: CouseInCart,
   add: () => void,
   remove: () => void,
+  isPresent: boolean
 }
 const CartItem: FC<P> = observer(props => {
-  const { courseInCart, add, remove } = props
+  const { courseInCart, add, remove, isPresent } = props
   return (
     <List.Item
       className={styles.cartItem}
-      prefix={<CartImage couseInCart={courseInCart} />}
+      prefix={<CartImage couseInCart={courseInCart} isPresent={isPresent} />}
       description={
         <div className={styles.PriceWeight}>
           <PriceCart courseInCart={courseInCart} />
@@ -28,7 +28,7 @@ const CartItem: FC<P> = observer(props => {
       arrowIcon={
         <Space direction='vertical' align='center'>
           <Stepper
-            disabled={courseInCart.present}
+            disabled={props.isPresent}
             value={courseInCart.quantity}
             style={{ borderRadius: 13 }}
             onChange={val =>
@@ -58,11 +58,11 @@ const CartItem: FC<P> = observer(props => {
 }
 )
 
-const CartImage: FC<{ couseInCart: CouseInCart }> = p => {
+const CartImage: FC<{ couseInCart: CouseInCart, isPresent: boolean }> = p => {
   const Loader: FC = () => <Skeleton className={styles.cartImg} style={{ margin: 0 }} animated />
   return <>
     <div style={{ position: 'relative' }}>
-      {p.couseInCart.present
+      {p.isPresent
         ? <div style={{ position: 'absolute', right: -10, top: -10 }}>
           <Gift />
         </div>

@@ -71,7 +71,7 @@ abstract class Metrics {
     if(!this.isDev) {
       logger.log('addtobasket event vk pixel', 'metrics')
       // @ts-ignore
-      console.log(_tmr)
+      // console.log(_tmr)
       // @ts-ignore
       _tmr.push({ 
         type: 'reachGoal', 

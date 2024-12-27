@@ -141,7 +141,7 @@ const GiftInfoPopup = observer(() => {
         <p style={{ textIndent:20 }}>{p.Description}</p>
         <List>
           {courses.map((giftCouse, index) => {
-            const isInCart = cart.items.find(i => i.couse.VCode === giftCouse.VCode && i.present)
+            const isInCart = cart.presents.find(i => i.couse.VCode === giftCouse.VCode)
             return (
               <List.Item
                 key={index}

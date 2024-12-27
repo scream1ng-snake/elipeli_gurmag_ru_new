@@ -7,17 +7,30 @@ import Metrics from "../../../../../features/Metrics"
 const CartList: FC = () => {
   const { cart, vkMiniAppMetrics, user } = useStore()
   return <List>
-    {cart.items.map((item, index) =>
+    {cart.presents.map(present => 
       <CartItem
-        key={`${item.couse.VCode}_${item.quantity}_${item.present}`}
+        isPresent={true}
+        key={`${present.couse.VCode}_${present.quantity}_present`}
+        courseInCart={present}
+        add={() => {
+          cart.addPresentToCart(present.couse)
+        }}
+        remove={() => cart.removePresentFromCart(present.couse.VCode)}
+      />
+    )}
+    {cart.items.map(item =>
+      <CartItem
+        isPresent={item.priceWithDiscount === 0}
+        key={`${item.couse.VCode}_${item.quantity}_item`}
         courseInCart={item}
         add={() => {
           cart.addCourseToCart(item.couse)
           Metrics.addToCart(item.couse)
           vkMiniAppMetrics.addToCart(user.ID || '')
         }}
-        remove={() => cart.removeFromCart(item.couse.VCode, item.present)}
-      />)}
+        remove={() => cart.removeFromCart(item.couse.VCode)}
+      />
+    )}
   </List>
 }
 export default CartList

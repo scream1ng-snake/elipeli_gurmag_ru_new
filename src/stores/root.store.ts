@@ -39,53 +39,53 @@ export default class RootStore {
             })
           }
           const { user, reception } = this
-          const PresentAction = user.info.allCampaign.filter(c => c.PresentAction)
-          const price = this.cart.totalPrice
-          PresentAction.forEach(p => {
-            const detail = user.info.dishSet
-              .find(d => d.vcode === p.VCode)
+          // const PresentAction = user.info.allCampaign.filter(c => c.PresentAction)
+          // const price = this.cart.totalPrice
+          // PresentAction.forEach(p => {
+          //   const detail = user.info.dishSet
+          //     .find(d => d.vcode === p.VCode)
     
-            if (detail) {
-              // если тотал прайс входит в сумму подарка
-              if (p.MaxSum > price && price >= p.MinSum) {
-                detail.dishes.forEach(d => {
-                  const couseInMenu = reception.menu.getDishByID(d.dish)
-                  if (couseInMenu) {
-                    const isGiftInCart = this.cart.items.find(i => i.couse.VCode === d.dish && i.present)
-                    if (isGiftInCart) {
-                      if (isGiftInCart?.quantity < detail.dishCount) {
-                        this.cart.addCourseToCart(couseInMenu, true)
-                      }
-                    } else {
-                      this.cart.addCourseToCart(couseInMenu, true)
-                    }
-                  }
-                })
-              }
-              // если тотал прайс больше суммы этого подарка
-              if (price >= p.MaxSum) {
-                detail.dishes.forEach(d => {
-                  const isGiftInCart = this.cart.items.find(i => i.couse.VCode == d.dish && i.present)
-                  if (isGiftInCart) {
-                    new Array(isGiftInCart.quantity).fill(null).forEach(() => {
-                      this.cart.removeFromCart(isGiftInCart.couse.VCode, true)
-                    })
-                  }
-                })
-              }
-              // если тотал прайс меньше суммы этого подарка
-              if (price < p.MinSum) {
-                detail.dishes.forEach(d => {
-                  const isGiftInCart = this.cart.items.find(i => i.couse.VCode === d.dish && i.present)
-                  if (isGiftInCart) {
-                    new Array(isGiftInCart.quantity).fill(null).forEach(() => {
-                      this.cart.removeFromCart(isGiftInCart.couse.VCode, true)
-                    })
-                  }
-                })
-              }
-            }
-          })
+          //   if (detail) {
+          //     // если тотал прайс входит в сумму подарка
+          //     if (p.MaxSum > price && price >= p.MinSum) {
+          //       detail.dishes.forEach(d => {
+          //         const couseInMenu = reception.menu.getDishByID(d.dish)
+          //         if (couseInMenu) {
+          //           const isGiftInCart = this.cart.items.find(i => i.couse.VCode === d.dish && i.present)
+          //           if (isGiftInCart) {
+          //             if (isGiftInCart?.quantity < detail.dishCount) {
+          //               this.cart.addCourseToCart(couseInMenu, true)
+          //             }
+          //           } else {
+          //             this.cart.addCourseToCart(couseInMenu, true)
+          //           }
+          //         }
+          //       })
+          //     }
+          //     // если тотал прайс больше суммы этого подарка
+          //     if (price >= p.MaxSum) {
+          //       detail.dishes.forEach(d => {
+          //         const isGiftInCart = this.cart.items.find(i => i.couse.VCode == d.dish && i.present)
+          //         if (isGiftInCart) {
+          //           new Array(isGiftInCart.quantity).fill(null).forEach(() => {
+          //             this.cart.removeFromCart(isGiftInCart.couse.VCode, true)
+          //           })
+          //         }
+          //       })
+          //     }
+          //     // если тотал прайс меньше суммы этого подарка
+          //     if (price < p.MinSum) {
+          //       detail.dishes.forEach(d => {
+          //         const isGiftInCart = this.cart.items.find(i => i.couse.VCode === d.dish && i.present)
+          //         if (isGiftInCart) {
+          //           new Array(isGiftInCart.quantity).fill(null).forEach(() => {
+          //             this.cart.removeFromCart(isGiftInCart.couse.VCode, true)
+          //           })
+          //         }
+          //       })
+          //     }
+          //   }
+          // })
         }
       }
     )
