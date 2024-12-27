@@ -21,7 +21,7 @@ const PaymentStatusColors = {
   'Оплачен': 'success',
 }
 
-const W100 = { width: 'calc(100% - 1.5rem)' }
+const W100 = { width: 'calc(100%)' }
 const OrdersPage: FC = observer(() => {
   const { user } = useStore()
   const go = useGoUTM()
@@ -102,10 +102,10 @@ const OrdersPage: FC = observer(() => {
                 )
               }
 
-              <Group>
+              {/* <Group>
                 <Span>Дата получения:</Span>
                 <P>{moment(order.DeliveryTime).format('LLL')}</P>
-              </Group>
+              </Group> */}
 
               <Scrollable>
                 {order.Courses.map(item =>
@@ -162,7 +162,6 @@ export const WatchOrderDetailModal: FC = observer(() => {
         style={{
           background: 'var(--tg-theme-secondary-bg-color)',
           minHeight: '100vh',
-          width: 'calc(100% - 1.5rem)'
         }}
       >
         <NavBar
@@ -233,10 +232,10 @@ export const WatchOrderDetailModal: FC = observer(() => {
               </Group>
             )
           }
-          <Group>
+          {/* <Group>
             <Span>Дата получения:</Span>
             <P>{moment(watchingOrder.DeliveryTime).format('LLL')}</P>
-          </Group>
+          </Group> */}
           <Group>
             <Span>Сумма итого:</Span>
             <P>{watchingOrder.OrderCost + 'руб'}</P>
