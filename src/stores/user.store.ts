@@ -25,7 +25,8 @@ class UserStore {
     percentDiscounts: [],
     dishDiscounts: [],
     allCampaign: [],
-    dishSet: []
+    dishSet: [],
+    MinSum: 0
   };
   setInfo(info: UserInfoState) {
     this.info = info;
@@ -50,6 +51,8 @@ class UserStore {
     const NAME = response?.UserInfo?.NAME ?? '';
     /**  "1979064" numberstr */
     const UserCode = response?.UserInfo?.UserCode ?? '';
+    const MinSum = response?.UserInfo?.MinSum ?? 0;
+    console.log(MinSum)
     const COrg = response?.UserInfo?.COrg ?? 0;
     const Phone = response?.UserInfo?.Phone ?? '';
     
@@ -62,7 +65,8 @@ class UserStore {
       allCampaign: AllDiscounts,
       dishSet: SetDishDiscount,
       UserCode,
-      Phone
+      Phone,
+      MinSum
     }
 
     // сохраняем состояние
@@ -131,6 +135,7 @@ export type UserInfoState = {
   allCampaign: AllCampaignUser[],
   /** это детали основных акций: скидка на сет из блюд */
   dishSet: DishSetDiscount[],
+  MinSum: number
 }
 
 

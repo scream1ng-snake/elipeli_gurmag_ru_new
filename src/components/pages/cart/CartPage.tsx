@@ -16,7 +16,8 @@ import config from "../../../features/config"
 
 const CartPage: FC = observer(() => {
   const { theme } = useTheme()
-  const { cart, auth, reception } = useStore()
+  const { cart, auth, reception, user } = useStore()
+  const { MinSum } = user.info
   useEffect(() => {
     if(auth.isFailed) {
       auth.authRequired.open()
@@ -47,9 +48,9 @@ const CartPage: FC = observer(() => {
         <h3 className={styles.noteText}>Пожелание к заказу</h3>
         <NoteToOrder />
         <Recomendations />
-        {config.minPriceForDelivery && (cart.totalPrice < config.minPriceForDelivery) && reception.receptionType === 'delivery'
+        {MinSum && (cart.totalPrice < MinSum) && reception.receptionType === 'delivery'
           ? <NoticeBar
-              content={'Бесплатная доставка только для заказа от ' + config.minPriceForDelivery + ' руб'}
+              content={'Бесплатная доставка только для заказа от ' + MinSum + ' руб'}
               color='alert' 
               icon={null}
               wrap
@@ -75,7 +76,7 @@ const CartPage: FC = observer(() => {
           color='primary'
           className={styles.orderButton}
           onClick={cart.detailPopup.open}
-          disabled={!cart.items.length || (!!config.minPriceForDelivery && (cart.totalPrice < config.minPriceForDelivery) && reception.receptionType === 'delivery')}
+          disabled={!cart.items.length || (!!MinSum && (cart.totalPrice < MinSum) && reception.receptionType === 'delivery')}
         >
           {'Оформить заказ на ' + Round(cart.totalPrice) + ' ₽'}
         </Button>

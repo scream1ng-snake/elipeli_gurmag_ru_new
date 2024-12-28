@@ -21,7 +21,7 @@ import config from '../../../../../features/config'
 
 const ReceptionSwitcher: FC = observer(() => {
   const go = useGoUTM()
-  const { auth, reception } = useStore()
+  const { auth, reception, user } = useStore()
   const navigate = useGoUTM()
   const {
     isWorkingNow,
@@ -37,8 +37,8 @@ const ReceptionSwitcher: FC = observer(() => {
       ? 'или заберёте сами?'
       : receptionType === 'delivery'
         ? isWorkingNow 
-          ? config.minPriceForDelivery
-            ? 'Доставка бесплатно. Заказ от ' + config.minPriceForDelivery + ' р.'
+          ? user.info.MinSum
+            ? 'Доставка бесплатно. Заказ от ' + user.info.MinSum + ' р.'
             : 'Доставка бесплатно' 
           : <Red>Сейчас не доставляем. Доставляем с 9.30 до 21.30</Red>
         : isWorkingNow 
