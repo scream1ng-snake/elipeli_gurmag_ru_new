@@ -334,3 +334,25 @@ dl, ol, ul {
 .tCenter {
   text-align: center;
 }
+
+.orderDetailForm .adm-list-body, .orderDetailForm .slot_select {
+  background: var(--cart-bg-color);
+}
+
+.asdfg {
+  margin-left: 19px;
+}
+
+.asdfg label {
+  text-align: center;
+  font-family: Arial;
+  font-size: 14.5px;
+  font-weight: 400;
+  line-height: 16.67px;
+  margin-bottom: 5px;
+}
+
+.asdfg .adm-list-item, .asdfg .adm-list-item-content {
+  padding-left: 0;
+  padding-right: 0;
+}

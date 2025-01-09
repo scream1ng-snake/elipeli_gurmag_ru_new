@@ -110,6 +110,7 @@ const myVariables = [
 
   /* Не используем */
   { cssVar: '--gur-card-star-color', dark: '#F1BB33', light: '#F1BB33' }, /* цвет в svg  */
+  { cssVar: '--cart-bg-color', dark: 'var(--tg-theme-secondary-bg-color)', light: 'rgba(238, 237, 240, 1)' }
 ]
 
 const antdVariables: Var[] = [

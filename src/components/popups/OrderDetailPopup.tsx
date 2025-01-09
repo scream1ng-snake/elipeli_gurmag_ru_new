@@ -34,6 +34,7 @@ const OrderDetailPopup: FC = observer(() => {
     bodyClassName={styles.detailPopup}
     position='bottom'
   >
+    <Shtorka />
     {cart.postOrder.state === 'LOADING' && <FullscreenLoading />}
     <SelectLocationPopup
       show={show}
@@ -48,3 +49,21 @@ const OrderDetailPopup: FC = observer(() => {
 
 
 export default OrderDetailPopup
+
+
+const Shtorka: FC = () => {
+  return <div style={{ position: 'relative', width: '100%' }}>
+    <div 
+      style={{
+        position: 'absolute',
+        background: 'rgba(199, 199, 199, 1)',
+        height:4,
+        width:35,
+        borderRadius:100,
+        top:5,
+        left: '50%',
+        translate: '-50%'
+      }}
+    />
+  </div>
+}

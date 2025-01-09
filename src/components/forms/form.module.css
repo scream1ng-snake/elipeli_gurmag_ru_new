@@ -27,21 +27,24 @@
 
 
 .receptionType {
-  margin: 14px;
-  font-size: 22px;
+  margin-left: 20px;
+  margin-top: 28px;
+  font-family: Arial;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 26.45px;
+
 }
 
 .addrInput {
   border: 2px solid var(--adm-color-border);
-  margin: 0.5rem 1rem;
+  margin: 0 19px 1rem 19px;
   padding: 0 0.5rem;
   border-radius: 13px;
 }
 
 
 .slotSelect { 
-  width: calc(100vw - 2rem); 
-  padding: 0 1rem;
 }
 
 .selectWrap {
@@ -50,8 +53,7 @@
 }
 
 .payMethod {
-  width: calc(100vw - 2rem); 
-  padding: 0 1rem;
+  width: 100%; 
 }
 .payTodo {
   border: 2px solid var(--adm-color-border);

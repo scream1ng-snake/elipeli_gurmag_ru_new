@@ -1,6 +1,6 @@
 .detailPopup {
   width: 100%;
-  border-top-left-radius: 25px;
-  border-top-right-radius: 25px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
   overflow-y: scroll;
 }

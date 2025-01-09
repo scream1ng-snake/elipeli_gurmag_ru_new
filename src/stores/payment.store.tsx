@@ -16,7 +16,7 @@ class PaymentStore {
     [paymentMethods.CASH]: 'Наличными',
   }
 
-  iconstyle = { marginRight: '0.75rem', fontSize: 25 }
+  iconstyle = { marginRight: '0.75rem', fontSize: 25, lineHeight: '25px' }
 
   paymentIcons = {
     // [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]: <BankcardOutline style={this.iconstyle} />,
