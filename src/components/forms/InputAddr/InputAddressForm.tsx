@@ -12,6 +12,7 @@ import CustomButton from '../../special/CustomButton'
 import { Undef } from '../../../features/helpers'
 import { Address } from '../../../stores/location.store'
 import { CITY_PREFIX } from '../../../stores/reception.store'
+import { Dropdown } from 'react-bootstrap'
 
 type InputAddress = Omit<Address, 'road' | 'house_number'> & { address: string }
 const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
@@ -19,6 +20,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
   const { reception, reception: { suggestitions, Location } } = useStore()
   const simpleValidator = yupResolver(simpleAddressSchema)
   const fullValidator = yupResolver(fullAddressSchema)
+  const [showSavedAddrs, setShowSavedAddrs] = useState(false)
   const debounced = useMemo(
     () => _.debounce(
       (form: InputAddress, formName: Undef<keyof InputAddress>) => {
@@ -115,28 +117,58 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         className={'gur-space'}
       >
 
-        <Form.Item
-          label={errors.address?.message
-            ? <>{'Улица и дом '}<Red>{'* ' + errors?.address?.message}</Red></>
-            : 'Улица и дом'
-          }
-          name='address'
-          className='gur-form__item'
-          style={errors.address?.message && redBorder}
-        >
-          <Controller
-            control={control}
+
+        <Dropdown show={showSavedAddrs}>
+          <Form.Item
+            label={errors.address?.message
+              ? <>{'Улица и дом '}<Red>{'* ' + errors?.address?.message}</Red></>
+              : 'Улица и дом'
+            }
             name='address'
-            render={({ field }) => <>
-              <Input
-                {...field}
-                disabled={Location.reverseGeocoderApi.state === 'LOADING'}
-                placeholder='Улица и дом'
-                clearable
-              />
-            </>}
-          />
-        </Form.Item>
+            className='gur-form__item'
+            style={errors.address?.message && redBorder}
+            clickable={false}
+          >
+            <Controller
+              control={control}
+              name='address'
+              render={({ field }) => <>
+                <Input
+                  {...field}
+                  onClick={() => {
+                    setShowSavedAddrs(true)
+                  }}
+                  disabled={Location.reverseGeocoderApi.state === 'LOADING'}
+                  placeholder='Улица и дом'
+                  clearable
+                />
+              </>}
+            />
+          </Form.Item>
+          <Dropdown.Menu style={{ maxWidth: '100%' }}>
+            {Location.savedAddrs.map((suggest, index) => {
+              return <Dropdown.Item 
+                key={index} 
+                onClick={e => { 
+                  Location.setAddrFromSaved(suggest)
+                  setShowSavedAddrs(false)
+                }}
+                style={{
+                  maxWidth: '100%',
+                  textOverflow: 'ellipsis',
+                  textWrap: 'wrap'
+                }}
+              >
+                {`ул. ${suggest.road}, дом ${suggest.house_number} ` +
+                  (suggest.entrance ? ` подьезд ${suggest.entrance}` : '') +
+                  (suggest.apartment ? ` кв. ${suggest.apartment}` : '') +
+                  (suggest.storey ? ` этаж ${suggest.storey}` : '')
+                }
+              </Dropdown.Item>
+            })}
+          </Dropdown.Menu>
+        </Dropdown>
+
       </Space>
       {!reception.suggestitions.list.length
         ? null
@@ -166,8 +198,8 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
               onClick={() => {
                 const road = item.address.component.find(compt => compt.kind[0] === 'STREET')?.name
                 const house_number = item.address.component.find(compt => compt.kind[0] === 'HOUSE')?.name
-                if(road && house_number) {
-                  
+                if (road && house_number) {
+
                   reception.suggestitions.setList([])
                   setValue('address', item.title.text)
                   const rest = getValues()

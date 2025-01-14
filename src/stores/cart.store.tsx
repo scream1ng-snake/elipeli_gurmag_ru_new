@@ -721,7 +721,7 @@ export class CartStore {
           itemsInCart: this.items,
           currentOrg: reception.OrgForMenu.toString(),
           orderDate: this.date.toISOString(),
-          fullAddress: CITY_PREFIX + confirmedAddress.road + confirmedAddress.house_number,
+          fullAddress: CITY_PREFIX + confirmedAddress.road + " " + confirmedAddress.house_number,
           orderType: receptionCodes[reception.receptionType],
           promocode: this.confirmedPromocode,
 

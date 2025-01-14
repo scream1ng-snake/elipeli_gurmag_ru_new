@@ -4,6 +4,8 @@ import { http } from "../features/http";
 import { logger } from "../features/logger";
 import Popup from "../features/modal";
 import RootStore from "./root.store";
+import { Address, Location } from "./location.store";
+import config from "../features/config";
 
 class UserStore {
   ID: Optional<string> = localStorage.getItem('myID') || null
@@ -26,7 +28,9 @@ class UserStore {
     dishDiscounts: [],
     allCampaign: [],
     dishSet: [],
-    MinSum: 0
+    MinSum: 0,
+    AddressArr: [],
+    Address: ''
   };
   setInfo(info: UserInfoState) {
     this.info = info;
@@ -52,7 +56,8 @@ class UserStore {
     /**  "1979064" numberstr */
     const UserCode = response?.UserInfo?.UserCode ?? '';
     const MinSum = response?.UserInfo?.MinSum ?? 0;
-    console.log(MinSum)
+    const Address = response?.UserInfo?.Address ?? '';
+    const AddressArr: (Address & Location)[] = response?.UserInfo?.AddressArr ?? [];
     const COrg = response?.UserInfo?.COrg ?? 0;
     const Phone = response?.UserInfo?.Phone ?? '';
     
@@ -66,11 +71,35 @@ class UserStore {
       dishSet: SetDishDiscount,
       UserCode,
       Phone,
-      MinSum
+      MinSum,
+      Address,
+      AddressArr
     }
 
     // сохраняем состояние
     this.setInfo(newInfo)
+    if(config.isDev) {
+      const mock: (Address & Location)[] = [{
+        road: "амантая",
+        house_number: "7/1",
+        entrance: "1",
+        storey: "11",
+        apartment: "1",
+        lat: 54.691131,
+        lon: 55.993025,
+      }, {
+        road: "улица Пархоменко",
+        house_number: "7",
+        entrance: "1",
+        storey: "11",
+        apartment: "1",
+        lat: 54.724086673865,
+        lon: 55.96312958027944,
+      }]
+      this.root.reception.Location.setSavedAddrs(mock)
+    } else {
+      this.root.reception.Location.setSavedAddrs(AddressArr)
+    }
 
     // сохраняем текущую организацию 
     // если грузим первый раз
@@ -136,6 +165,10 @@ export type UserInfoState = {
   /** это детали основных акций: скидка на сет из блюд */
   dishSet: DishSetDiscount[],
   MinSum: number
+  /** old */
+  Address: string,
+  /** сохраенные адреса */
+  AddressArr: Address[]
 }
 
 

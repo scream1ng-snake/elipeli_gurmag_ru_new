@@ -48,6 +48,9 @@ class LocationStore {
     }
   }
 
+  savedAddrs: (Address & Location)[] = []
+  setSavedAddrs(addrs: (Address & Location)[]) { this.savedAddrs = addrs }
+
   /** введеный и подтвержденный адрес */
   confirmedAddress: Address = initial
   /** состояние для формы */
@@ -236,6 +239,14 @@ class LocationStore {
     } else {
       logger.log('местоположение не доступно', 'reception')
     }
+  }
+
+  setAddrFromSaved = (savedAddr: Address & Location) => {
+    this.confirmedAddress = savedAddr
+    this.inputingAddress = savedAddr
+    this.setInputingLocation({ lat: savedAddr.lat, lon: savedAddr.lon })
+    this.setConfirmedLocation()
+    this.setAdditionalFields(savedAddr)
   }
 }
 
