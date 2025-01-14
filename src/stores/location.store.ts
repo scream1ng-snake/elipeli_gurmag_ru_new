@@ -48,8 +48,8 @@ class LocationStore {
     }
   }
 
-  savedAddrs: (Address & Location)[] = []
-  setSavedAddrs(addrs: (Address & Location)[]) { this.savedAddrs = addrs }
+  savedAddrs: SavedAddr[] = []
+  setSavedAddrs(addrs: SavedAddr[]) { this.savedAddrs = addrs }
 
   /** введеный и подтвержденный адрес */
   confirmedAddress: Address = initial
@@ -241,12 +241,35 @@ class LocationStore {
     }
   }
 
-  setAddrFromSaved = (savedAddr: Address & Location) => {
-    this.confirmedAddress = savedAddr
-    this.inputingAddress = savedAddr
-    this.setInputingLocation({ lat: savedAddr.lat, lon: savedAddr.lon })
-    this.setConfirmedLocation()
-    this.setAdditionalFields(savedAddr)
+  setAddrFromSaved = (savedAddr: SavedAddr) => {
+    const lat = Number(savedAddr.lat)
+    const lon = Number(savedAddr.lon)
+
+    const { nearestOrg, distance } = this.reception.getNearestDeliveryOrg(lat, lon)
+      if(nearestOrg && distance) {
+        if(distance < MAX_DELIVERY_DISTANCE) {
+          this.setInputingLocation({ lat, lon })
+          this.setConfirmedLocation()
+          this.setAffectFields({
+            road: savedAddr.street,
+            house_number: savedAddr.house
+          })
+          this.setAdditionalFields({
+            entrance: savedAddr.entrance || undefined,
+            storey: savedAddr.storey || undefined,
+            apartment: savedAddr.apartment || undefined,
+            addrComment: savedAddr.addrComment || undefined,
+            incorrectAddr: savedAddr.incorrectAddress || undefined,
+          })
+          this.setConfirmedAddress()
+          this.reception.setNearestOrg(nearestOrg.Id)
+          this.reception.setNearestOrgDistance(distance)
+        } else {
+          Toast.show("Адрес вне зоны обслуживания Gurmag")
+        }
+      } else {
+        Toast.show("Не удалось найти ближающее заведение для доставки")
+      }
   }
 }
 
@@ -386,5 +409,24 @@ type GeoObject = {
       pos: string
     }
   }
+}
+  
+export type SavedAddr = {
+  FullAddress: string,
+  Default: null | number,
+  City: null | string,
+  street: string,
+  house: string,
+  /** Квартира */
+  apartment?: string | null,
+  description?: string | null,
+  /** Подъезд */
+  entrance?: string | null,
+  /** Этаж */
+  storey?: string | null,
+  addrComment?: string | null,
+  incorrectAddress?: null | boolean,
+  lon: string,
+  lat: string,
 }
 export default LocationStore

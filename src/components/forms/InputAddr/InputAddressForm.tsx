@@ -13,6 +13,7 @@ import { Undef } from '../../../features/helpers'
 import { Address } from '../../../stores/location.store'
 import { CITY_PREFIX } from '../../../stores/reception.store'
 import { Dropdown } from 'react-bootstrap'
+import { HomeFilled } from '@ant-design/icons'
 
 type InputAddress = Omit<Address, 'road' | 'house_number'> & { address: string }
 const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
@@ -116,35 +117,35 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         align={'center'}
         className={'gur-space'}
       >
-
-
-        <Dropdown show={showSavedAddrs}>
-          <Form.Item
-            label={errors.address?.message
-              ? <>{'Улица и дом '}<Red>{'* ' + errors?.address?.message}</Red></>
-              : 'Улица и дом'
-            }
+        <Form.Item
+          label={errors.address?.message
+            ? <>{'Улица и дом '}<Red>{'* ' + errors?.address?.message}</Red></>
+            : 'Улица и дом'
+          }
+          name='address'
+          className='gur-form__item'
+          style={errors.address?.message && redBorder}
+          clickable={false}
+        >
+          <Controller
+            control={control}
             name='address'
-            className='gur-form__item'
-            style={errors.address?.message && redBorder}
-            clickable={false}
-          >
-            <Controller
-              control={control}
-              name='address'
-              render={({ field }) => <>
-                <Input
-                  {...field}
-                  onClick={() => {
-                    setShowSavedAddrs(true)
-                  }}
-                  disabled={Location.reverseGeocoderApi.state === 'LOADING'}
-                  placeholder='Улица и дом'
-                  clearable
-                />
-              </>}
-            />
-          </Form.Item>
+            render={({ field }) => <>
+              <Input
+                {...field}
+                onClick={() => {
+                  setShowSavedAddrs(true)
+                }}
+                disabled={Location.reverseGeocoderApi.state === 'LOADING'}
+                placeholder='Улица и дом'
+                clearable
+              />
+            </>}
+          />
+        </Form.Item>
+
+        {/* <Dropdown show={showSavedAddrs}>
+          
           <Dropdown.Menu style={{ maxWidth: '100%' }}>
             {Location.savedAddrs.map((suggest, index) => {
               return <Dropdown.Item 
@@ -159,7 +160,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
                   textWrap: 'wrap'
                 }}
               >
-                {`ул. ${suggest.road}, дом ${suggest.house_number} ` +
+                {`ул. ${suggest.street}, дом ${suggest.house} ` +
                   (suggest.entrance ? ` подьезд ${suggest.entrance}` : '') +
                   (suggest.apartment ? ` кв. ${suggest.apartment}` : '') +
                   (suggest.storey ? ` этаж ${suggest.storey}` : '')
@@ -167,10 +168,10 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
               </Dropdown.Item>
             })}
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown> */}
 
       </Space>
-      {!reception.suggestitions.list.length
+      {!showSavedAddrs || (!Location.savedAddrs.length && !reception.suggestitions.list.length)
         ? null
         : <ul
           style={{
@@ -191,9 +192,23 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
             borderBottomRightRadius: 8,
           }}
         >
+          {Location.savedAddrs.map((myAddr, index) =>
+            <li
+              key={index + 'myaddr'}
+              style={{ padding: '8px 16px', fontSize: 12 }}
+              onClick={e => { 
+                Location.setAddrFromSaved(myAddr)
+                setShowSavedAddrs(false)
+                reception.suggestitions.setList([])
+              }}
+            >
+              <span style={{ color: 'var(--тихий-текст)' }}>{'Недавно заказывали:  '}</span>
+              {myAddr.FullAddress}
+            </li>
+          )}
           {reception.suggestitions.list.map((item, index) =>
             <li
-              key={index}
+              key={index + 'sug'}
               style={{ padding: '8px 16px', fontSize: 12 }}
               onClick={() => {
                 const road = item.address.component.find(compt => compt.kind[0] === 'STREET')?.name
