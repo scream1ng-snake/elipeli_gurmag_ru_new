@@ -48,8 +48,8 @@ class LocationStore {
     }
   }
 
-  savedAddrs: (Address & Location)[] = []
-  setSavedAddrs(addrs: (Address & Location)[]) { this.savedAddrs = addrs }
+  savedAddrs: SavedAddr[] = []
+  setSavedAddrs(addrs: SavedAddr[]) { this.savedAddrs = addrs }
 
   /** введеный и подтвержденный адрес */
   confirmedAddress: Address = initial
@@ -241,12 +241,22 @@ class LocationStore {
     }
   }
 
-  setAddrFromSaved = (savedAddr: Address & Location) => {
-    this.confirmedAddress = savedAddr
-    this.inputingAddress = savedAddr
-    this.setInputingLocation({ lat: savedAddr.lat, lon: savedAddr.lon })
+  setAddrFromSaved = (savedAddr: SavedAddr) => {  
+    this.setInputingLocation({ lat: Number(savedAddr.lat), lon: Number(savedAddr.lon) })
     this.setConfirmedLocation()
-    this.setAdditionalFields(savedAddr)
+
+    this.setAffectFields({
+      road: savedAddr.street,
+      house_number: savedAddr.house
+    })
+    this.setAdditionalFields({
+      entrance: savedAddr.entrance || undefined,
+      storey: savedAddr.storey || undefined,
+      apartment: savedAddr.apartment || undefined,
+      addrComment: savedAddr.addrComment || undefined,
+      incorrectAddr: savedAddr.incorrectAddress || undefined,
+    })
+    this.setConfirmedAddress()
   }
 }
 
@@ -386,5 +396,24 @@ type GeoObject = {
       pos: string
     }
   }
+}
+  
+export type SavedAddr = {
+  FullAddress: string,
+  Default: null | number,
+  City: null | string,
+  street: string,
+  house: string,
+  /** Квартира */
+  apartment?: string | null,
+  description?: string | null,
+  /** Подъезд */
+  entrance?: string | null,
+  /** Этаж */
+  storey?: string | null,
+  addrComment?: string | null,
+  incorrectAddress?: null | boolean,
+  lon: string,
+  lat: string,
 }
 export default LocationStore
