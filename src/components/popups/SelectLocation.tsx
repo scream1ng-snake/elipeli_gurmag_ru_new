@@ -14,6 +14,7 @@ import ToggleSelector from '../special/ToggleSelector'
 import { IconClose } from '../icons/IconClose'
 import Container from "react-bootstrap/Container"
 import { YMaps } from '@pbe/react-yandex-maps'
+import { SelectSavedAddrForm } from './SelectSavedAddrForm'
 
 type P = {
   show: boolean,
@@ -22,6 +23,7 @@ type P = {
 }
 const SelectLocationPopup: FC<P> = observer(p => {
   let {
+    user,
     reception: {
       receptionType,
       options,
@@ -32,12 +34,13 @@ const SelectLocationPopup: FC<P> = observer(p => {
       Location
     }
   } = useStore()
-  const { 
+  const {
     setAddressByCoords,
     inputingLocation,
     reverseGeocoderApi,
     geocoderApi,
-    requestGeolocation  
+    requestGeolocation,
+    savedAddrs
   } = Location
 
   const [clickedOrgID, setClickedOrgID] = useState<Optional<number>>(currentOrgID)
@@ -60,30 +63,68 @@ const SelectLocationPopup: FC<P> = observer(p => {
     reverseGeocoderApi.state
   ].includes('LOADING')
 
+  const [
+    showMyAddresses, 
+    setShowMyAddresses
+  ] = useState(true)
+
   function getContent(rc: ReceptionType) {
     switch (rc) {
       case 'delivery':
-        return <div className={styles.container}>
-          <div className={styles.map_area}>
-            {isMapSearching
-              ? <Mask>
-                <DotLoading style={{ fontSize: 48 }} color='primary' />
-              </Mask>
-              : null
-            }
-            <Maps.Picker
-              value={inputingLocation}
-              onSelect={setAddressByCoords}
-            />
+        if(user.loadUserInfo.state === 'LOADING') {
+          return <Mask>
+            <DotLoading style={{ fontSize: 48 }} color='primary' />
+          </Mask>
+        }
+        if (savedAddrs.length && user.loadUserInfo.state === 'COMPLETED' && showMyAddresses) {
+          return <div className={styles.container}>
+            <div className={styles.map_area}>
+              {isMapSearching
+                ? <Mask>
+                  <DotLoading style={{ fontSize: 48 }} color='primary' />
+                </Mask>
+                : null
+              }
+              <Maps.Picker
+                value={inputingLocation}
+                onSelect={setAddressByCoords}
+              />
+            </div>
+            <div className={styles.popup_area}>
+              <PopupHeader />
+              <Container className='p-0'>
+                <SelectSavedAddrForm 
+                  show={showMyAddresses}
+                  open={() => setShowMyAddresses(true)}
+                  close={() => setShowMyAddresses(false)}
+                  onContinue={p.onContinue} 
+                />
+              </Container>
+            </div>
           </div>
-          <div className={styles.popup_area}>
-            <PopupHeader />
-            <Container className='p-0'>
-              <AskLocation onClick={requestGeolocation} />
-              <InputAddressForm onContinue={p.onContinue} />
-            </Container>
+        } else {
+          return <div className={styles.container}>
+            <div className={styles.map_area}>
+              {isMapSearching
+                ? <Mask>
+                  <DotLoading style={{ fontSize: 48 }} color='primary' />
+                </Mask>
+                : null
+              }
+              <Maps.Picker
+                value={inputingLocation}
+                onSelect={setAddressByCoords}
+              />
+            </div>
+            <div className={styles.popup_area}>
+              <PopupHeader />
+              <Container className='p-0'>
+                <AskLocation onClick={requestGeolocation} />
+                <InputAddressForm onContinue={p.onContinue} />
+              </Container>
+            </div>
           </div>
-        </div>
+        }
 
       case 'pickup':
         return <div className={styles.container}>

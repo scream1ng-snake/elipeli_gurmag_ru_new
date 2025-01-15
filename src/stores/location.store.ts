@@ -241,7 +241,8 @@ class LocationStore {
     }
   }
 
-  setAddrFromSaved = (savedAddr: SavedAddr) => {
+
+  setInputingAddrFromSaved = (savedAddr: SavedAddr) => {
     const lat = Number(savedAddr.lat)
     const lon = Number(savedAddr.lon)
 
@@ -249,7 +250,6 @@ class LocationStore {
       if(nearestOrg && distance) {
         if(distance < MAX_DELIVERY_DISTANCE) {
           this.setInputingLocation({ lat, lon })
-          this.setConfirmedLocation()
           this.setAffectFields({
             road: savedAddr.street,
             house_number: savedAddr.house
@@ -261,6 +261,21 @@ class LocationStore {
             addrComment: savedAddr.addrComment || undefined,
             incorrectAddr: savedAddr.incorrectAddress || undefined,
           })
+        } else {
+          Toast.show("Адрес вне зоны обслуживания Gurmag")
+        }
+      } else {
+        Toast.show("Не удалось найти ближающее заведение для доставки")
+      }
+  }
+  setConfirmedAddrFromSaved = () => {
+    const lat = Number(this.inputingLocation?.lat)
+    const lon = Number(this.inputingLocation?.lon)
+
+    const { nearestOrg, distance } = this.reception.getNearestDeliveryOrg(lat, lon)
+      if(nearestOrg && distance) {
+        if(distance < MAX_DELIVERY_DISTANCE) {
+          this.setConfirmedLocation()
           this.setConfirmedAddress()
           this.reception.setNearestOrg(nearestOrg.Id)
           this.reception.setNearestOrgDistance(distance)

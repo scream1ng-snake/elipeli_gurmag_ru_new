@@ -12,8 +12,6 @@ import CustomButton from '../../special/CustomButton'
 import { Undef } from '../../../features/helpers'
 import { Address } from '../../../stores/location.store'
 import { CITY_PREFIX } from '../../../stores/reception.store'
-import { Dropdown } from 'react-bootstrap'
-import { HomeFilled } from '@ant-design/icons'
 
 type InputAddress = Omit<Address, 'road' | 'house_number'> & { address: string }
 const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
@@ -144,34 +142,8 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
           />
         </Form.Item>
 
-        {/* <Dropdown show={showSavedAddrs}>
-          
-          <Dropdown.Menu style={{ maxWidth: '100%' }}>
-            {Location.savedAddrs.map((suggest, index) => {
-              return <Dropdown.Item 
-                key={index} 
-                onClick={e => { 
-                  Location.setAddrFromSaved(suggest)
-                  setShowSavedAddrs(false)
-                }}
-                style={{
-                  maxWidth: '100%',
-                  textOverflow: 'ellipsis',
-                  textWrap: 'wrap'
-                }}
-              >
-                {`ул. ${suggest.street}, дом ${suggest.house} ` +
-                  (suggest.entrance ? ` подьезд ${suggest.entrance}` : '') +
-                  (suggest.apartment ? ` кв. ${suggest.apartment}` : '') +
-                  (suggest.storey ? ` этаж ${suggest.storey}` : '')
-                }
-              </Dropdown.Item>
-            })}
-          </Dropdown.Menu>
-        </Dropdown> */}
-
       </Space>
-      {!showSavedAddrs || (!Location.savedAddrs.length && !reception.suggestitions.list.length)
+      {(!reception.suggestitions.list.length)
         ? null
         : <ul
           style={{
@@ -192,7 +164,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
             borderBottomRightRadius: 8,
           }}
         >
-          {Location.savedAddrs.map((myAddr, index) =>
+          {/* {Location.savedAddrs.map((myAddr, index) =>
             <li
               key={index + 'myaddr'}
               style={{ padding: '8px 16px', fontSize: 12 }}
@@ -205,7 +177,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
               <span style={{ color: 'var(--тихий-текст)' }}>{'Недавно заказывали:  '}</span>
               {myAddr.FullAddress}
             </li>
-          )}
+          )} */}
           {reception.suggestitions.list.map((item, index) =>
             <li
               key={index + 'sug'}
