@@ -166,12 +166,16 @@ const SelectLocationPopup: FC<P> = observer(p => {
     }
   }
 
+  const closeFn = () => {
+    p.close()
+    setShowMyAddresses(true)
+  }
   return (
     <Popup
       position='bottom'
       visible={p.show}
-      onClose={p.close}
-      onMaskClick={p.close}
+      onClose={closeFn}
+      onMaskClick={closeFn}
       bodyStyle={{ width: '100vw', height: '100%' }}
     >
       <Container className='p-0'>
@@ -187,7 +191,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
             justify='between'
           >
             <Button
-              onClick={p.close}
+              onClick={closeFn}
               shape='rounded'
               style={{
                 height: '38px',

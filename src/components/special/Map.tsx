@@ -61,6 +61,10 @@ const ReactMap: FC<props> = p => {
         if(prevousMarker) map.geoObjects.remove(prevousMarker)
         prevousMarker = marker
       }
+    } else {
+      if(ymaps && map) {
+        if(prevousMarker) map.geoObjects.remove(prevousMarker)
+      }
     }
   }, [p.value?.lat, p.value?.lon, map])
 

@@ -2,7 +2,7 @@ import { Button, Checkbox, Image, List, Space } from "antd-mobile";
 import { observer } from "mobx-react-lite";
 import { CSSProperties, FC } from "react";
 import { useStore } from "../../features/hooks";
-import { Location, SavedAddr } from "../../stores/location.store";
+import { initial, Location, SavedAddr } from "../../stores/location.store";
 import Pencil from '../../assets/Pencil.png'
 type Props = {
   show: boolean,
@@ -41,7 +41,7 @@ const newAddrStyle = {
   padding: '6px 21px'
 }
 export const SelectSavedAddrForm: FC<Props> = observer(props => {
-  const { reception: { Location } } = useStore()
+  const { reception: { Location, suggestitions } } = useStore()
   const { savedAddrs, inputingAddress, confirmedAddress } = Location
   const { road, house_number, entrance, storey, apartment, addrComment, incorrectAddr } = Location.confirmedAddress
 
@@ -49,7 +49,14 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
     Location.setInputingAddrFromSaved(myAddr)
   }
 
-  function goToInputAddress() {
+  function goToInputAddressEdit() {
+    suggestitions.setList([])
+    props.close()
+  }
+  function goToInputAddressClear() {
+    Location.inputingAddress = initial
+    suggestitions.setList([])
+    Location.inputingLocation = null
     props.close()
   }
   const currentIsNotInList = !savedAddrs.find(sa => {
@@ -75,7 +82,7 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
         fill='solid'
         style={newAddrStyle}
         shape='rounded'
-        onClick={goToInputAddress}
+        onClick={goToInputAddressClear}
         size='small'
       >
         + Новый адрес
@@ -90,7 +97,7 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
               src={Pencil} 
               onClick={() => {
                 setActiveNotSavedAddr()
-                goToInputAddress()
+                goToInputAddressEdit()
               }} 
             />
           }
@@ -117,7 +124,7 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
               src={Pencil}
               onClick={() => {
                 setActive(saved)
-                goToInputAddress()
+                goToInputAddressEdit()
               }}
             />
           }

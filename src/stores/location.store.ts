@@ -6,7 +6,7 @@ import { http } from "../features/http";
 import { logger } from "../features/logger";
 
 const MAX_DELIVERY_DISTANCE = 10
-const initial: Address = {
+export const initial: Address = {
   road: '',
   house_number: '',
   multiapartment: true,
