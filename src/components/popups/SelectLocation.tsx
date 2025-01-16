@@ -93,6 +93,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
             <div className={styles.popup_area}>
               <PopupHeader />
               <Container className='p-0'>
+                <AskLocation onClick={requestGeolocation} />
                 <SelectSavedAddrForm 
                   show={showMyAddresses}
                   open={() => setShowMyAddresses(true)}
@@ -120,7 +121,12 @@ const SelectLocationPopup: FC<P> = observer(p => {
               <PopupHeader />
               <Container className='p-0'>
                 <AskLocation onClick={requestGeolocation} />
-                <InputAddressForm onContinue={p.onContinue} />
+                <InputAddressForm 
+                  onContinue={() => {
+                    p.onContinue()
+                    setShowMyAddresses(true)
+                  }} 
+                />
               </Container>
             </div>
           </div>

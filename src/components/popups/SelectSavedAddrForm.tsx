@@ -1,16 +1,47 @@
-import { Button, Checkbox, List, Space } from "antd-mobile";
+import { Button, Checkbox, Image, List, Space } from "antd-mobile";
 import { observer } from "mobx-react-lite";
-import { FC } from "react";
+import { CSSProperties, FC } from "react";
 import { useStore } from "../../features/hooks";
 import { Location, SavedAddr } from "../../stores/location.store";
+import Pencil from '../../assets/Pencil.png'
 type Props = {
   show: boolean,
   open: () => void
   close: () => void
   onContinue: () => void
 }
+
+const w100 = { width: "100%" }
+
+const containerStyle = {
+  width: '100%',
+  height: '100%',
+  padding: '13px 16px 16px 18px'
+}
+
+const myAddrs = {
+  fontSize: 22,
+  fontWeight: 500,
+  lineHeight: '13px',
+  letterSpacing: '0.02em'
+}
+
+const listItemStyle = {
+  fontFamily: 'Arial',
+  fontSize: 16,
+  fontWeight: 400,
+  lineHeight: '18.4px',
+  paddingLeft: 0,
+}
+const newAddrStyle = {
+  background: 'var(--tg-theme-secondary-bg-color)',
+  fontSize: 13,
+  fontWeight: 400,
+  lineHeight: 1,
+  padding: '6px 21px'
+}
 export const SelectSavedAddrForm: FC<Props> = observer(props => {
-  const { reception, reception: { Location }} = useStore()
+  const { reception: { Location } } = useStore()
   const { savedAddrs, inputingAddress, confirmedAddress } = Location
   const { road, house_number, entrance, storey, apartment, addrComment, incorrectAddr } = Location.confirmedAddress
 
@@ -23,39 +54,54 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
   }
   const currentIsNotInList = !savedAddrs.find(sa => {
     return sa.street == road && sa.house == house_number
+  })
+  const setActiveNotSavedAddr = () => {
+    Location.setInputingLocation(Location.confirmedLocation as Location)
+    Location.setAffectFields({ road, house_number })
+    Location.setAdditionalFields({
+      entrance,
+      storey,
+      apartment,
+      addrComment,
+      incorrectAddr,
+    })
   }
-  )
-  console.log(currentIsNotInList)
-  return <Space style={{ width: '100%', height: '100%', padding:'0 10px 10px 10px' }} direction='vertical'>
-    <Space style={{ width: "100%" }} justify='between' align='center'>
-      <p>Мои адреса</p>
+  return <Space style={containerStyle} direction='vertical'>
+    <Space style={w100} justify='between' align='center'>
+      <p style={myAddrs}>
+        Мои адреса
+      </p>
       <Button
         fill='solid'
-        style={{ background: 'var(--tg-theme-secondary-bg-color)' }}
+        style={newAddrStyle}
         shape='rounded'
         onClick={goToInputAddress}
+        size='small'
       >
         + Новый адрес
       </Button>
     </Space>
-    <List>
-      {currentIsNotInList 
-        ? <List.Item>
-          <Checkbox 
-            onClick={() => { 
-              Location.setInputingLocation(Location.confirmedLocation as Location)
-              Location.setAffectFields({ road, house_number })
-              Location.setAdditionalFields({
-                entrance,
-                storey,
-                apartment,
-                addrComment,
-                incorrectAddr,
-              })
-            }}
+    <List style={{ "--border-bottom": '1px solid var(--tg-theme-secondary-bg-color)' }}>
+      {currentIsNotInList
+        ? <List.Item 
+          style={listItemStyle} 
+          extra={
+            <Image 
+              src={Pencil} 
+              onClick={() => {
+                setActiveNotSavedAddr()
+                goToInputAddress()
+              }} 
+            />
+          }
+        >
+          <Checkbox
+            style={{ "--gap": '10px' }}
+            icon={getIcon}
+            onClick={setActiveNotSavedAddr}
             checked={house_number === inputingAddress.house_number && road === inputingAddress.road}
           >
-            {`${road ? 'ул. ' + road : ''} ${house_number ? 'д. ' + house_number : '' } ${entrance ? 'под. ' + entrance : ''} ${storey ? 'эт. ' + storey : ''} ${apartment ? 'кв. ' + apartment : ''}`}
+            {`${road ? 'ул. ' + road : ''} ${house_number ? 'д. ' + house_number : ''} ${entrance ? 'под. ' + entrance : ''} ${storey ? 'эт. ' + storey : ''} ${apartment ? 'кв. ' + apartment : ''}`}
           </Checkbox>
         </List.Item>
         : null
@@ -63,19 +109,35 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
       {savedAddrs.map((saved, index) => {
         const isActive = saved.house === inputingAddress.house_number
           && saved.street === inputingAddress.road
-        return <List.Item key={index}>
-          <Checkbox checked={isActive} onClick={() => setActive(saved)}>{saved.FullAddress}</Checkbox>
+        return <List.Item
+          key={index}
+          style={listItemStyle}
+          extra={
+            <Image
+              src={Pencil}
+              onClick={() => {
+                setActive(saved)
+                goToInputAddress()
+              }}
+            />
+          }
+        >
+          <Checkbox style={{ "--gap": '10px' }} icon={getIcon} checked={isActive} onClick={() => setActive(saved)}>{saved.FullAddress}</Checkbox>
         </List.Item>
       })}
     </List>
-    <Button 
+    <Button
       color="primary"
       size='large'
-      style={{ width: '100%' }}
+      style={{
+        ...w100,
+        "--background-color": 'rgba(241, 187, 51, 1)',
+        "--text-color": 'white'
+      }}
       shape='rounded'
       onClick={() => {
         props.onContinue()
-        if(confirmedAddress.road === inputingAddress.road && confirmedAddress.house_number === inputingAddress.house_number) {
+        if (confirmedAddress.road === inputingAddress.road && confirmedAddress.house_number === inputingAddress.house_number) {
           return
         } else {
           Location.setConfirmedAddrFromSaved()
@@ -86,3 +148,27 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
     </Button>
   </Space>
 })
+
+const getIcon = (checked: boolean) => <Icon checked={checked} />
+
+const checkboxStyle: CSSProperties = {
+  width: 19,
+  height: 19,
+  borderRadius: 100,
+  boxSizing: 'border-box'
+}
+const Icon: FC<{ checked: boolean }> = ({ checked }) => checked
+  ? <div
+    style={{
+      ...checkboxStyle,
+      background: 'none',
+      border: '6px solid rgba(1, 98, 65, 1)'
+    }}
+  />
+  : <div
+    style={{
+      ...checkboxStyle,
+      background: 'var(--tg-theme-secondary-bg-color)',
+      border: 'none'
+    }}
+  />
