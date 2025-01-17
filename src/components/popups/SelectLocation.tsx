@@ -40,7 +40,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
     reverseGeocoderApi,
     geocoderApi,
     requestGeolocation,
-    savedAddrs
+    savedAdresses
   } = Location
 
   const [clickedOrgID, setClickedOrgID] = useState<Optional<number>>(currentOrgID)
@@ -63,11 +63,6 @@ const SelectLocationPopup: FC<P> = observer(p => {
     reverseGeocoderApi.state
   ].includes('LOADING')
 
-  const [
-    showMyAddresses, 
-    setShowMyAddresses
-  ] = useState(true)
-
   function getContent(rc: ReceptionType) {
     switch (rc) {
       case 'delivery':
@@ -76,7 +71,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
             <DotLoading style={{ fontSize: 48 }} color='primary' />
           </Mask>
         }
-        if (savedAddrs.length && user.loadUserInfo.state === 'COMPLETED' && showMyAddresses) {
+        if (savedAdresses.onServer.length && user.loadUserInfo.state === 'COMPLETED' && Location.savedAdresses.page.show) {
           return <div className={styles.container}>
             <div className={styles.map_area}>
               {isMapSearching
@@ -95,9 +90,9 @@ const SelectLocationPopup: FC<P> = observer(p => {
               <Container className='p-0'>
                 <AskLocation onClick={requestGeolocation} />
                 <SelectSavedAddrForm 
-                  show={showMyAddresses}
-                  open={() => setShowMyAddresses(true)}
-                  close={() => setShowMyAddresses(false)}
+                  show={Location.savedAdresses.page.show}
+                  open={Location.savedAdresses.page.open}
+                  close={Location.savedAdresses.page.close}
                   onContinue={p.onContinue} 
                 />
               </Container>
@@ -124,7 +119,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
                 <InputAddressForm 
                   onContinue={() => {
                     p.onContinue()
-                    setShowMyAddresses(true)
+                    Location.savedAdresses.page.open()
                   }} 
                 />
               </Container>
@@ -168,7 +163,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
 
   const closeFn = () => {
     p.close()
-    setShowMyAddresses(true)
+    Location.savedAdresses.page.open()
   }
   return (
     <Popup

@@ -4,8 +4,7 @@ import { http } from "../features/http";
 import { logger } from "../features/logger";
 import Popup from "../features/modal";
 import RootStore from "./root.store";
-import { Address, Location, SavedAddr } from "./location.store";
-import config from "../features/config";
+import { SavedAddress } from "./SavedAddresses";
 
 class UserStore {
   ID: Optional<string> = localStorage.getItem('myID') || null
@@ -57,7 +56,7 @@ class UserStore {
     const UserCode = response?.UserInfo?.UserCode ?? '';
     const MinSum = response?.UserInfo?.MinSum ?? 0;
     const Address = response?.UserInfo?.Address ?? '';
-    const AddressArr: SavedAddr[] = response?.UserInfo?.AddressArr ?? [];
+    const AddressArr: SavedAddress[] = response?.UserInfo?.AddressArr ?? [];
     const COrg = response?.UserInfo?.COrg ?? 0;
     const Phone = response?.UserInfo?.Phone ?? '';
     
@@ -78,7 +77,7 @@ class UserStore {
 
     // сохраняем состояние
     this.setInfo(newInfo)
-    this.root.reception.Location.setSavedAddrs(AddressArr)
+    this.root.reception.Location.savedAdresses.setServerAddresses(AddressArr)
 
     // сохраняем текущую организацию 
     // если грузим первый раз
@@ -147,7 +146,7 @@ export type UserInfoState = {
   /** old */
   Address: string,
   /** сохраенные адреса */
-  AddressArr: SavedAddr[]
+  AddressArr: SavedAddress[]
 }
 
 

@@ -2,8 +2,9 @@ import { Button, Checkbox, Image, List, Space } from "antd-mobile";
 import { observer } from "mobx-react-lite";
 import { CSSProperties, FC } from "react";
 import { useStore } from "../../features/hooks";
-import { initial, Location, SavedAddr } from "../../stores/location.store";
+import { initial, Location } from "../../stores/location.store";
 import Pencil from '../../assets/Pencil.png'
+import { SavedAddress } from "../../stores/SavedAddresses";
 type Props = {
   show: boolean,
   open: () => void
@@ -42,10 +43,10 @@ const newAddrStyle = {
 }
 export const SelectSavedAddrForm: FC<Props> = observer(props => {
   const { reception: { Location, suggestitions } } = useStore()
-  const { savedAddrs, inputingAddress, confirmedAddress } = Location
+  const { savedAdresses, inputingAddress, confirmedAddress } = Location
   const { road, house_number, entrance, storey, apartment, addrComment, incorrectAddr } = Location.confirmedAddress
 
-  function setActive(myAddr: SavedAddr) {
+  function setActive(myAddr: SavedAddress) {
     Location.setInputingAddrFromSaved(myAddr)
   }
 
@@ -54,13 +55,19 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
     props.close()
   }
   function goToInputAddressClear() {
+
+
+    // Location.savedAdresses.addNewAddressToLocal()
+
+
+
     Location.inputingAddress = initial
     suggestitions.setList([])
     Location.inputingLocation = null
     props.close()
   }
-  const currentIsNotInList = !savedAddrs.find(sa => {
-    return sa.street == road && sa.house == house_number
+  const currentIsNotInList = !savedAdresses.onServer.find(addr => {
+    return addr.street == road && addr.house == house_number
   })
   const setActiveNotSavedAddr = () => {
     Location.setInputingLocation(Location.confirmedLocation as Location)
@@ -113,7 +120,7 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
         </List.Item>
         : null
       }
-      {savedAddrs.map((saved, index) => {
+      {savedAdresses.onServer.map((saved, index) => {
         const isActive = saved.house === inputingAddress.house_number
           && saved.street === inputingAddress.road
         return <List.Item

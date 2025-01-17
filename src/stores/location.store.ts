@@ -4,6 +4,7 @@ import { Optional, Request } from "../features/helpers";
 import { Toast } from "antd-mobile";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
+import SavedAdresses, { SavedAddress } from "./SavedAddresses";
 
 const MAX_DELIVERY_DISTANCE = 10
 export const initial: Address = {
@@ -46,10 +47,11 @@ class LocationStore {
         console.error(error)
       }
     }
+
   }
 
-  savedAddrs: SavedAddr[] = []
-  setSavedAddrs(addrs: SavedAddr[]) { this.savedAddrs = addrs }
+  savedAdresses = new SavedAdresses(this)
+  
 
   /** введеный и подтвержденный адрес */
   confirmedAddress: Address = initial
@@ -242,7 +244,7 @@ class LocationStore {
   }
 
 
-  setInputingAddrFromSaved = (savedAddr: SavedAddr) => {
+  setInputingAddrFromSaved = (savedAddr: SavedAddress) => {
     const lat = Number(savedAddr.lat)
     const lon = Number(savedAddr.lon)
 
@@ -300,6 +302,7 @@ class LocationStore {
   
  */
 export type Address = {
+  uuid?: UUID,
   road: string,
   house_number: string,
   multiapartment?: boolean,
@@ -311,6 +314,7 @@ export type Address = {
   addrComment?: string,
   incorrectAddr?: boolean,
 }
+type UUID = string
 export type Location = { lat: number, lon: number }
 
 
@@ -425,23 +429,7 @@ type GeoObject = {
     }
   }
 }
-  
-export type SavedAddr = {
-  FullAddress: string,
-  Default: null | number,
-  City: null | string,
-  street: string,
-  house: string,
-  /** Квартира */
-  apartment?: string | null,
-  description?: string | null,
-  /** Подъезд */
-  entrance?: string | null,
-  /** Этаж */
-  storey?: string | null,
-  addrComment?: string | null,
-  incorrectAddress?: null | boolean,
-  lon: string,
-  lat: string,
-}
+
+
+
 export default LocationStore
