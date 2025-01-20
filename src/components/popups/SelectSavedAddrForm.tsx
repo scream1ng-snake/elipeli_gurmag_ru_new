@@ -5,6 +5,7 @@ import { useStore } from "../../features/hooks";
 import { initial, Location } from "../../stores/location.store";
 import Pencil from '../../assets/Pencil.png'
 import { SavedAddress } from "../../stores/SavedAddresses";
+import { FullscreenLoading } from "../common/Loading/Loading";
 type Props = {
   show: boolean,
   open: () => void
@@ -81,6 +82,10 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
     })
   }
   return <Space style={containerStyle} direction='vertical'>
+    {(Location.geocoderApi.state === 'LOADING'|| Location.reverseGeocoderApi.state === 'LOADING')
+      ? <FullscreenLoading />
+      : null
+    }
     <Space style={w100} justify='between' align='center'>
       <p style={myAddrs}>
         Мои адреса
