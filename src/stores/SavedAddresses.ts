@@ -72,8 +72,8 @@ export type SavedAddress = {
   storey?: Optional<string>,
   addrComment?: Optional<string>,
   incorrectAddress?: Optional<boolean>,
-  lon: string,
-  lat: string,
+  lon: Optional<string>,
+  lat: Optional<string>,
 }
 
 type UUID = string

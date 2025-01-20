@@ -244,11 +244,22 @@ class LocationStore {
   }
 
 
-  setInputingAddrFromSaved = (savedAddr: SavedAddress) => {
-    const lat = Number(savedAddr.lat)
-    const lon = Number(savedAddr.lon)
-
-    const { nearestOrg, distance } = this.reception.getNearestDeliveryOrg(lat, lon)
+  setInputingAddrFromSaved = async (savedAddr: SavedAddress) => {
+    let lat: Optional<number> = null
+    let lon: Optional<number> = null
+    
+    if(savedAddr.lat && savedAddr.lon) {
+      lat = Number(savedAddr.lat)
+      lon = Number(savedAddr.lon)
+    } else {
+      const result = await this.geocoderApi.run(CITY_PREFIX + savedAddr.street + ' ' + savedAddr.house)
+      if(result) {
+        lat = result.lat
+        lon = result.lon
+      }
+    }
+    if(lat && lon) {
+      const { nearestOrg, distance } = this.reception.getNearestDeliveryOrg(lat, lon)
       if(nearestOrg && distance) {
         if(distance < MAX_DELIVERY_DISTANCE) {
           this.setInputingLocation({ lat, lon })
@@ -269,6 +280,7 @@ class LocationStore {
       } else {
         Toast.show("Не удалось найти ближающее заведение для доставки")
       }
+    }
   }
   setConfirmedAddrFromSaved = () => {
     const lat = Number(this.inputingLocation?.lat)
