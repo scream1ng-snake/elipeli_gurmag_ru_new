@@ -5,6 +5,7 @@ import { logger } from "../features/logger";
 import Popup from "../features/modal";
 import RootStore from "./root.store";
 import { SavedAddress } from "./SavedAddresses";
+import { AddOne, AllCampaignUser, DishDiscount, DishSetDiscount, PercentDiscount } from "./cart.store";
 
 class UserStore {
   ID: Optional<string> = localStorage.getItem('myID') || null
@@ -29,7 +30,8 @@ class UserStore {
     dishSet: [],
     MinSum: 0,
     AddressArr: [],
-    Address: ''
+    Address: '',
+    addOne: []
   };
   setInfo(info: UserInfoState) {
     this.info = info;
@@ -57,6 +59,7 @@ class UserStore {
     const MinSum = response?.UserInfo?.MinSum ?? 0;
     const Address = response?.UserInfo?.Address ?? '';
     const AddressArr: SavedAddress[] = response?.UserInfo?.AddressArr ?? [];
+    const addOne: AddOne[] = response?.AddOne ?? [];
     const COrg = response?.UserInfo?.COrg ?? 0;
     const Phone = response?.UserInfo?.Phone ?? '';
     
@@ -68,6 +71,7 @@ class UserStore {
       dishDiscounts: DishDiscount,
       allCampaign: AllDiscounts,
       dishSet: SetDishDiscount,
+      addOne,
       UserCode,
       Phone,
       MinSum,
@@ -147,65 +151,10 @@ export type UserInfoState = {
   Address: string,
   /** сохраенные адреса */
   AddressArr: SavedAddress[]
+  addOne: AddOne[]
 }
 
 
-type PercentDiscount = {
-  vcode: number,
-  MinSum: number,
-  MaxSum: number,
-  bonusRate: number,
-  discountPercent: number,
-  discountMoney: number,
-  promocode: string,
-  TakeOut: number,
-  Delivery: number,
-  PresentAction: Optional<boolean>
-}
-
-type DishDiscount = {
-  discountPercent: number,
-  vcode: number,
-  isset: number,
-  quantity: number,
-  promocode: string,
-  dish: number,
-  price: number,
-  TakeOut: number,
-  Delivery: number,
-  MinSum: number,
-  MaxSum: number,
-  PresentAction: Optional<boolean>,
-}
-
-type DishSetDiscount = {
-  vcode: number,
-  dishes: DishDiscount[],
-  dishCount: number,
-  promocode: string
-  PresentAction: Optional<boolean>,
-  MinSum: number,
-  MaxSum: number,
-}
-
-
-type AllCampaignUser = {
-  Name: string,
-  Description: string,
-  VCode: any,
-  periodtype: string,
-  isset: number,
-  quantity: number,
-  promocode: string,
-  image: string,
-  compresimage: string,
-  showintgregistry: boolean,
-  TakeOut: number,
-  Delivery: number,
-  PresentAction: Optional<boolean>,
-  MinSum: number,
-  MaxSum: number,
-}
 export default UserStore
 
 
