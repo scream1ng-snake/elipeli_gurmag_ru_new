@@ -40,7 +40,8 @@ const SelectLocationPopup: FC<P> = observer(p => {
     reverseGeocoderApi,
     geocoderApi,
     requestGeolocation,
-    savedAdresses
+    savedAdresses,
+    jsonMap
   } = Location
 
   const [clickedOrgID, setClickedOrgID] = useState<Optional<number>>(currentOrgID)
@@ -83,6 +84,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
               <Maps.Picker
                 value={inputingLocation}
                 onSelect={setAddressByCoords}
+                features={jsonMap?.features}
               />
             </div>
             <div className={styles.popup_area}>
@@ -110,6 +112,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
               <Maps.Picker
                 value={inputingLocation}
                 onSelect={setAddressByCoords}
+                features={jsonMap?.features}
               />
             </div>
             <div className={styles.popup_area}>
@@ -137,6 +140,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
               : null
             }
             <Maps.RadioPicker
+              features={jsonMap?.features}
               onSwitch={(s) => {
                 s?.Id
                   ? setClickedOrgID(s.Id)
@@ -144,6 +148,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
               }}
               items={orgsCoords}
               defaultSelected={orgsCoords.find(val => val.Id === clickedOrgID)}
+              // features={jsonMap.features}
             />
           </div>
           <div className={styles.popup_area}>

@@ -6,6 +6,7 @@ import Popup from "../features/modal";
 import RootStore from "./root.store";
 import { SavedAddress } from "./SavedAddresses";
 import { AddOne, AllCampaignUser, DishDiscount, DishSetDiscount, PercentDiscount } from "./cart.store";
+import { GeoJson } from "./location.store";
 
 class UserStore {
   ID: Optional<string> = localStorage.getItem('myID') || null
@@ -62,6 +63,8 @@ class UserStore {
     const addOne: AddOne[] = response?.AddOne ?? [];
     const COrg = response?.UserInfo?.COrg ?? 0;
     const Phone = response?.UserInfo?.Phone ?? '';
+    const DeliveryArea = JSON.parse(response?.DeliveryArea?.[0].JSON ?? "{}") as GeoJson
+    this.root.reception.Location.setJsonMap(DeliveryArea)
     
 
     const newInfo = {

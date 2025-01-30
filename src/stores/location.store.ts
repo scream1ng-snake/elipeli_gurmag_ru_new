@@ -5,6 +5,7 @@ import { Toast } from "antd-mobile";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
 import SavedAdresses, { SavedAddress } from "./SavedAddresses";
+import geojson from './geoJson.json'
 
 const MAX_DELIVERY_DISTANCE = 10
 export const initial: Address = {
@@ -300,6 +301,11 @@ class LocationStore {
         Toast.show("Не удалось найти ближающее заведение для доставки")
       }
   }
+
+  jsonMap: GeoJson | null = null
+  setJsonMap = (jsonMap: GeoJson) => {
+    this.jsonMap = jsonMap
+  }
 }
 
 /**
@@ -442,6 +448,42 @@ type GeoObject = {
   }
 }
 
+
+export type GeoJson = {
+  type: "FeatureCollection"
+  metadata: {
+    name: string,
+    creator: string,
+    description: string
+  }
+  features: GeoJsonFeature[]
+}
+
+export type GeoJsonFeature = {
+  type: "Feature"
+  id: number
+  geometry: PointGeometry | PolygonGeometry
+  properties: {
+    description: string
+    iconCaption: string
+    "marker-color": string
+    fill: string,
+    "fill-opacity": number
+    stroke: string
+    "stroke-width": string
+    "stroke-opacity": number
+  }
+}
+
+type PointGeometry = {
+  type: "Point",
+  coordinates: number[]
+}
+
+type PolygonGeometry = {
+  type: "Polygon",
+  coordinates: number[][][]
+}
 
 
 export default LocationStore

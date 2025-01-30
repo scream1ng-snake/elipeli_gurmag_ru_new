@@ -146,3 +146,17 @@ export default splitIntoChunks;
 export function deepCopy<T>(item: T) {
   return JSON.parse(JSON.stringify(item)) as T
 }
+
+export function toCamelCaseKeys(obj: Record<string, any>) {  
+  return Object.keys(obj).reduce((acc, key) => {  
+    const camelCaseKey = key  
+      .split('-')
+      .map((word, index) => {
+        return index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1);  
+      })  
+      .join('');
+
+    acc[camelCaseKey] = obj[key] 
+    return acc
+  }, {} as Record<string, any>)
+}  
