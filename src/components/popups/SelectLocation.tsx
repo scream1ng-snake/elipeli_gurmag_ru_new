@@ -72,7 +72,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
             <DotLoading style={{ fontSize: 48 }} color='primary' />
           </Mask>
         }
-        if (savedAdresses.onServer.length && user.loadUserInfo.state === 'COMPLETED' && Location.savedAdresses.page.show) {
+        if (Array.from(savedAdresses.onServer.values()).length && user.loadUserInfo.state === 'COMPLETED' && savedAdresses.page.show) {
           return <div className={styles.container}>
             <div className={styles.map_area}>
               {isMapSearching
@@ -83,7 +83,10 @@ const SelectLocationPopup: FC<P> = observer(p => {
               }
               <Maps.Picker
                 value={inputingLocation}
-                onSelect={setAddressByCoords}
+                onSelect={coords => {
+                  if(savedAdresses.page.show) savedAdresses.page.close()
+                  setAddressByCoords(coords)
+                }}
                 features={jsonMap?.features}
               />
             </div>

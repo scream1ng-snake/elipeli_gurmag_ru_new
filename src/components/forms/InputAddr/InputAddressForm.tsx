@@ -1,6 +1,6 @@
 import { FC, Fragment, useEffect, useMemo, useState } from 'react'
 import styles from '../form.module.css'
-import { Form, Input, Space, Checkbox } from 'antd-mobile'
+import { Form, Input, Space, Checkbox, Button, Dialog } from 'antd-mobile'
 import { observer } from 'mobx-react-lite'
 import { Controller, FieldErrors, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,13 +10,14 @@ import _ from 'lodash'
 import Red from '../../special/RedText'
 import CustomButton from '../../special/CustomButton'
 import { Undef } from '../../../features/helpers'
-import { Address } from '../../../stores/location.store'
+import { Address, Location } from '../../../stores/location.store'
 import { CITY_PREFIX } from '../../../stores/reception.store'
+import { FullscreenLoading } from '../../common/Loading/Loading'
 
 type InputAddress = Omit<Address, 'road' | 'house_number'> & { address: string }
 const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
   const [errors, setErrors] = useState<FieldErrors<InputAddress>>({})
-  const { reception, reception: { suggestitions, Location } } = useStore()
+  const { reception, reception: { suggestitions, Location }, user } = useStore()
   const simpleValidator = yupResolver(simpleAddressSchema)
   const fullValidator = yupResolver(fullAddressSchema)
   const [showSavedAddrs, setShowSavedAddrs] = useState(false)
@@ -99,11 +100,74 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
   }, [Location.inputingAddress?.road, Location.inputingAddress?.house_number])
 
 
+  const disabledButton = Boolean(Object.keys(errors).length)
+    || !Location.inputingAddress.road.length
+    || !Location.inputingAddress.house_number.length
 
+  async function confirmAddr() {
+    if(Location.InputingVcode) {
+      await Location.savedAdresses.updateAddress()
+    }
+    Location.setConfirmedAddress()
+    Location.setConfirmedLocation()
+    Location.setConfirmedVcode()
+  }
+
+  function resetAddr() {
+    const { confirmedAddress, confirmedLocation, ConfirmedVcode } = Location
+    Location.setInputingVcode(ConfirmedVcode)
+    Location.setInputingLocation(confirmedLocation as Location)
+    Location.setAffectFields(confirmedAddress)
+    Location.setAdditionalFields(confirmedAddress)
+  }
   return <Fragment>
-    <div className={styles.city_label}>
-      Уфа
-    </div>
+    <Space style={{ width: '100%' }} justify='between' align='center'>
+      {Location.savedAdresses.isPending
+        ? <FullscreenLoading />
+        : null
+      }
+      <div className={styles.city_label}>
+        Уфа
+      </div>
+
+      {Array.from(Location.savedAdresses.onServer.values()).length && user.loadUserInfo.state === 'COMPLETED'
+        ? <Button 
+          className='me-3' 
+          size='small' 
+          onClick={() => {
+
+            Dialog.show({
+              content: 'Адрес не сохранен, вы уверены что хотите покинуть страницу?',
+              closeOnAction: true,
+              actions: [{
+                key: 'save',
+                text: 'Сохранить адрес',
+                onClick() {
+                  confirmAddr()
+                  Location.savedAdresses.page.open()
+                },
+                disabled: disabledButton
+              },{
+                key: 'reset',
+                text: 'Сбросить',
+                onClick() {
+                  resetAddr()
+                  Location.savedAdresses.page.open()
+                },
+              }, {
+                key: 'close',
+                text: 'Закрыть',
+                bold: true,
+                danger: true
+              }]
+            })
+          }}
+        >
+          Мои адреса
+        </Button>
+        : null
+      }
+    </Space>
     <Form
       className='gur-form'
       layout='vertical'
@@ -360,8 +424,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
         <CustomButton
           text={'Доставить сюда'}
           onClick={() => {
-            Location.setConfirmedAddress()
-            Location.setConfirmedLocation()
+            confirmAddr()
             p.onContinue()
           }}
           height={'35px'}
@@ -376,11 +439,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
           backgroundVar={'--gurmag-accent-color'}
           colorVar={'--gur-custom-button-text-color'}
           appendImage={null}
-          disabled={
-            Boolean(Object.keys(errors).length)
-            || !Location.inputingAddress.road.length
-            || !Location.inputingAddress.house_number.length
-          }
+          disabled={disabledButton}
         />
       </Form.Item>
     </Form>

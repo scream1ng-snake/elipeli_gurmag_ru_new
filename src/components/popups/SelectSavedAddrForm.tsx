@@ -6,6 +6,7 @@ import { initial, Location } from "../../stores/location.store";
 import Pencil from '../../assets/Pencil.png'
 import { SavedAddress } from "../../stores/SavedAddresses";
 import { FullscreenLoading } from "../common/Loading/Loading";
+import { toJS } from "mobx";
 type Props = {
   show: boolean,
   open: () => void
@@ -44,8 +45,8 @@ const newAddrStyle = {
 }
 export const SelectSavedAddrForm: FC<Props> = observer(props => {
   const { reception: { Location, suggestitions } } = useStore()
-  const { savedAdresses, inputingAddress, confirmedAddress } = Location
-  const { road, house_number, entrance, storey, apartment, addrComment, incorrectAddr } = Location.confirmedAddress
+  const { savedAdresses, inputingAddress, confirmedAddress, ConfirmedVcode } = Location
+  const { road, house_number, entrance, storey, apartment, addrComment, incorrectAddr } = confirmedAddress
 
   function setActive(myAddr: SavedAddress) {
     Location.setInputingAddrFromSaved(myAddr)
@@ -56,21 +57,14 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
     props.close()
   }
   function goToInputAddressClear() {
-
-
-    // Location.savedAdresses.addNewAddressToLocal()
-
-
-
+    Location.setInputingVcode(null)
     Location.inputingAddress = initial
     suggestitions.setList([])
     Location.inputingLocation = null
     props.close()
   }
-  const currentIsNotInList = !savedAdresses.onServer.find(addr => {
-    return addr.street == road && addr.house == house_number
-  })
   const setActiveNotSavedAddr = () => {
+    Location.setInputingVcode(null)
     Location.setInputingLocation(Location.confirmedLocation as Location)
     Location.setAffectFields({ road, house_number })
     Location.setAdditionalFields({
@@ -82,14 +76,16 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
     })
   }
   return <Space style={containerStyle} direction='vertical'>
-    {(Location.geocoderApi.state === 'LOADING'|| Location.reverseGeocoderApi.state === 'LOADING')
+    {savedAdresses.isPending 
+      || Location.geocoderApi.state === 'LOADING' 
+      || Location.reverseGeocoderApi.state === 'LOADING'
       ? <FullscreenLoading />
       : null
     }
     <Space style={w100} justify='between' align='center'>
       <p style={myAddrs}>
         Мои адреса
-      </p>
+      </p> 
       <Button
         fill='solid'
         style={newAddrStyle}
@@ -101,7 +97,7 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
       </Button>
     </Space>
     <List style={{ "--border-bottom": '1px solid var(--tg-theme-secondary-bg-color)' }}>
-      {currentIsNotInList
+      {!ConfirmedVcode
         ? <List.Item 
           style={listItemStyle} 
           extra={
@@ -125,7 +121,7 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
         </List.Item>
         : null
       }
-      {savedAdresses.onServer.map((saved, index) => {
+      {Array.from(savedAdresses.onServer.values()).map((saved, index) => {
         const isActive = saved.house === inputingAddress.house_number
           && saved.street === inputingAddress.road
         return <List.Item
@@ -156,7 +152,7 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
       shape='rounded'
       onClick={() => {
         props.onContinue()
-        if (confirmedAddress.road === inputingAddress.road && confirmedAddress.house_number === inputingAddress.house_number) {
+        if (road === inputingAddress.road && house_number === inputingAddress.house_number) {
           return
         } else {
           Location.setConfirmedAddrFromSaved()

@@ -1,11 +1,10 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, reaction, toJS } from "mobx";
 import { apikey, CITY_PREFIX, ReceptionStore } from "./reception.store";
 import { Optional, Request } from "../features/helpers";
 import { Toast } from "antd-mobile";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
 import SavedAdresses, { SavedAddress } from "./SavedAddresses";
-import geojson from './geoJson.json'
 
 const MAX_DELIVERY_DISTANCE = 10
 export const initial: Address = {
@@ -22,8 +21,9 @@ export const initial: Address = {
 
 
 class LocationStore {
-  private ADDR_KEY = 'data'
-  private LOCATION_KEY = 'lctn'
+  private ADDR_KEY = 'data'                        // тут храним текстовый адрес улица дом этаж и тд
+  private LOCATION_KEY = 'lctn'                    // тут координаты
+  private CURR_ADDR_VCODE = "curr_addr_Vcode"      // тут ид сущности адреса
   constructor(readonly reception: ReceptionStore) {
     makeAutoObservable(this, {}, { autoBind: true })
 
@@ -49,6 +49,17 @@ class LocationStore {
       }
     }
 
+    const addrVcode = localStorage.getItem(this.CURR_ADDR_VCODE)
+    if(addrVcode && addrVcode !== 'null') {
+      this.ConfirmedVcode = addrVcode
+      this.InputingVcode = addrVcode
+    }
+
+    // reaction(() => this.confirmedAddress.road, (val ,prev, r) => {
+    //   console.log(`current ${toJS(val)}`)
+    //   console.log(`prev ${toJS(prev)}`)
+    //   console.log(r)
+    // })
   }
 
   savedAdresses = new SavedAdresses(this)
@@ -64,8 +75,11 @@ class LocationStore {
     this.inputingAddress = initial
     this.confirmedLocation = null
     this.inputingLocation = null
+    this.InputingVcode = null
+    this.ConfirmedVcode = null
     localStorage.removeItem(this.LOCATION_KEY)
     localStorage.removeItem(this.ADDR_KEY)
+    localStorage.removeItem(this.CURR_ADDR_VCODE)
   }
 
   /** сетаем поля которые не влияют на положение маркера при вводе*/
@@ -74,8 +88,7 @@ class LocationStore {
   }
   /** сетаем поля которые влияют на положение маркера при вводе */
   setAffectFields = ({ road, house_number }: Pick<Address, 'road' | 'house_number'>) => {
-    this.inputingAddress.road = road
-    this.inputingAddress.house_number = house_number
+    this.inputingAddress = { ...this.inputingAddress, road, house_number }
   }
 
   setConfirmedAddress = () => {
@@ -102,6 +115,19 @@ class LocationStore {
     this.confirmedLocation = this.inputingLocation
   }
 
+  /**
+   * это просто пометка что мы редактируем сохраненный адрес на сервере
+   * и если ВКод есть то надо сделать update запрос
+   */
+  InputingVcode: Optional<string> = null
+  ConfirmedVcode: Optional<string> = null
+  setInputingVcode(vcode: Optional<string>) {
+    this.InputingVcode = vcode
+  }
+  setConfirmedVcode() {
+    this.ConfirmedVcode = this.InputingVcode
+    localStorage.setItem(this.CURR_ADDR_VCODE, this.InputingVcode || 'null')
+  }
 
   
   public setAddressByCoords = async (cord: Location) => {
@@ -244,6 +270,10 @@ class LocationStore {
     }
   }
 
+  addressToString(address: Address): string {
+    const { road, house_number, entrance, storey, apartment, addrComment } = address
+    return `${road ? 'ул. ' + road : ''} ${house_number ? 'д. ' + house_number : ''} ${entrance ? 'под. ' + entrance : ''} ${storey ? 'эт. ' + storey : ''} ${apartment ? 'кв. ' + apartment : ''}`
+  }
 
   setInputingAddrFromSaved = async (savedAddr: SavedAddress) => {
     let lat: Optional<number> = null
@@ -263,6 +293,7 @@ class LocationStore {
       const { nearestOrg, distance } = this.reception.getNearestDeliveryOrg(lat, lon)
       if(nearestOrg && distance) {
         if(distance < MAX_DELIVERY_DISTANCE) {
+          this.setInputingVcode(savedAddr.VCode)
           this.setInputingLocation({ lat, lon })
           this.setAffectFields({
             road: savedAddr.street,
@@ -292,6 +323,7 @@ class LocationStore {
         if(distance < MAX_DELIVERY_DISTANCE) {
           this.setConfirmedLocation()
           this.setConfirmedAddress()
+          this.setConfirmedVcode()
           this.reception.setNearestOrg(nearestOrg.Id)
           this.reception.setNearestOrgDistance(distance)
         } else {
@@ -306,6 +338,8 @@ class LocationStore {
   setJsonMap = (jsonMap: GeoJson) => {
     this.jsonMap = jsonMap
   }
+
+  
 }
 
 /**
