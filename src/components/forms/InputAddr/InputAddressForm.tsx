@@ -113,6 +113,7 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
     Location.setConfirmedVcode()
   }
 
+
   function resetAddr() {
     const { confirmedAddress, confirmedLocation, ConfirmedVcode } = Location
     Location.setInputingVcode(ConfirmedVcode)
@@ -135,32 +136,28 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
           className='me-3' 
           size='small' 
           onClick={() => {
-
-            Dialog.show({
-              content: 'Адрес не сохранен, вы уверены что хотите покинуть страницу?',
-              closeOnAction: true,
-              actions: [{
-                key: 'save',
-                text: 'Сохранить адрес',
-                onClick() {
-                  confirmAddr()
-                  Location.savedAdresses.page.open()
-                },
-                disabled: disabledButton
-              },{
-                key: 'reset',
-                text: 'Сбросить',
-                onClick() {
-                  resetAddr()
-                  Location.savedAdresses.page.open()
-                },
-              }, {
-                key: 'close',
-                text: 'Закрыть',
-                bold: true,
-                danger: true
-              }]
-            })
+            if(form.formState.isDirty) {
+              Dialog.show({
+                content: 'Адрес не сохранен, вы уверены что хотите покинуть страницу?',
+                closeOnAction: true,
+                actions: [{
+                  key: 'save',
+                  text: 'Сохранить адрес',
+                  onClick() {
+                    confirmAddr()
+                    Location.savedAdresses.page.open()
+                  },
+                  disabled: disabledButton
+                }, {
+                  key: 'close',
+                  text: 'Закрыть',
+                  bold: true,
+                  danger: true
+                }]
+              })
+            } else {
+              Location.savedAdresses.page.open()
+            }
           }}
         >
           Мои адреса

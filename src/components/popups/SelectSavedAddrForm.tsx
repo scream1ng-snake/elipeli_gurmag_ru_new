@@ -1,12 +1,14 @@
-import { Button, Checkbox, Image, List, Space } from "antd-mobile";
+import { ActionSheet, Button, Checkbox, Dialog, Image, List, Space } from "antd-mobile";
 import { observer } from "mobx-react-lite";
-import { CSSProperties, FC } from "react";
+import { CSSProperties, FC, useRef } from "react";
 import { useStore } from "../../features/hooks";
 import { initial, Location } from "../../stores/location.store";
 import Pencil from '../../assets/Pencil.png'
 import { SavedAddress } from "../../stores/SavedAddresses";
 import { FullscreenLoading } from "../common/Loading/Loading";
-import { toJS } from "mobx";
+import { ActionSheetShowHandler } from "antd-mobile/es/components/action-sheet";
+import { add } from "lodash";
+
 type Props = {
   show: boolean,
   open: () => void
@@ -75,6 +77,13 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
       incorrectAddr,
     })
   }
+
+  const handler = useRef<ActionSheetShowHandler>()
+
+  const currentIsInList = Array.from(savedAdresses.onServer.values()).find(addr => {
+   return road === addr.street && house_number === addr.house 
+  })
+
   return <Space style={containerStyle} direction='vertical'>
     {savedAdresses.isPending 
       || Location.geocoderApi.state === 'LOADING' 
@@ -97,7 +106,7 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
       </Button>
     </Space>
     <List style={{ "--border-bottom": '1px solid var(--tg-theme-secondary-bg-color)' }}>
-      {!ConfirmedVcode
+      {!ConfirmedVcode && !currentIsInList
         ? <List.Item 
           style={listItemStyle} 
           extra={
@@ -116,7 +125,7 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
             onClick={setActiveNotSavedAddr}
             checked={house_number === inputingAddress.house_number && road === inputingAddress.road}
           >
-            {`${road ? 'ул. ' + road : ''} ${house_number ? 'д. ' + house_number : ''} ${entrance ? 'под. ' + entrance : ''} ${storey ? 'эт. ' + storey : ''} ${apartment ? 'кв. ' + apartment : ''}`}
+            {Location.addressToString(confirmedAddress)}
           </Checkbox>
         </List.Item>
         : null
@@ -131,8 +140,32 @@ export const SelectSavedAddrForm: FC<Props> = observer(props => {
             <Image
               src={Pencil}
               onClick={() => {
-                setActive(saved)
-                goToInputAddressEdit()
+                handler.current = Dialog.show({
+                  content: 'Выберите действие:',
+                  closeOnMaskClick: true,
+                  closeOnAction: true, 
+                  actions: [
+                    {
+                      key: 'edit',
+                      text: 'Изменить',
+                      onClick() {
+                        setActive(saved)
+                        goToInputAddressEdit()
+                      }
+                    },
+                    {
+                      key: 'delete', 
+                      text: 'Удалить',
+                      bold: true, 
+                      danger: true,
+                      disabled: savedAdresses.isPending,
+                      onClick() {
+                        savedAdresses.deleteServerSavedAddress.run(saved.VCode)
+                          .then(() => { handler.current?.close() })
+                      }
+                    }
+                  ]
+                })
               }}
             />
           }

@@ -9,6 +9,7 @@ class SavedAdresses {
   /** адреса сохраненные на сервере */
   onServer: Map<string, SavedAddress> = new Map()
   setServerAddresses(addresses: SavedAddress[]) { 
+    this.onServer = new Map()
     addresses.forEach(addr => {
       this.onServer.set(addr.VCode, addr)
     })
@@ -17,6 +18,7 @@ class SavedAdresses {
 
 
   page = new Popup()
+  addressActions = new Popup()
 
   constructor(readonly location: LocationStore) {
     makeAutoObservable(this, {}, { autoBind: true })
