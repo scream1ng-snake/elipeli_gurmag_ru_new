@@ -89,6 +89,10 @@ const ReactMap: FC<props> = p => {
     drawPolygons(p.features, ymaps, map, mapRef, p.onSelect)
   }, [p.features, p.features?.length, map, ymaps])
 
+  useEffect(() => {
+    map?.container.fitToViewport()
+  }, [p.onSelect])
+
   return <div ref={mapRef} style={fullscreen} />
 }
 
