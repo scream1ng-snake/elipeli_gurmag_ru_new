@@ -66,6 +66,7 @@ class MenuStore {
 
   /** попап для просмотра подборки */
   selectionPopup = new Popup<Selection>()
+  selectionsPopup = new Popup()
 
   /** попап для просмотра блюда */
   coursePopup = new Popup<CourseItem, CourseReview[]>({

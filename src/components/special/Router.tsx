@@ -16,7 +16,6 @@ import MorePage from '../pages/more/MorePage';
 import OrdersPage, { WatchOrderDetailModal } from '../pages/orders/OrdersPage';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../../features/hooks';
-import { CollectionPopup, CollectionsPage } from '../popups/WatchCollectionPopup';
 import CampaignsPage from '../pages/campaigns/CampaignsPage';
 // @ts-ignore
 window.dataLayer = window.dataLayer || []
@@ -38,7 +37,7 @@ const routes: Array<{
     {
       path: '/collections',
       private: false,
-      element: <CollectionsPage />
+      element: <MainPage />
     },
     {
       path: '/collections/:VCode',

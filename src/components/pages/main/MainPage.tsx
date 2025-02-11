@@ -19,7 +19,7 @@ import AskAuthorize from "../../popups/AskAuthorize"
 import { NiceToMeetYooPopup } from "../../popups/CartActions"
 import Container from "react-bootstrap/Container"
 import AmountScaleForGift from "./parts/AmountScale/AmountSCaleForGift"
-import { CollectionPopup } from "../../popups/WatchCollectionPopup"
+import { CollectionPopup, /*CollectionsPopup*/ } from "../../popups/WatchCollectionPopup"
 
 
 const MainPage: FC = observer(() => {
@@ -54,6 +54,11 @@ const MainPage: FC = observer(() => {
         }
       }
     }
+    // if(location.pathname.includes("/collections")) {
+    //   if(!VCode && menu.loadMenu.state === 'COMPLETED') {
+    //     menu.selectionsPopup.open()
+    //   } 
+    // }
   }, [ 
     VCode, 
     location, 
@@ -70,6 +75,7 @@ const MainPage: FC = observer(() => {
     <NiceToMeetYooPopup />
     <ItemModal close={() => { go('/') }} />
     <CollectionPopup />
+    {/* <CollectionsPopup /> */}
     <Fixed>
       <ReceptionSwitcher />
     </Fixed>

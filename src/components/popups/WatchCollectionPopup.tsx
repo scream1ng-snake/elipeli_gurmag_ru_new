@@ -140,72 +140,80 @@ export const CollectionPopup: FC = observer(p => {
     </AdaptivePopup>
   )
 })
-export const CollectionsPage: FC = observer(p => {
-  const { reception: { menu } } = useStore()
+// export const CollectionsPopup: FC = observer(p => {
+//   const { reception: { menu } } = useStore()
 
-  const go = useGoUTM()
-  function close() {
-    go('/')
-    menu.selectionPopup.close()
-  }
+//   const go = useGoUTM()
+//   function close() {
+//     go('/')
+//     menu.selectionsPopup.close()
+//   }
 
 
-  return (
-    <AdaptivePopup
-      visible
-      onClose={close}
-      noCloseBtn
-      bodyStyle={{
-        borderTopLeftRadius: 33,
-        borderTopRightRadius: 33,
-        marginTop: 40,
-        position: 'relative',
-      }}
-    >
-      <BackIcon
-        onClick={close}
-        styles={{
-          position: 'absolute',
-          top: -12,
-          left: 30,
-          zIndex: 1000
-        }}
-      />
-      <div className={styles.shtorka} />
-      <section className={styles.categories_wrapper}>
-        <div
-          style={{
-            overflowY: 'auto',
-            height: 'calc(100vh - 80px)',
-          }}
-        >
-          <br />
-          {menu.selections.map((selection, index) =>
-            <div key={index}>
-              <h2
-                onClick={() => { go('collections/' + selection.VCode) }}
-                style={{
-                  fontSize: 22,
-                  fontWeight: 700,
-                  margin: '10px 36px 0 36px',
-                }}
-              >
-                {selection.Name}
-              </h2>
-              <br />
-              <div className={styles.courses_list}>
-                {selection.CourseList.map(course =>
-                  <CourseItemComponent
-                    key={course.VCode + selection.VCode}
-                    course={course}
-                  />
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-    </AdaptivePopup>
-  )
-})
+//   return (
+//     <AdaptivePopup
+//       visible={menu.selectionsPopup.show}
+//       onClose={close}
+//       noCloseBtn
+//       noBottomNavDesktop
+//       bodyStyle={{
+//         borderTopLeftRadius: 33,
+//         borderTopRightRadius: 33,
+//         marginTop: 40,
+//         position: 'relative',
+//       }}
+//       mobileBodyStyle={{
+//         position: 'fixed',
+//         maxHeight: 'calc(100% - 40px)'
+//       }}
+//       shtorkaOffset='-10px'
+//     >
+//       <BackIcon
+//         onClick={close}
+//         styles={{
+//           position: 'absolute',
+//           top: -12,
+//           left: 30,
+//           zIndex: 1000
+//         }}
+//       />
+//       <section className={styles.categories_wrapper}>
+//         <div
+//           style={{
+//             overflowY: 'auto',
+//             height: 'calc(100vh - 80px)',
+//           }}
+//         >
+//           <br />
+//           {menu.selections.map((selection, index) =>
+//             <div key={index}>
+//               <h2
+//                 onClick={() => { go('collections/' + selection.VCode) }}
+//                 style={{
+//                   fontSize: 22,
+//                   fontWeight: 700,
+//                   margin: '10px 36px 0 36px',
+//                 }}
+//               >
+//                 {selection.Name}
+//               </h2>
+//               <br />
+//               <div className={styles.courses_list}>
+//                 {selection.CourseList
+//                   .filter((_, index) => index < 6)
+//                   .map(course =>
+//                     <CourseItemComponent
+//                       key={course.VCode + selection.VCode}
+//                       course={course}
+//                     />
+//                   )
+//                 }
+//               </div>
+//             </div>
+//           )}
+//         </div>
+//       </section>
+//     </AdaptivePopup>
+//   )
+// })
 
