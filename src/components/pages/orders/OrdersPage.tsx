@@ -3,9 +3,11 @@ import { observer } from "mobx-react-lite";
 import moment from "moment";
 import { FC } from "react";
 import { WithChildren } from "../../../features/helpers";
-import { useGoUTM, useStore } from "../../../features/hooks";
+import { useDeviceType, useGoUTM, useStore } from "../../../features/hooks";
 import config from "../../../features/config";
 import BottomNav from "../../common/BottomNav/BottomNav";
+import Wrapper from "../../layout/Wrapper";
+import { Container } from "react-bootstrap";
 
 const OrderStatusColors = {
   'Создан': 'default',
@@ -24,109 +26,116 @@ const PaymentStatusColors = {
 const W100 = { width: 'calc(100%)' }
 const OrdersPage: FC = observer(() => {
   const { user } = useStore()
+  const device = useDeviceType()
   const go = useGoUTM()
   const onBack = () => { go('/') }
   return (
-    <div style={{ background: 'var(--tg-theme-secondary-bg-color)', minHeight: '100%' }}>
-      <NavBar
-        onBack={onBack}
-        style={{
-          borderBottom: 'solid 1px var(--adm-color-border)',
-          background: 'var(--tg-theme-bg-color)',
-          position: 'fixed',
-          left: 0,
-          right: 0,
-          top: 0,
-          zIndex: 1,
-          
-          borderBottomLeftRadius: 15,
-          borderBottomRightRadius: 15
-        }}
-      >
-        История заказов
-      </NavBar>
-      <div style={{ height: '45px' }} />
-      <Space direction="vertical" style={{ ...W100, marginTop: '0.75rem' }}>
-        {[...user.orderHistory]
-          .sort((a, b) => new Date(b.DocumentDate).getTime() - new Date(a.DocumentDate).getTime())
-          .map(order =>
-            <Card
-              key={order.VCode}
-              style={{
-                width: 'calc(100% - 1.5rem)',
-                border: '1px solid var(--adm-border-color)',
-                margin: '0 0.75rem 0.25rem 0.75rem',
-                background: 'var(--tg-theme-bg-color)',
-                borderRadius: 15
-              }}
-              title={`Заказ от ${moment(order.DocumentDate).format('LLL')}`}
-              extra={<span style={{ marginLeft: '0.25rem' }}>{`№ ${order.VCode}`}</span>}
-              onClick={() => {
-                user.watchHistoryOrderPopup.watch(order)
-                go(String(order.VCode))
-              }}
-            >
-              <Space style={W100} justify='between'>
-                <Group>
-                  <Span>Статус заказа:</Span>
-                  <br />
-                  <Tag
-                    style={{ marginTop: '0.25rem' }}
-                    color={OrderStatusColors[order.StatusOrder] || 'default'}
-                  >
-                    {order.StatusOrder}
-                  </Tag>
-                </Group>
-                <Group>
-                  <Span>Статус оплаты:</Span>
-                  <br />
-                  <Tag
-                    style={{ marginTop: '0.25rem' }}
-                    color={PaymentStatusColors[order.PaymentStatus] || 'default'}
-                  >
-                    {order.PaymentStatus}
-                  </Tag>
-                </Group>
-              </Space>
-              {order.FullAddress?.length && order.OrderType === 'С доставкой'
-                ? (
-                  <Group>
-                    <Span>Адрес доставки:</Span>
-                    <P>{order.FullAddress}</P>
-                  </Group>
-                ) : (
-                  <Group>
-                    <Span>Точка:</Span>
-                    <P>{order.OrgName}</P>
-                  </Group>
-                )
-              }
+    <Wrapper>
+      <Container>
+        <NavBar
+          className="container"
+          onBack={onBack}
+          style={{
+            borderBottom: 'solid 1px var(--adm-color-border)',
+            background: 'var(--tg-theme-bg-color)',
+            position: 'fixed',
+            left: 0,
+            right: 0,
+            top: 0,
+            zIndex: 1,
 
-              {/* <Group>
+            borderBottomLeftRadius: 15,
+            borderBottomRightRadius: 15
+          }}
+        >
+          История заказов
+        </NavBar>
+        <div style={{ height: '45px' }} />
+        <Space direction="vertical" style={{ ...W100, marginTop: '0.75rem' }}>
+          {[...user.orderHistory]
+            .sort((a, b) => new Date(b.DocumentDate).getTime() - new Date(a.DocumentDate).getTime())
+            .map(order =>
+              <Card
+                key={order.VCode}
+                style={{
+                  width: 'calc(100% - 1.5rem)',
+                  border: '1px solid var(--adm-border-color)',
+                  margin: '0 0.75rem 0.25rem 0.75rem',
+                  background: 'var(--tg-theme-bg-color)',
+                  borderRadius: 15
+                }}
+                title={`Заказ от ${moment(order.DocumentDate).format('LLL')}`}
+                extra={<span style={{ marginLeft: '0.25rem' }}>{`№ ${order.VCode}`}</span>}
+                onClick={() => {
+                  user.watchHistoryOrderPopup.watch(order)
+                  go(String(order.VCode))
+                }}
+              >
+                <Space style={W100} justify='between'>
+                  <Group>
+                    <Span>Статус заказа:</Span>
+                    <br />
+                    <Tag
+                      style={{ marginTop: '0.25rem' }}
+                      color={OrderStatusColors[order.StatusOrder] || 'default'}
+                    >
+                      {order.StatusOrder}
+                    </Tag>
+                  </Group>
+                  <Group>
+                    <Span>Статус оплаты:</Span>
+                    <br />
+                    <Tag
+                      style={{ marginTop: '0.25rem' }}
+                      color={PaymentStatusColors[order.PaymentStatus] || 'default'}
+                    >
+                      {order.PaymentStatus}
+                    </Tag>
+                  </Group>
+                </Space>
+                {order.FullAddress?.length && order.OrderType === 'С доставкой'
+                  ? (
+                    <Group>
+                      <Span>Адрес доставки:</Span>
+                      <P>{order.FullAddress}</P>
+                    </Group>
+                  ) : (
+                    <Group>
+                      <Span>Точка:</Span>
+                      <P>{order.OrgName}</P>
+                    </Group>
+                  )
+                }
+
+                {/* <Group>
                 <Span>Дата получения:</Span>
                 <P>{moment(order.DeliveryTime).format('LLL')}</P>
               </Group> */}
 
-              <Scrollable>
-                {order.Courses.map(item =>
-                  <img
-                    key={item.CourseCode}
-                    style={{
-                      width: '60px',
-                      height: '60px',
-                      objectFit: 'cover',
-                      borderRadius: '8px',
-                      marginRight: '0.25rem'
-                    }}
-                    src={`${config.staticApi}/api/v2/image/Material?vcode=${item.CourseCode}&compression=true`}
-                  />
-                )}
-              </Scrollable>
-            </Card>
-          )}
-      </Space>
-      <BottomNav />
-    </div>
+                <Scrollable>
+                  {order.Courses.map(item =>
+                    <img
+                      key={item.CourseCode}
+                      style={{
+                        width: '60px',
+                        height: '60px',
+                        objectFit: 'cover',
+                        borderRadius: '8px',
+                        marginRight: '0.25rem'
+                      }}
+                      src={`${config.staticApi}/api/v2/image/Material?vcode=${item.CourseCode}&compression=true`}
+                    />
+                  )}
+                </Scrollable>
+              </Card>
+            )}
+        </Space>
+        {device === 'mobile'
+          ? <BottomNav />
+          : null
+        }
+      </Container>
+    </Wrapper>
   )
 })
 
@@ -193,7 +202,7 @@ export const WatchOrderDetailModal: FC = observer(() => {
             border: '1px solid var(--adm-border-color)',
             margin: '0.75rem 0.75rem 0.25rem 0.75rem',
             background: 'var(--tg-theme-bg-color)',
-            borderRadius:15
+            borderRadius: 15
           }}
         >
           <Space style={W100} justify='between'>

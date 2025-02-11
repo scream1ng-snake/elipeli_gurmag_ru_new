@@ -5,62 +5,65 @@ import { LocationFill, MessageOutline, RedoOutline, UserCircleOutline } from 'an
 import { PhoneOutlined } from '@ant-design/icons';
 import Wrapper from '../../layout/Wrapper';
 import { useGoUTM, useTelegram } from '../../../features/hooks';
+import { Container } from 'react-bootstrap';
 
 const MorePage: FC = observer(() => {
   const tg = useTelegram()
   const go = useGoUTM()
   return (
     <Wrapper>
-      <NavBar onBack={() => { go('/') }}>
-        Еще
-      </NavBar>
-      <List style={{ borderRadius: 20, overflow: 'hidden' }}>
-        <List.Item prefix={<LocationFill style={icoStyle} />}>
-          Уфа
-        </List.Item>
-        <List.Item
-          clickable={false}
-          prefix={<PhoneOutlined style={icoStyle} />}
-          onClick={() => {
-            window.open('tel:89870401199')
-          }}
-        >
-          8-987-040-11-99
-        </List.Item>
-        <List.Item
-          clickable={false}
-          prefix={<MessageOutline style={icoStyle} />}
-          onClick={() => {
-            tg.isInTelegram()
-              ? tg.tg.openTelegramLink('https://t.me/+79870401199')
-              : window.open('https://wa.me/+79870401119')
-          }}
-        >
-          Поддержка
-        </List.Item>
-        <List.Item
-          clickable={false}
-          prefix={<UserCircleOutline style={icoStyle} />}
-          onClick={() => go('/me')}
-        >
-          Профиль
-        </List.Item>
-        <List.Item
-          clickable={false}
-          prefix={<RedoOutline style={icoStyle} />}
-          onClick={() => go('/orders')}
-        >
-          История заказов
-        </List.Item>
-        <Collapse>
-          <Collapse.Panel key='1' title='Пользовательское соглашение'>
-            <UserAgreement />
-          </Collapse.Panel>
-          <Collapse.Panel key='2' title='Реквизиты'>
-            <Requisites />
-          </Collapse.Panel>
-        </Collapse>
-      </List>
+      <Container>
+        <NavBar onBack={() => { go('/') }}>
+          Еще
+        </NavBar>
+        <List style={{ borderRadius: 20, overflow: 'hidden' }}>
+          <List.Item prefix={<LocationFill style={icoStyle} />}>
+            Уфа
+          </List.Item>
+          <List.Item
+            clickable={false}
+            prefix={<PhoneOutlined style={icoStyle} />}
+            onClick={() => {
+              window.open('tel:89870401199')
+            }}
+          >
+            8-987-040-11-99
+          </List.Item>
+          <List.Item
+            clickable={false}
+            prefix={<MessageOutline style={icoStyle} />}
+            onClick={() => {
+              tg.isInTelegram()
+                ? tg.tg.openTelegramLink('https://t.me/+79870401199')
+                : window.open('https://wa.me/+79870401119')
+            }}
+          >
+            Поддержка
+          </List.Item>
+          <List.Item
+            clickable={false}
+            prefix={<UserCircleOutline style={icoStyle} />}
+            onClick={() => go('/me')}
+          >
+            Профиль
+          </List.Item>
+          <List.Item
+            clickable={false}
+            prefix={<RedoOutline style={icoStyle} />}
+            onClick={() => go('/orders')}
+          >
+            История заказов
+          </List.Item>
+          <Collapse>
+            <Collapse.Panel key='1' title='Пользовательское соглашение'>
+              <UserAgreement />
+            </Collapse.Panel>
+            <Collapse.Panel key='2' title='Реквизиты'>
+              <Requisites />
+            </Collapse.Panel>
+          </Collapse>
+        </List>
+      </Container>
     </Wrapper>
   )
 })

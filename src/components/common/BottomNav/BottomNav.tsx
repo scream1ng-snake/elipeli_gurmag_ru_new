@@ -4,7 +4,7 @@ import { GiftOutline, UserOutline } from "antd-mobile-icons"
 import { observer } from "mobx-react-lite"
 import { CSSProperties, FC } from "react"
 import { useLocation  } from "react-router-dom"
-import { useGoUTM, useStore } from "../../../features/hooks"
+import { useDeviceType, useGoUTM, useStore } from "../../../features/hooks"
 import { Void } from "../../layout/Void"
 
 
@@ -72,7 +72,12 @@ export const BottomNavigation: FC<{ style?: CSSProperties }> = observer(p => {
 
 
 
-export default (props: { style?: CSSProperties }) => <>
-  <BottomNavigation style={props.style} />
-  <Void height="65px" />
-</>
+export default (props: { style?: CSSProperties }) => {
+  const device = useDeviceType()
+  return device === 'mobile'
+    ? <>
+      <BottomNavigation style={props.style} />
+      <Void height="65px" />
+    </>
+    : null
+}
