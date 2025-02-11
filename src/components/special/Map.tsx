@@ -18,6 +18,7 @@ interface props {
   onSelect: (cordinates: Location) => void
   value: Optional<Location>
   features: GeoJsonFeature[] | null | undefined
+  resizeSignal?: boolean
 }
 const ReactMap: FC<props> = p => {
   const mapRef = useRef(null)
@@ -91,7 +92,7 @@ const ReactMap: FC<props> = p => {
 
   useLayoutEffect(() => {
     map?.container.fitToViewport()
-  }, [p.onSelect])
+  }, [p.resizeSignal])
 
   return <div ref={mapRef} style={fullscreen} />
 }

@@ -131,6 +131,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
                   setAddressByCoords(coords)
                 }}
                 features={jsonMap?.features}
+                resizeSignal={savedAdresses.page.show}
               />
               <AskLocation 
                 className="d-none d-sm-block" 
@@ -162,6 +163,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
                 value={inputingLocation}
                 onSelect={setAddressByCoords}
                 features={jsonMap?.features}
+                resizeSignal={savedAdresses.page.show}
               />
               <AskLocation 
                 className="d-none d-sm-block" 
