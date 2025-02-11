@@ -82,6 +82,7 @@ const ReactMap: FC<props> = p => {
         }
       }
     }
+    map?.container.fitToViewport()
   }, [p.value?.lat, p.value?.lon, map])
 
   useLayoutEffect(() => {
@@ -145,6 +146,7 @@ const ReactMapRadio: FC<radioProps> = observer(p => {
         p.onSwitch(poimt)
       })
       map.geoObjects.add(marker)
+      map?.container.fitToViewport()
     }
   }, [p.defaultSelected?.Id, map])
 
