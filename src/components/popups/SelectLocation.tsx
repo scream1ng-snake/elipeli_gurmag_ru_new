@@ -212,7 +212,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
               onClick={requestGeolocation} 
             />
           </Col>
-          <Col md={6} className='p-md-3'>
+          <Col md={6}>
             <PopupHeader />
             <Container className='p-0'>
               <AskLocation onClick={requestGeolocation} />
