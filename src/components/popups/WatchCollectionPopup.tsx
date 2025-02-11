@@ -24,6 +24,15 @@ export const CollectionPopup: FC = observer(p => {
   }
   const currentCollection = toJS(menu.selectionPopup.content) as Optional<Selection>
 
+  const Preloader: FC<{ animated?: boolean }> = props =>
+    <Skeleton 
+      animated={props.animated}
+      style={{
+        aspectRatio: '401/290',
+        width: '100%',
+        height: 'auto',
+      }} 
+    />
 
   function getContent() {
     // смотрим одну подборку
@@ -46,6 +55,9 @@ export const CollectionPopup: FC = observer(p => {
             borderTopLeftRadius: 33,
             borderTopRightRadius: 33,
           }}
+
+          fallback={<Preloader />}
+          placeholder={<Preloader />}
         />
         <p
           style={{
