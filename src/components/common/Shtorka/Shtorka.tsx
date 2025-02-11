@@ -1,7 +1,10 @@
 import { FC } from "react"
 
-
-const Shtorka: FC = () => <div
+const defaultOffset = 'calc(-10px - 0.75rem)'
+type ShtorkaProps = {
+  offset?: string
+}
+const Shtorka: FC<ShtorkaProps> = props => <div
   style={{
     width: '100%',
     position: 'relative'
@@ -10,7 +13,7 @@ const Shtorka: FC = () => <div
   <div
     style={{
       position: 'absolute',
-      top: 'calc(-10px - 0.75rem)',
+      top: props.offset ? props.offset : defaultOffset,
       width: 46,
       height: 5,
       background: 'var(--tg-theme-bg-color)',

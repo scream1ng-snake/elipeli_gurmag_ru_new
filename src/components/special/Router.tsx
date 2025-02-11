@@ -43,7 +43,7 @@ const routes: Array<{
     {
       path: '/collections/:VCode',
       private: false,
-      element: <CollectionPopup />
+      element: <MainPage />
     },
     {
       path: '/basket',

@@ -1,43 +1,29 @@
-import { NavBar, Popup, Image, Toast, Skeleton } from 'antd-mobile'
+import { Image, Skeleton } from 'antd-mobile'
 import { observer } from 'mobx-react-lite'
-import { FC, useCallback, useEffect } from 'react'
+import { FC } from 'react'
 import { useGoUTM, useStore } from '../../features/hooks'
 import { toJS } from 'mobx'
 import { Selection } from '../../stores/menu.store'
 import { CourseItemComponent } from '../pages/main/parts/Menu/Categories/Categories'
 import styles from '../pages/main/parts/Menu/Categories/Categories.module.css'
-import { useNavigate, useParams } from 'react-router-dom'
 import { Optional } from '../../features/helpers'
 
 import config from '../../features/config'
 import BackIcon from '../icons/Back'
-import BottomNavigation from '../common/BottomNav/BottomNav'
+import AdaptivePopup from '../common/Popup/Popup'
 
 
 
 export const CollectionPopup: FC = observer(p => {
-  const { VCode } = useParams<{ VCode: string }>()
   const { reception: { menu } } = useStore()
 
-  const go = useNavigate()
-  // const go = useGoUTM()
+  const go = useGoUTM()
   function close() {
-    go(-2)
     menu.selectionPopup.close()
+    go('/')
   }
   const currentCollection = toJS(menu.selectionPopup.content) as Optional<Selection>
 
-  useEffect(() => {
-    if (menu.loadMenu.state === 'COMPLETED') {
-      if (VCode) {
-        const target = menu.getSelection(VCode)
-        target
-          ? menu.selectionPopup.watch(target)
-          : (Toast.show('Такой подборки не нашли(')
-            && close())
-      }
-    }
-  }, [menu.loadMenu.state, VCode, menu.categories.length, menu.loadMenuBg.state])
 
   function getContent() {
     // смотрим одну подборку
@@ -99,8 +85,6 @@ export const CollectionPopup: FC = observer(p => {
             )}
           </div>
         </div>
-        <BottomNavigation />
-
       </section>
     } else {
       return <section
@@ -127,20 +111,22 @@ export const CollectionPopup: FC = observer(p => {
     }
   }
   return (
-    <Popup
-      position='bottom'
-      visible
+    <AdaptivePopup
+      visible={menu.selectionPopup.show && !!currentCollection}
       onClose={close}
-      onMaskClick={close}
-      closeOnSwipe
+      noCloseBtn
+      noBottomNavDesktop
       bodyStyle={{
-        width: '100vw',
-
         borderTopLeftRadius: 33,
         borderTopRightRadius: 33,
         marginTop: 40,
         position: 'relative',
       }}
+      mobileBodyStyle={{
+        position: 'fixed',
+        maxHeight: 'calc(100% - 40px)'
+      }}
+      shtorkaOffset='-10px'
     >
       <BackIcon
         onClick={close}
@@ -151,9 +137,8 @@ export const CollectionPopup: FC = observer(p => {
           zIndex: 1000
         }}
       />
-      <div className={styles.shtorka} />
       {getContent()}
-    </Popup>
+    </AdaptivePopup>
   )
 })
 export const CollectionsPage: FC = observer(p => {
@@ -167,14 +152,11 @@ export const CollectionsPage: FC = observer(p => {
 
 
   return (
-    <Popup
-      position='bottom'
+    <AdaptivePopup
       visible
       onClose={close}
-      onMaskClick={close}
-      closeOnSwipe
+      noCloseBtn
       bodyStyle={{
-        width: '100vw',
         borderTopLeftRadius: 33,
         borderTopRightRadius: 33,
         marginTop: 40,
@@ -224,8 +206,7 @@ export const CollectionsPage: FC = observer(p => {
           )}
         </div>
       </section>
-      <BottomNavigation />
-    </Popup >
+    </AdaptivePopup>
   )
 })
 

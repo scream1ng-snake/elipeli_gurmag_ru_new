@@ -12,33 +12,55 @@ import styles from './styles.module.css'
 import { useGoUTM, useStore } from '../../../features/hooks'
 import AskLocation from "../../popups/AskLocation"
 import { ItemModal } from "../../popups/Course"
-import { useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { Toast } from "antd-mobile"
 import { logger } from "../../../features/logger"
 import AskAuthorize from "../../popups/AskAuthorize"
 import { NiceToMeetYooPopup } from "../../popups/CartActions"
 import Container from "react-bootstrap/Container"
 import AmountScaleForGift from "./parts/AmountScale/AmountSCaleForGift"
+import { CollectionPopup } from "../../popups/WatchCollectionPopup"
 
 
 const MainPage: FC = observer(() => {
   const { reception: { menu }, user } = useStore()
-
+  const location = useLocation()
   const { VCode } = useParams<{ VCode: string }>()
   const go = useGoUTM()
 
   useEffect(() => {
-    if (VCode && menu.loadMenu.state === 'COMPLETED') {
-      const targetDish = menu.getDishByID(VCode)
-      if (targetDish) {
-        menu.coursePopup.watch(targetDish)
-      } else {
-        Toast.show('Товар не найден')
-        logger.log(`Товар с vcode ${VCode} не найден`)
-        go('/')
+    if(location.pathname.includes('/menu/')) {
+      if (VCode && menu.loadMenu.state === 'COMPLETED') {
+        const targetDish = menu.getDishByID(VCode)
+        if (targetDish) {
+          menu.coursePopup.watch(targetDish)
+        } else {
+          Toast.show('Товар не найден')
+          logger.log(`Товар с vcode ${VCode} не найден`)
+          go('/')
+        }
       }
     }
-  }, [menu.loadMenu.state, VCode])
+    if(location.pathname.includes('/collections/')) {
+      if (VCode && menu.loadMenu.state === 'COMPLETED') {
+        const targetSelection = menu.getSelection(VCode)
+        if(targetSelection) {
+          menu.selectionPopup.watch(targetSelection)
+        } else {
+          Toast.show('Подборка не найдена')
+          logger.log(`Подборка с vcode ${VCode} не найдена`)
+          menu.selectionPopup.close()
+          go('/')
+        }
+      }
+    }
+  }, [ 
+    VCode, 
+    location, 
+    menu.loadMenu.state, 
+    menu.categories.length, 
+    menu.loadMenuBg.state
+  ])
 
   const PresentAction = useMemo(() => {
     return user.info.allCampaign.filter(c => c.PresentAction)
@@ -47,10 +69,11 @@ const MainPage: FC = observer(() => {
   return <Wrapper>
     <NiceToMeetYooPopup />
     <ItemModal close={() => { go('/') }} />
+    <CollectionPopup />
     <Fixed>
       <ReceptionSwitcher />
     </Fixed>
-    <Container fluid='xl' className={styles.gur_main_content}>
+    <Container className={styles.gur_main_content}>
       <AskLocation />
       <AskAuthorize />
       <Stories />

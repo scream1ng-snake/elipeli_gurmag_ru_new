@@ -9,8 +9,14 @@ interface Props {
   onClose?: () => void
   children: ReactNode
   noBottomNav?: boolean,
+  noBottomNavDesktop?: boolean,
+  noBottomNavMobile?: boolean,
   noCloseBtn?: boolean,
-  bodyClassName?: string
+  bodyClassName?: string,
+  noShtorka?: boolean,
+  shtorkaOffset?: string,
+  mobileBodyStyle?: CSSProperties,
+  desktopBodyStyle?: CSSProperties,
 }
 const AdaptivePopup: FC<Props> = props => {
   return <>
@@ -19,17 +25,25 @@ const AdaptivePopup: FC<Props> = props => {
       closeOnMaskClick
       showCloseButton={!props.noCloseBtn}
       visible={props.visible}
-      bodyStyle={props.bodyStyle}
+      bodyStyle={{
+        ...props.bodyStyle,
+        ...props.mobileBodyStyle
+      }}
       onClose={props.onClose}
       maskClassName="d-xs-block d-sm-none"
       bodyClassName={`d-xs-block d-sm-none ${props.bodyClassName || ''}`}
       disableBodyScroll
     >
-      <Shtorka />
+      {props.noShtorka
+        ? null
+        : <Shtorka offset={props.shtorkaOffset} />
+      }
       {props.children}
       {props.noBottomNav
         ? null
-        : <BottomNavigation style={{ position: 'sticky', bottom: 0, zIndex: 100 }} />
+        : props.noBottomNavMobile
+          ? null
+          : <BottomNavigation style={{ position: 'sticky', bottom: 0, zIndex: 100 }} />
       }
     </Popup>
     <CenterPopup
@@ -38,12 +52,21 @@ const AdaptivePopup: FC<Props> = props => {
       closeOnMaskClick
       showCloseButton={!props.noCloseBtn}
       visible={props.visible}
-      bodyStyle={props.bodyStyle}
+      bodyStyle={{
+        ...props.bodyStyle,
+        ...props.desktopBodyStyle
+      }}
       onClose={props.onClose}
       disableBodyScroll
       getContainer={document.body}
     >
       {props.children}
+      {props.noBottomNav
+        ? null
+        : props.noBottomNavDesktop
+          ? null
+          : <BottomNavigation style={{ position: 'sticky', bottom: 0, zIndex: 100 }} />
+      }
     </CenterPopup>
   </>
 }
