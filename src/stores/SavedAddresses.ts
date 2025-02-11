@@ -35,21 +35,26 @@ class SavedAdresses {
     const { InputingVcode, savedAdresses, inputingLocation, inputingAddress } = this.location
     const { road, house_number, entrance, storey, apartment, addrComment } = inputingAddress
     if(InputingVcode) {
-      await savedAdresses.editServerSavedAddress.run({
-        fullAdress: this.location.addressToString(inputingAddress),
-        city: null,
-        street: road,
-        house: house_number,
-        apartment: apartment,
-        description: '',
-        entrance: entrance,
-        storey: storey,
-        addrComment: addrComment,
-        lon: inputingLocation?.lon.toString(),
-        lat: inputingLocation?.lat.toString(),
-        defaultFlag: false,
-        vcode: Number(InputingVcode)
-      })
+      if(this.onServer.has(InputingVcode)) {
+        await savedAdresses.editServerSavedAddress.run({
+          fullAdress: this.location.addressToString(inputingAddress),
+          city: null,
+          street: road,
+          house: house_number,
+          apartment: apartment,
+          description: '',
+          entrance: entrance,
+          storey: storey,
+          addrComment: addrComment,
+          lon: inputingLocation?.lon.toString(),
+          lat: inputingLocation?.lat.toString(),
+          defaultFlag: false,
+          vcode: Number(InputingVcode)
+        })
+      } else {
+        this.location.setInputingVcode(null)
+        this.location.setConfirmedVcode()
+      }
     }
   }
 

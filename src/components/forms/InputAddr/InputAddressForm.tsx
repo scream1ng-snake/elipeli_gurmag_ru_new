@@ -13,6 +13,7 @@ import { Undef } from '../../../features/helpers'
 import { Address, Location } from '../../../stores/location.store'
 import { CITY_PREFIX } from '../../../stores/reception.store'
 import { FullscreenLoading } from '../../common/Loading/Loading'
+import { toJS } from 'mobx'
 
 type InputAddress = Omit<Address, 'road' | 'house_number'> & { address: string }
 const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
@@ -112,7 +113,12 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
     Location.setConfirmedLocation()
     Location.setConfirmedVcode()
   }
+  console.log(toJS(Location.savedAdresses.isPending))
   return <Fragment>
+    {Location.savedAdresses.isPending
+      ? <FullscreenLoading />
+      : null
+    }
     <Space 
       style={{ 
         width: '100%',
@@ -121,10 +127,6 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
       justify='between' 
       align='center'
     >
-      {Location.savedAdresses.isPending
-        ? <FullscreenLoading />
-        : null
-      }
       <div className={styles.city_label}>
         Уфа
       </div>
