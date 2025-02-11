@@ -38,7 +38,6 @@ export const CollectionPopup: FC = observer(p => {
         className={styles.categories_wrapper}
       >
         <Image
-          height={262}
           src={config.staticApi
             + "/api/v2/image/FileImage?fileId="
             + currentCollection.Image2
