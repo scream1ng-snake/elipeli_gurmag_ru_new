@@ -71,7 +71,7 @@ export const CollectionPopup: FC = observer(p => {
         >
           {currentCollection?.Name ?? 'Подборки'}
         </p>
-        <p
+        <div
           style={{
             fontFamily: 'Arial',
             fontSize: 14.5,
@@ -84,16 +84,21 @@ export const CollectionPopup: FC = observer(p => {
           }}
         >
           {currentCollection.Description.split('\n').map((txt, index) => <p key={index}>{txt}</p>)}
-        </p>
+        </div>
         <br />
         <div>
           <div className={styles.courses_list}>
-            {currentCollection.CourseList.map(course =>
-              <CourseItemComponent
-                key={course.VCode}
-                course={course}
-              />
-            )}
+            {currentCollection.CourseList
+              .filter((course1, index, arr) => 
+                arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
+              )
+              .map(course =>
+                <CourseItemComponent
+                  key={course.VCode}
+                  course={course}
+                />
+              )
+            }
           </div>
         </div>
       </section>
