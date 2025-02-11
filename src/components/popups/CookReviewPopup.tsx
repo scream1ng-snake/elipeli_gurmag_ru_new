@@ -17,6 +17,9 @@ const CookReviewPopup: FC = observer(function () {
     visible={watchCockPopup.show}
     onClose={watchCockPopup.close}
     bodyStyle={styles.review_popup}
+    noBottomNav
+    noCloseBtn
+    shtorkaOffset='-1.6rem'
   >
     {
       loadCookReviews.state === 'LOADING'
