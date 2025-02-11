@@ -25,6 +25,8 @@ const CampaignPopup: FC = observer(() => {
 
   return <AdaptivePopup
     visible={campaignPopup.show}
+    noBottomNav
+    noCloseBtn
     bodyStyle={{
       borderTopLeftRadius: 15,
       borderTopRightRadius: 15,

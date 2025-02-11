@@ -34,7 +34,7 @@ const CampaignsPage: FC = observer(() => {
     }
   }, [info.allCampaign, pathname])
   return <Wrapper styles={{ background: 'var(--tg-theme-bg-color)' }}>
-    <Container fluid='xl' className="p-0">
+    <Container className="p-0">
       <CampaignPopup />
       <NavBar
         onBack={() => go('/')}
