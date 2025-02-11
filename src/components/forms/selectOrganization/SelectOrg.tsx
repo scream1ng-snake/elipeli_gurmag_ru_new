@@ -9,6 +9,7 @@ import Red from '../../special/RedText'
 import { Optional } from '../../../features/helpers'
 import CustomButton from '../../special/CustomButton'
 import { IconClose } from '../../icons/IconClose'
+import AdaptivePopup from '../../common/Popup/Popup'
 
 type Pr = {
   clickedOrgID: Optional<number>,
@@ -125,16 +126,15 @@ type P = {
 const SelectOrgPopup: FC<P> = observer(p => {
   const { reception } = useStore()
   return (
-    <Popup
-      position='bottom'
+    <AdaptivePopup
       visible={p.show}
       onClose={p.close}
-      onMaskClick={p.close}
-      bodyStyle={{ width: '100vw', height: '100%' }}
+      noBottomNav
+      noCloseBtn
     >
       <Space
         style={{
-          width: 'calc(100vw - 1rem)',
+          minWidth:'400px',
           margin: '0.75rem 0',
           padding: '0 0.5rem',
         }}
@@ -159,6 +159,6 @@ const SelectOrgPopup: FC<P> = observer(p => {
           </List.Item>
         )}
       </List>
-    </Popup>
+    </AdaptivePopup>
   )
 })
