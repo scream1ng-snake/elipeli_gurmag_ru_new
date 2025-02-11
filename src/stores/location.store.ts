@@ -154,6 +154,13 @@ class LocationStore {
             + ' на расстоянии ' 
             + distance
           )
+          this.setAdditionalFields({
+            entrance: '',
+            doorCode: '',
+            storey: '',
+            apartment: '',
+            addrComment: ''
+          })
         } else {
           Toast.show('Местоположение не найдено')
         }
@@ -186,6 +193,13 @@ class LocationStore {
             + ' на расстоянии ' 
             + distance
           )
+          this.setAdditionalFields({
+            entrance: '',
+            doorCode: '',
+            storey: '',
+            apartment: '',
+            addrComment: ''
+          })
         } else {
           Toast.show("Адрес вне зоны обслуживания Gurmag")
         }
