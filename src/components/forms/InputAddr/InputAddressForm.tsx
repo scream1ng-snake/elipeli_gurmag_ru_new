@@ -113,7 +113,6 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
     Location.setConfirmedLocation()
     Location.setConfirmedVcode()
   }
-  console.log(toJS(Location.savedAdresses.isPending))
   return <Fragment>
     {Location.savedAdresses.isPending
       ? <FullscreenLoading />

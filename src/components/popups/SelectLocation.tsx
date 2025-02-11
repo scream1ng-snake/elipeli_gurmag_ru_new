@@ -221,6 +221,9 @@ const SelectLocationPopup: FC<P> = observer(p => {
             </Container>
           </Col>
         </Row>
+      case 'initial': {
+        setReceptionType('delivery')
+      }
     }
   }
 
