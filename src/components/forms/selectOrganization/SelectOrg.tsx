@@ -52,7 +52,6 @@ const SelectOrgForm: FC<Pr> = observer(p => {
           style={{
             height: '38px',
             width: '38px',
-            marginTop: '1rem',
             marginRight: '1rem'
           }}
         >
