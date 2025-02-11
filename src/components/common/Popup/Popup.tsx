@@ -9,7 +9,8 @@ interface Props {
   onClose?: () => void
   children: ReactNode
   noBottomNav?: boolean,
-  noCloseBtn?: boolean
+  noCloseBtn?: boolean,
+  bodyClassName?: string
 }
 const AdaptivePopup: FC<Props> = props => {
   return <>
@@ -21,7 +22,7 @@ const AdaptivePopup: FC<Props> = props => {
       bodyStyle={props.bodyStyle}
       onClose={props.onClose}
       maskClassName="d-xs-block d-sm-none"
-      bodyClassName="d-xs-block d-sm-none"
+      bodyClassName={`d-xs-block d-sm-none ${props.bodyClassName || ''}`}
       disableBodyScroll
     >
       <Shtorka />
@@ -33,7 +34,7 @@ const AdaptivePopup: FC<Props> = props => {
     </Popup>
     <CenterPopup
       maskClassName="d-none d-sm-block"
-      bodyClassName="d-none d-sm-block"
+      bodyClassName={`d-none d-sm-block ${props.bodyClassName || ''}`}
       closeOnMaskClick
       showCloseButton={!props.noCloseBtn}
       visible={props.visible}

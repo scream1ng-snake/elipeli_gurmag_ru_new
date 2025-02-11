@@ -356,3 +356,35 @@ dl, ol, ul {
   padding-left: 0;
   padding-right: 0;
 }
+@media screen and (min-width: 0px) {
+  .mediaPopup {
+    height: 100%;
+    max-height: 100%;
+  }
+  .superRow {
+    max-height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .superCol {
+    flex: 1;
+    height: 1px;
+  }
+ }
+@media screen and (min-width: 768px) {
+  .mediaPopup {
+    height: 75vh;
+    min-width: 75vw;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  .superRow {
+    max-height: 100%;
+    flex-direction:initial;
+    justify-content:initial;
+  }
+  .superCol {
+    flex: 1;
+    height: 100%;
+  }
+ }

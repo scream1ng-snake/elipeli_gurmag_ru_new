@@ -59,13 +59,27 @@ const ReactMap: FC<props> = p => {
           iconImageSize: [40, 40],
           iconOffset: [-20,0]
         })
+        for (let i = map.geoObjects.getLength() - 1; i >= 0; i--) {  
+          const geoObject = map.geoObjects.get(i);  
+          
+          if (geoObject instanceof ymaps.Placemark) {  
+            map.geoObjects.remove(geoObject)
+          }  
+        }  
         map.geoObjects.add(marker)
-        if(prevousMarker) map.geoObjects.remove(prevousMarker)
         prevousMarker = marker
       }
     } else {
       if(ymaps && map) {
-        if(prevousMarker) map.geoObjects.remove(prevousMarker)
+        if(prevousMarker) {
+          for (let i = map.geoObjects.getLength() - 1; i >= 0; i--) {  
+            const geoObject = map.geoObjects.get(i);  
+            
+            if (geoObject instanceof ymaps.Placemark) {  
+              map.geoObjects.remove(geoObject)
+            }  
+          }  
+        }
       }
     }
   }, [p.value?.lat, p.value?.lon, map])
@@ -141,7 +155,7 @@ const ReactMapRadio: FC<radioProps> = observer(p => {
   return <div ref={mapRef} style={fullscreen} />
 })
 
-const fullscreen = { width: '100vw', height: '100%' }
+const fullscreen = { width: '100%', height: '100%' }
 
 const Maps = {
   Picker: ReactMap,

@@ -15,6 +15,8 @@ import { IconClose } from '../icons/IconClose'
 import Container from "react-bootstrap/Container"
 import { YMaps } from '@pbe/react-yandex-maps'
 import { SelectSavedAddrForm } from './SelectSavedAddrForm'
+import AdaptivePopup from '../common/Popup/Popup'
+import { Col, Row } from 'react-bootstrap'
 
 type P = {
   show: boolean,
@@ -52,7 +54,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
     </div>
 
   const AskLocation: FC<any> = props =>
-    <div className={styles.location_box}>
+    <div className={styles.location_box + " " + (props.className || '')}>
       <Button onClick={props.onClick} className={styles.location_ico}>
         <LocationOutline className={styles.location_svg} />
       </Button>
@@ -64,6 +66,47 @@ const SelectLocationPopup: FC<P> = observer(p => {
     reverseGeocoderApi.state
   ].includes('LOADING')
 
+  const TopRow: FC = () => 
+    <div style={{ position: 'relative' }}>
+      <Space
+        style={{
+          position: 'absolute',
+          width: 'calc(100% - 1rem)',
+          marginTop: '0.75rem',
+          padding: '0 0.5rem',
+          zIndex: 100
+        }}
+        justify='between'
+      >
+        <Button
+          onClick={closeFn}
+          shape='rounded'
+          style={{
+            height: '38px',
+            width: '38px',
+          }}
+        >
+          <span style={{ marginLeft: '-4px' }} >
+            <IconClose
+              width={21}
+              height={23}
+              color={"var(--громкий-текст)"}
+            />
+          </span>
+        </Button>
+        <ToggleSelector
+          options={options}
+          value={receptionType}
+          backgroundVar={'--tg-theme-bg-color'}
+          buttonBackgroundVar={'--tg-theme-bg-color'}
+          buttonActiveBackgroundVar={'--gurmag-accent-color'}
+          colorVar={'--громкий-текст'}
+          activeColorVar={'--gur-custom-button-text-color'}
+          onChange={setReceptionType}
+        />
+      </Space>
+    </div>
+
   function getContent(rc: ReceptionType) {
     switch (rc) {
       case 'delivery':
@@ -73,8 +116,9 @@ const SelectLocationPopup: FC<P> = observer(p => {
           </Mask>
         }
         if (Array.from(savedAdresses.onServer.values()).length && user.loadUserInfo.state === 'COMPLETED' && savedAdresses.page.show) {
-          return <div className={styles.container}>
-            <div className={styles.map_area}>
+          return <Row className='h-100 superRow'>
+            <Col md={6} className='superCol'>
+              <TopRow />
               {isMapSearching
                 ? <Mask>
                   <DotLoading style={{ fontSize: 48 }} color='primary' />
@@ -89,8 +133,12 @@ const SelectLocationPopup: FC<P> = observer(p => {
                 }}
                 features={jsonMap?.features}
               />
-            </div>
-            <div className={styles.popup_area}>
+              <AskLocation 
+                className="d-none d-sm-block" 
+                onClick={requestGeolocation} 
+              />
+            </Col>
+            <Col md={6}>
               <PopupHeader />
               <Container className='p-0'>
                 <AskLocation onClick={requestGeolocation} />
@@ -101,11 +149,12 @@ const SelectLocationPopup: FC<P> = observer(p => {
                   onContinue={p.onContinue} 
                 />
               </Container>
-            </div>
-          </div>
+            </Col>
+          </Row>
         } else {
-          return <div className={styles.container}>
-            <div className={styles.map_area}>
+          return <Row className='h-100 superRow'>
+            <Col md={6} className='superCol'>
+              <TopRow />
               {isMapSearching
                 ? <Mask>
                   <DotLoading style={{ fontSize: 48 }} color='primary' />
@@ -117,8 +166,12 @@ const SelectLocationPopup: FC<P> = observer(p => {
                 onSelect={setAddressByCoords}
                 features={jsonMap?.features}
               />
-            </div>
-            <div className={styles.popup_area}>
+              <AskLocation 
+                className="d-none d-sm-block" 
+                onClick={requestGeolocation} 
+              />
+            </Col>
+            <Col md={6} className='p-md-3'>
               <PopupHeader />
               <Container className='p-0'>
                 <AskLocation onClick={requestGeolocation} />
@@ -129,13 +182,14 @@ const SelectLocationPopup: FC<P> = observer(p => {
                   }} 
                 />
               </Container>
-            </div>
-          </div>
+            </Col>
+          </Row>
         }
 
       case 'pickup':
-        return <div className={styles.container}>
-          <div className={styles.map_area}>
+        return <Row className='h-100 superRow'>
+          <Col md={6} className='superCol'>
+          <TopRow />
             {isMapSearching
               ? <Mask>
                 <DotLoading style={{ fontSize: 48 }} color='primary' />
@@ -153,8 +207,12 @@ const SelectLocationPopup: FC<P> = observer(p => {
               defaultSelected={orgsCoords.find(val => val.Id === clickedOrgID)}
               // features={jsonMap.features}
             />
-          </div>
-          <div className={styles.popup_area}>
+            <AskLocation 
+              className="d-none d-sm-block" 
+              onClick={requestGeolocation} 
+            />
+          </Col>
+          <Col md={6} className='p-md-3'>
             <PopupHeader />
             <Container className='p-0'>
               <AskLocation onClick={requestGeolocation} />
@@ -164,8 +222,8 @@ const SelectLocationPopup: FC<P> = observer(p => {
                 onContinue={p.onContinue}
               />
             </Container>
-          </div>
-        </div>
+          </Col>
+        </Row>
     }
   }
 
@@ -174,58 +232,19 @@ const SelectLocationPopup: FC<P> = observer(p => {
     Location.savedAdresses.page.open()
   }
   return (
-    <Popup
-      position='bottom'
+    <AdaptivePopup
       visible={p.show}
       onClose={closeFn}
-      onMaskClick={closeFn}
-      bodyStyle={{ width: '100vw', height: '100%' }}
+      noCloseBtn
+      noBottomNav
+      bodyClassName='mediaPopup'
     >
-      <Container className='p-0'>
-        <div style={{ position: 'relative' }}>
-          <Space
-            style={{
-              position: 'absolute',
-              width: 'calc(100% - 1rem)',
-              marginTop: '0.75rem',
-              padding: '0 0.5rem',
-              zIndex: 100
-            }}
-            justify='between'
-          >
-            <Button
-              onClick={closeFn}
-              shape='rounded'
-              style={{
-                height: '38px',
-                width: '38px',
-              }}
-            >
-              <span style={{ marginLeft: '-4px' }} >
-                <IconClose
-                  width={21}
-                  height={23}
-                  color={"var(--громкий-текст)"}
-                />
-              </span>
-            </Button>
-            <ToggleSelector
-              options={options}
-              value={receptionType}
-              backgroundVar={'--tg-theme-bg-color'}
-              buttonBackgroundVar={'--tg-theme-bg-color'}
-              buttonActiveBackgroundVar={'--gurmag-accent-color'}
-              colorVar={'--громкий-текст'}
-              activeColorVar={'--gur-custom-button-text-color'}
-              onChange={setReceptionType}
-            />
-          </Space>
-        </div>
+      <Container className='p-0 w-100 h-100'>
+        <YMaps query={{ apikey }}>
+          {getContent(receptionType)}
+        </YMaps>
       </Container>
-      <YMaps query={{ apikey }}>
-        {getContent(receptionType)}
-      </YMaps>
-    </Popup>
+    </AdaptivePopup>
   )
 })
 

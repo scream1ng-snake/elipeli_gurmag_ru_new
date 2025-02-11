@@ -102,7 +102,7 @@ const ReceptionSwitcher: FC = observer(() => {
         <Col
           xs={{ order: 3 }}
           md={{ order: 2 }}
-          className='mb-3'
+          className='mb-3 p-0'
         >
           <div
             onClick={open}

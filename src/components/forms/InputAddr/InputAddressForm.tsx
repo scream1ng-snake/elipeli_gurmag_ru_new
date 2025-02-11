@@ -112,17 +112,17 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
     Location.setConfirmedLocation()
     Location.setConfirmedVcode()
   }
-
-
-  function resetAddr() {
-    const { confirmedAddress, confirmedLocation, ConfirmedVcode } = Location
-    Location.setInputingVcode(ConfirmedVcode)
-    Location.setInputingLocation(confirmedLocation as Location)
-    Location.setAffectFields(confirmedAddress)
-    Location.setAdditionalFields(confirmedAddress)
-  }
   return <Fragment>
-    <Space style={{ width: '100%' }} justify='between' align='center'>
+    <Space 
+      style={{ 
+        width: '100%',
+        zIndex: 1000,
+        position: "relative", 
+        background: 'var(--tg-theme-bg-color)'
+      }} 
+      justify='between' 
+      align='center'
+    >
       {Location.savedAdresses.isPending
         ? <FullscreenLoading />
         : null
