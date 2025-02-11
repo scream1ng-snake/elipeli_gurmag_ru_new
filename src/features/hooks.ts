@@ -1,6 +1,6 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { StoreContext, ThemeContext } from "./contexts";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";  
 
 declare global {
   interface Window {
@@ -53,3 +53,31 @@ export function useGoUTM() {
     search: new URLSearchParams(JSON.parse(auth.UTM ?? '{}')).toString()
   })
 }
+
+export const DeviceTypes = {
+  desktop: 'desktop',
+  tablet: 'tablet',
+  mobile: 'mobile' 
+} as const
+export type DeviceType = typeof DeviceTypes[keyof typeof DeviceTypes]
+export const useDeviceType = () => {  
+  const [deviceType, setDeviceType] = useState<DeviceType>('desktop')  
+  
+  const getDeviceType = () => {  
+    const width = window.innerWidth;  
+    if (width < 768) {  
+      setDeviceType('mobile');  
+    } else if (width >= 768 && width < 1024) {  
+      setDeviceType('tablet');  
+    } else {  
+      setDeviceType('desktop');  
+    }  
+  }
+
+  useEffect(() => {
+    getDeviceType() 
+    window.addEventListener('resize', getDeviceType);  
+    return () => window.removeEventListener('resize', getDeviceType);  
+  }, [])
+  return deviceType
+};  
