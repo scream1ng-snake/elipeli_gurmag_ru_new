@@ -116,8 +116,6 @@ const InputAddressForm: FC<{ onContinue: () => void }> = observer(p => {
     <Space 
       style={{ 
         width: '100%',
-        zIndex: 1000,
-        position: "relative", 
         background: 'var(--tg-theme-bg-color)'
       }} 
       justify='between' 

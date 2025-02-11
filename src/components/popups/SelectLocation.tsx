@@ -17,6 +17,7 @@ import { YMaps } from '@pbe/react-yandex-maps'
 import { SelectSavedAddrForm } from './SelectSavedAddrForm'
 import AdaptivePopup from '../common/Popup/Popup'
 import { Col, Row } from 'react-bootstrap'
+import { FullscreenLoading } from '../common/Loading/Loading'
 
 type P = {
   show: boolean,
@@ -120,9 +121,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
             <Col md={6} className='superCol'>
               <TopRow />
               {isMapSearching
-                ? <Mask>
-                  <DotLoading style={{ fontSize: 48 }} color='primary' />
-                </Mask>
+                ? <FullscreenLoading />
                 : null
               }
               <Maps.Picker
@@ -156,9 +155,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
             <Col md={6} className='superCol'>
               <TopRow />
               {isMapSearching
-                ? <Mask>
-                  <DotLoading style={{ fontSize: 48 }} color='primary' />
-                </Mask>
+                ? <FullscreenLoading />
                 : null
               }
               <Maps.Picker
@@ -191,9 +188,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
           <Col md={6} className='superCol'>
           <TopRow />
             {isMapSearching
-              ? <Mask>
-                <DotLoading style={{ fontSize: 48 }} color='primary' />
-              </Mask>
+              ? <FullscreenLoading />
               : null
             }
             <Maps.RadioPicker
