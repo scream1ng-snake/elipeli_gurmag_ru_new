@@ -1,17 +1,20 @@
-import { Checkbox, List, Popup } from "antd-mobile"
+import { Checkbox, List } from "antd-mobile"
 import { toJS } from "mobx"
 import { observer } from "mobx-react-lite"
 import { FC } from "react"
 import { useStore } from "../../features/hooks"
 import { PaymentMethod } from "../../stores/payment.store"
+import AdaptivePopup from "../common/Popup/Popup"
 
-
-const WaySelectorPopup: FC = observer(() => {
+type Props = {
+  close(): void,
+  show: boolean
+}
+const WaySelectorPopup: FC<Props> = observer(props => {
   const { cart, reception, cart: { payment }} = useStore()
   const {
     method,
     paymentLabels,
-    selectMethodPopup,
     availableMethods,
     paymentIcons,
     setMethod
@@ -19,7 +22,6 @@ const WaySelectorPopup: FC = observer(() => {
 
   const { receptionType } = reception
 
-  const hide = () => selectMethodPopup.close()
 
   const Way: FC<{ way: PaymentMethod, checked: boolean }> = props =>
     <List.Item
@@ -61,20 +63,23 @@ const WaySelectorPopup: FC = observer(() => {
     })
   }
   return (
-    <Popup
-      position='bottom'
-      visible={selectMethodPopup.show}
-      showCloseButton
-      onClose={hide}
-      onMaskClick={hide}
-      style={{ zIndex: 1000 }}
-      bodyStyle={{ width: '100vw', borderTopLeftRadius: 13, borderTopRightRadius: 13 }}
+    <AdaptivePopup
+      visible={props.show}
+      noBottomNav
+      noCloseBtn
+      noShtorka
+      onClose={props.close}
+      bodyStyle={{ 
+        borderTopLeftRadius: 13, 
+        borderTopRightRadius: 13,
+      }}
+      desktopBodyStyle={{ paddingTop:'1px' }}
     >
-      <h2 style={{ margin: '2rem 0 1rem 2rem' }}>Способ оплаты:</h2>
+      <h2 style={{ margin: '2rem 1rem 1rem 2rem' }}>Способ оплаты:</h2>
       <List style={{ margin: '0 1rem' }}>
         {renderWays()}
       </List>
-    </Popup>
+    </AdaptivePopup>
   )
 })
 

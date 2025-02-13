@@ -5,6 +5,8 @@ import { useGoUTM, useStore } from "../../../features/hooks";
 import { Avatar, List, NavBar } from "antd-mobile";
 import { GiftOutline, RedoOutline } from "antd-mobile-icons";
 import { Container } from "react-bootstrap";
+import { Burger } from "../../layout/NavButton";
+import BottomNav from "../../common/BottomNav/BottomNav";
 
 
 const UserPage: FC = observer(() => {
@@ -12,7 +14,7 @@ const UserPage: FC = observer(() => {
   const { user } = useStore()
   return <Wrapper>
     <Container>
-      <NavBar onBack={() => { go('/') }}>
+      <NavBar onBack={() => { go('/') }} right={<Burger />}>
         Вы
       </NavBar>
       <List style={{ borderRadius: 20, overflow: 'hidden' }}>
@@ -43,6 +45,7 @@ const UserPage: FC = observer(() => {
         </List.Item>
       </List>
     </Container>
+    <BottomNav />
   </Wrapper>
 })
 

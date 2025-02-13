@@ -10,10 +10,11 @@ import WaySelectorPopup from "./SelectPayMethod"
 import AskLocation from "./AskLocation"
 import CartActions from "./CartActions"
 import { FullscreenLoading } from "../common/Loading/Loading"
+import AdaptivePopup from "../common/Popup/Popup"
 
 const OrderDetailPopup: FC = observer(() => {
   const { cart, reception } = useStore()
-  const { selectLocationPopup: { show, close }, } = reception
+  const { selectLocationPopup2: { show, close }, } = reception
 
   function getBody(rt: ReceptionType) {
     switch (rt) {
@@ -27,24 +28,32 @@ const OrderDetailPopup: FC = observer(() => {
         return <AskLocation />
     }
   }
-  return <Popup
+  return <AdaptivePopup
     visible={cart.detailPopup.show}
     onClose={cart.detailPopup.close}
-    onMaskClick={cart.detailPopup.close}
     bodyClassName={styles.detailPopup}
-    position='bottom'
+    noBottomNav
+    noCloseBtn
+    noShtorka
+    desktopBodyStyle={{
+      maxHeight: '90vh',
+      overflowY: 'scroll'
+    }}
   >
     <Shtorka />
     {cart.postOrder.state === 'LOADING' && <FullscreenLoading />}
+    <WaySelectorPopup 
+      show={cart.payment.selectMethodPopup.show}
+      close={cart.payment.selectMethodPopup.close} 
+    />
     <SelectLocationPopup
       show={show}
       close={close}
-      onContinue={reception.selectLocationPopup.close}
+      onContinue={close}
     />
-    <WaySelectorPopup />
     <CartActions />
     {getBody(reception.receptionType)}
-  </Popup>
+  </AdaptivePopup>
 })
 
 

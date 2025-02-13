@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite'
 import { FC } from 'react'
 import styles from './ReceptionSwitcher.module.css'
-import { useGoUTM, useStore } from '../../../../../features/hooks'
+import { useDeviceType, useGoUTM, useStore } from '../../../../../features/hooks'
 import SelectLocationPopup from '../../../../popups/SelectLocation'
 import Red from '../../../../special/RedText'
 import CircleIcon from '../../../../icons/Circle'
@@ -15,11 +15,15 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { Gift } from '../../../../icons/Gift'
-import { Button, Space } from 'antd-mobile'
+import { Button, Dropdown, Space } from 'antd-mobile'
 import config from '../../../../../features/config'
+import { NavDropdown } from 'react-bootstrap'
+import NavButton from '../../../../layout/NavButton'
+import TopNav from '../../../../common/TopNav/TopNav'
 
 
 const ReceptionSwitcher: FC = observer(() => {
+  const device = useDeviceType()
   const go = useGoUTM()
   const { auth, reception, user } = useStore()
   const navigate = useGoUTM()
@@ -36,13 +40,13 @@ const ReceptionSwitcher: FC = observer(() => {
     receptionType === 'initial'
       ? 'или заберёте сами?'
       : receptionType === 'delivery'
-        ? isWorkingNow 
+        ? isWorkingNow
           ? user.info.MinSum
             ? 'Доставка бесплатно. Заказ от ' + user.info.MinSum + ' р.'
-            : 'Доставка бесплатно' 
+            : 'Доставка бесплатно'
           : <Red>Сейчас не доставляем. Доставляем с 9.30 до 21.30</Red>
-        : isWorkingNow 
-          ? 'Забрать из Гурмага' 
+        : isWorkingNow
+          ? 'Забрать из Гурмага'
           : <Red>Закрыто - Откроется в 9:30</Red>
 
   const getAddress = () =>
@@ -166,6 +170,14 @@ const ReceptionSwitcher: FC = observer(() => {
             <CircleIcon image={LogoGurmag} size={36} />
           </div>
         </Col>
+        {device !== 'mobile'
+          ? <Col xs={{ order: 5, span: 'auto' }} className='p-0'>
+            <NavButton>
+              <TopNav />
+            </NavButton>
+          </Col>
+          : null
+        }
       </Row>
     </Container>
   </div>
@@ -190,7 +202,7 @@ export const ReceptionSwitcherEmpty = observer(() => {
               </Button>
             </div>
           </Col>
-          {!auth.isFailed 
+          {!auth.isFailed
             ? null
             : <Col
               xs={{ order: 1, span: 12 }}

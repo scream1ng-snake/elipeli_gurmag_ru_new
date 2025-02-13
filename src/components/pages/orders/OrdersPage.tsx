@@ -8,6 +8,7 @@ import config from "../../../features/config";
 import BottomNav from "../../common/BottomNav/BottomNav";
 import Wrapper from "../../layout/Wrapper";
 import { Container } from "react-bootstrap";
+import { Burger } from "../../layout/NavButton";
 
 const OrderStatusColors = {
   'Создан': 'default',
@@ -47,6 +48,7 @@ const OrdersPage: FC = observer(() => {
             borderBottomLeftRadius: 15,
             borderBottomRightRadius: 15
           }}
+          right={<Burger />}
         >
           История заказов
         </NavBar>
@@ -135,6 +137,7 @@ const OrdersPage: FC = observer(() => {
           : null
         }
       </Container>
+      <BottomNav />
     </Wrapper>
   )
 })

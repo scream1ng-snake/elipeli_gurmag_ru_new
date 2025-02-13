@@ -71,6 +71,7 @@ export class CartStore {
   /** пикер с выбором времени */
   timePick = new Popup()
 
+  cart = new Popup()
   constructor(readonly root: RootStore) {
     makeAutoObservable(this, {}, { autoBind: true })
     // в зависимоти от тотал прайса не позволяем использовать наличку

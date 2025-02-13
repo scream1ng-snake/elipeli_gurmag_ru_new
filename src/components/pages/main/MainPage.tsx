@@ -20,10 +20,11 @@ import { NiceToMeetYooPopup } from "../../popups/CartActions"
 import Container from "react-bootstrap/Container"
 import AmountScaleForGift from "./parts/AmountScale/AmountSCaleForGift"
 import { CollectionPopup, /*CollectionsPopup*/ } from "../../popups/WatchCollectionPopup"
+import CartPopup from "../cart/CartPage"
 
 
 const MainPage: FC = observer(() => {
-  const { reception: { menu }, user } = useStore()
+  const { reception: { menu }, user, cart } = useStore()
   const location = useLocation()
   const { VCode } = useParams<{ VCode: string }>()
   const go = useGoUTM()
@@ -35,11 +36,14 @@ const MainPage: FC = observer(() => {
         if (targetDish) {
           menu.coursePopup.watch(targetDish)
         } else {
+          menu.coursePopup.close()
           Toast.show('Товар не найден')
           logger.log(`Товар с vcode ${VCode} не найден`)
           go('/')
         }
       }
+    } else {
+      menu.coursePopup.close()
     }
     if(location.pathname.includes('/collections/')) {
       if (VCode && menu.loadMenu.state === 'COMPLETED') {
@@ -53,12 +57,21 @@ const MainPage: FC = observer(() => {
           go('/')
         }
       }
+    } else {
+      menu.selectionPopup.close()
     }
     // if(location.pathname.includes("/collections")) {
     //   if(!VCode && menu.loadMenu.state === 'COMPLETED') {
     //     menu.selectionsPopup.open()
     //   } 
     // }
+    if(location.pathname.includes("/basket")) {
+      if(menu.loadMenu.state === 'COMPLETED' && user.loadUserInfo.state === 'COMPLETED') {
+        cart.cart.open()
+      } 
+    } else {
+      cart.cart.close()
+    }
   }, [ 
     VCode, 
     location, 
@@ -75,6 +88,7 @@ const MainPage: FC = observer(() => {
     <NiceToMeetYooPopup />
     <ItemModal close={() => { go('/') }} />
     <CollectionPopup />
+    <CartPopup />
     {/* <CollectionsPopup /> */}
     <Fixed>
       <ReceptionSwitcher />

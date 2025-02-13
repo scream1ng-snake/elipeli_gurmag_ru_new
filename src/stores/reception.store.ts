@@ -52,6 +52,7 @@ export class ReceptionStore {
 
   /** попап для выбора локации и типа обслуживания */
   selectLocationPopup = new Popup()
+  selectLocationPopup2 = new Popup()
 
   /** доступные опции обслуживания */
   options = [{

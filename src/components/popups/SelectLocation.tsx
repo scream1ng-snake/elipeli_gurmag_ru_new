@@ -228,6 +228,7 @@ const SelectLocationPopup: FC<P> = observer(p => {
   }
 
   const closeFn = () => {
+    debugger
     p.close()
     Location.savedAdresses.page.open()
   }

@@ -2,6 +2,7 @@ import { CenterPopup, Popup } from "antd-mobile";
 import { CSSProperties, FC, ReactNode } from "react";
 import { BottomNavigation } from "../BottomNav/BottomNav";
 import Shtorka from "../Shtorka/Shtorka";
+import { useDeviceType } from "../../../features/hooks";
 
 interface Props {
   visible: boolean
@@ -19,8 +20,9 @@ interface Props {
   desktopBodyStyle?: CSSProperties,
 }
 const AdaptivePopup: FC<Props> = props => {
-  return <>
-    <Popup
+  const device = useDeviceType()
+  if (device === 'mobile') {
+    return <Popup
       closeOnSwipe
       closeOnMaskClick
       showCloseButton={!props.noCloseBtn}
@@ -46,7 +48,8 @@ const AdaptivePopup: FC<Props> = props => {
           : <BottomNavigation style={{ position: 'sticky', bottom: 0, zIndex: 100 }} />
       }
     </Popup>
-    <CenterPopup
+  } else {
+    return <CenterPopup
       maskClassName="d-none d-sm-block"
       bodyClassName={`d-none d-sm-block ${props.bodyClassName || ''}`}
       closeOnMaskClick
@@ -68,7 +71,7 @@ const AdaptivePopup: FC<Props> = props => {
           : <BottomNavigation style={{ position: 'sticky', bottom: 0, zIndex: 100 }} />
       }
     </CenterPopup>
-  </>
+  }
 }
 
 export default AdaptivePopup

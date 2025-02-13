@@ -6,6 +6,8 @@ import { PhoneOutlined } from '@ant-design/icons';
 import Wrapper from '../../layout/Wrapper';
 import { useGoUTM, useTelegram } from '../../../features/hooks';
 import { Container } from 'react-bootstrap';
+import BottomNav from '../../common/BottomNav/BottomNav';
+import { Burger } from '../../layout/NavButton';
 
 const MorePage: FC = observer(() => {
   const tg = useTelegram()
@@ -13,7 +15,7 @@ const MorePage: FC = observer(() => {
   return (
     <Wrapper>
       <Container>
-        <NavBar onBack={() => { go('/') }}>
+        <NavBar onBack={() => { go('/') }} right={<Burger />}>
           Еще
         </NavBar>
         <List style={{ borderRadius: 20, overflow: 'hidden' }}>
@@ -64,6 +66,7 @@ const MorePage: FC = observer(() => {
           </Collapse>
         </List>
       </Container>
+      <BottomNav />
     </Wrapper>
   )
 })

@@ -1,17 +1,18 @@
 import { observer } from "mobx-react-lite"
 import { FC, useEffect } from "react"
 import Wrapper from "../../layout/Wrapper"
-import { Image, NavBar, Toast } from "antd-mobile"
+import { Image, NavBar, Space, Toast } from "antd-mobile"
 import bigLogo from '../../../assets/big_logo.png'
 import { useLocation, useParams } from "react-router-dom"
 import BottomNav from "../../common/BottomNav/BottomNav"
-import { useGoUTM, useStore } from "../../../features/hooks"
+import { useDeviceType, useGoUTM, useStore } from "../../../features/hooks"
 import Campaign from "./parts/CampaignItem"
 import { logger } from "../../../features/logger"
 import CampaignPopup from "../../popups/CampaignPopup"
 import Container from "react-bootstrap/Container"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
+import { Burger } from "../../layout/NavButton"
 
 const CampaignsPage: FC = observer(() => {
   const go = useGoUTM()
@@ -46,6 +47,7 @@ const CampaignsPage: FC = observer(() => {
             fit='contain'
           />
         }
+        right={<Burger />}
         style={{ height: 60, padding: '0 20px', textAlign: 'left' }}
       >
       </NavBar>
