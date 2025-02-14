@@ -359,7 +359,7 @@ dl, ol, ul {
   padding-right: 0;
 }
 @media screen and (min-width: 0px) {
-  .mediaPopup, .cartPopup {
+  .mediaPopup, .cartPopup, .categoryPopup {
     height: 100%;
     max-height: 100%;
   }
@@ -381,6 +381,14 @@ dl, ol, ul {
   }
   .mediaPopup {
     height: 75vh;
+    min-width: 75vw;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  .categoryPopup {
+    max-height: 100vh;
+    height: auto;
+    min-height: 50vh;
     min-width: 75vw;
     border-radius: 15px;
     overflow: hidden;

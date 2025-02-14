@@ -974,7 +974,9 @@ export type AllCampaignUser = {
   PresentAction: Optional<boolean>,
   MinSum: number,
   MaxSum: number,
-  AddOne: boolean | null
+  AddOne: boolean | null,
+  begintime: string,
+  endtime: string
 }
 
 export type AddOne = {

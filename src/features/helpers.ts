@@ -2,6 +2,7 @@ import { makeAutoObservable } from "mobx";
 import { ReactNode } from "react";
 
 export type Optional<T> = T | null;
+export type Maybe<T> = T | null | undefined;
 export type Undef<T> = T | undefined;
 
 type F<B extends unknown[], O> = (state: LoadStatesType, setState: (newState: LoadStatesType) => void, ...args: B) => Promise<O>

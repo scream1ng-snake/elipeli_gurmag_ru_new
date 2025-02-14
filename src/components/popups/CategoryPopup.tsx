@@ -13,6 +13,7 @@ import AskAuthorize from './AskAuthorize'
 import AskLocation from './AskLocation'
 import { ItemModal } from './Course'
 import { useNavigate } from 'react-router-dom'
+import AdaptivePopup from '../common/Popup/Popup'
 
 const CategoryPopup: FC = observer(function () {
   const go = useGoUTM()
@@ -36,14 +37,17 @@ const CategoryPopup: FC = observer(function () {
     }
   }, [menu.categories.length])
 
-  return <Popup
-    visible={categoryPopup.show}
-    onClose={categoryPopup.close}
-    closeOnMaskClick
-    closeOnSwipe
-    disableBodyScroll
-    bodyStyle={style.cat_popup}
+  const goMain = () => { 
+    go('/') 
+    categoryPopup.close()
+  }
 
+  return <AdaptivePopup
+    visible={categoryPopup.show}
+    onClose={goMain}
+    bodyStyle={style.cat_popup}
+    bodyClassName='categoryPopup'
+    noBottomNavDesktop
   >
     <ItemModal close={() => { go('/') }} />
     <AskAuthorize />
@@ -55,7 +59,7 @@ const CategoryPopup: FC = observer(function () {
           ? null
           : <Container className='p-0' fluid='md'>
             <div style={style.header}>
-              <BackIcon onClick={() => { categoryPopup.close(); go('/') }} styles={{ marginLeft: 20 }} />
+              <BackIcon onClick={goMain} styles={{ marginLeft: 20 }} />
               <CapsuleTabs onChange={watchCategory} activeKey={currentCategory?.VCode.toString()}>
                 {menu.categories.map((category) =>
                   <CapsuleTabs.Tab
@@ -76,14 +80,11 @@ const CategoryPopup: FC = observer(function () {
             </div>
           </Container>
     }
-    <BottomNavigation style={{ position: 'sticky', bottom:0, zIndex:100 }}/>
-  </Popup>
+  </AdaptivePopup>
 })
 
 const style: Record<string, CSSProperties> = {
   cat_popup: {
-    width: '100vw',
-    height: '100%',
     overflowY: 'scroll',
     fontFamily: 'Arial',
     fontSize: 13,
