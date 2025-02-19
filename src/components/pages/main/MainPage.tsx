@@ -21,6 +21,8 @@ import Container from "react-bootstrap/Container"
 import AmountScaleForGift from "./parts/AmountScale/AmountSCaleForGift"
 import { CollectionPopup, /*CollectionsPopup*/ } from "../../popups/WatchCollectionPopup"
 import CartPopup from "../cart/CartPage"
+import BannerCarusel from "./parts/BannerCarusel/BannerCarusel"
+import CampaignCollectionPopup from "../../popups/CampaignCollectionPopup"
 
 
 const MainPage: FC = observer(() => {
@@ -88,6 +90,7 @@ const MainPage: FC = observer(() => {
     <NiceToMeetYooPopup />
     <ItemModal close={() => { go('/') }} />
     <CollectionPopup />
+    <CampaignCollectionPopup />
     <CartPopup />
     {/* <CollectionsPopup /> */}
     <Fixed>
@@ -98,7 +101,10 @@ const MainPage: FC = observer(() => {
       <AskAuthorize />
       <Stories />
       <Collections />
-      <Cooks />
+      {user.hasHotCampaign.length 
+        ? <BannerCarusel />
+        : <Cooks />
+      }
       <Menu />
     </Container>
     {PresentAction.length

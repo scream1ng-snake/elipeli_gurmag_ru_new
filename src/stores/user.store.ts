@@ -38,6 +38,10 @@ class UserStore {
     this.info = info;
   }
 
+  get hasHotCampaign() {
+    return this.info.allCampaign.filter(camp => camp.showbanner)
+  }
+
   loadUserInfo = new Request(async (
     state,
     setState,

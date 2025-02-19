@@ -976,7 +976,8 @@ export type AllCampaignUser = {
   MaxSum: number,
   AddOne: boolean | null,
   begintime: string,
-  endtime: string
+  endtime: string,
+  showbanner: boolean
 }
 
 export type AddOne = {

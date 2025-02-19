@@ -4,6 +4,7 @@ import { http } from "../features/http";
 import { logger } from "../features/logger";
 import Popup from "../features/modal";
 import { ReceptionStore } from "./reception.store";
+import { AllCampaignUser } from "./cart.store";
 
 
 class MenuStore {
@@ -66,6 +67,7 @@ class MenuStore {
 
   /** попап для просмотра подборки */
   selectionPopup = new Popup<Selection>()
+  hotCampaignPopup = new Popup<AllCampaignUser>()
   selectionsPopup = new Popup()
 
   /** попап для просмотра блюда */

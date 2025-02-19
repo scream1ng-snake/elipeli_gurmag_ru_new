@@ -161,3 +161,13 @@ export function toCamelCaseKeys(obj: Record<string, any>) {
     return acc
   }, {} as Record<string, any>)
 }  
+
+export const range = (number: number) => 
+  new Array(number).fill(null).map((_, index) => index)
+
+export function getRandomItem<T>(items: T[], count = 1) {
+  if(items.length < count) return []
+  return range(count).map(() => {
+    return items[Math.floor(Math.random() * items.length)]
+  })
+}
