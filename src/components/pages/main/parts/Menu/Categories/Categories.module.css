@@ -275,3 +275,6 @@
   border-radius: 100px;
   left: calc(50% - 23px);
 }
+.hotPrice {
+  color: #E42B31;
+}

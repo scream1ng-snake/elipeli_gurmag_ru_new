@@ -121,12 +121,7 @@ const Categories: FC = observer(function () {
 export default Categories
 
 
-const iconStyle: CSSProperties = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center'
-}
-export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ course }) => {
+export const CourseItemComponent: FC<{ course: CourseItem, priceWithDiscount?: number }> = observer(({ course, priceWithDiscount }) => {
   const go = useGoUTM()
   const watchCourse = useCallback(() => go('/menu/' + course.VCode), [])
   return (
@@ -144,13 +139,21 @@ export const CourseItemComponent: FC<{ course: CourseItem }> = observer(({ cours
           "--width": "auto"
         }}
       />
-      <CardBodyComponent course={course} watchCourse={watchCourse} />
+      <CardBodyComponent
+        course={course}
+        watchCourse={watchCourse}
+        priceWithDiscount={priceWithDiscount}
+      />
     </div>
   )
 })
-
-const CardBodyComponent: FC<{ course: CourseItem, watchCourse: () => void }> = observer(({ course, watchCourse }) => {
-  const { reception: { menu, selectedOrgID, nearestOrgForDelivery }, cart, auth, user,vkMiniAppMetrics } = useStore()
+type CardBodyProps = {
+  course: CourseItem,
+  watchCourse: () => void,
+  priceWithDiscount?: number
+}
+const CardBodyComponent: FC<CardBodyProps> = observer(({ course, watchCourse, priceWithDiscount }) => {
+  const { reception: { menu, selectedOrgID, nearestOrgForDelivery }, cart, auth, user, vkMiniAppMetrics } = useStore()
 
   const handleAddToCart = useCallback((e?: any) => {
     if (!nearestOrgForDelivery && !selectedOrgID) auth.bannerAskAdress.open()
@@ -208,7 +211,15 @@ const CardBodyComponent: FC<{ course: CourseItem, watchCourse: () => void }> = o
               : null
           }
           <div className={styles.price_text}>
-            <span>{`${course.Price} ₽`}</span>
+            {priceWithDiscount && priceWithDiscount < course.Price
+              ? <span>
+                <span className={styles.hotPrice}>{priceWithDiscount + ' ₽'}</span>
+                {' '}
+                <span><s>{course.Price + ' ₽'}</s></span>
+              </span>
+              : <span>{`${course.Price} ₽`}</span>
+            }
+            
           </div>
           <h3
             className={styles.title_text}
@@ -266,7 +277,7 @@ export const RecomendationItemComponent: FC<{ course: RecomendationItem }> = obs
 })
 
 const RecomendationBodyComponent: FC<{ course: RecomendationItem }> = observer(({ course }) => {
-  const { reception: { menu, selectedOrgID, nearestOrgForDelivery }, cart, auth, user,vkMiniAppMetrics } = useStore()
+  const { reception: { menu, selectedOrgID, nearestOrgForDelivery }, cart, auth, user, vkMiniAppMetrics } = useStore()
 
   const handleAddToCart = useCallback((e?: any) => {
     if (!nearestOrgForDelivery && !selectedOrgID) auth.bannerAskAdress.open()

@@ -10,7 +10,7 @@ import { useGoUTM, useStore } from "../../features/hooks";
 import config from "../../features/config";
 import { CourseItemComponent } from "../pages/main/parts/Menu/Categories/Categories";
 import { CourseItem } from "../../stores/menu.store";
-import { AllCampaignUser } from "../../stores/cart.store";
+import { AllCampaignUser, DishDiscount, DishSetDiscount } from "../../stores/cart.store";
 
 const Prepare = (str?: string) => str?.replace(/ *\{[^}]*\} */g, "") || ''
 const CampaignCollectionPopup: FC = () => {
@@ -23,15 +23,30 @@ const CampaignCollectionPopup: FC = () => {
   }
   const currentCampaign = toJS(menu.hotCampaignPopup.content) as Optional<AllCampaignUser>
 
-  const courses: CourseItem[] = []
+  const courses: Set<CourseItem & { priceWithDiscount: number }> = new Set()
   if(currentCampaign) {
-    const dishes = user.info.dishDiscounts.filter(ds => 
-      ds.vcode === currentCampaign?.VCode
-    )
-    dishes?.forEach(dish => {
+    const { dishDiscounts, dishSet } = user.info
+    const findByVcode = (item: DishDiscount | DishSetDiscount) => 
+      item.vcode === currentCampaign.VCode
+    
+    const dishDiscount = dishDiscounts.find(findByVcode)
+    const setDiscount = dishSet.find(findByVcode)
+    const getDishByDiscount = (dish: DishDiscount) => {
       const course = menu.getDishByID(dish.dish)
-      if(course) courses.push(course)
-    })
+      if(course) { 
+        course.priceWithDiscount = dish.price
+        courses.add(course)
+      }
+    }
+    if(dishDiscount) {
+      const dishes = dishDiscounts.filter(ds => 
+        ds.vcode === currentCampaign?.VCode
+      )
+      dishes?.forEach(getDishByDiscount)
+    }
+    if(setDiscount) {
+      setDiscount.dishes.forEach(getDishByDiscount)
+    }
   }
 
   const Preloader: FC<{ animated?: boolean }> = props =>
@@ -97,12 +112,13 @@ const CampaignCollectionPopup: FC = () => {
         <br />
         <div>
           <div className={styles.courses_list}>
-            {courses
+            {Array.from(courses)
               .filter((course1, index, arr) =>
                 arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
               )
               .map(course =>
                 <CourseItemComponent
+                  priceWithDiscount={course.priceWithDiscount}
                   key={course.VCode}
                   course={course}
                 />
