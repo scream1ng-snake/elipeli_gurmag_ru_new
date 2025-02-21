@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import { FC } from "react";
 import { useStore } from "../../../../../features/hooks";
 import { getRandomItem } from "../../../../../features/helpers";
-import { Image, Swiper } from "antd-mobile";
+import { Image, Skeleton, Swiper } from "antd-mobile";
 import config from "../../../../../features/config";
 
 
@@ -28,6 +28,8 @@ const BannerCarusel: FC = () => {
             + "/api/v2/image/FileImage?fileId="
             + camp.image
           }
+          fallback={<Skeleton style={imgStyle} />}
+          placeholder={<Skeleton style={imgStyle} animated />}
           style={imgStyle}
         />
       </Swiper.Item>
