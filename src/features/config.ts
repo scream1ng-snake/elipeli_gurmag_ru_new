@@ -2,7 +2,7 @@ class Config {
   enableLogs = true
   isDev = !!(
     window.location.hostname === 'localhost' || 
-    window.location.hostname === 'glowing-truffle-8a37a0.netlify.app' ||
+    // window.location.hostname === 'glowing-truffle-8a37a0.netlify.app' ||
     window.location.hostname === '127.0.0.1'
   )
   get apiURL() {
