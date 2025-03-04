@@ -8,9 +8,11 @@ import UserStore from "./user.store";
 import { getItem } from "../features/local-storage";
 import bridge from "@vkontakte/vk-bridge";
 import { VK_Metrics } from "../features/Metrics";
+import config from "../features/config";
 
 export default class RootStore {
   constructor() {
+    logger.log(config.isDev ? 'development' : 'prod', 'root')
     makeAutoObservable(this)
     this.bootstrap()
 
