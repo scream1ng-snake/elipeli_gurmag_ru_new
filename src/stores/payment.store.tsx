@@ -68,6 +68,10 @@ class PaymentStore {
           //@ts-ignore
           this.checkoutWidget = new window.YooMoneyCheckoutWidget({
             confirmation_token,
+            customization: {
+              //Настройка способа отображения
+              modal: true
+            },
             error_callback: function (error: any) {
               reject("Не удалось оплатить")
               Dialog.show({ content: 'Не удалось оплатить' })
