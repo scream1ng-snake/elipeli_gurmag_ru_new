@@ -103,10 +103,10 @@ const MainPage: FC = observer(() => {
       <Collections />
       <BannerCarusel />
       <Cooks />
-      {/* {user.hasHotCampaign.length 
+      {user.hasHotCampaign.length 
         ? <BannerCarusel />
         : <Cooks />
-      } */}
+      }
       <Menu />
     </Container>
     {PresentAction.length
