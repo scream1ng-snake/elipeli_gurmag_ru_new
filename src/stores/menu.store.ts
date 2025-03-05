@@ -58,8 +58,11 @@ class MenuStore {
     const dataBg: Undef<V3_userInfoResponse> = await http.get('/getUserMenu_v3/' + orgID);
     if(dataBg?.BaseMenu && dataBg?.SelectionMenu) {
       this.loadMenu.setState('LOADING')
-      this.setCategories(dataBg.BaseMenu)
-      this.setSelections(dataBg.SelectionMenu)
+      this.setCategories(dataBg.BaseMenu ?? [])
+      this.setPopular(dataBg.PopularMenu ?? [])
+      this.setSelections(dataBg.SelectionMenu ?? [])
+      this.setStories(dataBg.WebHistoty ?? [])
+      this.setRecomendations(dataBg.ProductRecomendation ?? [])
       this.loadMenu.setState('COMPLETED')
       setState('COMPLETED')
     }

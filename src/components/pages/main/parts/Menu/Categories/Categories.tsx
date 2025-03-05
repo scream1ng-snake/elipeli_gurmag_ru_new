@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { CSSProperties, FC, useCallback } from "react"
+import { CSSProperties, FC, useCallback, useEffect } from "react"
 import styles from './Categories.module.css'
 import { useGoUTM, useStore } from "../../../../../../features/hooks";
 import { Image, Result, Skeleton, Toast } from "antd-mobile";
@@ -254,8 +254,6 @@ const CardBodyComponent: FC<CardBodyProps> = observer(({ course, watchCourse, pr
 })
 
 export const RecomendationItemComponent: FC<{ course: RecomendationItem }> = observer(({ course }) => {
-  const go = useGoUTM()
-  // const watchCourse = useCallback(() => go('/menu/' + course.VCode), [])
   return (
     <div className={styles.recomendation_item + ' course_item_card'}>
       <Image
