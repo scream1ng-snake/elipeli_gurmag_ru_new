@@ -13,15 +13,16 @@ const BannerCarusel: FC = () => {
   // )
   // const campaigns = getRandomItem(filteredCampaigns, 3)
 
+  const isOne = user.hasHotCampaign.length === 1
   const imgStyle = {
-    aspectRatio: '335/194',
+    aspectRatio: isOne ? "" : '335/194',
     width: '100%',
     height: 'auto',
     borderRadius: 15
   }
-  return <Swiper className="pe-3 mb-3" slideSize={80}>
+  return <Swiper className="pe-3 mb-3" slideSize={isOne ? 100 : 80}>
     {user.hasHotCampaign.map(camp =>
-      <Swiper.Item key={camp.VCode} className="pe-3">
+      <Swiper.Item key={camp.VCode} className={isOne ? "" : "pe-3"}>
         <Image
           onClick={() => menu.hotCampaignPopup.watch(camp)}
           src={config.staticApi
