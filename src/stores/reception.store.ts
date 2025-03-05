@@ -165,7 +165,14 @@ export class ReceptionStore {
         position: 'center'
       })
     } finally {
-      if(config.isDev) this.organizations.push({ Id:143, isCK: false, Name:'Тестовая точка' })
+      if(config.isDev) {
+        this.organizations.push({ Id:143, isCK: false, Name:'Тестовая точка' })
+        this.orgsCoords.push({
+          Id: 143,
+          lat: 54.770162,
+          lon: 56.059599
+        })
+      }
     }
   })
 
