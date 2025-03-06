@@ -115,6 +115,7 @@ class MenuStore {
   })
 
   dishSearcher = new Searcher(() => this.allDishes)
+  searcher = new Popup()
   get allDishes() {
     const result: CourseItem[] = []
     this.categories.forEach(category => 
@@ -122,7 +123,9 @@ class MenuStore {
         result.push(couse)
       )
     )
-    return result;
+    return result.filter((course1, index, arr) =>
+      arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
+    );
   }
 
   

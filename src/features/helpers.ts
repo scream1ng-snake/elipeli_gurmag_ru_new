@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { makeAutoObservable } from "mobx";
 import { ReactNode } from "react";
 
@@ -100,15 +101,17 @@ export class Searcher {
   constructor(inputGetter: () => Array<any>) {
     this._inputDataGetter = inputGetter;
     this._result = this._inputDataGetter();
-    makeAutoObservable(this);
+    makeAutoObservable(this, {}, { autoBind: true });
   }
 
   searchTerm = ''
-  search(term: string) {
-    this.searchTerm = term;
+  reset() {
+    this.searchTerm = ''
+  }
+  debbouncedSearch = _.debounce(() => {
     const data = this._inputDataGetter()
     if (!this.isSearching) {
-      this._result = data;
+      this._result = [];
     } else {
       this._result = data.filter((d) => {
         const bools = Object.keys(d).map((key) => {
@@ -123,7 +126,10 @@ export class Searcher {
         return bools.includes(true);
       })
     }
-
+  }, 100)
+  search(term: string) {
+    this.searchTerm = term;
+    this.debbouncedSearch()
   }
   get result() {
     return this._result
