@@ -71,7 +71,7 @@ const CategoryPopup: FC = observer(function () {
         ? <Preloader />
         : !currentCategory
           ? null
-          : <Container className='p-0' fluid='md'>
+          : <Container className='p-0 h-100' fluid='md' style={{ overflowY: 'scroll' }}>
             <div style={style.header}>
               <Space className='w-100' justify='between'>
                 <BackIcon onClick={goMain} styles={{ marginLeft: 20 }} />
@@ -119,7 +119,7 @@ const CategoryPopup: FC = observer(function () {
               }
 
             </div>
-            <div className={styles.courses_list}>
+            <div className={styles.courses_list} style={{ minHeight: 'calc(100vh) - 71px -65px' }}>
               {menu.dishSearcher.isSearching
                 ? menu.dishSearcher.result.map((course) =>
                   <CourseItemComponent
