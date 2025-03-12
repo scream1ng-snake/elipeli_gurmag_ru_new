@@ -34,7 +34,10 @@ const CampaignCollectionPopup: FC = () => {
     const getDishByDiscount = (dish: DishDiscount) => {
       const course = menu.getDishByID(dish.dish)
       if(course) { 
-        course.priceWithDiscount = dish.price
+        if(dish.price) course.priceWithDiscount = dish.price
+        if(dish.discountPercent) 
+          course.priceWithDiscount = course.Price * (100 - dish.discountPercent) / 100
+        
         courses.add(course)
       }
     }
