@@ -1,7 +1,7 @@
 import { Image, Skeleton } from 'antd-mobile'
 import { observer } from 'mobx-react-lite'
 import { FC } from 'react'
-import { useGoUTM, useStore } from '../../features/hooks'
+import { useDeviceType, useGoUTM, useStore } from '../../features/hooks'
 import { toJS } from 'mobx'
 import { Selection } from '../../stores/menu.store'
 import { CourseItemComponent } from '../pages/main/parts/Menu/Categories/Categories'
@@ -16,6 +16,7 @@ import AdaptivePopup from '../common/Popup/Popup'
 
 export const CollectionPopup: FC = observer(p => {
   const { reception: { menu } } = useStore()
+  const device = useDeviceType()
 
   const go = useGoUTM()
   function close() {
@@ -101,6 +102,10 @@ export const CollectionPopup: FC = observer(p => {
             }
           </div>
         </div>
+        {device === 'mobile'
+          ? <div style={{ height:65 }} />
+          : null
+        }
       </section>
     } else {
       return <section

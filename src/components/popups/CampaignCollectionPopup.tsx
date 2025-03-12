@@ -6,7 +6,7 @@ import styles from '../pages/main/parts/Menu/Categories/Categories.module.css'
 import { Image, Skeleton } from "antd-mobile";
 import { toJS } from "mobx";
 import { Optional } from "../../features/helpers";
-import { useGoUTM, useStore } from "../../features/hooks";
+import { useDeviceType, useGoUTM, useStore } from "../../features/hooks";
 import config from "../../features/config";
 import { CourseItemComponent } from "../pages/main/parts/Menu/Categories/Categories";
 import { CourseItem } from "../../stores/menu.store";
@@ -62,6 +62,7 @@ const CampaignCollectionPopup: FC = () => {
       }}
     />
 
+  const device = useDeviceType()
   function getContent() {
     if (currentCampaign) {
       return <section
@@ -130,6 +131,10 @@ const CampaignCollectionPopup: FC = () => {
             }
           </div>
         </div>
+        {device === 'mobile'
+          ? <div style={{ height:65 }} />
+          : null
+        }
       </section>
     } else {
       return <section
