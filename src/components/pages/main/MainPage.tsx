@@ -23,6 +23,7 @@ import { CollectionPopup, /*CollectionsPopup*/ } from "../../popups/WatchCollect
 import CartPopup from "../cart/CartPage"
 import BannerCarusel from "./parts/BannerCarusel/BannerCarusel"
 import CampaignCollectionPopup from "../../popups/CampaignCollectionPopup"
+import config from "../../../features/config"
 
 
 const MainPage: FC = observer(() => {
@@ -99,11 +100,14 @@ const MainPage: FC = observer(() => {
       <ReceptionSwitcher />
     </Fixed>
     <Container className={styles.gur_main_content}>
-      <Space wrap>
+      {config.isDev
+        ? <Space wrap>
         <Button onClick={() => { tg.openLink('sberpay://invoicing/v2?bankInvoiceId=df4207742636488a8c30b3424e40012c&operationType=Web2App') }}>Тест openLink</Button>
         <Button onClick={() => { window.open('sberpay://invoicing/v2?bankInvoiceId=df4207742636488a8c30b3424e40012c&operationType=Web2App', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes') }}>Тест new Window</Button>
         <Button onClick={() => { window.open('sberpay://invoicing/v2?bankInvoiceId=df4207742636488a8c30b3424e40012c&operationType=Web2App') }}>Тест window.open</Button>
       </Space>
+        : null
+      }
       <AskLocation />
       <AskAuthorize />
       <Stories />
