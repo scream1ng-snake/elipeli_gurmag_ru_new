@@ -122,7 +122,7 @@ const CampaignCollectionPopup: FC = () => {
                 .filter((course1, index, arr) =>
                   arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
                 )
-                // .filter((course) => course.NoResidue || (!course.NoResidue && (course.EndingOcResidue > 0)))
+                .filter((course) => course.NoResidue || (!course.NoResidue && (course.EndingOcResidue > 0)))
               ).itemsInCart.map(cic =>
                 <CourseItemComponent
                   priceWithDiscount={cic.priceWithDiscount}
