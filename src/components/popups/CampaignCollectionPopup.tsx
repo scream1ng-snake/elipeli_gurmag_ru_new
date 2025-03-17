@@ -14,7 +14,7 @@ import { AllCampaignUser, DishDiscount, DishSetDiscount } from "../../stores/car
 
 const Prepare = (str?: string) => str?.replace(/ *\{[^}]*\} */g, "") || ''
 const CampaignCollectionPopup: FC = () => {
-  const { reception: { menu }, user } = useStore()
+  const { reception: { menu }, user, cart } = useStore()
 
   const go = useGoUTM()
   function close() {
@@ -24,32 +24,33 @@ const CampaignCollectionPopup: FC = () => {
   const currentCampaign = toJS(menu.hotCampaignPopup.content) as Optional<AllCampaignUser>
 
   const courses: Set<CourseItem & { priceWithDiscount: number }> = new Set()
-  if(currentCampaign) {
+  if (currentCampaign) {
     const { dishDiscounts, dishSet } = user.info
-    const findByVcode = (item: DishDiscount | DishSetDiscount) => 
+    const findByVcode = (item: DishDiscount | DishSetDiscount) =>
       item.vcode === currentCampaign.VCode
-    
+
     const dishDiscount = dishDiscounts.find(findByVcode)
     const setDiscount = dishSet.find(findByVcode)
     const getDishByDiscount = (dish: DishDiscount) => {
       const course = menu.getDishByID(dish.dish)
-      if(course) { 
-        if(dish.price) course.priceWithDiscount = dish.price
-        if(dish.discountPercent) 
+      if (course) {
+        if (dish.price) course.priceWithDiscount = dish.price
+        if (dish.discountPercent)
           course.priceWithDiscount = course.Price * (100 - dish.discountPercent) / 100
-        
+
         courses.add(course)
       }
     }
-    if(dishDiscount) {
-      const dishes = dishDiscounts.filter(ds => 
+    if (dishDiscount) {
+      const dishes = dishDiscounts.filter(ds =>
         ds.vcode === currentCampaign?.VCode
       )
       dishes?.forEach(getDishByDiscount)
     }
-    if(setDiscount) {
+    if (setDiscount) {
       setDiscount.dishes.forEach(getDishByDiscount)
     }
+    cart.countDiscountForCouses(Array.from(courses))
   }
 
   const Preloader: FC<{ animated?: boolean }> = props =>
@@ -116,23 +117,24 @@ const CampaignCollectionPopup: FC = () => {
         <br />
         <div>
           <div className={styles.courses_list}>
-            {Array.from(courses)
-              .filter((course1, index, arr) =>
-                arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
-              )
-              .filter((course) => course.NoResidue || (!course.NoResidue && (course.EndingOcResidue > 0)))
-              .map(course =>
+            {cart.countDiscountForCouses(
+              Array.from(courses)
+                .filter((course1, index, arr) =>
+                  arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
+                )
+                // .filter((course) => course.NoResidue || (!course.NoResidue && (course.EndingOcResidue > 0)))
+              ).itemsInCart.map(cic =>
                 <CourseItemComponent
-                  priceWithDiscount={course.priceWithDiscount}
-                  key={course.VCode}
-                  course={course}
+                  priceWithDiscount={cic.priceWithDiscount}
+                  key={cic.couse.VCode}
+                  course={cic.couse}
                 />
               )
             }
           </div>
         </div>
         {device === 'mobile'
-          ? <div style={{ height:65 }} />
+          ? <div style={{ height: 65 }} />
           : null
         }
       </section>
