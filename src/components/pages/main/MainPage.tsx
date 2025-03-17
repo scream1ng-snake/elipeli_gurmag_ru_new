@@ -9,11 +9,11 @@ import Menu from "./parts/Menu/Menu"
 import BottomNavigation from "../../common/BottomNav/BottomNav"
 import Fixed from "../../layout/Fixed"
 import styles from './styles.module.css'
-import { useGoUTM, useStore } from '../../../features/hooks'
+import { useGoUTM, useStore, useTelegram } from '../../../features/hooks'
 import AskLocation from "../../popups/AskLocation"
 import { ItemModal } from "../../popups/Course"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
-import { Toast } from "antd-mobile"
+import { Button, Space, Toast } from "antd-mobile"
 import { logger } from "../../../features/logger"
 import AskAuthorize from "../../popups/AskAuthorize"
 import { NiceToMeetYooPopup } from "../../popups/CartActions"
@@ -86,6 +86,8 @@ const MainPage: FC = observer(() => {
     return user.info.allCampaign.filter(c => c.PresentAction)
   }, [menu.loadMenu.state, VCode])
 
+  const { tg } = useTelegram()
+
   return <Wrapper>
     <NiceToMeetYooPopup />
     <ItemModal close={() => { go('/') }} />
@@ -97,6 +99,11 @@ const MainPage: FC = observer(() => {
       <ReceptionSwitcher />
     </Fixed>
     <Container className={styles.gur_main_content}>
+      <Space wrap>
+        <Button onClick={() => { tg.openLink('sberpay://invoicing/v2?bankInvoiceId=df4207742636488a8c30b3424e40012c&operationType=Web2App') }}>Тест openLink</Button>
+        <Button onClick={() => { window.open('sberpay://invoicing/v2?bankInvoiceId=df4207742636488a8c30b3424e40012c&operationType=Web2App', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes') }}>Тест new Window</Button>
+        <Button onClick={() => { window.open('sberpay://invoicing/v2?bankInvoiceId=df4207742636488a8c30b3424e40012c&operationType=Web2App') }}>Тест window.open</Button>
+      </Space>
       <AskLocation />
       <AskAuthorize />
       <Stories />
