@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { FC, useEffect, useMemo } from "react"
+import { FC, useEffect, useMemo, useRef } from "react"
 import Wrapper from "../../layout/Wrapper"
 import Collections from "./parts/Collections/Collections"
 import Cooks from "./parts/Cooks/Cooks"
@@ -25,6 +25,39 @@ import BannerCarusel from "./parts/BannerCarusel/BannerCarusel"
 import CampaignCollectionPopup from "../../popups/CampaignCollectionPopup"
 import config from "../../../features/config"
 
+const NewWindowExample = () => {
+  const newWindowRef = useRef<WindowProxy | null>(null);
+
+  const openNewWindow = () => {
+    // Открытие нового окна  
+    newWindowRef.current = window.open(
+      'http://example.com', // URL для загрузки  
+      'newWindow',          // Имя окна  
+      'width=600,height=400' // Параметры окна  
+    );
+
+    // Передача данных в новое окно  
+    if (newWindowRef.current) {
+      newWindowRef.current.onload = () => {
+        newWindowRef.current!.document.body.innerHTML = '<h1>Hello from the parent window!</h1>';
+      };
+    }
+  };
+
+  const closeNewWindow = () => {
+    if (newWindowRef.current) {
+      newWindowRef.current.close(); // Закрытие окна  
+      newWindowRef.current = null;   // Обнуление ссылки  
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={openNewWindow}>Open New Window</button>
+      <button onClick={closeNewWindow}>Close New Window</button>
+    </div>
+  );
+};
 
 const MainPage: FC = observer(() => {
   const { reception: { menu }, user, cart } = useStore()
@@ -33,7 +66,7 @@ const MainPage: FC = observer(() => {
   const go = useGoUTM()
 
   useEffect(() => {
-    if(location.pathname.includes('/menu/')) {
+    if (location.pathname.includes('/menu/')) {
       if (VCode && menu.loadMenu.state === 'COMPLETED') {
         const targetDish = menu.getDishByID(VCode)
         if (targetDish) {
@@ -48,10 +81,10 @@ const MainPage: FC = observer(() => {
     } else {
       menu.coursePopup.close()
     }
-    if(location.pathname.includes('/collections/')) {
+    if (location.pathname.includes('/collections/')) {
       if (VCode && menu.loadMenu.state === 'COMPLETED') {
         const targetSelection = menu.getSelection(VCode)
-        if(targetSelection) {
+        if (targetSelection) {
           menu.selectionPopup.watch(targetSelection)
         } else {
           Toast.show('Подборка не найдена')
@@ -68,18 +101,18 @@ const MainPage: FC = observer(() => {
     //     menu.selectionsPopup.open()
     //   } 
     // }
-    if(location.pathname.includes("/basket")) {
-      if(menu.loadMenu.state === 'COMPLETED' && user.loadUserInfo.state === 'COMPLETED') {
+    if (location.pathname.includes("/basket")) {
+      if (menu.loadMenu.state === 'COMPLETED' && user.loadUserInfo.state === 'COMPLETED') {
         cart.cart.open()
-      } 
+      }
     } else {
       cart.cart.close()
     }
-  }, [ 
-    VCode, 
-    location, 
-    menu.loadMenu.state, 
-    menu.categories.length, 
+  }, [
+    VCode,
+    location,
+    menu.loadMenu.state,
+    menu.categories.length,
     menu.loadMenuBg.state
   ])
 
@@ -102,24 +135,26 @@ const MainPage: FC = observer(() => {
     <Container className={styles.gur_main_content}>
       {config.isDev
         ? <Space wrap>
-        <Button onClick={() => { tg.openLink('sberpay://invoicing/v2?bankInvoiceId=df4207742636488a8c30b3424e40012c&operationType=Web2App') }}>Тест openLink</Button>
-        <Button onClick={() => { window.open('sberpay://invoicing/v2?bankInvoiceId=df4207742636488a8c30b3424e40012c&operationType=Web2App', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes') }}>Тест new Window</Button>
-        <Button onClick={() => { window.open('sberpay://invoicing/v2?bankInvoiceId=df4207742636488a8c30b3424e40012c&operationType=Web2App') }}>Тест window.open</Button>
-      </Space>
+          <NewWindowExample />
+          <Button onClick={() => { tg.openLink('sberpay://invoicing/v2?bankInvoiceId=df4207742636488a8c30b3424e40012c&operationType=Web2App') }}>Тест openLink</Button>
+          <Button onClick={() => { window.open('sberpay://invoicing/v2?bankInvoiceId=df4207742636488a8c30b3424e40012c&operationType=Web2App', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes') }}>Тест new Window</Button>
+          <Button onClick={() => { window.open('about:_blank', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes') }}>Тест пусто</Button>
+          <Button onClick={() => { window.open('sberpay://invoicing/v2?bankInvoiceId=df4207742636488a8c30b3424e40012c&operationType=Web2App') }}>Тест window.open</Button>
+        </Space>
         : null
       }
       <AskLocation />
       <AskAuthorize />
       <Stories />
       <Collections />
-      {user.hasHotCampaign.length 
+      {user.hasHotCampaign.length
         ? <BannerCarusel />
         : <Cooks />
       }
       <Menu />
     </Container>
     {PresentAction.length
-      ? <><AmountScaleForGift /> <div style={{ height:110 }} /></>
+      ? <><AmountScaleForGift /> <div style={{ height: 110 }} /></>
       : null
     }
     <BottomNavigation />
