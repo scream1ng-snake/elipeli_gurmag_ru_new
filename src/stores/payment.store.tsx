@@ -7,6 +7,7 @@ import { receptionTypes } from "./reception.store"
 import { http } from "../features/http"
 import { Dialog } from "antd-mobile"
 import { logger } from "../features/logger"
+import { showPaymentInNewWindow } from "../components/special/NewWindow"
 
 /** класс выбора способа оплаты */
 class PaymentStore {
@@ -65,39 +66,66 @@ class PaymentStore {
       if (result?.confirmation) {
         await new Promise((resolve, reject) => {
           const { confirmation_token } = result.confirmation;
-          //@ts-ignore
-          this.checkoutWidget = new window.YooMoneyCheckoutWidget({
-            confirmation_token,
-            customization: {
-              //Настройка способа отображения
-              modal: true
-            },
-            error_callback: function (error: any) {
+          showPaymentInNewWindow(confirmation_token, {
+            error_callback: () => {
               reject("Не удалось оплатить")
               Dialog.show({ content: 'Не удалось оплатить' })
               this.youkassaPopup.close()
-              this.checkoutWidget.destroy()
+              // this.checkoutWidget.destroy()
+            },
+            onSuccess: () => {
+              this.youkassaPopup.close()
+              // this.checkoutWidget.destroy()
+              resolve("Заказ успешно оформлен")
+            },
+            onFail: () => {
+              this.youkassaPopup.close()
+              // this.checkoutWidget.destroy()
+              console.error('Что-то пошло не так c оплатой в Юкассе')
+              Dialog.show({ 
+                content: 'Что-то пошло не так c оплатой в Юкассе',
+                actions: [{
+                  key: 'close',
+                  text: 'Закрыть'
+                }]
+              })
+              reject("Что-то пошло не так")
             }
           })
-          this.checkoutWidget.on("success", () => {
-            this.youkassaPopup.close()
-            this.checkoutWidget.destroy()
-            resolve("Заказ успешно оформлен")
-          })
-          this.checkoutWidget.on("fail", (err: any) => {
-            this.youkassaPopup.close()
-            this.checkoutWidget.destroy()
-            console.error(err)
-            Dialog.show({ 
-              content: 'Что-то пошло не так c оплатой в Юкассе',
-              actions: [{
-                key: 'close',
-                text: 'Закрыть'
-              }]
-            })
-            reject("Что-то пошло не так")
-          })
-          this.checkoutWidget.render('payment-form')
+
+          //@ts-ignore
+          // this.checkoutWidget = new window.YooMoneyCheckoutWidget({
+          //   confirmation_token,
+          //   customization: {
+          //     //Настройка способа отображения
+          //     modal: true
+          //   },
+          //   error_callback: function (error: any) {
+          //     reject("Не удалось оплатить")
+          //     Dialog.show({ content: 'Не удалось оплатить' })
+          //     this.youkassaPopup.close()
+          //     this.checkoutWidget.destroy()
+          //   }
+          // })
+          // this.checkoutWidget.on("success", () => {
+          //   this.youkassaPopup.close()
+          //   this.checkoutWidget.destroy()
+          //   resolve("Заказ успешно оформлен")
+          // })
+          // this.checkoutWidget.on("fail", (err: any) => {
+          //   this.youkassaPopup.close()
+          //   this.checkoutWidget.destroy()
+          //   console.error(err)
+          //   Dialog.show({ 
+          //     content: 'Что-то пошло не так c оплатой в Юкассе',
+          //     actions: [{
+          //       key: 'close',
+          //       text: 'Закрыть'
+          //     }]
+          //   })
+          //   reject("Что-то пошло не так")
+          // })
+          // this.checkoutWidget.render('payment-form')
         })
       } else {
         throw new Error("Не удалось выполнить оплату")
