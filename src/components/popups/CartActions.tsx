@@ -17,6 +17,7 @@ import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import AdaptivePopup from "../common/Popup/Popup"
 import kruvasan from '../../assets/kruAssAn.png'
+import { useSearchParams } from "react-router-dom";
 
 
 const popup: CSSProperties = {
@@ -129,6 +130,7 @@ export const NiceToMeetYooPopup: FC = observer(() => {
 export const Congratilations: FC = observer(() => {
   const go = useGoUTM()
   const { cart } = useStore()
+  const [params] = useSearchParams()
   return <Dialog
     title='Поздравляем! Заказ оформлен!'
     visible={cart.congratilations.show}
@@ -136,6 +138,7 @@ export const Congratilations: FC = observer(() => {
       key: 'ok',
       text: 'На главную',
       onClick: () => {
+        if(params.get('payed') === 'true') params.delete('payed')
         cart.congratilations.close()
         go('/')
       }
@@ -143,6 +146,7 @@ export const Congratilations: FC = observer(() => {
       key: 'myOrders',
       text: 'Мои заказы',
       onClick: () => {
+        if(params.get('payed') === 'true') params.delete('payed')
         cart.congratilations.close()
         go('/orders')
       }

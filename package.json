@@ -42,7 +42,7 @@
     "webpack-bundle-analyzer": "^4.10.2"
   },
   "scripts": {
-    "start": "set PORT=443 && set DISABLE_ESLINT_PLUGIN=true && react-scripts start",
+    "start": "set PORT=5555 && set DISABLE_ESLINT_PLUGIN=true && react-scripts start",
     "build": "set DISABLE_ESLINT_PLUGIN=true && react-scripts build --stats",
     "analyze": "webpack-bundle-analyzer build/bundle-stats.json",
     "test": "react-scripts test",

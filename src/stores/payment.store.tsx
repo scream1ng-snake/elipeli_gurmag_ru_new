@@ -57,43 +57,34 @@ class PaymentStore {
   checkoutWidget: any
   payOrder = new Request(async (state, setState, orderId: number) => {
     try {
+      const { tg } = useTelegram()
+      const type: 'redirect' | 'embedded' = tg && (tg.platform?.toLowerCase() === 'android' || tg.platform?.toLowerCase() === 'ios')
+        ? 'redirect'
+        : 'embedded'
       setState('LOADING')
-      this.youkassaPopup.open()
+      if(type === 'embedded') this.youkassaPopup.open()
       const { UserCode } = this.cart.root.user.info
       const result: resultType = await http.post(
-        "/PayOrderSaveCard",
-        { orderId, userId: Number(UserCode) }
+        "/PayOrderSaveCardNew",
+        { 
+          orderId, 
+          userId: Number(UserCode),
+          redirect_url: window.location.origin + "?" + "payed=true",
+          type,
+        }
       )
       if (result?.confirmation) {
         await new Promise((resolve, reject) => {
           const { confirmation_token } = result.confirmation;
-          const { tg } = useTelegram()
-          if(tg && (tg.platform?.toLowerCase() === 'android' || tg.platform?.toLowerCase() === 'ios')) {
-            showPaymentInNewWindow(confirmation_token, {
-              error_callback: () => {
-                reject("Не удалось оплатить")
-                Dialog.show({ content: 'Не удалось оплатить' })
-                this.youkassaPopup.close()
-                console.log("error_callback on payment")
-              },
-              onSuccess: () => {
-                this.youkassaPopup.close()
-                resolve("Заказ успешно оформлен")
-                console.log('Оплата успешно')
-              },
-              onFail: () => {
-                this.youkassaPopup.close()
-                console.error('Что-то пошло не так c оплатой в Юкассе')
-                Dialog.show({ 
-                  content: 'Что-то пошло не так c оплатой в Юкассе',
-                  actions: [{
-                    key: 'close',
-                    text: 'Закрыть'
-                  }]
-                })
-                reject("Что-то пошло не так")
-              }
-            })
+          if(type === 'redirect') {
+            const { confirmation_url } = result.confirmation
+            if (tg && (tg.platform?.toLowerCase() === 'android' || tg.platform?.toLowerCase() === 'ios')) {
+              console.log('open redirect url in tg.openLink')
+              tg.openLink(confirmation_url)
+            } else {
+              console.log('open redirect url in window.open')
+              window.open(confirmation_url)
+            }
           } else {
             
             // @ts-ignore
@@ -156,7 +147,8 @@ export type PaymentMethod = typeof paymentMethods[keyof typeof paymentMethods]
 type resultType = {
   confirmation: {
     type: string,
-    confirmation_token: string
+    confirmation_token?: string,
+    confirmation_url?: string,
   },
 }
 

@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { FC, useEffect, useMemo, useRef } from "react"
+import { FC, useEffect, useMemo } from "react"
 import Wrapper from "../../layout/Wrapper"
 import Collections from "./parts/Collections/Collections"
 import Cooks from "./parts/Cooks/Cooks"
@@ -9,61 +9,27 @@ import Menu from "./parts/Menu/Menu"
 import BottomNavigation from "../../common/BottomNav/BottomNav"
 import Fixed from "../../layout/Fixed"
 import styles from './styles.module.css'
-import { useGoUTM, useStore, useTelegram } from '../../../features/hooks'
+import { useGoUTM, useStore } from '../../../features/hooks'
 import AskLocation from "../../popups/AskLocation"
 import { ItemModal } from "../../popups/Course"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
-import { Button, Space, Toast } from "antd-mobile"
+import { useLocation, useParams, useSearchParams } from "react-router-dom"
+import { Toast } from "antd-mobile"
 import { logger } from "../../../features/logger"
 import AskAuthorize from "../../popups/AskAuthorize"
-import { NiceToMeetYooPopup } from "../../popups/CartActions"
+import { Congratilations, NiceToMeetYooPopup } from "../../popups/CartActions"
 import Container from "react-bootstrap/Container"
 import AmountScaleForGift from "./parts/AmountScale/AmountSCaleForGift"
 import { CollectionPopup, /*CollectionsPopup*/ } from "../../popups/WatchCollectionPopup"
 import CartPopup from "../cart/CartPage"
 import BannerCarusel from "./parts/BannerCarusel/BannerCarusel"
 import CampaignCollectionPopup from "../../popups/CampaignCollectionPopup"
-import config from "../../../features/config"
-
-const NewWindowExample = () => {
-  const newWindowRef = useRef<WindowProxy | null>(null);
-
-  const openNewWindow = () => {
-    // Открытие нового окна  
-    newWindowRef.current = window.open(
-      'http://example.com', // URL для загрузки  
-      'newWindow',          // Имя окна  
-      'width=600,height=400' // Параметры окна  
-    );
-
-    // Передача данных в новое окно  
-    if (newWindowRef.current) {
-      newWindowRef.current.onload = () => {
-        newWindowRef.current!.document.body.innerHTML = '<h1>Hello from the parent window!</h1>';
-      };
-    }
-  };
-
-  const closeNewWindow = () => {
-    if (newWindowRef.current) {
-      newWindowRef.current.close(); // Закрытие окна  
-      newWindowRef.current = null;   // Обнуление ссылки  
-    }
-  };
-
-  return (
-    <div>
-      <button onClick={openNewWindow}>Open New Window</button>
-      <button onClick={closeNewWindow}>Close New Window</button>
-    </div>
-  );
-};
 
 const MainPage: FC = observer(() => {
   const { reception: { menu }, user, cart } = useStore()
   const location = useLocation()
   const { VCode } = useParams<{ VCode: string }>()
   const go = useGoUTM()
+  const [params] = useSearchParams()
 
   useEffect(() => {
     if (location.pathname.includes('/menu/')) {
@@ -120,7 +86,14 @@ const MainPage: FC = observer(() => {
     return user.info.allCampaign.filter(c => c.PresentAction)
   }, [menu.loadMenu.state, VCode])
 
+  useEffect(() => {
+    if(params.get('payed') === 'true') {
+      cart.congratilations.open()
+    }
+  }, [params])
+  
   return <Wrapper>
+    <Congratilations />
     <NiceToMeetYooPopup />
     <ItemModal close={() => { go('/') }} />
     <CollectionPopup />
