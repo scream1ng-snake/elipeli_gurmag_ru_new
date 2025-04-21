@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite"
 import { useGoUTM } from "../../../../features/hooks"
 import { Button, Image, Skeleton } from "antd-mobile"
 import config from "../../../../features/config"
+import { MyBadge } from "../../../popups/CampaignPopup"
 
 interface pops { actia: AllCampaignUser }
 const Campaign: FC<pops> = observer(({ actia }) => {
@@ -39,6 +40,13 @@ const Campaign: FC<pops> = observer(({ actia }) => {
           onContainerClick={() => go('/campaigns/' + actia.VCode)}
           style={styles.img}
           fit='cover'
+        />
+        <MyBadge 
+          style={{ marginLeft:19 }}
+          endtime={actia.endtime}
+          EndDate={actia.EndDate}
+          begintime={actia.begintime}
+          BeginDate={actia.BeginDate} 
         />
         <div
           style={{

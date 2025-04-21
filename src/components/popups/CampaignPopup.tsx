@@ -1,6 +1,6 @@
 import { Button, Image } from "antd-mobile"
 import { observer } from "mobx-react-lite"
-import { FC, useCallback, useEffect, useMemo, useState } from "react"
+import { CSSProperties, FC, useCallback, useEffect, useMemo, useState } from "react"
 import { useGoUTM, useStore } from "../../features/hooks"
 import { toJS } from "mobx"
 import config from "../../features/config"
@@ -71,7 +71,7 @@ const CampaignPopup: FC = observer(() => {
         >
           {Prepare(campaign?.Name)}
         </p>
-        <p
+        <div
           style={{
             marginTop: 8,
             fontFamily: 'Nunito',
@@ -84,7 +84,7 @@ const CampaignPopup: FC = observer(() => {
           }}
         >
           {Prepare(campaign?.Description).split('\n').map((txt, index) => <p key={index}>{txt}</p>)}
-        </p>
+        </div>
         <Button
           shape="rounded"
           style={{
@@ -134,9 +134,10 @@ type Props = {
   begintime: string,
   endtime: string,
   BeginDate: string,
-  EndDate: string
+  EndDate: string,
+  style?: CSSProperties
 }
-const MyBadge: FC<Props> = props => {
+export const MyBadge: FC<Props> = props => {
   const { endtime } = props
   const [timeLeft, setTimeLeft] = useState(() => {
     const now = new Date().getTime();
@@ -181,6 +182,7 @@ const MyBadge: FC<Props> = props => {
         fontFamily: 'Arial',
         fontWeight: '400',
         fontSize: 13,
+        ...props.style
       }}
     >
       Осталось {formatTime(timeLeft)}
