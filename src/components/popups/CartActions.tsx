@@ -70,7 +70,7 @@ export const NiceToMeetYooPopup: FC = observer(() => {
         <CloseOutline onClick={close} fontSize={20} />
       </Space>
       <Row>
-        <Col xs={{ span: 12 }} md={{ span: 6 }} className="text-md-left tCenter">
+        <Col xs={{ span: 12 }} md={{ span: 6 }} className="text-md-left">
           <br />
           <p style={boldText}>{text.title.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
           <br />
@@ -119,7 +119,7 @@ export const NiceToMeetYooPopup: FC = observer(() => {
               margin: '0 1rem'
             }}
           >
-            Получить подарок!
+            Выбрать блюда!
           </Button>
         </Col>
       </Row>

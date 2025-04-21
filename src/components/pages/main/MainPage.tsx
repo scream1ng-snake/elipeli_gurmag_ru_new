@@ -23,9 +23,10 @@ import { CollectionPopup, /*CollectionsPopup*/ } from "../../popups/WatchCollect
 import CartPopup from "../cart/CartPage"
 import BannerCarusel from "./parts/BannerCarusel/BannerCarusel"
 import CampaignCollectionPopup from "../../popups/CampaignCollectionPopup"
+import { GiftButton } from "../../icons/GiftButton"
 
 const MainPage: FC = observer(() => {
-  const { reception: { menu }, user, cart } = useStore()
+  const { reception: { menu }, user, cart, auth } = useStore()
   const location = useLocation()
   const { VCode } = useParams<{ VCode: string }>()
   const go = useGoUTM()
@@ -93,6 +94,13 @@ const MainPage: FC = observer(() => {
   }, [params])
   
   return <Wrapper>
+    {auth.floatingIconAuthForGift.show
+      ? <GiftButton 
+        onClick={auth.bannerAuthForGift.open}
+        style={{ zIndex: 2, position: 'absolute', right: '16px', bottom: '81px' }}
+      />
+      : null
+    }
     <Congratilations />
     <NiceToMeetYooPopup />
     <ItemModal close={() => { go('/') }} />

@@ -11,11 +11,13 @@ import { Optional } from '../../features/helpers'
 import config from '../../features/config'
 import BackIcon from '../icons/Back'
 import AdaptivePopup from '../common/Popup/Popup'
+import { GiftButton } from '../icons/GiftButton'
+import AskAuthorize from './AskAuthorize'
 
 
 
 export const CollectionPopup: FC = observer(p => {
-  const { reception: { menu } } = useStore()
+  const { reception: { menu }, auth } = useStore()
   const device = useDeviceType()
 
   const go = useGoUTM()
@@ -26,13 +28,13 @@ export const CollectionPopup: FC = observer(p => {
   const currentCollection = toJS(menu.selectionPopup.content) as Optional<Selection>
 
   const Preloader: FC<{ animated?: boolean }> = props =>
-    <Skeleton 
+    <Skeleton
       animated={props.animated}
       style={{
         aspectRatio: '401/290',
         width: '100%',
         height: 'auto',
-      }} 
+      }}
     />
 
   function getContent() {
@@ -47,6 +49,13 @@ export const CollectionPopup: FC = observer(p => {
         }}
         className={styles.categories_wrapper}
       >
+        {auth.floatingIconAuthForGift.show
+          ? <GiftButton
+            onClick={auth.bannerAuthForGift.open}
+            style={{ zIndex: 2, position: 'absolute', right: '16px', bottom: '81px' }}
+          />
+          : null
+        }
         <Image
           src={config.staticApi
             + "/api/v2/image/FileImage?fileId="
@@ -90,7 +99,7 @@ export const CollectionPopup: FC = observer(p => {
         <div>
           <div className={styles.courses_list}>
             {currentCollection.CourseList
-              .filter((course1, index, arr) => 
+              .filter((course1, index, arr) =>
                 arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
               )
               .map(course =>
@@ -103,7 +112,7 @@ export const CollectionPopup: FC = observer(p => {
           </div>
         </div>
         {device === 'mobile'
-          ? <div style={{ height:65 }} />
+          ? <div style={{ height: 65 }} />
           : null
         }
       </section>
@@ -117,6 +126,13 @@ export const CollectionPopup: FC = observer(p => {
         }}
         className={styles.categories_wrapper}
       >
+        {auth.floatingIconAuthForGift.show
+          ? <GiftButton
+            onClick={auth.bannerAuthForGift.open}
+            style={{ zIndex: 2, position: 'absolute', right: '16px', bottom: '81px' }}
+          />
+          : null
+        }
         <Skeleton
           animated
           style={{
@@ -149,6 +165,7 @@ export const CollectionPopup: FC = observer(p => {
       }}
       shtorkaOffset='-10px'
     >
+      <AskAuthorize />
       <BackIcon
         onClick={close}
         styles={{

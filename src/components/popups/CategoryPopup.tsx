@@ -1,5 +1,5 @@
 import { CapsuleTabs, SearchBar, Skeleton, Space } from 'antd-mobile'
-import { toJS, when } from 'mobx'
+import { toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { CSSProperties, FC, useCallback, useEffect, useMemo } from 'react'
 import { useGoUTM, useStore } from '../../features/hooks'
@@ -14,11 +14,12 @@ import { ItemModal } from './Course'
 import AdaptivePopup from '../common/Popup/Popup'
 import _ from 'lodash'
 import { useSearchParams } from 'react-router-dom'
+import { GiftButton } from '../icons/GiftButton'
 
 const CategoryPopup: FC = observer(function () {
   const [searchParams, setSearcParams] = useSearchParams()
   const go = useGoUTM()
-  const { reception: { menu } } = useStore()
+  const { reception: { menu }, auth } = useStore()
   const { categoryPopup } = menu
 
   const isLoading = menu.loadMenu.state === 'LOADING'
@@ -63,6 +64,13 @@ const CategoryPopup: FC = observer(function () {
     bodyClassName='categoryPopup'
     noBottomNavDesktop
   >
+    {auth.floatingIconAuthForGift.show
+      ? <GiftButton 
+        onClick={auth.bannerAuthForGift.open}
+        style={{ zIndex: 2, position: 'absolute', right: '16px', bottom: '81px' }}
+      />
+      : null
+    }
     <ItemModal close={() => { go('/') }} />
     <AskAuthorize />
     <AskLocation />

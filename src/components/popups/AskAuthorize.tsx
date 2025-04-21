@@ -36,10 +36,11 @@ const AskAuthorize: FC = observer(() => {
   const { bannerAuthForGift: { show, close } } = auth
 
   const device = useDeviceType()
+
   return (
     <AdaptivePopup
       visible={show}
-      onClose={close}
+      onClose={auth.dismissAskAuth}
       bodyStyle={popup}
       noBottomNav
       noCloseBtn
@@ -48,8 +49,8 @@ const AskAuthorize: FC = observer(() => {
 
       <Container>
         <Space style={{ width: 'calc(100% - 2rem)', margin: '0 1rem' }} justify='between' align='center'>
-          <BackIcon onClick={close} />
-          <CloseOutline onClick={close} fontSize={20} />
+          <BackIcon onClick={auth.dismissAskAuth} />
+          <CloseOutline onClick={auth.dismissAskAuth} fontSize={20} />
         </Space>
         <Row>
           <Col 
@@ -105,7 +106,7 @@ const AskAuthorize: FC = observer(() => {
             </Button>
             <Button
               fill='outline'
-              onClick={() => { close() }}
+              onClick={auth.dismissAskAuth}
               style={{
                 width: 'calc(100% - 2rem)',
                 background: 'rgba(239, 144, 116, 1)',
