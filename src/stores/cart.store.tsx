@@ -1270,6 +1270,8 @@ export type AllCampaignUser = {
   AddOne: boolean | null,
   begintime: string,
   endtime: string,
+  BeginDate: string,
+  EndDate: string,
   showbanner: boolean
 }
 
