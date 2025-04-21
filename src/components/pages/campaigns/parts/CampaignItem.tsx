@@ -52,7 +52,7 @@ const Campaign: FC<pops> = observer(({ actia }) => {
           }}
         >
           <p>{Prepare(actia.Name)}</p>
-          <p
+          <div
             style={{
               marginTop: 10,
               fontFamily: 'Roboto',
@@ -67,7 +67,7 @@ const Campaign: FC<pops> = observer(({ actia }) => {
           >
 
             {Prepare(actia.Description).split('\n').map((txt, index) => <p key={index}>{txt}</p>)}
-          </p>
+          </div>
 
         </div>
       </div>
