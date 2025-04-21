@@ -1,7 +1,7 @@
-import { Button, Image, Space, Toast } from "antd-mobile"
+import { Button, Image, Space } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { CSSProperties, FC } from "react"
-import { useGoUTM, useStore } from "../../features/hooks"
+import { useDeviceType, useGoUTM, useStore } from "../../features/hooks"
 import BackIcon from "../icons/Back"
 import { CloseOutline } from "antd-mobile-icons"
 // import { copyToClipboard } from "../../features/helpers"
@@ -21,23 +21,21 @@ const popup: CSSProperties = {
 }
 
 const bigText = { fontSize: 29, fontWeight: 700, lineHeight: '33px', margin: '0 1rem' }
-const smallText = { fontSize: 15, fontWeight: 700, lineHeight: '17px', margin: '0 1rem' }
-const badge = {
-  background: 'rgba(1, 98, 65, 1)',
-  borderRadius: 10,
-  position: 'absolute',
-  padding: '0.5rem 1rem',
-  color: 'white',
-  fontSize: 14,
-  marginLeft: '1rem',
-  '--gap': '-10'
-} as CSSProperties
+const smallText = { 
+  fontSize: 15, 
+  fontWeight: 700, 
+  lineHeight: '17px', 
+  marginTop: 0,
+  marginRight: '1rem',
+  marginLeft: '1rem', 
+}
 
 const AskAuthorize: FC = observer(() => {
   const go = useGoUTM()
   const { auth } = useStore()
   const { bannerAuthForGift: { show, close } } = auth
 
+  const device = useDeviceType()
   return (
     <AdaptivePopup
       visible={show}
@@ -54,7 +52,14 @@ const AskAuthorize: FC = observer(() => {
           <CloseOutline onClick={close} fontSize={20} />
         </Space>
         <Row>
-          <Col xs={{ span: 12 }} md={{ span: 6 }}>
+          <Col 
+            xs={{ span: 12 }} 
+            md={{ span: 6 }} 
+            style={device === 'mobile' 
+              ? { marginBottom:-110, zIndex:1 } 
+              : { marginBottom:20 }
+            }
+          >
 
 
             <br />
@@ -62,24 +67,17 @@ const AskAuthorize: FC = observer(() => {
             <p style={bigText}>Восхитительный</p>
             <p style={bigText}>Миндальный круассан</p>
             <br />
-            <p style={smallText}>В ПОДАРОК</p>
-            <p style={smallText}>ПРИ РЕГИСТРАЦИИ!</p>
+            <p style={smallText}>- Зарегистрируйтесь в приложении <br />и получите промокод</p>
+            <p style={smallText}>
+              <br />
+            - Получите подарок <br />
+            при первом заказе на доставку <br />
+            или заберите <br />
+            в любом пекарне “Гурмаг Ели-пели”
+            </p>
           </Col>
           <Col xs={{ span: 12 }} md={{ span: 6 }} className="p-0">
             <div>
-              {/* <Space
-                direction='vertical'
-                style={badge}
-                align='center'
-                justify='center'
-                onClick={() => {
-                  copyToClipboard('1703')
-                  Toast.show('Промокод скопирован')
-                }}
-              >
-                <span>Промокод</span>
-                <span style={{ fontSize: 30 }}>1703</span>
-              </Space> */}
               <Image src={kruvasan} />
             </div>
             <br />
@@ -99,10 +97,28 @@ const AskAuthorize: FC = observer(() => {
                 fontWeight: 600,
                 borderRadius: 10,
                 padding: '0.75rem',
-                margin: '0 1rem'
+                margin: '0 1rem',
+                marginBottom:12
               }}
             >
               Получить подарок!
+            </Button>
+            <Button
+              fill='outline'
+              onClick={() => { close() }}
+              style={{
+                width: 'calc(100% - 2rem)',
+                background: 'rgba(239, 144, 116, 1)',
+                border: 'none',
+                color: 'white',
+                fontSize: 16,
+                fontWeight: 600,
+                borderRadius: 10,
+                padding: '0.75rem',
+                margin: '0 1rem'
+              }}
+            >
+              Вернуться к покупкам
             </Button>
           </Col>
         </Row>
