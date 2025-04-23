@@ -1022,7 +1022,7 @@ export class CartStore {
   }
 
   /** проверка перед отправкой (остатки и валидации) */
-  prePostOrder = async () => {
+  prePostOrder = async (goToAuth?: () => void) => {
     this.postOrder.setState('LOADING')
     const { receptionType, currentOrgID, Location } = this.root.reception
     const { confirmedAddress, confirmedLocation } = Location
@@ -1134,7 +1134,11 @@ export class CartStore {
       } else {
         Toast.show('Вы не авторизовались')
         this.detailPopup.close()
-        this.root.auth.authRequired.open()
+        if(!goToAuth) {
+          this.root.auth.authRequired.open()
+        } else {
+          goToAuth()
+        }
         this.postOrder.setState('FAILED')
       }
     }

@@ -1,4 +1,4 @@
-import { ActionSheet, Button, Dialog, Image, Space, Toast } from "antd-mobile";
+import { Button, Dialog, Image, Space, Toast } from "antd-mobile";
 import { observer } from "mobx-react-lite";
 import { CSSProperties, FC } from "react";
 import { useGoUTM, useStore } from "../../features/hooks";
@@ -18,7 +18,7 @@ import Row from "react-bootstrap/Row"
 import AdaptivePopup from "../common/Popup/Popup"
 import kruvasan from '../../assets/kruAssAn.png'
 import { useSearchParams } from "react-router-dom";
-
+import styles from '../pages/cart/CartPage.module.css'
 
 const popup: CSSProperties = {
   padding: '0.75rem 0',
@@ -38,11 +38,11 @@ const badge = {
   color: 'white',
   marginLeft: '2rem',
   fontSize: 14,
-  display:'flex',
+  display: 'flex',
   lineHeight: '1',
-  flexDirection:'column',
-  alignItems:'center',
-  justifyContent:'center',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
 } as CSSProperties
 export const NiceToMeetYooPopup: FC = observer(() => {
   const { auth: { niceToMeetYooPopup: { show, close, content } } } = useStore()
@@ -138,7 +138,7 @@ export const Congratilations: FC = observer(() => {
       key: 'ok',
       text: 'На главную',
       onClick: () => {
-        if(params.get('payed') === 'true') params.delete('payed')
+        if (params.get('payed') === 'true') params.delete('payed')
         cart.congratilations.close()
         go('/')
       }
@@ -146,7 +146,7 @@ export const Congratilations: FC = observer(() => {
       key: 'myOrders',
       text: 'Мои заказы',
       onClick: () => {
-        if(params.get('payed') === 'true') params.delete('payed')
+        if (params.get('payed') === 'true') params.delete('payed')
         cart.congratilations.close()
         go('/orders')
       }
@@ -162,48 +162,57 @@ export const Congratilations: FC = observer(() => {
 
 const CartActions: FC = observer(() => {
   const { cart } = useStore()
-  const { date, setDate, prePostOrder, datePick, items } = cart
-
-  const lostCourses = items
-    .filter(({ couse, quantity }) => couse.NoResidue ? false : quantity > couse.EndingOcResidue)
-    .map(cic => cic.couse)
-
-  const actions: Action[] = [{
-    key: 'tomorrow',
-    text: 'Заказать на завтра ' + moment(date)
-      .add(1, 'days')
-      .format('YYYY-MM-DD HH:mm'),
-    onClick: () => {
-      const tomorrow = moment(date).add(1, 'days').toDate();
-      setDate(tomorrow);
-      prePostOrder()
-      cart.actionSheet.close()
-    },
-  }, {
-    key: 'anotherDate',
-    text: 'Выбрать другую дату',
-    onClick: () => {
-      cart.actionSheet.close()
-      datePick.open()
-    },
-  }]
-  return <ActionSheet
-    extra={<Space direction='vertical'>
-      <h2>Такой заказ сегодня не доступен((</h2>
-      {lostCourses.map(lc => {
-        return <p>{lc.Name + ' сегодня уже закончился;'}</p>
-      })}
-    </Space>}
-    cancelText='Вернуться назад'
+  return <AdaptivePopup
     visible={cart.actionSheet.show}
-    actions={actions}
-    onClose={cart.actionSheet.close}
-    styles={{
-      body: {
-        borderTopLeftRadius: 13,
-        borderTopRightRadius: 13,
-      }
+    bodyStyle={{
+      padding: '1rem',
+      borderTopLeftRadius: 15,
+      borderTopRightRadius: 15,
     }}
-  />
+    noCloseBtn
+    noBottomNav
+    shtorkaOffset="-25px"
+  >
+    <h1
+      style={{
+        fontFamily: "Arial",
+        fontWeight: '700',
+        fontSize: "26px",
+        lineHeight: '100%',
+        textAlign: 'center',
+        marginTop: '10px',
+        marginBottom: '27px'
+      }}
+    >
+      Обратите Внимание!
+    </h1>
+    <Space direction='vertical' className="w-100" style={{ "--gap": "14px" }}>
+      <center>
+        <p>
+          После уточнения адреса <br />оказалось, <br />что не все блюда есть в наличии. <br />Проверьте, пожалуйста, Корзину!
+        </p>
+      </center>
+      <br />
+      <Button
+        shape='rounded'
+        color='primary'
+        style={{
+          width: '100%',
+          fontWeight: 600,
+          color: '#000'
+        }}
+        onClick={() => {
+          cart.actionSheet.close()
+          cart.detailPopup.close()
+          cart.postOrder.setState('INITIAL')
+          const elem = document.getElementsByClassName(styles.cartPopup)[0]
+          
+          if(elem) elem.scrollTo({ top: 0, behavior: 'smooth' })
+        }}
+      >
+        Обратно в Корзину
+      </Button>
+    </Space>
+  </AdaptivePopup>
 })
 export default CartActions

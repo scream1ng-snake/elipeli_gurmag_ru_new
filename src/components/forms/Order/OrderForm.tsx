@@ -1,8 +1,8 @@
-import { Input, Selector, Space, Form, Grid, Button, DatePicker, NoticeBar } from "antd-mobile"
+import { Input, Space, Form, Grid, Button, DatePicker, NoticeBar } from "antd-mobile"
 import { toJS } from "mobx"
 import { observer } from "mobx-react-lite"
 import { CSSProperties, FC } from "react"
-import { useStore } from "../../../features/hooks"
+import { useGoUTM, useStore } from "../../../features/hooks"
 import styles from '../form.module.css'
 import moment from "moment"
 import Red from "../../special/RedText"
@@ -10,6 +10,10 @@ import Red from "../../special/RedText"
 
 
 const Pickup: FC = observer(() => {
+  const go = useGoUTM()
+  function gotoAuth() {
+    go("/authorize", { fromPostOrder: 'true' })
+  }
   const { cart, reception } = useStore()
   const { timePick, datePick, availableTimeRange, date, setDate } = cart
   const isValid = reception.currentOrganizaion
@@ -59,7 +63,7 @@ const Pickup: FC = observer(() => {
         color='primary'
         disabled={!isValid}
         loading={cart.postOrder.state === 'LOADING'}
-        onClick={() => cart.prePostOrder()}
+        onClick={() => cart.prePostOrder(gotoAuth)}
       >
         Подтвердить
       </Button>
@@ -68,6 +72,10 @@ const Pickup: FC = observer(() => {
 })
 
 const Delivery: FC = observer(() => {
+  const go = useGoUTM()
+  function gotoAuth() {
+    go("/authorize", { fromPostOrder: 'true' })
+  }
   const { cart, reception } = useStore()
   const { datePick, date, setDate } = cart
   const { selectLocationPopup: { open }, Location } = reception
@@ -115,7 +123,7 @@ const Delivery: FC = observer(() => {
       shape='rounded'
       color='primary'
       disabled={!isValid}
-      onClick={() => cart.prePostOrder()}
+      onClick={() => cart.prePostOrder(gotoAuth)}
     >
       Подтвердить
     </Button>

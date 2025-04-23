@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
-import { FC, useEffect } from "react"
-import { Button, NoticeBar, Popup } from "antd-mobile"
+import { FC } from "react"
+import { Button, NoticeBar } from "antd-mobile"
 import styles from './CartPage.module.css'
 import { useGoUTM, useStore, useTheme } from "../../../features/hooks"
 import CartList from "./parts/CartList/CartList"
@@ -12,21 +12,13 @@ import YoukassaPopup from "../../popups/YookassaPopup"
 import { Congratilations, NiceToMeetYooPopup } from "../../popups/CartActions"
 import AuthRequiredPopap from "../../popups/AuthRequired"
 import Recomendations from "./parts/Recomendations/Recomendation"
-import config from "../../../features/config"
 import AdaptivePopup from "../../common/Popup/Popup"
 
 const CartPopup: FC = observer(() => {
   const { theme } = useTheme()
   const go = useGoUTM()
-  const { cart, auth, reception, user } = useStore()
+  const { cart, reception, user } = useStore()
   const { MinSum } = user.info
-  useEffect(() => {
-    if (auth.isFailed) {
-      auth.authRequired.open()
-    } else {
-      auth.authRequired.close()
-    }
-  }, [auth.isFailed])
   return (
     <AdaptivePopup
       visible={cart.cart.show}

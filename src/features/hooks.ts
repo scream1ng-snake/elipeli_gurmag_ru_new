@@ -48,10 +48,17 @@ export const useTheme = () => useContext(ThemeContext);
 export function useGoUTM() {
   const { auth } = useStore()
   const navigate = useNavigate()
-  return (pathname: string) => navigate({ 
-    pathname, 
-    search: new URLSearchParams(JSON.parse(auth.UTM ?? '{}')).toString()
-  })
+
+  return (pathname: string, searches: Record<string, string> = {}) => {
+    const myParams = new URLSearchParams(JSON.parse(auth.UTM ?? '{}'))
+    Object.keys(searches).forEach(key => {
+      myParams.append(key, searches[key])
+    })
+    return navigate({ 
+      pathname, 
+      search: myParams.toString()
+    })
+  }
 }
 
 export const DeviceTypes = {

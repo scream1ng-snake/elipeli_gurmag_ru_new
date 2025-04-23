@@ -69,7 +69,7 @@ const MainPage: FC = observer(() => {
     //   } 
     // }
     if (location.pathname.includes("/basket")) {
-      if (menu.loadMenu.state === 'COMPLETED' && user.loadUserInfo.state === 'COMPLETED') {
+      if (menu.loadMenu.state === 'COMPLETED' && user.loadUserInfo.state === 'COMPLETED') {        
         cart.cart.open()
       }
     } else {

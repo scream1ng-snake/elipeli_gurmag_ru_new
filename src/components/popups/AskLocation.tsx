@@ -12,7 +12,8 @@ const popup = {
 }
 const btn = { 
   width: '100%',  
-  fontWeight: 600 
+  fontWeight: 600,
+  color: '#000'
 }
 
 const AskLocation: FC = observer(() => {
@@ -24,14 +25,16 @@ const AskLocation: FC = observer(() => {
     <AdaptivePopup
       visible={visible}
       noBottomNav
-      noCloseBtn
       bodyStyle={popup}
+      onClose={auth.bannerAskAdress.close}
+      shtorkaOffset="-27px"
+      noShtorka
     >
-      <h1>Какой у вас адрес?</h1>
       <br />
+      <h1>Какой у вас адрес?</h1>
       <p>Хотим убедиться, что вы в зоне доставки. Адрес сохраним для будущих заказов</p>
       <br />
-      <Space direction='vertical' className="w-100">
+      <Space direction='vertical' className="w-100" style={{ "--gap": "14px" }}>
         <Button 
           shape='rounded'
           color='primary'
@@ -46,8 +49,7 @@ const AskLocation: FC = observer(() => {
         </Button>
         <Button 
           shape='rounded'
-          color='warning'
-          fill='outline'
+          color='primary'
           onClick={() => {
             auth.bannerAskAdress.close()
             reception.setReceptionType('pickup')
@@ -61,13 +63,23 @@ const AskLocation: FC = observer(() => {
           auth.state !== "AUTHORIZED"
           ? <Button 
             shape='rounded'
+            color='primary'
             style={btn}
             onClick={() => { go('/authorize') }}
           >
-            Уже есть аккаунт? <span style={{ color: 'var(--adm-color-warning)' }}>Войти</span>
+            Уже есть аккаунт? Войти
           </Button>
           : null
         }
+        <Button 
+          shape='rounded'
+          style={{ ...btn, background: "rgba(197, 199, 198, 1)" }}
+          onClick={() => {
+            auth.bannerAskAdress.close()
+          }}
+        >
+          Продолжить без адреса
+        </Button>
       </Space>
     </AdaptivePopup>
   )

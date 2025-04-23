@@ -241,7 +241,7 @@ export class AuthStore {
   }
 
   /** тут подтверждаем номер смс кодом */
-  inputSmsCode = new Request(async (_, setQueryState, code: string) => {
+  inputSmsCode = new Request(async (_, setQueryState, code: string, doOrderAfterLogin = false) => {
     setQueryState('LOADING')
     logger.log(this.state + ' ' + this.stage, 'auth-store')
 
@@ -260,7 +260,13 @@ export class AuthStore {
           setQueryState('COMPLETED')
           this.setState('AUTHORIZED')
           this.setStage('COMPLETED')
-          this.niceToMeetYooPopup.watch(result?.Message2)
+          if(doOrderAfterLogin) {
+            this.root.cart.prePostOrder().then(() => {
+              this.niceToMeetYooPopup.watch(result?.Message2)
+            })
+          } else {
+            this.niceToMeetYooPopup.watch(result?.Message2)
+          }
           const COrg = this.root.reception.OrgForMenu
           this.root.user.loadUserInfo.run(COrg, userId)
           Metrics.registration()
@@ -279,7 +285,7 @@ export class AuthStore {
   })
 
   /** регаемся если не зареганы */
-  registration = new Request(async (_, setState, { birthday, name }: SignIn) => {
+  registration = new Request(async (_, setState, { birthday, name }: SignIn, doOrderAfterReg = false) => {
     setState('LOADING')
     logger.log(this.state + ' ' + this.stage, 'auth-store')
 
@@ -297,7 +303,13 @@ export class AuthStore {
       setState('COMPLETED')
       this.setState('AUTHORIZED')
       this.setStage('COMPLETED')
-      this.niceToMeetYooPopup.watch(result?.Message2)
+      if(doOrderAfterReg) {
+        this.root.cart.prePostOrder().then(() => {
+          this.niceToMeetYooPopup.watch(result?.Message2)
+        })
+      } else {
+        this.niceToMeetYooPopup.watch(result?.Message2)
+      }
 
       const COrg = this.root.reception.OrgForMenu
       this.root.user.loadUserInfo.run(COrg, userId)

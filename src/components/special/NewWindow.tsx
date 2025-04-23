@@ -48,7 +48,6 @@ export function showPaymentInNewWindow(
 ) {
   const newWindow = window.open("", "_blank");
 
-  debugger
   if (newWindow) {
     newWindow.focus()
     // Используйте HTML для создания контейнера для компонента  

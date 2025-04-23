@@ -5,16 +5,22 @@ import { useGoUTM, useStore } from "../../../features/hooks"
 import styles from '../form.module.css'
 import { FullscreenLoading } from "../../common/Loading/Loading"
 import Container from 'react-bootstrap/Container'
+import { useSearchParams } from "react-router-dom"
 
 
 const InputSmsCode: FC = observer(() => {
+  const [params] = useSearchParams()
   const ref = useRef<PasscodeInputRef>(null)
   const go = useGoUTM()
   const LENGHT = 4
 
   const { auth } = useStore()
   function onFill(val: string) {
-    auth.inputSmsCode.run(val)
+    if(params.get('fromPostOrder') === 'true') {
+      auth.inputSmsCode.run(val, true)
+    } else {
+      auth.inputSmsCode.run(val)
+    }
   }
 
   useEffect(() => {

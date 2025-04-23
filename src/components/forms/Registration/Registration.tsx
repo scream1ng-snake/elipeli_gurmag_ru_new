@@ -8,9 +8,11 @@ import InputMask from 'react-input-mask';
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
+import { useSearchParams } from "react-router-dom"
 
 
 const Registration: FC = observer(() => {
+  const [params] = useSearchParams()
   const go = useGoUTM()
   const { auth } = useStore()
   const [name, setName] = useState('')
@@ -27,12 +29,21 @@ const Registration: FC = observer(() => {
 
   function submit() {
     const [DD, MM, YYYY] = birthday.split(".")
-    auth.registration.run({
-      name,
-      birthday: YYYY && MM && DD
-        ? YYYY + MM + DD
-        : '19710101'
-    })
+    if(params.get('fromPostOrder') === 'true') {
+      auth.registration.run({
+        name,
+        birthday: YYYY && MM && DD
+          ? YYYY + MM + DD
+          : '19710101'
+      }, true)
+    } else {
+      auth.registration.run({
+        name,
+        birthday: YYYY && MM && DD
+          ? YYYY + MM + DD
+          : '19710101'
+      })
+    }
   }
 
   const now = new Date()
