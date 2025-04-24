@@ -1,6 +1,7 @@
 .cartItem {
   font-size: 12px;
   line-height: 0.9;
+  position: relative;
 }
 
 .cartImg {
@@ -19,7 +20,7 @@
   font-weight: 600;
 }
 .hotPrice {
-  color: #E42B31;
+  color: rgba(71, 174, 83, 1);
 }
 
 .Weight {

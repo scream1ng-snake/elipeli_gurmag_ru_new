@@ -1,4 +1,4 @@
-import { Image, List, Skeleton, Space, Stepper } from "antd-mobile";
+import { Button, Image, List, Skeleton, Space, Stepper } from "antd-mobile";
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
 import { CouseInCart } from "../../../../../stores/cart.store";
@@ -6,6 +6,8 @@ import config from "../../../../../features/config";
 import styles from './CartItem.module.css'
 import Red from "../../../../special/RedText";
 import { Gift } from "../../../../icons/Gift";
+import Trash from '../../../../../assets/Trash.png'
+import hotCampaign from '../../../../../assets/hotCampaign.png'
 
 type P = {
   courseInCart: CouseInCart,
@@ -15,6 +17,13 @@ type P = {
 }
 const CartItem: FC<P> = observer(props => {
   const { courseInCart, add, remove, isPresent } = props
+  const isEndingOut = !props.courseInCart.couse.NoResidue
+    ? props.courseInCart.couse.EndingOcResidue <= 0
+    : false
+
+  const lessThanNeed = !props.courseInCart.couse.NoResidue
+    ? props.courseInCart.couse.EndingOcResidue < props.courseInCart.quantity
+    : false
   return (
     <List.Item
       className={styles.cartItem}
@@ -25,31 +34,48 @@ const CartItem: FC<P> = observer(props => {
           <span className={styles.Weight}>{courseInCart.couse.Weigth}</span>
         </div>
       }
-      arrowIcon={
-        <Space direction='vertical' align='center'>
-          <Stepper
-            disabled={props.isPresent}
-            value={courseInCart.quantity}
-            style={{ borderRadius: 13 }}
-            onChange={val =>
-              val > courseInCart.quantity
-                ? add()
-                : remove()
+      arrowIcon={isEndingOut
+        ? <>
+          <span style={{ fontSize: 14, position: 'absolute', bottom: 8, right: 17 }}><Red>Нет в наличии</Red></span>
+          <Space direction='vertical' align='end'>
+            <Space style={{ "--gap": "5px" }}>
+              <Button size='small' shape='rounded' style={{ background: 'rgba(242, 243, 247, 1)' }}>
+                <img src={Trash} style={{ marginTop: -3 }} />
+              </Button>
+              <Button size='small' shape='rounded' style={{ background: 'rgba(242, 243, 247, 1)' }}>Заменить</Button>
+            </Space>
+          </Space>
+        </>
+        : <>
+        {courseInCart.campaign 
+          ? <img src={hotCampaign} style={{ position: 'absolute', bottom: 4, right: 29 }} />
+          : null
+        }
+          <Space direction='vertical' align='center'>
+            <Stepper
+              disabled={props.isPresent}
+              value={courseInCart.quantity}
+              style={{ borderRadius: 13 }}
+              onChange={val =>
+                val > courseInCart.quantity
+                  ? add()
+                  : remove()
+              }
+              max={!courseInCart.couse.NoResidue
+                ? courseInCart.couse.EndingOcResidue
+                : undefined
+              }
+            />
+            {!courseInCart.couse.NoResidue
+              ? <Red>
+                <span style={{ fontSize: 14 }}>
+                  {'В наличии ' + courseInCart.couse.EndingOcResidue}
+                </span>
+              </Red>
+              : null
             }
-            max={!courseInCart.couse.NoResidue
-              ? courseInCart.couse.EndingOcResidue
-              : undefined
-            }
-          />
-          {!courseInCart.couse.NoResidue
-            ? <Red>
-              <span style={{ fontSize: 14 }}>
-                {'В наличии ' + courseInCart.couse.EndingOcResidue}
-              </span>
-            </Red>
-            : null
-          }
-        </Space>
+          </Space>
+        </>
       }
     >
       {courseInCart.couse.Name}
