@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { FC } from "react"
+import { CSSProperties, FC } from "react"
 import { Button, NoticeBar } from "antd-mobile"
 import styles from './CartPage.module.css'
 import { useGoUTM, useStore, useTheme } from "../../../features/hooks"
@@ -13,12 +13,30 @@ import { Congratilations, NiceToMeetYooPopup } from "../../popups/CartActions"
 import AuthRequiredPopap from "../../popups/AuthRequired"
 import Recomendations from "./parts/Recomendations/Recomendation"
 import AdaptivePopup from "../../common/Popup/Popup"
+import { AllCampaignUser, CouseInCart } from "../../../stores/cart.store"
+import FireIco from '../../../assets/fire.png'
+
+function getAllCampaignsFromCart(
+  items: CouseInCart[], 
+  allCampgns: AllCampaignUser[]
+) {
+  const result: AllCampaignUser[] = []
+  items.forEach(item => {
+    if(item.campaign) {
+      const campaign = allCampgns.find(camp => camp.VCode === item.campaign)
+      if(campaign) result.push(campaign)
+    }
+  })
+  return result
+}
 
 const CartPopup: FC = observer(() => {
   const { theme } = useTheme()
   const go = useGoUTM()
   const { cart, reception, user } = useStore()
   const { MinSum } = user.info
+
+  const allCampaigns = getAllCampaignsFromCart(cart.items, user.info.allCampaign)
   return (
     <AdaptivePopup
       visible={cart.cart.show}
@@ -33,6 +51,7 @@ const CartPopup: FC = observer(() => {
     >
       <CartHead />
       <div className={styles.cartPopup}>
+        <CampaignsTooltip allCampaign={allCampaigns} />
         <NiceToMeetYooPopup />
         <YoukassaPopup />
         <AuthRequiredPopap />
@@ -87,3 +106,37 @@ const Round = (num: number) =>
   Math.ceil(num * 100) / 100
 
 export default CartPopup
+
+
+const tooltipStyles: Record<string, CSSProperties> = {
+  div: {
+    fontFamily: 'Roboto', 
+    fontSize: 17,
+    lineHeight: '18px', 
+    color: 'rgba(71, 174, 83, 1)',
+    position: 'relative',
+    marginBottom: '-1rem'
+  },
+  icon: {
+    position: 'absolute',
+    left: '-22px',
+  },
+  header: { fontWeight: 600 }, 
+  text: { fontWeight: 400 }
+}
+const CampaignsTooltip: FC<{ allCampaign: AllCampaignUser[] }> = (props) => {
+  if(!props.allCampaign.length) return null
+  return <div style={tooltipStyles.div} className="ms-5">
+    <img src={FireIco} style={tooltipStyles.icon} />
+    {props.allCampaign.length
+      ? <p style={tooltipStyles.header}>Вы участвуете в акции:</p>
+      : null
+    }
+    {props.allCampaign.filter((campaign1, index, arr) =>
+      arr.findIndex(campaign2 => (campaign2.VCode === campaign1.VCode)) === index
+    ).map(campaigm => 
+      <p key={campaigm.VCode} style={tooltipStyles.text}>{Prepare(campaigm.Name)}</p>
+    )}
+  </div>
+}
+const Prepare = (str?: string) => str?.replace(/ *\{[^}]*\} */g, "") || ''

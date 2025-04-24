@@ -115,11 +115,11 @@ const MainPage: FC = observer(() => {
       <AskLocation />
       <AskAuthorize />
       <Stories />
-      <Collections />
       {user.hasHotCampaign.length
-        ? <BannerCarusel />
+        ? <BannerCarusel /> 
         : <Cooks />
       }
+      <Collections />
       <Menu />
     </Container>
     {PresentAction.length

@@ -7,7 +7,7 @@ import config from "../../../../../features/config";
 
 
 const BannerCarusel: FC = () => {
-  const { user, reception: { menu }} = useStore()
+  const { user, reception: { menu } } = useStore()
   // const filteredCampaigns = user.info.allCampaign.filter(camp => 
   //   camp.image && camp.compresimage
   // )
@@ -20,22 +20,26 @@ const BannerCarusel: FC = () => {
     height: 'auto',
     borderRadius: 15
   }
-  return <Swiper className="pe-3 mb-3" slideSize={isOne ? 100 : 80}>
-    {user.hasHotCampaign.map(camp =>
-      <Swiper.Item key={camp.VCode} className={isOne ? "" : "pe-3"}>
-        <Image
-          onClick={() => menu.hotCampaignPopup.watch(camp)}
-          src={config.staticApi
-            + "/api/v2/image/FileImage?fileId="
-            + camp.image
-          }
-          fallback={<Skeleton style={imgStyle} />}
-          placeholder={<Skeleton style={imgStyle} animated />}
-          style={imgStyle}
-        />
-      </Swiper.Item>
-    )}
-  </Swiper>
+  return <div>
+    <h2 className="mb-2 mt-1">Выгодные акции</h2>
+    <Swiper className="pe-3 mb-1" slideSize={isOne ? 100 : 80}>
+      {user.hasHotCampaign.map(camp =>
+      // {filteredCampaigns.map(camp =>
+        <Swiper.Item key={camp.VCode} className={isOne ? "" : "pe-3"}>
+          <Image
+            onClick={() => menu.hotCampaignPopup.watch(camp)}
+            src={config.staticApi
+              + "/api/v2/image/FileImage?fileId="
+              + camp.image
+            }
+            fallback={<Skeleton style={imgStyle} />}
+            placeholder={<Skeleton style={imgStyle} animated />}
+            style={imgStyle}
+          />
+        </Swiper.Item>
+      )}
+    </Swiper>
+  </div>
 }
 
 export default observer(BannerCarusel)
