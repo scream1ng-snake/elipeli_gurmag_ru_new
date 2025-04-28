@@ -13,10 +13,12 @@ type P = {
   courseInCart: CouseInCart,
   add: () => void,
   remove: () => void,
-  isPresent: boolean
+  isPresent: boolean,
+  deletePack?: () => void,
+  watchAnalog?: () => void,
 }
 const CartItem: FC<P> = observer(props => {
-  const { courseInCart, add, remove, isPresent } = props
+  const { courseInCart, add, remove, isPresent, deletePack, watchAnalog } = props
   const isEndingOut = !props.courseInCart.couse.NoResidue
     ? props.courseInCart.couse.EndingOcResidue <= 0
     : false
@@ -39,10 +41,22 @@ const CartItem: FC<P> = observer(props => {
           <span style={{ fontSize: 14, position: 'absolute', bottom: 8, right: 17 }}><Red>Нет в наличии</Red></span>
           <Space direction='vertical' align='end'>
             <Space style={{ "--gap": "5px" }}>
-              <Button size='small' shape='rounded' style={{ background: 'rgba(242, 243, 247, 1)' }}>
+              {deletePack && <Button 
+                size='small' 
+                shape='rounded' 
+                style={{ background: 'rgba(242, 243, 247, 1)' }} 
+                onClick={deletePack}
+              >
                 <img src={Trash} style={{ marginTop: -3 }} />
-              </Button>
-              <Button size='small' shape='rounded' style={{ background: 'rgba(242, 243, 247, 1)' }}>Заменить</Button>
+              </Button>}
+              {watchAnalog && <Button 
+                size='small' 
+                shape='rounded' 
+                style={{ background: 'rgba(242, 243, 247, 1)' }}
+                onClick={watchAnalog}
+              >
+                Заменить
+              </Button>}
             </Space>
           </Space>
         </>
