@@ -71,10 +71,17 @@ class MenuStore {
   /** попап для просмотра подборки */
   selectionPopup = new Popup<Selection>()
   hotCampaignPopup = new Popup<AllCampaignUser>()
+  coursesCampaignPopup = new Popup<AllCampaignUser>()
   selectionsPopup = new Popup()
 
   /** попап для просмотра блюда */
   coursePopup = new Popup<CourseItem, CourseReview[]>({
+    onOpen: async (course, save) => { 
+      const reviews = await this.loadCourseReviews.run(course)
+      if(reviews?.[0]) save(reviews[0])
+    },
+  })
+  coursePopup2 = new Popup<CourseItem, CourseReview[]>({
     onOpen: async (course, save) => { 
       const reviews = await this.loadCourseReviews.run(course)
       if(reviews?.[0]) save(reviews[0])
@@ -217,7 +224,7 @@ export type CategoryCourse = {
 
 
 
-type CourseReview = {
+export type CourseReview = {
   /** 2023-09-08T04:38:41.173Z */
   Date: string,
   /** "Жанна" */

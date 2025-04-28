@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { StoreContext, ThemeContext } from "./contexts";
-import { useNavigate } from "react-router-dom";  
+import { useLocation, useNavigate } from "react-router-dom";  
+import { HistoryContext } from "./providers";
 
 declare global {
   interface Window {
@@ -88,3 +89,45 @@ export const useDeviceType = () => {
   }, [])
   return deviceType
 };  
+
+
+
+// Хук для навигации назад с пропуском дубликатов  
+export function useNavigateBack() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const historyStack = useContext(HistoryContext);
+
+  function navigateBack() {
+    if (!historyStack || !historyStack.current || historyStack.current.length === 0) {
+      // История пуста — переходим на главную  
+      navigate('/', { replace: true });
+      return;
+    }
+
+    const currentPath = location.pathname;
+    let stack = historyStack.current;
+
+    // Удаляем из конца стека значение, равное текущему (текущий путь)  
+    while (stack.length > 0 && stack[stack.length - 1] === currentPath) {
+      stack.pop();
+    }
+
+    if (stack.length === 0) {
+      // Нет предыдущих отличных путей, идем на главную  
+      navigate('/', { replace: true });
+      return;
+    }
+
+    // Целевой адрес для перехода — последний элемент стека  
+    const targetPath = stack[stack.length - 1];
+
+    // Уходим на целевую страницу  
+    navigate(targetPath, { replace: true });
+
+    // Урезаем стек: убираем текущий элемент (уже удалён), прокидывать надо по ситуации  
+    // Можно оставить стек как есть, он уже содержит targetPath в конце  
+  }
+
+  return navigateBack;
+}

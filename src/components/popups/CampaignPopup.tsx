@@ -39,7 +39,7 @@ const CampaignPopup: FC = observer(() => {
     }}
     onClose={close}
   >
-    <ItemModal />
+    
     <Row>
       <Col xs={12} sm={12} md={6}>
         <Image
@@ -118,8 +118,8 @@ const CampaignPopup: FC = observer(() => {
             padding: '12px 15px'
           }}
           onClick={() => {
-            campaignPopup.close()
-            go('/categories/' + menu.categories[0].VCode)
+            close()
+            if(campaign) menu.coursesCampaignPopup.watch(campaign)
           }}
         >
           За покупками

@@ -16,6 +16,7 @@ import OrdersPage, { WatchOrderDetailModal } from '../pages/orders/OrdersPage';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../../features/hooks';
 import CampaignsPage from '../pages/campaigns/CampaignsPage';
+import { HistoryProvider } from '../../features/providers';
 // @ts-ignore
 window.dataLayer = window.dataLayer || []
 const routes: Array<{
@@ -96,24 +97,26 @@ const routes: Array<{
   ]
 
 function getRoutes() {
-  return <Routes>
-    {routes.map((route) =>
-      <Route
-        key={route.path}
-        path={route.path}
-        element={
-          <UtmChecker>
-            <Metrics>
-              {route.private
-                ? <Checker>{route.element}</Checker>
-                : route.element
-              }
-            </Metrics>
-          </UtmChecker>
-        }
-      />
-    )}
+  return <HistoryProvider> 
+  <Routes>
+      {routes.map((route) =>
+        <Route
+          key={route.path}
+          path={route.path}
+          element={
+            <UtmChecker>
+              <Metrics>
+                {route.private
+                  ? <Checker>{route.element}</Checker>
+                  : route.element
+                }
+              </Metrics>
+            </UtmChecker>
+          }
+        />
+      )}
   </Routes>
+  </HistoryProvider>
 }
 export const RouterComponent: FC = () => {
   const { instance } = useStore()

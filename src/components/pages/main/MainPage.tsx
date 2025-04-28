@@ -9,10 +9,10 @@ import Menu from "./parts/Menu/Menu"
 import BottomNavigation from "../../common/BottomNav/BottomNav"
 import Fixed from "../../layout/Fixed"
 import styles from './styles.module.css'
-import { useGoUTM, useStore } from '../../../features/hooks'
+import { useGoUTM, useNavigateBack, useStore } from '../../../features/hooks'
 import AskLocation from "../../popups/AskLocation"
 import { ItemModal } from "../../popups/Course"
-import { useLocation, useParams, useSearchParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { Toast } from "antd-mobile"
 import { logger } from "../../../features/logger"
 import AskAuthorize from "../../popups/AskAuthorize"
@@ -30,6 +30,7 @@ const MainPage: FC = observer(() => {
   const location = useLocation()
   const { VCode } = useParams<{ VCode: string }>()
   const go = useGoUTM()
+  const navigateBack = useNavigateBack(); 
   const [params] = useSearchParams()
 
   useEffect(() => {
@@ -60,8 +61,6 @@ const MainPage: FC = observer(() => {
           go('/')
         }
       }
-    } else {
-      menu.selectionPopup.close()
     }
     // if(location.pathname.includes("/collections")) {
     //   if(!VCode && menu.loadMenu.state === 'COMPLETED') {
@@ -93,6 +92,10 @@ const MainPage: FC = observer(() => {
     }
   }, [params])
   
+  const goBack = () => {  
+    navigateBack()
+  };  
+
   return <Wrapper>
     {auth.floatingIconAuthForGift.show
       ? <GiftButton 
@@ -103,9 +106,12 @@ const MainPage: FC = observer(() => {
     }
     <Congratilations />
     <NiceToMeetYooPopup />
-    <ItemModal close={() => { go('/') }} />
     <CollectionPopup />
-    <CampaignCollectionPopup />
+    <ItemModal popup={menu.coursePopup} close={() => { goBack() }} />
+    <CampaignCollectionPopup 
+      popup={menu.hotCampaignPopup}
+      childCousePopup={menu.coursePopup}
+    />
     <CartPopup />
     {/* <CollectionsPopup /> */}
     <Fixed>
@@ -117,9 +123,13 @@ const MainPage: FC = observer(() => {
       <Stories />
       {user.hasHotCampaign.length
         ? <BannerCarusel /> 
-        : <Cooks />
+        : null
       }
       <Collections />
+      {user.hasHotCampaign.length 
+        ? null
+        : <Cooks />
+      }
       <Menu />
     </Container>
     {PresentAction.length

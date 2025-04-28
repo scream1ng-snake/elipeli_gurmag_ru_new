@@ -13,11 +13,15 @@ import Container from "react-bootstrap/Container"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
 import { Burger } from "../../layout/NavButton"
+import CampaignCollectionPopup from "../../popups/CampaignCollectionPopup"
 
 const CampaignsPage: FC = observer(() => {
   const go = useGoUTM()
   const { pathname } = useLocation()
-  const { user: { info, campaignPopup, loadUserInfo } } = useStore()
+  const { 
+    user: { info, campaignPopup, loadUserInfo }, 
+    reception: { menu } 
+  } = useStore()
 
   const params = useParams<{ VCode: string }>();
 
@@ -37,6 +41,10 @@ const CampaignsPage: FC = observer(() => {
   return <Wrapper styles={{ background: 'var(--tg-theme-bg-color)' }}>
     <Container className="p-0">
       <CampaignPopup />
+      <CampaignCollectionPopup 
+        popup={menu.coursesCampaignPopup} 
+        childCousePopup={menu.coursePopup2}
+      />
       <NavBar
         onBack={() => go('/')}
         backIcon={

@@ -1,7 +1,7 @@
-import { Button, CenterPopup, Image, Popup, Space, Stepper, Swiper, Toast } from "antd-mobile"
+import { Button, CenterPopup, Image, Popup as PopupComponent, Space, Stepper, Swiper, Toast } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { CSSProperties, FC, useEffect, useState } from "react"
-import { CourseItem } from "../../stores/menu.store"
+import { CourseItem, CourseReview } from "../../stores/menu.store"
 import { useDeviceType, useStore } from "../../features/hooks"
 import { toJS } from "mobx"
 import config from "../../features/config"
@@ -16,25 +16,30 @@ import Col from "react-bootstrap/Col"
 import { Skeleton } from "antd-mobile/es/components/skeleton/skeleton"
 import CourseReviewPopup from "./CourseReviewPopup.tsx"
 import { Container } from "react-bootstrap"
+import Popup from "../../features/modal"
+import AdaptivePopup from "../common/Popup/Popup"
 
-export const ItemModal: FC<{ close?: () => void }> = observer(p => {
+type ItemModalProps = {
+  close?: () => void,
+  popup: Popup<CourseItem, CourseReview[]>
+}
+export const ItemModal: FC<ItemModalProps> = observer(p => {
   const { reception: { menu, nearestOrgForDelivery, selectedOrgID }, cart, auth, vkMiniAppMetrics, user } = useStore();
-  const { coursePopup } = menu
   const device = useDeviceType()
 
   const close = () => {
-    coursePopup.close()
+    p.popup.close()
     p.close?.()
   }
 
-  const currentCouse = toJS(coursePopup.content) as CourseItem
+  const currentCouse = toJS(p.popup.content) as CourseItem
 
 
   const [count, setCount] = useState(1);
 
   useEffect(() => {
     setCount(1)
-  }, [coursePopup.show])
+  }, [p.popup.show])
 
   if (currentCouse) {
     const isHaveCarusel = currentCouse.CompressImages
@@ -48,15 +53,15 @@ export const ItemModal: FC<{ close?: () => void }> = observer(p => {
           vkMiniAppMetrics.addToCart(user.ID || '')
         }
         setCount(1)
-        coursePopup.close()
+        p.popup.close()
         Toast.show('Добавлено')
       }
     }
     if (device === 'mobile') {
       return (
-        <Popup
+        <PopupComponent
           closeIcon
-          visible={coursePopup.show}
+          visible={p.popup.show}
           onClose={close}
           onMaskClick={close}
           closeOnMaskClick
@@ -275,15 +280,16 @@ export const ItemModal: FC<{ close?: () => void }> = observer(p => {
               </Col>
             </Row>
           </div>
-        </Popup>
+        </PopupComponent>
       )
     } else {
       return (
-        <CenterPopup
+        <AdaptivePopup
           onClose={close}
-          onMaskClick={close}
-          visible={coursePopup.show}
+          visible={p.popup.show}
           bodyClassName="mediaPopup"
+          noBottomNav
+          noShtorka
         >
           <Container>
             <Row>
@@ -433,7 +439,7 @@ export const ItemModal: FC<{ close?: () => void }> = observer(p => {
               </Col>
             </Row>
           </Container>
-        </CenterPopup>
+        </AdaptivePopup>
       )
     }
   }

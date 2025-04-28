@@ -1,9 +1,8 @@
 import { observer } from "mobx-react-lite"
-import { CSSProperties, FC, useCallback, useEffect } from "react"
+import { FC, useCallback } from "react"
 import styles from './Categories.module.css'
 import { useGoUTM, useStore } from "../../../../../../features/hooks";
-import { Image, Result, Skeleton, Toast } from "antd-mobile";
-import { SmileOutline } from "antd-mobile-icons";
+import { Image, Skeleton, Toast } from "antd-mobile";
 import { CourseItem, RecomendationItem } from "../../../../../../stores/menu.store";
 import config from "../../../../../../features/config";
 import IconStar from '../../../../../../assets/icon_star.svg'
@@ -11,119 +10,15 @@ import ImageReviews from '../../../../../../assets/image_reviews.svg'
 import CustomButton from '../../../../../special/CustomButton'
 import Metrics from "../../../../../../features/Metrics";
 
-const Categories: FC = observer(function () {
-  const { reception: { menu } } = useStore()
-  const { categories, dishSearcher, loadMenu } = menu;
-
-  if (loadMenu.state === 'COMPLETED') {
-    return (
-      <section className={styles.categories_wrapper}>
-        {dishSearcher.isSearching
-          ? <div>
-            {dishSearcher.result.length
-              ? <h2>{'Найдено ' + dishSearcher.result.length + ' блюд'}</h2>
-              : <Result
-                icon={<SmileOutline />}
-                status='success'
-                title='Сегодня такого блюда в меню нет((('
-                description='В ближающее время блюдо появится в меню'
-              />
-            }
-            {
-              dishSearcher.result.length
-                ? <div className={styles.courses_list}>
-                  {dishSearcher.result.map((course, index) =>
-                    <CourseItemComponent
-                      key={index}
-                      course={course}
-                    />
-                  )}
-                </div>
-                : null
-            }
-
-          </div>
-          : categories.map((category, index) =>
-            <div key={index} id={String(category.VCode)}>
-              <h2>{category.Name.replaceAll('_', ' ')}</h2>
-              <br />
-              <div className={styles.courses_list}>
-                {category.CourseList.map((course, index) =>
-                  <CourseItemComponent
-                    key={`${category.Name}-${course.Name}-${index}`}
-                    course={course}
-                  />
-                )}
-              </div>
-            </div>
-          )
-        }
-
-      </section>
-    )
-  } else {
-    const preloder = {
-      label: { width: "16px", height: "16px" },
-      text: { width: "40px", height: "10px" },
-
-      title: { margin: '1rem' },
-      image: { height: "134px", width: "100%" },
-      count: { marginTop: '4.86px', marginBottom: '0.86px', width: "84px", height: "10px" },
-      price: { marginTop: '2px', marginBottom: '1.5px', width: "42px", height: "14.5px" },
-      name: { marginTop: '1.03px', marginBottom: '1.03px', height: "12px", width: "130px" },
-      weight: { marginTop: '7.86px', marginBottom: '0.86px', height: "10px", width: "24px" },
-      button: { height: "24px", width: "100%", borderRadius: '20px' },
-    }
-    return <>
-      <Skeleton.Title style={preloder.title} animated />
-      <section className={styles.categories_wrapper}>
-        <div>
-          <div className={styles.courses_list}>
-            {new Array(2).fill(null).map((_, index) =>
-              <div className={styles.course_item} key={index}>
-                <Skeleton animated style={preloder.image} />
-                <div className={styles.item_bady}>
-                  <div
-                    className={styles.item_bottom_wrapper}
-                  >
-                    <div
-                      className={styles.item_bottom_content}
-                    >
-                      <div className={styles.count_text}>
-                        <Skeleton animated style={preloder.count} />
-                      </div>
-                      <div className={styles.price_text}>
-                        <Skeleton animated style={preloder.price} />
-                      </div>
-                      <h3
-                        className={styles.title_text}
-                      >
-                        <Skeleton.Title style={preloder.name} />
-                      </h3>
-                      <div className={styles.weight_text}>
-                        <Skeleton animated style={preloder.weight} />
-                      </div>
-                    </div>
-                    <div style={{ margin: '0px -4px' }}>
-                      <Skeleton animated style={preloder.button} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-    </>
-  }
-})
-
-export default Categories
 
 
-export const CourseItemComponent: FC<{ course: CourseItem, priceWithDiscount?: number }> = observer(({ course, priceWithDiscount }) => {
-  const go = useGoUTM()
-  const watchCourse = useCallback(() => go('/menu/' + course.VCode), [])
+type CourseItemProps = { 
+  course: CourseItem, 
+  priceWithDiscount?: number,
+  watchCourse: () => void
+}
+export const CourseItemComponent: FC<CourseItemProps> = observer(props => {
+  const { course, priceWithDiscount, watchCourse } = props
   return (
     <div className={styles.course_item + ' course_item_card'}>
       <Image

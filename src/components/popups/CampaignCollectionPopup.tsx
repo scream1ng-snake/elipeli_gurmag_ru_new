@@ -6,22 +6,20 @@ import styles from '../pages/main/parts/Menu/Categories/Categories.module.css'
 import { Image, Skeleton } from "antd-mobile";
 import { toJS } from "mobx";
 import { Optional } from "../../features/helpers";
-import { useDeviceType, useGoUTM, useStore } from "../../features/hooks";
+import { useDeviceType, useStore } from "../../features/hooks";
 import config from "../../features/config";
 import { CourseItemComponent } from "../pages/main/parts/Menu/Categories/Categories";
-import { CourseItem } from "../../stores/menu.store";
+import { CourseItem, CourseReview } from "../../stores/menu.store";
 import { AllCampaignUser, DishDiscount, DishSetDiscount } from "../../stores/cart.store";
+import Popup from "../../features/modal";
+import { ItemModal } from "./Course";
 
 const Prepare = (str?: string) => str?.replace(/ *\{[^}]*\} */g, "") || ''
-const CampaignCollectionPopup: FC = () => {
+const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePopup: Popup<CourseItem, CourseReview[]> }> = (props) => {
   const { reception: { menu }, user, cart } = useStore()
 
-  const go = useGoUTM()
-  function close() {
-    menu.hotCampaignPopup.close()
-    go('/')
-  }
-  const currentCampaign = toJS(menu.hotCampaignPopup.content) as Optional<AllCampaignUser>
+  
+  const currentCampaign = toJS(props.popup.content) as Optional<AllCampaignUser>
 
   const courses: Set<CourseItem & { priceWithDiscount: number }> = new Set()
   if (currentCampaign) {
@@ -75,6 +73,7 @@ const CampaignCollectionPopup: FC = () => {
         }}
         className={styles.categories_wrapper}
       >
+        <ItemModal popup={props.childCousePopup} />
         <Image
           src={config.staticApi
             + "/api/v2/image/FileImage?fileId="
@@ -128,6 +127,7 @@ const CampaignCollectionPopup: FC = () => {
                   priceWithDiscount={cic.priceWithDiscount}
                   key={cic.couse.VCode}
                   course={cic.couse}
+                  watchCourse={() => menu.coursePopup2.watch(cic.couse)}
                 />
               )
             }
@@ -163,8 +163,8 @@ const CampaignCollectionPopup: FC = () => {
     }
   }
   return <AdaptivePopup
-    visible={menu.hotCampaignPopup.show && !!currentCampaign}
-    onClose={close}
+    visible={props.popup.show && !!currentCampaign}
+    onClose={props.popup.close}
     noCloseBtn
     noBottomNavDesktop
     bodyStyle={{
@@ -180,7 +180,7 @@ const CampaignCollectionPopup: FC = () => {
     shtorkaOffset='-10px'
   >
     <BackIcon
-      onClick={close}
+      onClick={props.popup.close}
       styles={{
         position: 'absolute',
         top: -12,

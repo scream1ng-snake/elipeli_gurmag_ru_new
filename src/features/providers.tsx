@@ -1,4 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
+import React, { createContext, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import RootStore from '../stores/root.store';
 import { StoreContext, ThemeContext } from './contexts';
 import { useTelegram } from './hooks';
@@ -44,10 +46,10 @@ export const ThemeProvider = ({ children }: WithChildren) => {
     document.documentElement.setAttribute(
       'data-prefers-color-scheme',
       theme
-   )
-   for (const Var of antdVariables) {
+    )
+    for (const Var of antdVariables) {
       document.documentElement.style.setProperty(Var.cssVar, Var[theme])
-   }
+    }
   }
   useEffect(() => {
     switchTheme(theme)
@@ -84,21 +86,21 @@ const tgVariables: Var[] = [
 /** кастомные переменные */
 const myVariables = [
   { cssVar: '--gurmag-accent-color', dark: '#F7BB0F', light: '#F7BB0F' },
-  { cssVar: '--громкий-текст', dark: '#FFFFFF', light: '#000000' }, 
-  { cssVar: '--тихий-текст', dark: '#BABABA', light: '#836868' }, 
+  { cssVar: '--громкий-текст', dark: '#FFFFFF', light: '#000000' },
+  { cssVar: '--тихий-текст', dark: '#BABABA', light: '#836868' },
 
   /* желтая кнопка */
   { cssVar: '--gur-secondary-accent-color', dark: '#BFFE00', light: '#BFFE00' },
   /* темный текст в некоторых кнопках */
   { cssVar: '--gur-custom-button-text-color', dark: '#000000', light: '#000000' },
-  
+
   /* переменные форм  */
   /* input (label и border) */
-  { cssVar: '--gur-input-color', dark: '#b3b3b3', light: '#9B9B9B' }, 
+  { cssVar: '--gur-input-color', dark: '#b3b3b3', light: '#9B9B9B' },
 
   /* граница круга сотрудников */
-  { cssVar: '--gur-border-color', dark: '#006241', light: '#006241' }, 
-  
+  { cssVar: '--gur-border-color', dark: '#006241', light: '#006241' },
+
   /* Переменные карточки товара */
   { cssVar: '--gur-card-bg-color', dark: '#232E3C', light: '#EDF1F4' },
   { cssVar: '--gur-card-image-text-color', dark: '#FFFFFF', light: '#FFFFFF' },
@@ -114,9 +116,9 @@ const myVariables = [
 ]
 
 const antdVariables: Var[] = [
-  { cssVar: '--adm-color-background', dark: 'var(--tg-theme-bg-color)', light: 'var(--tg-theme-bg-color)' }, 
-  { cssVar: '--adm-color-primary', dark: 'var(--gurmag-accent-color)', light: 'var(--gurmag-accent-color)' }, 
-  { cssVar: '--adm-color-box', dark: 'var(--tg-theme-secondary-bg-color)', light: 'var(--tg-theme-secondary-bg-color)' }, 
+  { cssVar: '--adm-color-background', dark: 'var(--tg-theme-bg-color)', light: 'var(--tg-theme-bg-color)' },
+  { cssVar: '--adm-color-primary', dark: 'var(--gurmag-accent-color)', light: 'var(--gurmag-accent-color)' },
+  { cssVar: '--adm-color-box', dark: 'var(--tg-theme-secondary-bg-color)', light: 'var(--tg-theme-secondary-bg-color)' },
   { cssVar: '--adm-font-family', dark: 'Roboto, sans-serif', light: 'Roboto, sans-serif' }
 ]
 
@@ -124,14 +126,40 @@ type WithChildren = {
   children: ReactNode
 }
 
-export const StoreProvider: React.FC<{ 
-  children: React.ReactNode, 
-  store: RootStore 
+export const StoreProvider: React.FC<{
+  children: React.ReactNode,
+  store: RootStore
 }> = ({ children, store }) => {
-  
+
   return (
     <StoreContext.Provider value={store}>
       {children}
     </StoreContext.Provider>
   )
 };
+
+
+
+// Контекст для хранения истории путей  
+export const HistoryContext = createContext<any>(null);
+
+// Провайдер истории  
+export function HistoryProvider({ children }: WithChildren) {
+  const location = useLocation();
+  const historyStack = useRef<any>([]);
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+
+    // Добавляем в стек, если новый путь отличается от последнего  
+    if (historyStack.current.length === 0 || historyStack.current[historyStack.current.length - 1] !== currentPath) {
+      historyStack.current.push(currentPath);
+    }
+  }, [location]);
+
+  return (
+    <HistoryContext.Provider value={historyStack}>
+      {children}
+    </HistoryContext.Provider>
+  );
+}

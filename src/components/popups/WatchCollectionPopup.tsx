@@ -106,6 +106,7 @@ export const CollectionPopup: FC = observer(p => {
                 <CourseItemComponent
                   key={course.VCode}
                   course={course}
+                  watchCourse={() => go('/menu/' + course.VCode)}
                 />
               )
             }

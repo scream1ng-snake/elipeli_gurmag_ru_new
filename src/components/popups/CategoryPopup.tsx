@@ -2,7 +2,7 @@ import { CapsuleTabs, SearchBar, Skeleton, Space } from 'antd-mobile'
 import { toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { CSSProperties, FC, useCallback, useEffect, useMemo } from 'react'
-import { useGoUTM, useStore } from '../../features/hooks'
+import { useGoUTM, useNavigateBack, useStore } from '../../features/hooks'
 import Container from 'react-bootstrap/Container'
 import BackIcon, { SearchIcon } from '../icons/Back'
 
@@ -20,7 +20,7 @@ const CategoryPopup: FC = observer(function () {
   const [searchParams, setSearcParams] = useSearchParams()
   const go = useGoUTM()
   const { reception: { menu }, auth } = useStore()
-  const { categoryPopup } = menu
+  const { categoryPopup, coursePopup } = menu
 
   const isLoading = menu.loadMenu.state === 'LOADING'
   const currentCategory = useMemo(
@@ -56,6 +56,11 @@ const CategoryPopup: FC = observer(function () {
     }
   }, [menu.loadMenu.state, menu.loadMenuBg.state])
 
+  
+  const navigateBack = useNavigateBack(); 
+  const goBack = () => {  
+    navigateBack()
+  };  
 
   return <AdaptivePopup
     visible={categoryPopup.show}
@@ -71,7 +76,7 @@ const CategoryPopup: FC = observer(function () {
       />
       : null
     }
-    <ItemModal close={() => { go('/') }} />
+    <ItemModal popup={coursePopup} close={() => { goBack() }} />
     <AskAuthorize />
     <AskLocation />
     {
@@ -133,6 +138,7 @@ const CategoryPopup: FC = observer(function () {
                   <CourseItemComponent
                     key={course.VCode}
                     course={course}
+                    watchCourse={() => go('/menu/' + course.VCode)}
                   />
                 )
                 : currentCategory?.CourseList.filter((course1, index, arr) =>
@@ -141,6 +147,7 @@ const CategoryPopup: FC = observer(function () {
                   <CourseItemComponent
                     key={course.VCode}
                     course={course}
+                    watchCourse={() => go('/menu/' + course.VCode)}
                   />
                 )
               }
