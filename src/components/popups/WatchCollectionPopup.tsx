@@ -102,13 +102,14 @@ export const CollectionPopup: FC = observer(p => {
               .filter((course1, index, arr) =>
                 arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
               )
-              .map(course =>
-                <CourseItemComponent
+              .map(course => {
+                return <CourseItemComponent
                   key={course.VCode}
                   course={course}
                   watchCourse={() => go('/menu/' + course.VCode)}
+                  haveCampaign={menu.checkCampaignForCourse(course)}
                 />
-              )
+              })
             }
           </div>
         </div>

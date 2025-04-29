@@ -56,11 +56,11 @@ const CategoryPopup: FC = observer(function () {
     }
   }, [menu.loadMenu.state, menu.loadMenuBg.state])
 
-  
-  const navigateBack = useNavigateBack(); 
-  const goBack = () => {  
+
+  const navigateBack = useNavigateBack();
+  const goBack = () => {
     navigateBack()
-  };  
+  };
 
   return <AdaptivePopup
     visible={categoryPopup.show}
@@ -70,7 +70,7 @@ const CategoryPopup: FC = observer(function () {
     noBottomNavDesktop
   >
     {auth.floatingIconAuthForGift.show
-      ? <GiftButton 
+      ? <GiftButton
         onClick={auth.bannerAuthForGift.open}
         style={{ zIndex: 2, position: 'absolute', right: '16px', bottom: '81px' }}
       />
@@ -134,22 +134,25 @@ const CategoryPopup: FC = observer(function () {
             </div>
             <div className={styles.courses_list} style={{ minHeight: 'calc(100vh) - 71px -65px' }}>
               {menu.dishSearcher.isSearching
-                ? menu.dishSearcher.result.map((course) =>
-                  <CourseItemComponent
+                ? menu.dishSearcher.result.map((course) => {
+                  return <CourseItemComponent
                     key={course.VCode}
                     course={course}
                     watchCourse={() => go('/menu/' + course.VCode)}
+                    haveCampaign={menu.checkCampaignForCourse(course)}
                   />
-                )
+
+                })
                 : currentCategory?.CourseList.filter((course1, index, arr) =>
                   arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
-                ).map((course) =>
-                  <CourseItemComponent
+                ).map((course) => {
+                  return <CourseItemComponent
                     key={course.VCode}
                     course={course}
                     watchCourse={() => go('/menu/' + course.VCode)}
+                    haveCampaign={menu.checkCampaignForCourse(course)}
                   />
-                )
+                })
               }
             </div>
           </Container>

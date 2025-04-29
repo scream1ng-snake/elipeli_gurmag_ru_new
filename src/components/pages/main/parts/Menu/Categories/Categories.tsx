@@ -7,20 +7,29 @@ import { CourseItem, RecomendationItem } from "../../../../../../stores/menu.sto
 import config from "../../../../../../features/config";
 import IconStar from '../../../../../../assets/icon_star.svg'
 import ImageReviews from '../../../../../../assets/image_reviews.svg'
+import hotCampaign from '../../../../../../assets/hotCampaign.png'
 import CustomButton from '../../../../../special/CustomButton'
 import Metrics from "../../../../../../features/Metrics";
 
+const CampaignLabel: FC = () => <div className="w-100" style={{ position: 'relative' }}>
+  <img src={hotCampaign} style={{ position: 'absolute', top: 4, right: 7 }} />
+</div>
 
-
-type CourseItemProps = { 
-  course: CourseItem, 
+type CourseItemProps = {
+  course: CourseItem,
   priceWithDiscount?: number,
   watchCourse: () => void
+  haveCampaign: boolean
 }
 export const CourseItemComponent: FC<CourseItemProps> = observer(props => {
-  const { course, priceWithDiscount, watchCourse } = props
+  const { course, priceWithDiscount, watchCourse, haveCampaign } = props
   return (
     <div className={styles.course_item + ' course_item_card'}>
+      {haveCampaign
+        ? <CampaignLabel />
+        : null
+      }
+
       <Image
         lazy
         src={`${config.staticApi}/api/v2/image/FileImage?fileId=${course.CompressImages?.[0]}`}
@@ -114,7 +123,7 @@ const CardBodyComponent: FC<CardBodyProps> = observer(({ course, watchCourse, pr
               </span>
               : <span>{`${course.Price} ₽`}</span>
             }
-            
+
           </div>
           <h3
             className={styles.title_text}

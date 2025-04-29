@@ -128,6 +128,7 @@ const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePop
                   key={cic.couse.VCode}
                   course={cic.couse}
                   watchCourse={() => menu.coursePopup2.watch(cic.couse)}
+                  haveCampaign={menu.checkCampaignForCourse(cic.couse)}
                 />
               )
             }
