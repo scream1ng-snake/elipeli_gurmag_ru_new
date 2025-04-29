@@ -8,7 +8,6 @@ import BottomNav from "../../common/BottomNav/BottomNav"
 import { useDeviceType, useGoUTM, useStore } from "../../../features/hooks"
 import Campaign from "./parts/CampaignItem"
 import { logger } from "../../../features/logger"
-import CampaignPopup from "../../popups/CampaignPopup"
 import Container from "react-bootstrap/Container"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
@@ -19,7 +18,7 @@ const CampaignsPage: FC = observer(() => {
   const go = useGoUTM()
   const { pathname } = useLocation()
   const { 
-    user: { info, campaignPopup, loadUserInfo }, 
+    user: { info, loadUserInfo }, 
     reception: { menu } 
   } = useStore()
 
@@ -30,7 +29,7 @@ const CampaignsPage: FC = observer(() => {
       // @ts-ignore
       const campaign = info.allCampaign.find(ac => ac.VCode == params.VCode)
       if (campaign) {
-        campaignPopup.watch(campaign)
+        menu.coursesCampaignPopup.watch(campaign)
       } else {
         logger.log('allCampaign vcode ' + params.VCode + ' not found', 'campaign-page')
         Toast.show('Такой акции уже нет')
@@ -40,10 +39,10 @@ const CampaignsPage: FC = observer(() => {
   }, [info.allCampaign, pathname])
   return <Wrapper styles={{ background: 'var(--tg-theme-bg-color)' }}>
     <Container className="p-0">
-      <CampaignPopup />
       <CampaignCollectionPopup 
         popup={menu.coursesCampaignPopup} 
         childCousePopup={menu.coursePopup2}
+        onClose={() => go('/campaigns')}
       />
       <NavBar
         onBack={() => go('/')}

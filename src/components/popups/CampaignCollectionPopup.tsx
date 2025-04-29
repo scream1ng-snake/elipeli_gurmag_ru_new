@@ -13,12 +13,18 @@ import { CourseItem, CourseReview } from "../../stores/menu.store";
 import { AllCampaignUser, DishDiscount, DishSetDiscount } from "../../stores/cart.store";
 import Popup from "../../features/modal";
 import { ItemModal } from "./Course";
+import { MyBadge } from "./CampaignPopup";
 
 const Prepare = (str?: string) => str?.replace(/ *\{[^}]*\} */g, "") || ''
-const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePopup: Popup<CourseItem, CourseReview[]> }> = (props) => {
+const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePopup: Popup<CourseItem, CourseReview[]>, onClose?: () => void }> = (props) => {
   const { reception: { menu }, user, cart } = useStore()
 
-  
+  function closeFn() {
+    props.popup.close()
+    props.onClose?.()
+  }
+
+
   const currentCampaign = toJS(props.popup.content) as Optional<AllCampaignUser>
 
   const courses: Set<CourseItem & { priceWithDiscount: number }> = new Set()
@@ -87,6 +93,15 @@ const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePop
           fallback={<Preloader />}
           placeholder={<Preloader />}
         />
+        {currentCampaign &&
+          <MyBadge
+            endtime={currentCampaign.endtime}
+            begintime={currentCampaign.begintime}
+            EndDate={currentCampaign.EndDate}
+            BeginDate={currentCampaign.BeginDate}
+            style={{ marginLeft: 20 }}
+          />
+        }
         <p
           style={{
             fontFamily: 'Arial',
@@ -122,15 +137,15 @@ const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePop
                   arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
                 )
                 .filter((course) => course.NoResidue || (!course.NoResidue && (course.EndingOcResidue > 0)))
-              ).itemsInCart.map(cic =>
-                <CourseItemComponent
-                  priceWithDiscount={cic.priceWithDiscount}
-                  key={cic.couse.VCode}
-                  course={cic.couse}
-                  watchCourse={() => menu.coursePopup2.watch(cic.couse)}
-                  haveCampaign={menu.checkCampaignForCourse(cic.couse)}
-                />
-              )
+            ).itemsInCart.map(cic =>
+              <CourseItemComponent
+                priceWithDiscount={cic.priceWithDiscount}
+                key={cic.couse.VCode}
+                course={cic.couse}
+                watchCourse={() => menu.coursePopup2.watch(cic.couse)}
+                haveCampaign={menu.checkCampaignForCourse(cic.couse)}
+              />
+            )
             }
           </div>
         </div>
@@ -165,7 +180,7 @@ const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePop
   }
   return <AdaptivePopup
     visible={props.popup.show && !!currentCampaign}
-    onClose={props.popup.close}
+    onClose={closeFn}
     noCloseBtn
     noBottomNavDesktop
     bodyStyle={{
@@ -181,7 +196,7 @@ const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePop
     shtorkaOffset='-10px'
   >
     <BackIcon
-      onClick={props.popup.close}
+      onClick={closeFn}
       styles={{
         position: 'absolute',
         top: -12,
