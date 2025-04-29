@@ -134,6 +134,8 @@ const CampaignsTooltip: FC<{ allCampaign: AllCampaignUser[] }> = (props) => {
     }
     {props.allCampaign.filter((campaign1, index, arr) =>
       arr.findIndex(campaign2 => (campaign2.VCode === campaign1.VCode)) === index
+    ).filter(campaign =>
+      !campaign.Name.includes('РЕТРОБОНУСЫ')
     ).map(campaigm => 
       <p key={campaigm.VCode} style={tooltipStyles.text}>{Prepare(campaigm.Name)}</p>
     )}
