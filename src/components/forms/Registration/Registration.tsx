@@ -64,7 +64,12 @@ const Registration: FC = observer(() => {
         cancelText='Закрыть'
       />
       <Container>
-        <NavBar onBack={() => { go('/') }}>
+        <NavBar 
+          onBack={() => { 
+            go('/')
+            auth.dismissAskAuth()  
+          }}
+        >
           Расскажите о себе
         </NavBar>
         <Form>

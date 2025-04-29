@@ -66,10 +66,12 @@ export class AuthStore {
   bannerAuthForGift = new Popup()
   floatingIconAuthForGift = new Popup()
   dismissAskAuth = () => {
-    localStorage.setItem('closeAskAuth', 'true')
-    this.bannerAuthForGift.close()
+    if(this.state !== 'AUTHORIZED') {
+      localStorage.setItem('closeAskAuth', 'true')
+      this.bannerAuthForGift.close()
 
-    this.floatingIconAuthForGift.open()
+      this.floatingIconAuthForGift.open()
+    }
   }
   /** верхний банер на главной, который предлагает пойти в тг */
   bannerToTg = new Popup()

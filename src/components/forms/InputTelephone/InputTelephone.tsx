@@ -49,7 +49,12 @@ const InputNumber: FC = observer(() => {
   }, [])
   return <Popup visible bodyClassName={styles.wrapper}>
     <Container>
-      <NavBar onBack={() => { go('/') }}>
+      <NavBar 
+        onBack={() => { 
+          go('/')
+          auth.dismissAskAuth() 
+        }}
+      >
         Вход по номеру
       </NavBar>
       {auth.authorize.state === 'LOADING' || auth.inputSmsCode.state === 'LOADING'

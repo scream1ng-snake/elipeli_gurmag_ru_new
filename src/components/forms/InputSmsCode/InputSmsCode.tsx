@@ -33,7 +33,12 @@ const InputSmsCode: FC = observer(() => {
         : null
       }
       <Container>
-        <NavBar onBack={() => { go('/') }}>
+        <NavBar 
+          onBack={() => { 
+            go('/')
+            auth.dismissAskAuth() 
+          }}
+        >
           Подтвердите номер
         </NavBar>
         <Form>
