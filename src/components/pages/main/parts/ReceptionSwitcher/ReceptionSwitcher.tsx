@@ -138,25 +138,6 @@ const ReceptionSwitcher: FC = observer(() => {
             }
           </div>
         </Col>
-        {!auth.isFailed
-          ? null
-          : <Col
-            xs={{ order: 1, span: 12 }}
-            md={{ order: 3, span: 4 }}
-            className='mb-3 d-flex justify-content-center'
-          >
-            <Button
-              shape='rounded'
-              className={styles.wizard_button + ' w-100'}
-              onClick={() => { go('/authorize') }}
-            >
-              <Space align='center'>
-                Получить подарок
-                <Gift />
-              </Space>
-            </Button>
-          </Col>
-        }
 
         <Col xs={{ order: 4, span: 'auto' }}>
           <div
@@ -202,24 +183,6 @@ export const ReceptionSwitcherEmpty = observer(() => {
               </Button>
             </div>
           </Col>
-          {!auth.isFailed
-            ? null
-            : <Col
-              xs={{ order: 1, span: 12 }}
-              md={{ order: 3, span: 5 }}
-              className='mb-3 d-flex justify-content-center'
-            >
-              <Button
-                shape='rounded'
-                className={styles.wizard_button + ' w-100'}
-              >
-                <Space align='center'>
-                  Получить подарок
-                  <Gift />
-                </Space>
-              </Button>
-            </Col>
-          }
           <Col xs={{ order: 4, span: 'auto' }}>
             <div className={styles.icon_wrapper}>
               <CircleIcon image={LogoGurmag} size={36} />
