@@ -54,7 +54,7 @@ const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePop
     if (setDiscount) {
       setDiscount.dishes.forEach(getDishByDiscount)
     }
-    cart.countDiscountForCouses(Array.from(courses))
+    // cart.countDiscountForCouses(Array.from(courses))
   }
 
   const Preloader: FC<{ animated?: boolean }> = props =>
@@ -131,21 +131,23 @@ const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePop
         <br />
         <div>
           <div className={styles.courses_list}>
-            {cart.countDiscountForCouses(
+            {
               Array.from(courses)
                 .filter((course1, index, arr) =>
                   arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
                 )
                 .filter((course) => course.NoResidue || (!course.NoResidue && (course.EndingOcResidue > 0)))
-            ).itemsInCart.map(cic =>
-              <CourseItemComponent
-                priceWithDiscount={cic.priceWithDiscount}
-                key={cic.couse.VCode}
-                course={cic.couse}
-                watchCourse={() => menu.coursePopup2.watch(cic.couse)}
-                haveCampaign={menu.checkCampaignForCourse(cic.couse)}
-              />
-            )
+                .map(cic => {
+                  const couse = cart.countDiscountForCouses(cic)
+                  return <CourseItemComponent
+                    priceWithDiscount={couse.priceWithDiscount}
+                    key={couse.couse.VCode}
+                    course={couse.couse}
+                    watchCourse={() => props.childCousePopup.watch(couse.couse)}
+                    haveCampaign={Boolean(couse.campaign)}
+                  />
+                }
+                )
             }
           </div>
         </div>

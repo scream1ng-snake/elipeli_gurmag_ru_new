@@ -17,7 +17,7 @@ import AskAuthorize from './AskAuthorize'
 
 
 export const CollectionPopup: FC = observer(p => {
-  const { reception: { menu }, auth } = useStore()
+  const { reception: { menu }, auth, cart } = useStore()
   const device = useDeviceType()
 
   const go = useGoUTM()
@@ -103,11 +103,13 @@ export const CollectionPopup: FC = observer(p => {
                 arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
               )
               .map(course => {
+                const cic = cart.countDiscountForCouses(course)
                 return <CourseItemComponent
                   key={course.VCode}
                   course={course}
                   watchCourse={() => go('/menu/' + course.VCode)}
-                  haveCampaign={menu.checkCampaignForCourse(course)}
+                  haveCampaign={Boolean(cic.campaign)}
+                  priceWithDiscount={cic.priceWithDiscount}
                 />
               })
             }

@@ -127,9 +127,11 @@ const tooltipStyles: Record<string, CSSProperties> = {
 const CampaignsTooltip: FC<{ allCampaign: AllCampaignUser[] }> = (props) => {
   if(!props.allCampaign.length) return null
   return <div style={tooltipStyles.div} className="ms-5">
-    <img src={FireIco} style={tooltipStyles.icon} />
-    {props.allCampaign.length
-      ? <p style={tooltipStyles.header}>Вы участвуете в акции:</p>
+    {props.allCampaign.filter(c => c.VCode != "36").length
+      ? <>
+        <img src={FireIco} style={tooltipStyles.icon} />
+        <p style={tooltipStyles.header}>Вы участвуете в акции:</p>
+      </>
       : null
     }
     {props.allCampaign.filter((campaign1, index, arr) =>

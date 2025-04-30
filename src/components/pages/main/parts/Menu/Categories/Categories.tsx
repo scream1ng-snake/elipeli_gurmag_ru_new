@@ -157,9 +157,15 @@ const CardBodyComponent: FC<CardBodyProps> = observer(({ course, watchCourse, pr
   )
 })
 
-export const RecomendationItemComponent: FC<{ course: RecomendationItem }> = observer(({ course }) => {
+export const RecomendationItemComponent: FC<{ course: RecomendationItem, priceWithDiscount: number, haveCampaign: boolean }> = observer((props) => {
+  
+  const { course, priceWithDiscount, haveCampaign } = props
   return (
     <div className={styles.recomendation_item + ' course_item_card'}>
+      {haveCampaign
+        ? <CampaignLabel />
+        : null
+      }
       <Image
         lazy
         src={`${config.staticApi}/api/v2/image/FileImage?fileId=${course.CompressImages?.[0]}`}
@@ -173,12 +179,15 @@ export const RecomendationItemComponent: FC<{ course: RecomendationItem }> = obs
           "--width": "auto"
         }}
       />
-      <RecomendationBodyComponent course={course} />
+      <RecomendationBodyComponent 
+        course={course} 
+        priceWithDiscount={priceWithDiscount}
+      />
     </div>
   )
 })
 
-const RecomendationBodyComponent: FC<{ course: RecomendationItem }> = observer(({ course }) => {
+const RecomendationBodyComponent: FC<{ course: RecomendationItem, priceWithDiscount: number }> = observer(({ course, priceWithDiscount }) => {
   const { reception: { menu, selectedOrgID, nearestOrgForDelivery }, cart, auth, user, vkMiniAppMetrics } = useStore()
 
   const handleAddToCart = useCallback((e?: any) => {
@@ -224,7 +233,7 @@ const RecomendationBodyComponent: FC<{ course: RecomendationItem }> = observer((
         </div>
       </div>
       <div className={styles.item_bottom_wrapper}>
-        <div className={styles.item_bottom_content}>
+      <div className={styles.item_bottom_content}>
           {!course.NoResidue
             ? <div className={styles.count_text}>
               {'В наличии ' + course.EndingOcResidue + ' шт'}
@@ -236,7 +245,15 @@ const RecomendationBodyComponent: FC<{ course: RecomendationItem }> = observer((
               : null
           }
           <div className={styles.price_text}>
-            <span>{`${course.Price} ₽`}</span>
+            {priceWithDiscount && priceWithDiscount < course.Price
+              ? <span>
+                <span className={styles.hotPrice}>{priceWithDiscount + ' ₽'}</span>
+                {' '}
+                <span><s>{course.Price + ' ₽'}</s></span>
+              </span>
+              : <span>{`${course.Price} ₽`}</span>
+            }
+
           </div>
           <h3
             className={styles.title_text}

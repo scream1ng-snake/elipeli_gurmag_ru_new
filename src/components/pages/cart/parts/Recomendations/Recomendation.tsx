@@ -1,8 +1,6 @@
-import { Button, Image, Space } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { CSSProperties, FC } from "react"
-import { useGoUTM, useStore } from "../../../../../features/hooks"
-import config from "../../../../../features/config"
+import { useStore } from "../../../../../features/hooks"
 import { RecomendationItemComponent } from "../../../main/parts/Menu/Categories/Categories"
 import styles from '../../../main/parts/Menu/Categories/Categories.module.css'
 const css: Record<string, CSSProperties> = {
@@ -22,12 +20,15 @@ const Recomendations: FC = observer(() => {
       : null
     }
     <div className={styles.recomendations_list}>
-      {filtered_recomendations.map((recomendation, index) =>
-        <RecomendationItemComponent
+      {filtered_recomendations.map((recomendation) => {
+        const cic = cart.countDiscountForCouses(recomendation)
+        return <RecomendationItemComponent
           key={recomendation.VCode}
           course={recomendation}
+          priceWithDiscount={cic.priceWithDiscount}
+          haveCampaign={Boolean(cic.campaign)}
         />
-      )}
+      })}
     </div>
   </>
 })

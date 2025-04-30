@@ -152,19 +152,7 @@ class MenuStore {
     return all.find(dish => dish.VCode == id)
   }
 
-  checkCampaignForCourse(course: CourseItem): boolean {
-    const { dishDiscounts, dishSet } = this.parrent.root.user.info
-    const dishDiscount = dishDiscounts.find(discount => 
-      discount.dish === course.VCode
-    )
-
-    const setDiscount = dishSet.find(set => 
-      Boolean(set.dishes.find(discount => 
-        discount.dish === course.VCode
-      ))
-    )
-    return Boolean(setDiscount || dishDiscount)
-  }
+  
 }
 
 export default MenuStore

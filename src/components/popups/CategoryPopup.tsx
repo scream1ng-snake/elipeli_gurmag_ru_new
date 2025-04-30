@@ -19,7 +19,7 @@ import { GiftButton } from '../icons/GiftButton'
 const CategoryPopup: FC = observer(function () {
   const [searchParams, setSearcParams] = useSearchParams()
   const go = useGoUTM()
-  const { reception: { menu }, auth } = useStore()
+  const { reception: { menu }, auth, cart } = useStore()
   const { categoryPopup, coursePopup } = menu
 
   const isLoading = menu.loadMenu.state === 'LOADING'
@@ -135,22 +135,26 @@ const CategoryPopup: FC = observer(function () {
             <div className={styles.courses_list} style={{ minHeight: 'calc(100vh) - 71px -65px' }}>
               {menu.dishSearcher.isSearching
                 ? menu.dishSearcher.result.map((course) => {
+                  const cic = cart.countDiscountForCouses(course)
                   return <CourseItemComponent
                     key={course.VCode}
                     course={course}
                     watchCourse={() => go('/menu/' + course.VCode)}
-                    haveCampaign={menu.checkCampaignForCourse(course)}
+                    priceWithDiscount={cic.priceWithDiscount}
+                    haveCampaign={Boolean(cic.campaign)}
                   />
 
                 })
                 : currentCategory?.CourseList.filter((course1, index, arr) =>
                   arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
                 ).map((course) => {
+                  const cic = cart.countDiscountForCouses(course)
                   return <CourseItemComponent
                     key={course.VCode}
+                    priceWithDiscount={cic.priceWithDiscount}
                     course={course}
                     watchCourse={() => go('/menu/' + course.VCode)}
-                    haveCampaign={menu.checkCampaignForCourse(course)}
+                    haveCampaign={Boolean(cic.campaign)}
                   />
                 })
               }

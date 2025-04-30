@@ -716,13 +716,13 @@ export class CartStore {
   }
 
   
-  countDiscountForCouses(items: CourseItem[]) {
+  countDiscountForCouses(item: CourseItem) {
     const state = {
-      items: items.map(couse => ({
-        couse,
+      items: [{
+        couse: item,
         quantity: 1,
-        priceWithDiscount: couse.Price,
-      } as CouseInCart)),
+        priceWithDiscount: item.Price,
+      } as CouseInCart],
       presents: [] as CouseInCart[],
     }
     const {
@@ -1005,7 +1005,9 @@ export class CartStore {
       //если есть процентная скидка, сразу её ставим
       courseItem.priceWithDiscount = courseItem.couse.priceWithDiscount * courseItem.quantity;
     }
-    return new_state
+    // @ts-ignore
+    if(new_state.itemsInCart[0].campaign == "36") { new_state.itemsInCart[0].campaign = undefined }
+    return new_state.itemsInCart[0]
   }
 
   applyDiscountForCart(userInfo: UserInfoState) {

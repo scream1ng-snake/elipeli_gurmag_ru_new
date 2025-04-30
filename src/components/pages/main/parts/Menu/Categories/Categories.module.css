@@ -276,5 +276,5 @@
   left: calc(50% - 23px);
 }
 .hotPrice {
-  color: #E42B31;
+  color: rgba(71, 174, 83, 1);
 }
