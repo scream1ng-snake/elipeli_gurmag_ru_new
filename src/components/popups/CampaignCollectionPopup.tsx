@@ -10,7 +10,7 @@ import { useDeviceType, useStore } from "../../features/hooks";
 import config from "../../features/config";
 import { CourseItemComponent } from "../pages/main/parts/Menu/Categories/Categories";
 import { CourseItem, CourseReview } from "../../stores/menu.store";
-import { AllCampaignUser, DishDiscount, DishSetDiscount } from "../../stores/cart.store";
+import { AddOne, AllCampaignUser, DishDiscount, DishSetDiscount } from "../../stores/cart.store";
 import Popup from "../../features/modal";
 import { ItemModal } from "./Course";
 import { MyBadge } from "./CampaignPopup";
@@ -29,12 +29,13 @@ const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePop
 
   const courses: Set<CourseItem & { priceWithDiscount: number }> = new Set()
   if (currentCampaign) {
-    const { dishDiscounts, dishSet } = user.info
-    const findByVcode = (item: DishDiscount | DishSetDiscount) =>
+    const { dishDiscounts, dishSet, addOne } = user.info
+    const findByVcode = (item: DishDiscount | DishSetDiscount | AddOne) =>
       item.vcode === currentCampaign.VCode
 
     const dishDiscount = dishDiscounts.find(findByVcode)
     const setDiscount = dishSet.find(findByVcode)
+    const addOneDiscount = addOne.find(findByVcode)
     const getDishByDiscount = (dish: DishDiscount) => {
       const course = menu.getDishByID(dish.dish)
       if (course) {
@@ -54,7 +55,10 @@ const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePop
     if (setDiscount) {
       setDiscount.dishes.forEach(getDishByDiscount)
     }
-    // cart.countDiscountForCouses(Array.from(courses))
+    if(addOneDiscount) {
+      // @ts-ignore
+      addOneDiscount.dishes.forEach(getDishByDiscount)
+    }
   }
 
   const Preloader: FC<{ animated?: boolean }> = props =>
@@ -133,10 +137,10 @@ const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePop
           <div className={styles.courses_list}>
             {
               Array.from(courses)
-                .filter((course1, index, arr) =>
-                  arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
-                )
-                .filter((course) => course.NoResidue || (!course.NoResidue && (course.EndingOcResidue > 0)))
+                // .filter((course1, index, arr) =>
+                //   arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
+                // )
+                // .filter((course) => course.NoResidue || (!course.NoResidue && (course.EndingOcResidue > 0)))
                 .map(cic => {
                   const couse = cart.countDiscountForCouses(cic)
                   return <CourseItemComponent
