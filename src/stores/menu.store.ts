@@ -35,6 +35,11 @@ class MenuStore {
   recomendations: RecomendationItem[] = []
   setRecomendations(r: RecomendationItem[]) { this.recomendations = r }
 
+  attributes: Attribute[] = []
+  setAttributes(attrs: Attribute[]) {
+    this.attributes = attrs
+  }
+
 
   loadMenu = new Request(async (state, setState, orgID: number) => {
     setState('LOADING')
@@ -45,6 +50,7 @@ class MenuStore {
       this.setSelections(data?.SelectionMenu ?? [])
       this.setStories(data?.WebHistoty ?? [])
       this.setRecomendations(data?.ProductRecomendation ?? [])
+      this.setAttributes(data?.Attributes ?? [])
       setState('COMPLETED')
       this.loadMenuBg.run(orgID)
     } catch (err) {
@@ -63,6 +69,7 @@ class MenuStore {
       this.setSelections(dataBg.SelectionMenu ?? [])
       this.setStories(dataBg.WebHistoty ?? [])
       this.setRecomendations(dataBg.ProductRecomendation ?? [])
+      this.setAttributes(dataBg?.Attributes ?? [])
       this.loadMenu.setState('COMPLETED')
       setState('COMPLETED')
     }
@@ -165,6 +172,12 @@ type V3_userInfoResponse = {
   SelectionMenu: Selection[]
   WebHistoty: WebHistoty[]
   ProductRecomendation: RecomendationItem[]
+  Attributes: Attribute[]
+}
+
+export type Attribute = {
+  VCode: string,
+  Name: string
 }
 
 export type WebHistoty = {
@@ -204,6 +217,8 @@ export type Selection = {
   priceWithDiscount: any
   priceWithDiscountOld: any
   CookingTime: Optional<number>
+  /**"Attributes": "2,3" */
+  Attributes: Optional<string>
 }
 export type RecomendationItem = CourseItem & {
   /** "/collections/4" */

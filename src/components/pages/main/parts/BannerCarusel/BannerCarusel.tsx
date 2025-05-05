@@ -1,13 +1,14 @@
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
-import { useStore } from "../../../../../features/hooks";
-// import { getRandomItem } from "../../../../../features/helpers";
+import { useDeviceType, useStore } from "../../../../../features/hooks";
+import { getRandomItem } from "../../../../../features/helpers";
 import { Image, Skeleton, Swiper } from "antd-mobile";
 import config from "../../../../../features/config";
 
 
 const BannerCarusel: FC = () => {
   const { user, reception: { menu } } = useStore()
+  const device = useDeviceType()
   // const filteredCampaigns = user.info.allCampaign.filter(camp => 
   //   camp.image && camp.compresimage
   // )
@@ -21,10 +22,16 @@ const BannerCarusel: FC = () => {
     borderRadius: 15
   }
   return <div>
-    <h2 className="mb-2 mt-1">Выгодные акции</h2>
+    {user.hasHotCampaign.length
+      ? <h2 className="mb-2 mt-1">Выгодные акции</h2>
+      : null
+    }
     <Swiper 
       className="pe-3 mb-1" 
-      slideSize={isOne ? 100 : 80}
+      slideSize={device === 'mobile'
+        ? isOne ? 100 : 80
+        : 40
+      }
     >
       {user.hasHotCampaign.map(camp =>
       // {filteredCampaigns.map(camp =>

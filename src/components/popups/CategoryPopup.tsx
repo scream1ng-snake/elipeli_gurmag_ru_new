@@ -1,7 +1,7 @@
 import { CapsuleTabs, SearchBar, Skeleton, Space } from 'antd-mobile'
 import { toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
-import { CSSProperties, FC, useCallback, useEffect, useMemo } from 'react'
+import { CSSProperties, FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useGoUTM, useNavigateBack, useStore } from '../../features/hooks'
 import Container from 'react-bootstrap/Container'
 import BackIcon, { SearchIcon } from '../icons/Back'
@@ -15,6 +15,9 @@ import AdaptivePopup from '../common/Popup/Popup'
 import _ from 'lodash'
 import { useSearchParams } from 'react-router-dom'
 import { GiftButton } from '../icons/GiftButton'
+import { CloseButton } from 'react-bootstrap'
+import { CloseOutline } from 'antd-mobile-icons'
+import { CourseItem } from '../../stores/menu.store'
 
 const CategoryPopup: FC = observer(function () {
   const [searchParams, setSearcParams] = useSearchParams()
@@ -61,6 +64,20 @@ const CategoryPopup: FC = observer(function () {
   const goBack = () => {
     navigateBack()
   };
+
+  const [attr, setAttr] = useState<string | null>(null)
+
+  const toggleAttr = (key: string) =>
+    key === attr
+      ? setAttr(null)
+      : setAttr(key)
+
+  const coursesmenu = useMemo(() => attr
+    ? currentCategory?.CourseList.filter(course =>
+      course.Attributes?.includes(attr)
+    ) ?? []
+    : currentCategory?.CourseList ?? [],
+    [currentCategory, attr])
 
   return <AdaptivePopup
     visible={categoryPopup.show}
@@ -130,7 +147,33 @@ const CategoryPopup: FC = observer(function () {
                   )}
                 </CapsuleTabs>
               }
-
+              {!menu.attributes.length
+                ? null
+                : <CapsuleTabs
+                  className='attr_capsules'
+                  activeKey={attr}
+                  onChange={toggleAttr}
+                >
+                  {menu.attributes.map(atr => {
+                    const AtrName: FC = () => <div onClick={() => toggleAttr(atr.VCode)}>
+                      {atr.VCode === attr
+                        ? <Space>
+                          {atr.Name}
+                          <CloseOutline />
+                        </Space>
+                        : atr.Name
+                      }
+                    </div>
+                    return (
+                      <CapsuleTabs.Tab
+                        title={<AtrName />}
+                        key={atr.VCode}
+                        className='attr_capsule'
+                      />
+                    )
+                  })}
+                </CapsuleTabs>
+              }
             </div>
             <div className={styles.courses_list} style={{ minHeight: 'calc(100vh) - 71px -65px' }}>
               {menu.dishSearcher.isSearching
@@ -145,7 +188,7 @@ const CategoryPopup: FC = observer(function () {
                   />
 
                 })
-                : currentCategory?.CourseList.filter((course1, index, arr) =>
+                : coursesmenu.filter((course1, index, arr) =>
                   arr.findIndex(course2 => (course2.VCode === course1.VCode)) === index
                 ).map((course) => {
                   const cic = cart.countDiscountForCouses(course)

@@ -333,6 +333,27 @@ dl, ol, ul {
   font-weight: 700;
   line-height: 14.95px;
 }
+
+.attr_capsule .adm-capsule-tabs-tab:not(.adm-capsule-tabs-tab-active) {
+  background: rgba(254, 239, 205, 1) !important;
+}
+.attr_capsule .adm-capsule-tabs-tab {
+  padding: 6px 9px !important;
+  border-radius: 20px;
+  font-family: Arial;
+  font-weight: 700;
+  font-size: 12.5px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.2);
+  margin-bottom: 6px;
+}
+
+.attr_capsules>.adm-capsule-tabs-header {
+  padding-bottom: 0;
+  padding-top: 0;
+  margin-top: -4px;
+}
 .tCenter {
   text-align: center;
 }
