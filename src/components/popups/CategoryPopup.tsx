@@ -81,7 +81,7 @@ const CategoryPopup: FC = observer(function () {
 
   const coursesmenu = useMemo(() => {
     return (currentCategory?.CourseList ?? []).filter(item => {
-      if (selectedAttributes.size === 0) return true 
+      if (selectedAttributes.size === 0) return true
 
       if (!item.Attributes) return false
       const itemAttributes = new Set(item.Attributes.split(',').map(attr => attr.trim()))
@@ -95,6 +95,19 @@ const CategoryPopup: FC = observer(function () {
       return true
     })
   }, [currentCategory, selectedAttributes.size])
+
+  const attributes = useMemo(() => {
+    const courseItems = currentCategory?.CourseList ?? []
+    const attributeIdsInMenu = new Set<string>()
+
+    for (const item of courseItems) {
+      if(!item.Attributes) continue
+      const ids = item.Attributes.split(',').map(id => id.trim())
+      ids.forEach(id => attributeIdsInMenu.add(id))
+    }
+
+    return menu.attributes.filter(attr => attributeIdsInMenu.has(attr.VCode))
+  }, [currentCategory])
 
   const attrs = Array.from(selectedAttributes)
   return <AdaptivePopup
@@ -165,14 +178,14 @@ const CategoryPopup: FC = observer(function () {
                   )}
                 </CapsuleTabs>
               }
-              {!menu.attributes.length
+              {!attributes.length
                 ? null
                 : <CapsuleTabs
                   className='attr_capsules'
                   activeKey={attrs[attrs.length - 1]}
-                  // onChange={toggleAttr}
+                // onChange={toggleAttr}
                 >
-                  {menu.attributes.map(atr => {
+                  {attributes.map(atr => {
                     const isChecked = attrs.includes(atr.VCode)
                     const AtrName: FC = () => <div onClick={() => toggleAttr(atr.VCode)}>
                       {isChecked
