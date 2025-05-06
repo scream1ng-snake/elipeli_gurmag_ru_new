@@ -65,20 +65,38 @@ const CategoryPopup: FC = observer(function () {
     navigateBack()
   };
 
-  const [attr, setAttr] = useState<string | null>(null)
+  const [selectedAttributes, setSelectedAttributes] = useState<Set<string>>(new Set())
 
-  const toggleAttr = (key: string) =>
-    key === attr
-      ? setAttr(null)
-      : setAttr(key)
+  const toggleAttr = (id: string) =>
+    setSelectedAttributes(prev => {
+      // debugger
+      const newSet = new Set(prev)
+      if (newSet.has(id)) {
+        newSet.delete(id)
+      } else {
+        newSet.add(id)
+      }
+      return newSet
+    })
 
-  const coursesmenu = useMemo(() => attr
-    ? currentCategory?.CourseList.filter(course =>
-      course.Attributes?.includes(attr)
-    ) ?? []
-    : currentCategory?.CourseList ?? [],
-    [currentCategory, attr])
+  const coursesmenu = useMemo(() => {
+    return (currentCategory?.CourseList ?? []).filter(item => {
+      if (selectedAttributes.size === 0) return true 
 
+      if (!item.Attributes) return false
+      const itemAttributes = new Set(item.Attributes.split(',').map(attr => attr.trim()))
+
+      // Проверяем, есть ли каждый выбранный атрибут у этого предмета  
+      for (const attrId of Array.from(selectedAttributes)) {
+        if (!itemAttributes.has(attrId)) {
+          return false
+        }
+      }
+      return true
+    })
+  }, [currentCategory, selectedAttributes.size])
+
+  const attrs = Array.from(selectedAttributes)
   return <AdaptivePopup
     visible={categoryPopup.show}
     onClose={goMain}
@@ -151,12 +169,13 @@ const CategoryPopup: FC = observer(function () {
                 ? null
                 : <CapsuleTabs
                   className='attr_capsules'
-                  activeKey={attr}
-                  onChange={toggleAttr}
+                  activeKey={attrs[attrs.length - 1]}
+                  // onChange={toggleAttr}
                 >
                   {menu.attributes.map(atr => {
+                    const isChecked = attrs.includes(atr.VCode)
                     const AtrName: FC = () => <div onClick={() => toggleAttr(atr.VCode)}>
-                      {atr.VCode === attr
+                      {isChecked
                         ? <Space>
                           {atr.Name}
                           <CloseOutline />
@@ -168,7 +187,7 @@ const CategoryPopup: FC = observer(function () {
                       <CapsuleTabs.Tab
                         title={<AtrName />}
                         key={atr.VCode}
-                        className='attr_capsule'
+                        className={isChecked ? 'attr_capsule attr_capsule_checked' : 'attr_capsule'}
                       />
                     )
                   })}

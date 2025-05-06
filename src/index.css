@@ -318,9 +318,17 @@ dl, ol, ul {
 .adm-scroll-mask-left {
   background: linear-gradient(to right, var(--tg-theme-secondary-bg-color), rgba(255, 255, 255, 0)) !important;
 }
-.adm-capsule-tabs-tab-active {
+/* .adm-capsule-tabs-tab-active {
   color: white !important;
   background-color: rgba(44, 46, 58, 1) !important;
+} */
+.header_capsule>.adm-capsule-tabs-tab-active {
+  color: white !important;
+  background-color: rgba(44, 46, 58, 1) !important;
+}
+.attr_capsule>.adm-capsule-tabs-tab-active {
+  color: black !important;
+  background: rgba(254, 239, 205, 1) !important;
 }
 
 .header_capsule .adm-capsule-tabs-tab:not(.adm-capsule-tabs-tab-active) {
@@ -335,7 +343,7 @@ dl, ol, ul {
 }
 
 .attr_capsule .adm-capsule-tabs-tab:not(.adm-capsule-tabs-tab-active) {
-  background: rgba(254, 239, 205, 1) !important;
+  background: rgba(254, 239, 205, 1);
 }
 .attr_capsule .adm-capsule-tabs-tab {
   padding: 6px 9px !important;
@@ -353,6 +361,11 @@ dl, ol, ul {
   padding-bottom: 0;
   padding-top: 0;
   margin-top: -4px;
+}
+
+.attr_capsule_checked>.adm-capsule-tabs-tab {
+  color: white !important;
+  background-color: rgba(44, 46, 58, 1) !important;
 }
 .tCenter {
   text-align: center;
