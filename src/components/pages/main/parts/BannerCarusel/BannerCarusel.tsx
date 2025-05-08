@@ -1,14 +1,11 @@
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
-import { useDeviceType, useStore } from "../../../../../features/hooks";
-import { getRandomItem } from "../../../../../features/helpers";
+import { useStore } from "../../../../../features/hooks";
 import { Image, Skeleton, Swiper } from "antd-mobile";
 import config from "../../../../../features/config";
 
-
 const BannerCarusel: FC = () => {
   const { user, reception: { menu } } = useStore()
-  const device = useDeviceType()
   // const filteredCampaigns = user.info.allCampaign.filter(camp => 
   //   camp.image && camp.compresimage
   // )
@@ -28,10 +25,7 @@ const BannerCarusel: FC = () => {
     }
     <Swiper 
       className="pe-3 mb-1" 
-      slideSize={device === 'mobile'
-        ? isOne ? 100 : 80
-        : 40
-      }
+      slideSize={isOne ? 100 : 80}
     >
       {user.hasHotCampaign.map(camp =>
       // {filteredCampaigns.map(camp =>

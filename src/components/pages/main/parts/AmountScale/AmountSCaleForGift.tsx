@@ -85,17 +85,6 @@ const AmountScaleForGift: FC = observer(() => {
             />
           </div>
         </Col>
-        <Col md={4} xs={12}>
-          <Button
-            className="mb-2"
-            size='large'
-            color='primary'
-            style={styles.btn}
-            onClick={() => { go('/basket') }}
-          >
-            В корзину
-          </Button>
-        </Col>
       </Row>
     </Container>
   </div>
