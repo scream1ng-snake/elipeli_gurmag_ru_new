@@ -15,9 +15,7 @@ import AdaptivePopup from '../common/Popup/Popup'
 import _ from 'lodash'
 import { useSearchParams } from 'react-router-dom'
 import { GiftButton } from '../icons/GiftButton'
-import { CloseButton } from 'react-bootstrap'
 import { CloseOutline } from 'antd-mobile-icons'
-import { CourseItem } from '../../stores/menu.store'
 
 const CategoryPopup: FC = observer(function () {
   const [searchParams, setSearcParams] = useSearchParams()
@@ -47,6 +45,7 @@ const CategoryPopup: FC = observer(function () {
     categoryPopup.close()
     menu.dishSearcher.reset()
     menu.searcher.close()
+    setSelectedAttributes(new Set())
   }
 
   useEffect(() => {
@@ -63,6 +62,7 @@ const CategoryPopup: FC = observer(function () {
   const navigateBack = useNavigateBack();
   const goBack = () => {
     navigateBack()
+    setSelectedAttributes(new Set())
   };
 
   const [selectedAttributes, setSelectedAttributes] = useState<Set<string>>(new Set())
