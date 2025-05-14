@@ -126,7 +126,6 @@ const Stories: FC = observer(() => {
                 objectFit: 'cover'
               }}
             />
-            <p>{story.NameHistory}</p>
           </div>
         )
         : new Array(4).fill(null).map((_, index) => <StoryImgPreloader key={index} />)
