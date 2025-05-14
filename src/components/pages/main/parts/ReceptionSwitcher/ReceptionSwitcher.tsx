@@ -82,7 +82,7 @@ const ReceptionSwitcher: FC = observer(() => {
         onContinue={handleClose}
       />
       <Row
-        className='justify-content-sm-center mt-3'
+        className='justify-content-sm-center'
         style={auth.isFailed && auth.bannerToTg.show
           ? {
             background: 'var(--tg-theme-bg-color)',
@@ -90,8 +90,9 @@ const ReceptionSwitcher: FC = observer(() => {
             borderTopRightRadius: 15,
             borderBottomLeftRadius: 0,
             borderBottomRightRadius: 0,
+            marginTop: 2
           }
-          : { background: 'var(--tg-theme-secondary-bg-color)' }
+          : { background: 'var(--tg-theme-secondary-bg-color)', marginTop: 2 }
         }
       >
         <Col
@@ -106,7 +107,8 @@ const ReceptionSwitcher: FC = observer(() => {
         <Col
           xs={{ order: 3 }}
           md={{ order: 2 }}
-          className='mb-3 p-0'
+          className='p-0'
+          style={{ marginBottom: 7 }}
         >
           <div
             onClick={open}
@@ -168,15 +170,14 @@ const ReceptionSwitcher: FC = observer(() => {
  * но без логики 
  */
 export const ReceptionSwitcherEmpty = observer(() => {
-  const { auth } = useStore()
   return (
     <div className={styles.head_wrapper}>
       <Container>
-        <Row className='justify-content-sm-center mt-3'>
+        <Row className='justify-content-sm-center' style={{ marginTop: 2 }}>
           <Col xs={{ order: 2, span: 'auto' }} md={{ order: 1 }}>
             <CircleIcon image={IconChoice} size={36} />
           </Col>
-          <Col xs={{ order: 3 }} md={{ order: 2 }} className='mb-3'>
+          <Col xs={{ order: 3 }} md={{ order: 2 }} style={{ marginBottom: 2 }}>
             <div>
               <Button color='primary' shape='rounded' className='w-100'>
                 Доставить или забрать?
