@@ -92,8 +92,8 @@ const CampaignCollectionPopup: FC<{ popup: Popup<AllCampaignUser>, childCousePop
           style={{
             borderTopLeftRadius: 33,
             borderTopRightRadius: 33,
+            aspectRatio: '1082/482'
           }}
-
           fallback={<Preloader />}
           placeholder={<Preloader />}
         />

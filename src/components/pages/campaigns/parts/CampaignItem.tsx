@@ -22,7 +22,7 @@ const Campaign: FC<pops> = observer(({ actia }) => {
       justifyContent: "space-between",
     },
     img: {
-      aspectRatio: '1147/409',
+      aspectRatio: '1082/482',
       width: '100%',
       height: 'auto',
     }
@@ -39,7 +39,6 @@ const Campaign: FC<pops> = observer(({ actia }) => {
           }
           onContainerClick={() => go('/campaigns/' + actia.VCode)}
           style={styles.img}
-          fit='cover'
         />
         <MyBadge 
           style={{ marginLeft:19 }}

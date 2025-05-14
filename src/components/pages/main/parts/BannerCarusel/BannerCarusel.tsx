@@ -13,7 +13,7 @@ const BannerCarusel: FC = () => {
 
   const isOne = user.hasHotCampaign.length === 1
   const imgStyle = {
-    aspectRatio: isOne ? "" : '335/194',
+    aspectRatio: isOne ? "" : '1082/482',
     width: '100%',
     height: 'auto',
     borderRadius: 15
