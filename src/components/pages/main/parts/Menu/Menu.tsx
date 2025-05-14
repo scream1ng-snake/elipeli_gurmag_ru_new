@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { CSSProperties, FC, useCallback, useEffect, useState } from "react"
+import { CSSProperties, FC, useEffect } from "react"
 import styles from './Menu.module.css'
 import CourseReviewPopup from "../../../../popups/CourseReviewPopup.tsx"
 import { useGoUTM, useStore } from "../../../../../features/hooks"
@@ -9,8 +9,7 @@ import Row from "react-bootstrap/Row"
 import { Image, Skeleton, Toast } from "antd-mobile"
 import config from "../../../../../features/config"
 import CategoryPopup from "../../../../popups/CategoryPopup"
-import { toJS } from "mobx"
-import { useLocation, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { logger } from "../../../../../features/logger"
 // import Categories from "./Categories/Categories"
 
@@ -60,25 +59,9 @@ const imgStyle: CSSProperties = {
   aspectRatio: '351/491',
   borderRadius: 10,
 }
-const labelStyle: CSSProperties = {
-  position: 'absolute',
-
-  padding: '0.5rem',
-  width: 'calc(100% - 1rem)',
-  fontSize: 13,
-  fontWeight: 600,
-  lineHeight: '15.23px',
-  color: "black"
-}
 const Category: FC<{ category: CategoryCourse }> = ({ category }) => {
-  const [err, setErr] = useState(false)
   const go = useGoUTM()
   return <Col style={colStyle} xs={4} sm={3} md={2} xl={2}>
-    {err &&
-      <span style={labelStyle}>
-        {category.Name}
-      </span>
-    }
     <Image
       lazy
       fallback={<Skeleton style={imgStyle} />}
@@ -87,7 +70,6 @@ const Category: FC<{ category: CategoryCourse }> = ({ category }) => {
         + "/api/v2/image/FileImage?fileId="
         + category.Image
       }
-      onError={() => setErr(true)}
       onContainerClick={() => {
         go('/categories/' + category.VCode)
       }}
