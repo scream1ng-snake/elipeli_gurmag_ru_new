@@ -1,9 +1,9 @@
-import { FC } from 'react'
+import { FC, ReactNode } from 'react'
 import { Image } from 'antd-mobile'
 import styles from './styles.module.css'
 
 const CustomButton: FC<{
-  text: string,
+  text: ReactNode,
   onClick: Function,
   height: string,
   backgroundVar: string,

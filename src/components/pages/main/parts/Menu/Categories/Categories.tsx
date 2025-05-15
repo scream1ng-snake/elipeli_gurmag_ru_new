@@ -114,22 +114,13 @@ const CardBodyComponent: FC<CardBodyProps> = observer(({ course, watchCourse, pr
               </div>
               : null
           }
-          <div className={styles.price_text}>
-            {priceWithDiscount && priceWithDiscount < course.Price
-              ? <span>
-                <span className={styles.hotPrice}>{priceWithDiscount + ' ₽'}</span>
-                {' '}
-                <span><s>{course.Price + ' ₽'}</s></span>
-              </span>
-              : <span>{`${course.Price} ₽`}</span>
-            }
-
+          <div className={styles.price_text} onClick={watchCourse}>
+            {course.Name}
           </div>
           <h3
             className={styles.title_text}
-            onClick={watchCourse}
           >
-            <span>{course.Name}</span>
+            <span>{course.CourseDescription}</span>
           </h3>
           <div className={styles.weight_text}>
             <span>{course.Weigth}</span>
@@ -137,7 +128,15 @@ const CardBodyComponent: FC<CardBodyProps> = observer(({ course, watchCourse, pr
         </div>
         <div style={{ margin: '0px -4px' }}>
           <CustomButton
-            text={cart.isInCart(course) ? ('' + cart.findItem(course.VCode)?.quantity) : '+'}
+            // text={cart.isInCart(course) ? ('' + cart.findItem(course.VCode)?.quantity) : '+'}
+            text={priceWithDiscount && priceWithDiscount < course.Price
+              ? <span className={styles.button_price}>
+                <span className={styles.dashed_button_price}><s>{course.Price + ' ₽'}</s></span>
+                {' '}
+                <span>{'+ ' + priceWithDiscount + ' ₽'}</span>
+              </span>
+              : <span className={styles.button_price}>{`+ ${course.Price} ₽`}</span>
+            }
             onClick={handleAddToCart}
             height={'24px'}
             maxWidth={'auto'}
@@ -158,7 +157,7 @@ const CardBodyComponent: FC<CardBodyProps> = observer(({ course, watchCourse, pr
 })
 
 export const RecomendationItemComponent: FC<{ course: RecomendationItem, priceWithDiscount: number, haveCampaign: boolean }> = observer((props) => {
-  
+
   const { course, priceWithDiscount, haveCampaign } = props
   return (
     <div className={styles.recomendation_item + ' course_item_card'}>
@@ -179,8 +178,8 @@ export const RecomendationItemComponent: FC<{ course: RecomendationItem, priceWi
           "--width": "auto"
         }}
       />
-      <RecomendationBodyComponent 
-        course={course} 
+      <RecomendationBodyComponent
+        course={course}
         priceWithDiscount={priceWithDiscount}
       />
     </div>
@@ -233,7 +232,7 @@ const RecomendationBodyComponent: FC<{ course: RecomendationItem, priceWithDisco
         </div>
       </div>
       <div className={styles.item_bottom_wrapper}>
-      <div className={styles.item_bottom_content}>
+        <div className={styles.item_bottom_content}>
           {!course.NoResidue
             ? <div className={styles.count_text}>
               {'В наличии ' + course.EndingOcResidue + ' шт'}

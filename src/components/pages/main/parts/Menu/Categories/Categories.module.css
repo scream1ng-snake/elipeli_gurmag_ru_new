@@ -128,28 +128,39 @@
   line-height: 14.06px;
 }
 .count_text {
-  margin-top: 4px;
+  margin-top: 2px;
   font-size: 10px;
   font-weight: 700;
   line-height: 11.72px;
   color: var(--gur-card-count-text-color);
 }
 .price_text {
-  margin-top: 3px;
-  font-size: 14.5px;
-  font-weight: 900;
-  line-height: 16.99px;
+  font-family: Arial;
+font-weight: 700;
+font-size: 12px;
+line-height: 100%;
+letter-spacing: 0%;
+margin-top: 3px;
+display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .title_text {
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 14.06px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  font-family: Arial;
+font-weight: 400;
+font-size: 10px;
+line-height: 100%;
+letter-spacing: 0%;
+  margin-top: 3px;
 }
 .weight_text {
   margin-top: 7px;
@@ -277,4 +288,28 @@
 }
 .hotPrice {
   color: rgba(71, 174, 83, 1);
+}
+
+.button_price {
+  font-family: Arial;
+font-weight: 700;
+font-size: 16px;
+line-height: 100%;
+letter-spacing: 0%;
+text-align: center;
+color: rgba(1, 98, 65, 1);
+
+vertical-align: middle;
+}
+
+.dashed_button_price {
+  font-family: Arial;
+font-weight: 700;
+font-size: 11.5px;
+line-height: 100%;
+letter-spacing: 0%;
+text-align: center;
+vertical-align: middle;
+color: rgba(157, 14, 18, 1);
+
 }
