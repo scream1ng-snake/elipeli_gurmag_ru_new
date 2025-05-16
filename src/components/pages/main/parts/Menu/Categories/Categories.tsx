@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite"
 import { FC, useCallback } from "react"
 import styles from './Categories.module.css'
 import { useGoUTM, useStore } from "../../../../../../features/hooks";
-import { Image, Skeleton, Toast } from "antd-mobile";
+import { Button, Image, Skeleton, Space, Toast } from "antd-mobile";
 import { CourseItem, RecomendationItem } from "../../../../../../stores/menu.store";
 import config from "../../../../../../features/config";
 import IconStar from '../../../../../../assets/icon_star.svg'
@@ -10,6 +10,8 @@ import ImageReviews from '../../../../../../assets/image_reviews.svg'
 import hotCampaign from '../../../../../../assets/hotCampaign.png'
 import CustomButton from '../../../../../special/CustomButton'
 import Metrics from "../../../../../../features/Metrics";
+import { MinusOutline } from "antd-mobile-icons";
+import { PlusOutlined } from "@ant-design/icons";
 
 const CampaignLabel: FC = () => <div className="w-100" style={{ position: 'relative' }}>
   <img src={hotCampaign} style={{ position: 'absolute', top: 4, right: 7 }} />
@@ -59,6 +61,11 @@ type CardBodyProps = {
 const CardBodyComponent: FC<CardBodyProps> = observer(({ course, watchCourse, priceWithDiscount }) => {
   const { reception: { menu, selectedOrgID, nearestOrgForDelivery }, cart, auth, user, vkMiniAppMetrics } = useStore()
 
+  const minusItem = (e?: any) => {
+    if (!nearestOrgForDelivery && !selectedOrgID) auth.bannerAskAdress.open()
+    e?.stopPropagation()
+    cart.removeFromCart(course.VCode)
+  }
   const handleAddToCart = useCallback((e?: any) => {
     if (!nearestOrgForDelivery && !selectedOrgID) auth.bannerAskAdress.open()
     e?.stopPropagation()
@@ -126,31 +133,55 @@ const CardBodyComponent: FC<CardBodyProps> = observer(({ course, watchCourse, pr
             <span>{course.Weigth}</span>
           </div>
         </div>
-        <div style={{ margin: '0px -4px' }}>
-          <CustomButton
-            // text={cart.isInCart(course) ? ('' + cart.findItem(course.VCode)?.quantity) : '+'}
-            text={priceWithDiscount && priceWithDiscount < course.Price
-              ? <span className={styles.button_price}>
-                <span className={styles.dashed_button_price}><s>{course.Price + ' ₽'}</s></span>
-                {' '}
-                <span>{'+ ' + priceWithDiscount + ' ₽'}</span>
-              </span>
-              : <span className={styles.button_price}>{`+ ${course.Price} ₽`}</span>
-            }
-            onClick={handleAddToCart}
-            height={'24px'}
-            maxWidth={'auto'}
-            marginTop={'0px'}
-            marginBottom={'0px'}
-            marginHorizontal={'0px'}
-            paddingHorizontal={'0px'}
-            fontWeight={'400'}
-            fontSize={cart.isInCart(course) ? '14.5px' : '18.5px'}
-            backgroundVar={'--gur-card-button-bg-color'}
-            colorVar={'--громкий-текст'}
-            appendImage={null}
-          />
-        </div>
+        {cart.isInCart(course)
+          ? <Space
+            style={{
+              background: 'var(--gur-border-color)',
+              height: 24,
+              borderRadius: 100,
+            }}
+            className={styles.added + ' w-100 ' + styles.button_price}
+            justify='around'
+            align='center'
+          >
+            <MinusOutline
+              style={{ fontSize: 20 }}
+              onClick={minusItem}
+            />
+            <span className={styles.added + ' ' + styles.button_price}>
+            {`${cart.findItem(course.VCode)?.priceWithDiscount || course.Price} ₽`}
+            </span>
+            <PlusOutlined
+              style={{ fontSize: 20 }}
+              onClick={handleAddToCart}
+            />
+          </Space>
+          : <div style={{ margin: '0px -4px' }}>
+            <CustomButton
+              // text={cart.isInCart(course) ? ('' + cart.findItem(course.VCode)?.quantity) : '+'}
+              text={priceWithDiscount && priceWithDiscount < course.Price
+                ? <span className={styles.not_added + ' ' + styles.button_price}>
+                  <span className={styles.dashed_button_price}><s>{course.Price + ' ₽'}</s></span>
+                  {' '}
+                  <span>{'+ ' + priceWithDiscount + ' ₽'}</span>
+                </span>
+                : <span className={styles.not_added + ' ' + styles.button_price}>{`+ ${course.Price} ₽`}</span>
+              }
+              onClick={handleAddToCart}
+              height={'24px'}
+              maxWidth={'auto'}
+              marginTop={'0px'}
+              marginBottom={'0px'}
+              marginHorizontal={'0px'}
+              paddingHorizontal={'0px'}
+              backgroundVar={cart.isInCart(course)
+                ? '--gur-border-color'
+                : '--gur-card-button-bg-color'
+              }
+              appendImage={null}
+            />
+          </div>
+        }
       </div>
     </div>
   )

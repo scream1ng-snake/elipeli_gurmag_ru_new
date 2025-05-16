@@ -7,7 +7,7 @@ const CustomButton: FC<{
   onClick: Function,
   height: string,
   backgroundVar: string,
-  colorVar: string,
+  colorVar?: string,
 
   disabled?: boolean
   minWidth?: string,
