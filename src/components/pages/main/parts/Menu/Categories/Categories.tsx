@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite"
 import { FC, useCallback } from "react"
 import styles from './Categories.module.css'
 import { useGoUTM, useStore } from "../../../../../../features/hooks";
-import { Button, Image, Skeleton, Space, Toast } from "antd-mobile";
+import { Image, Skeleton, Space, Toast } from "antd-mobile";
 import { CourseItem, RecomendationItem } from "../../../../../../stores/menu.store";
 import config from "../../../../../../features/config";
 import IconStar from '../../../../../../assets/icon_star.svg'
@@ -25,13 +25,14 @@ type CourseItemProps = {
 }
 export const CourseItemComponent: FC<CourseItemProps> = observer(props => {
   const { course, priceWithDiscount, watchCourse, haveCampaign } = props
+  const { cart } = useStore()
+  const isAdded = cart.findItem(course.VCode)
   return (
     <div className={styles.course_item + ' course_item_card'}>
       {haveCampaign
         ? <CampaignLabel />
         : null
       }
-
       <Image
         lazy
         src={`${config.staticApi}/api/v2/image/FileImage?fileId=${course.CompressImages?.[0]}`}
@@ -42,9 +43,29 @@ export const CourseItemComponent: FC<CourseItemProps> = observer(props => {
         height="134px"
         style={{
           "--height": "134px",
-          "--width": "auto"
+          "--width": "auto",
+          filter: isAdded
+            ? 'brightness(50%)'
+            : 'none'
         }}
       />
+      {isAdded
+        ? <div style={{ position: 'relative', width: '100%' }}>
+          <span
+            style={{
+              position: 'absolute',
+              left: 'calc(50% - 7px)',
+              top: '-75px',
+              color: 'white',
+              fontSize: 30
+            }}
+          >
+            {isAdded.quantity}
+          </span>
+        </div>
+        : null
+      }
+
       <CardBodyComponent
         course={course}
         watchCourse={watchCourse}
@@ -149,7 +170,7 @@ const CardBodyComponent: FC<CardBodyProps> = observer(({ course, watchCourse, pr
               onClick={minusItem}
             />
             <span className={styles.added + ' ' + styles.button_price}>
-            {`${cart.findItem(course.VCode)?.priceWithDiscount || course.Price} ₽`}
+              {`${cart.findItem(course.VCode)?.priceWithDiscount || course.Price} ₽`}
             </span>
             <PlusOutlined
               style={{ fontSize: 20 }}
