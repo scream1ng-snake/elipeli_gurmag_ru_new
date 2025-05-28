@@ -183,6 +183,7 @@ const CategoryPopup: FC = observer(function () {
                 : <CapsuleTabs
                   className='attr_capsules'
                   activeKey={attrs[attrs.length - 1]}
+                  style={{ color: 'black' }}
                 // onChange={toggleAttr}
                 >
                   {attributes.map(atr => {
