@@ -340,7 +340,10 @@ export class AuthStore {
 
   utm: Undef<string> = undefined
   get UTM() { return this.utm }
-  set UTM(utm: Undef<string>) { this.utm = utm }
+  set UTM(utm: Undef<string>) { 
+    console.log(utm); 
+    if(utm) this.utm = utm 
+  }
 
   authRequired = new Popup()
 }

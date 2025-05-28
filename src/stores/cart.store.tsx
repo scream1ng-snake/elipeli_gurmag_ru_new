@@ -1158,6 +1158,7 @@ export class CartStore {
     try {
       logger.log(JSON.stringify(order), 'order')
       setState('LOADING')
+      console.log(this.root.auth.utm)
 
       const response: [historyOrderItem] = await http.post(
         this.payment.method !== 'CARD_ONLINE'
