@@ -1163,7 +1163,7 @@ export class CartStore {
         this.payment.method !== 'CARD_ONLINE'
           ? '/NewOrderSlot'
           : '/NewOrderSlotPay',
-        order
+        { ...order, utm: this.root.auth.utm || null }
       )
 
       if (response?.[0]) {
