@@ -45,7 +45,7 @@ const Labels: FC<LabelProps> = ({ haveCampaign, allLabels, courselabels }) => {
           const label = labelsMap[labelVcode];  
           if (!label) return null;  
   
-          return <img src={`/labels/${label.Name}.png`} alt={label.Name} />
+          return <img key={labelVcode} src={`/labels/${label.Name}.png`} alt={label.Name} />
         })}
       </div>
     </div>
