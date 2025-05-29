@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { Optional, Request, Searcher, Undef } from "../features/helpers";
+import { Maybe, Optional, Request, Searcher, Undef } from "../features/helpers";
 import { http } from "../features/http";
 import { logger } from "../features/logger";
 import Popup from "../features/modal";
@@ -40,6 +40,9 @@ class MenuStore {
     this.attributes = attrs
   }
 
+  Labels: Label[] = []
+  setLabels(l: Label[]) { this.Labels = l }
+
 
   loadMenu = new Request(async (state, setState, orgID: number) => {
     setState('LOADING')
@@ -51,6 +54,7 @@ class MenuStore {
       this.setStories(data?.WebHistoty ?? [])
       this.setRecomendations(data?.ProductRecomendation ?? [])
       this.setAttributes(data?.Attributes ?? [])
+      this.setLabels(data?.Labels ?? [])
       setState('COMPLETED')
       this.loadMenuBg.run(orgID)
     } catch (err) {
@@ -70,6 +74,7 @@ class MenuStore {
       this.setStories(dataBg.WebHistoty ?? [])
       this.setRecomendations(dataBg.ProductRecomendation ?? [])
       this.setAttributes(dataBg?.Attributes ?? [])
+      this.setLabels(dataBg?.Labels ?? [])
       this.loadMenu.setState('COMPLETED')
       setState('COMPLETED')
     }
@@ -173,9 +178,14 @@ type V3_userInfoResponse = {
   WebHistoty: WebHistoty[]
   ProductRecomendation: RecomendationItem[]
   Attributes: Attribute[]
+  Labels?: Label[]
 }
 
 export type Attribute = {
+  VCode: string,
+  Name: string
+}
+export type Label = {
   VCode: string,
   Name: string
 }
@@ -219,6 +229,7 @@ export type Selection = {
   CookingTime: Optional<number>
   /**"Attributes": "2,3" */
   Attributes: Optional<string>
+  Labels: Maybe<string>
 }
 export type RecomendationItem = CourseItem & {
   /** "/collections/4" */

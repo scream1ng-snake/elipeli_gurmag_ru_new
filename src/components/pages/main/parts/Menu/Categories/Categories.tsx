@@ -1,9 +1,9 @@
 import { observer } from "mobx-react-lite"
-import { FC, useCallback } from "react"
+import { CSSProperties, FC, useCallback } from "react"
 import styles from './Categories.module.css'
 import { useGoUTM, useStore } from "../../../../../../features/hooks";
 import { Image, Skeleton, Space, Toast } from "antd-mobile";
-import { CourseItem, RecomendationItem } from "../../../../../../stores/menu.store";
+import { CourseItem, Label, RecomendationItem } from "../../../../../../stores/menu.store";
 import config from "../../../../../../features/config";
 import IconStar from '../../../../../../assets/icon_star.svg'
 import ImageReviews from '../../../../../../assets/image_reviews.svg'
@@ -12,10 +12,45 @@ import CustomButton from '../../../../../special/CustomButton'
 import Metrics from "../../../../../../features/Metrics";
 import { MinusOutline } from "antd-mobile-icons";
 import { PlusOutlined } from "@ant-design/icons";
+import { Maybe } from "../../../../../../features/helpers";
 
-const CampaignLabel: FC = () => <div className="w-100" style={{ position: 'relative' }}>
-  <img src={hotCampaign} style={{ position: 'absolute', top: 4, right: 7 }} />
-</div>
+const LabelStyles: Record<string, CSSProperties> = {
+  root: { position: 'relative' },
+  wrapper: { 
+    position: 'absolute', 
+    top: 4, 
+    right: 7, 
+    display: "flex", 
+    flexDirection: 'column',
+    alignItems: 'end',
+    justifyContent: 'end'
+  }
+}
+type LabelProps = {
+  haveCampaign: boolean
+  courselabels: Maybe<string>
+  allLabels: Label[]
+}
+const Labels: FC<LabelProps> = ({ haveCampaign, allLabels, courselabels }) => {
+  const labelVcodes = courselabels?.split(',')
+  const labelsMap = allLabels.reduce((acc, label) => {  
+    acc[label.VCode] = label
+    return acc
+  }, {} as Record<string, Label>)
+  return (
+    <div className="w-100" style={LabelStyles.root}>
+      <div style={LabelStyles.wrapper}>
+        {haveCampaign ? <img src={hotCampaign} /> : null}
+        {labelVcodes?.map(labelVcode => {
+          const label = labelsMap[labelVcode];  
+          if (!label) return null;  
+  
+          return <img src={`/labels/${label.Name}.png`} alt={label.Name} />
+        })}
+      </div>
+    </div>
+  )
+}
 
 type CourseItemProps = {
   course: CourseItem,
@@ -25,14 +60,15 @@ type CourseItemProps = {
 }
 export const CourseItemComponent: FC<CourseItemProps> = observer(props => {
   const { course, priceWithDiscount, watchCourse, haveCampaign } = props
-  const { cart } = useStore()
+  const { cart, reception: { menu }} = useStore()
   const isAdded = cart.findItem(course.VCode)
   return (
     <div className={styles.course_item + ' course_item_card'}>
-      {haveCampaign
-        ? <CampaignLabel />
-        : null
-      }
+      <Labels
+        haveCampaign={haveCampaign}
+        courselabels={course.Labels}
+        allLabels={menu.Labels}
+      />
       <Image
         lazy
         src={`${config.staticApi}/api/v2/image/FileImage?fileId=${course.CompressImages?.[0]}`}
@@ -209,14 +245,15 @@ const CardBodyComponent: FC<CardBodyProps> = observer(({ course, watchCourse, pr
 })
 
 export const RecomendationItemComponent: FC<{ course: RecomendationItem, priceWithDiscount: number, haveCampaign: boolean }> = observer((props) => {
-
+  const { reception: { menu }} = useStore()
   const { course, priceWithDiscount, haveCampaign } = props
   return (
     <div className={styles.recomendation_item + ' course_item_card'}>
-      {haveCampaign
-        ? <CampaignLabel />
-        : null
-      }
+      <Labels
+        haveCampaign={haveCampaign}
+        courselabels={course.Labels}
+        allLabels={menu.Labels}
+      />
       <Image
         lazy
         src={`${config.staticApi}/api/v2/image/FileImage?fileId=${course.CompressImages?.[0]}`}
