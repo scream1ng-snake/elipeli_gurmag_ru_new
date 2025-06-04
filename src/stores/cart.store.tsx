@@ -5,7 +5,7 @@ import { http } from "../features/http";
 import { setItem } from "../features/local-storage";
 import { logger } from "../features/logger";
 import { CourseItem } from "./menu.store";
-import RootStore from "./root.store";
+import RootStore, { AppValues } from "./root.store";
 import { UserInfoState } from "./user.store";
 import Slots from "./slots.store";
 import PaymentStore from "./payment.store";
@@ -1164,7 +1164,11 @@ export class CartStore {
         this.payment.method !== 'CARD_ONLINE'
           ? '/NewOrderSlot'
           : '/NewOrderSlotPay',
-        { ...order, utm: this.root.auth.utm || null }
+        { 
+          ...order, 
+          utm: this.root.auth.utm || null, 
+          webApp: AppValues[this.root.instance]
+        }
       )
 
       if (response?.[0]) {

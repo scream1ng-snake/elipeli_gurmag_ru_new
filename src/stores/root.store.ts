@@ -104,3 +104,10 @@ export const AppInstances = {
   VK: "VK",
 } as const;
 export type AppInstance = typeof AppInstances[keyof typeof AppInstances];
+
+export const AppValues = {
+  TG_BROWSER: 0,
+  WEB_BROWSER: 1,
+  VK: 2,
+  UNKNOWN: 1
+} as const 
