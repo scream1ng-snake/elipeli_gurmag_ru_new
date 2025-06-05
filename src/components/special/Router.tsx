@@ -157,13 +157,12 @@ const Metrics: FC<any> = p => {
     vkScript.type = 'text/javascript'
     vkScript.innerHTML = `
     var _tmr = window._tmr || (window._tmr = []);
-    var USER_ID = localStorage.getItem('myID') ?? 'USER_ID'
-    _tmr.push({ id: "3545385", type: "pageView", start: (new Date()).getTime(), pid: USER_ID });
+    _tmr.push({id: "3655321", type: "pageView", start: (new Date()).getTime(), pid: "USER_ID"});
     (function (d, w, id) {
       if (d.getElementById(id)) return;
       var ts = d.createElement("script"); ts.type = "text/javascript"; ts.async = true; ts.id = id;
       ts.src = "https://top-fwz1.mail.ru/js/code.js";
-      var f = function () { var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ts, s); };
+      var f = function () {var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ts, s);};
       if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); }
     })(document, window, "tmr-code");
     `

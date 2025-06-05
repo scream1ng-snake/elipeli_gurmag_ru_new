@@ -13,7 +13,7 @@ declare global {
 }
 
 abstract class Metrics {
-  static pixelID = 3545385
+  static pixelID = 3655321
 
   static isDev = false
 
