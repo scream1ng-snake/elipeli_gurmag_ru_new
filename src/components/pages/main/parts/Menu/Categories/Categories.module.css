@@ -14,8 +14,7 @@
   padding-left: 17px;
   padding-right: 17px;
   background: var(--tg-theme-bg-color);
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
+  border-radius: 15px;
   width: 100%;
 }
 .recomendations_list {
