@@ -208,7 +208,7 @@ const CategoryPopup: FC = observer(function () {
                 </CapsuleTabs>
               }
             </div>
-            <div className={styles.courses_list} style={{ minHeight: 'calc(100vh) - 71px -65px' }}>
+            <div className={styles.courses_list} style={{ paddingBottom: 65 }}>
               {menu.dishSearcher.isSearching
                 ? menu.dishSearcher.result.map((course) => {
                   const cic = cart.countDiscountForCouses(course)
