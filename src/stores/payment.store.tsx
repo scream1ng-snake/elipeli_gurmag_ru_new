@@ -9,21 +9,20 @@ import { Dialog } from "antd-mobile"
 import { logger } from "../features/logger"
 import { showPaymentInNewWindow } from "../components/special/NewWindow"
 import { useTelegram } from "../features/hooks"
+import Cash from '../assets/Cash.png'
+import BankCard from '../assets/BankCard.png'
 
 /** класс выбора способа оплаты */
 class PaymentStore {
   paymentLabels = {
     // [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]: 'Оплата картой при получении',
-    [paymentMethods.CARD_ONLINE]: 'Картой онлайн',
+    [paymentMethods.CARD_ONLINE]: 'Картой',
     [paymentMethods.CASH]: 'Наличными',
   }
 
-  iconstyle = { marginRight: '0.75rem', fontSize: 25, lineHeight: '25px' }
-
   paymentIcons = {
-    // [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]: <BankcardOutline style={this.iconstyle} />,
-    [paymentMethods.CARD_ONLINE]: <BankcardOutline style={this.iconstyle} />,
-    [paymentMethods.CASH]: <span style={this.iconstyle}>₽</span>,
+    [paymentMethods.CARD_ONLINE]: BankCard,
+    [paymentMethods.CASH]: Cash,
   }
 
   /** выбранный метод оплаты */

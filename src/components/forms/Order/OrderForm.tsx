@@ -1,4 +1,4 @@
-import { Input, Space, Form, Grid, Button, DatePicker, NoticeBar } from "antd-mobile"
+import { Input, Space, Form, Grid, Button, DatePicker, NoticeBar, Image } from "antd-mobile"
 import { toJS } from "mobx"
 import { observer } from "mobx-react-lite"
 import { CSSProperties, FC } from "react"
@@ -6,6 +6,9 @@ import { useGoUTM, useStore } from "../../../features/hooks"
 import styles from '../form.module.css'
 import moment from "moment"
 import Red from "../../special/RedText"
+import BankCard from '../../../assets/BankCard.png'
+import Cash from '../../../assets/Cash.png'
+import { PaymentMethod } from "../../../stores/payment.store"
 
 
 
@@ -164,8 +167,11 @@ const Details: FC<DetailsProps> = props => {
 }
 
 const Payment: FC = observer(() => {
-  const { cart } = useStore()
-  const { method, paymentIcons, paymentLabels, selectMethodPopup } = cart.payment
+  const { cart, reception } = useStore()
+  const { receptionType } = reception
+  const { method, paymentIcons, paymentLabels, setMethod, availableMethods } = cart.payment
+  
+  const methods = Object.keys(availableMethods[receptionType])
 
   const style: CSSProperties = {
     fontFamily: 'Arial',
@@ -176,9 +182,43 @@ const Payment: FC = observer(() => {
     marginTop: 10,
     marginBottom: 4
   }
+
+  const css: CSSProperties = {
+    fontFamily: 'Arial',
+    fontSize: 19,
+    fontWeight: 400,
+    width: 160,
+    height: 61,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    background: 'var(--tg-theme-bg-color)',
+    borderRadius: 10,
+    flex: '0 0 auto',
+    marginRight: 7
+  }
+
   return <>
     <h5 style={style} >Способ оплаты</h5>
-    <Form.Item
+    <Space className="asdfg" style={{ '--gap-horizontal': '0px', width: '100%', marginBottom:35 }}>
+      {methods.map(met => 
+        <Space 
+          onClick={() => setMethod(met as PaymentMethod)}
+          style={{ 
+            ...css, 
+            border: met === method 
+              ? '2px solid rgba(231, 129, 35, 1)'
+              : '1px solid rgba(173, 173, 175, 1)' 
+          }} 
+          justify='around'
+        >
+          <Image src={paymentIcons[met as PaymentMethod]} />
+          <span>{paymentLabels[met as PaymentMethod]}</span>
+        </Space>
+      )}
+
+    </Space>
+    {/* <Form.Item
       className={styles.addrInput + ' payment_select'}
       arrowIcon
       onClick={selectMethodPopup.open}
@@ -192,7 +232,7 @@ const Payment: FC = observer(() => {
         }
       </div>
 
-    </Form.Item>
+    </Form.Item> */}
     <div style={{ marginLeft: 20 }}>
       {!method
         ? <Red>*метод оплаты не выбран</Red>
@@ -350,7 +390,7 @@ const Slots: FC = observer(() => {
         </div>
       }
     </div>
-    <div style={{ marginLeft:19 }}>
+    <div style={{ marginLeft: 19 }}>
       {!cart.slots.selectedSlot
         ? <Red>*слот не выбран</Red>
         : null
