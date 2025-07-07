@@ -180,24 +180,9 @@ const UtmChecker: FC<any> = observer(p => {
   const [searchParams] = useSearchParams()
   const { auth } = useStore()
   useEffect(() => {
-    let utm_source = searchParams.get("utm_source") || undefined
-    let utm_medium = searchParams.get("utm_medium") || undefined
-    let utm_campaign = searchParams.get("utm_campaign") || undefined
-    let utm_content = searchParams.get("utm_content") || undefined
-    let utm_term = searchParams.get("utm_term") || undefined
-    let rb_clickid = searchParams.get("rb_clickid") || undefined
-    let yclid = searchParams.get("yclid") || undefined
-
-    let utm = JSON.stringify({
-      utm_source,
-      utm_medium,
-      utm_campaign,
-      utm_content,
-      utm_term,
-      rb_clickid,
-      yclid
-    })
-    auth.UTM = utm
+    const utmObj: Record<string, string> = {}
+    searchParams.forEach((val , key) =>  utmObj[key] = val)
+    auth.UTM = JSON.stringify(utmObj)
   }, [])
   return p.children
 })

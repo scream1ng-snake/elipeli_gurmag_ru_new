@@ -54,7 +54,8 @@ const CategoryPopup: FC = observer(function () {
       menu.dishSearcher.search(searchTerm)
       menu.searcher.open()
     } else {
-      setSearcParams({})
+      menu.dishSearcher.reset()
+      menu.searcher.close()
     }
   }, [menu.loadMenu.state, menu.loadMenuBg.state])
 
