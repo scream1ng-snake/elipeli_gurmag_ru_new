@@ -200,9 +200,10 @@ const Payment: FC = observer(() => {
 
   return <>
     <h5 style={style} >Способ оплаты</h5>
-    <Space className="asdfg" style={{ '--gap-horizontal': '0px', width: '100%', marginBottom:35 }}>
+    <Space className="asdfg" style={{ '--gap-horizontal': '0px', width: '100%' }}>
       {methods.map(met => 
         <Space 
+          key={met}
           onClick={() => setMethod(met as PaymentMethod)}
           style={{ 
             ...css, 
@@ -233,7 +234,7 @@ const Payment: FC = observer(() => {
       </div>
 
     </Form.Item> */}
-    <div style={{ marginLeft: 20 }}>
+    <div style={{ marginLeft: 20, height: 35, fontSize: 14.5 }}>
       {!method
         ? <Red>*метод оплаты не выбран</Red>
         : null
