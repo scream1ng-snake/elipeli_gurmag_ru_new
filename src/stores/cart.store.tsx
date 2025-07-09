@@ -1219,6 +1219,7 @@ export class CartStore {
   slots = new Slots(this)
 
   giftInfoPopup = new Popup()
+  deliveryPriceInfoPopup = new Popup()
 }
 
 

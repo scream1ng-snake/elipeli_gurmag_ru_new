@@ -17,5 +17,5 @@
 
 .orderButton {
   width: calc(100% - 2rem);
-  margin: 1rem;
+  margin: 16px 15px 7px 15px;
 }
