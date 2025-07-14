@@ -23,6 +23,7 @@ const AdaptivePopup: FC<Props> = props => {
   const device = useDeviceType()
   if (device === 'mobile') {
     return <Popup
+      destroyOnClose
       closeOnSwipe
       closeOnMaskClick
       showCloseButton={!props.noCloseBtn}
@@ -50,6 +51,7 @@ const AdaptivePopup: FC<Props> = props => {
     </Popup>
   } else {
     return <CenterPopup
+      destroyOnClose
       maskClassName="d-none d-sm-block"
       bodyClassName={`d-none d-sm-block ${props.bodyClassName || ''}`}
       closeOnMaskClick

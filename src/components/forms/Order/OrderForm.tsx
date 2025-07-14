@@ -70,6 +70,9 @@ const Pickup: FC = observer(() => {
       >
         Подтвердить
       </Button>
+      <br />
+      <br />
+      <br />
     </div>
   </Form>
 })
@@ -81,7 +84,7 @@ const Delivery: FC = observer(() => {
   }
   const { cart, reception } = useStore()
   const { datePick, date, setDate } = cart
-  const { selectLocationPopup: { open }, Location } = reception
+  const { selectLocationPopup2: { open }, Location } = reception
 
   const { road, house_number } = Location.confirmedAddress
   const isValid = road && house_number
@@ -109,6 +112,7 @@ const Delivery: FC = observer(() => {
           : ''
         }
         placeholder='Укажите адрес доставки'
+        onClick={e => e.preventDefault()}
       />
       {!road && !house_number
         ? <Red>*адрес не выбран</Red>
@@ -130,6 +134,9 @@ const Delivery: FC = observer(() => {
     >
       Подтвердить
     </Button>
+    <br />
+    <br />
+    <br />
   </Form>
 })
 
@@ -402,11 +409,12 @@ const Slots: FC = observer(() => {
 
 const Location: FC = observer(() => {
   const { reception } = useStore()
-  const { selectLocationPopup: { open }, } = reception
+  const { selectLocationPopup2: { open }, } = reception
   return <Form.Item className={styles.addrInput} arrowIcon onClick={open} clickable={false}>
     <Input
       value={reception.currentOrganizaion?.Name}
       placeholder='Выберите точку самовывоза'
+      onClick={e => e.preventDefault()}
     />
     {!reception.currentOrganizaion
       ? <Red>*точка самовывоза не выбрана</Red>

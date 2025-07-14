@@ -24,6 +24,7 @@ import CartPopup from "../cart/CartPage"
 import BannerCarusel from "./parts/BannerCarusel/BannerCarusel"
 import CampaignCollectionPopup from "../../popups/CampaignCollectionPopup"
 import { GiftButton } from "../../icons/GiftButton"
+import CategoryPopup from "../../popups/CategoryPopup"
 
 const MainPage: FC = observer(() => {
   const { reception: { menu }, user, cart, auth } = useStore()
@@ -112,7 +113,7 @@ const MainPage: FC = observer(() => {
       popup={menu.hotCampaignPopup}
       childCousePopup={menu.coursePopup}
     />
-    <CartPopup />
+    <CategoryPopup />
     {/* <CollectionsPopup /> */}
     <Fixed>
       <ReceptionSwitcher />
@@ -137,6 +138,7 @@ const MainPage: FC = observer(() => {
       : null
     }
     <BottomNavigation />
+    <CartPopup />
   </Wrapper>
 })
 

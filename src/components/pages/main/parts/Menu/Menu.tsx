@@ -8,7 +8,6 @@ import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
 import { Image, Skeleton, Toast } from "antd-mobile"
 import config from "../../../../../features/config"
-import CategoryPopup from "../../../../popups/CategoryPopup"
 import { useParams } from "react-router-dom"
 import { logger } from "../../../../../features/logger"
 // import Categories from "./Categories/Categories"
@@ -35,7 +34,7 @@ const Menu: FC = observer(() => {
   if (!categories.length && loadMenu.state === 'COMPLETED') return null
   return <div className={styles.Menu_wrapper}>
     <CourseReviewPopup />
-    <CategoryPopup />
+    
     <Row className="me-2" style={{ marginLeft: -5 }}>
       {loadMenu.state === 'COMPLETED'
         ? categories.map((category, index) =>
