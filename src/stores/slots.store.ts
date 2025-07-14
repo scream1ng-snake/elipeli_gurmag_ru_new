@@ -28,7 +28,7 @@ class Slots {
   }
 
   private availbaleSlots: Slot[] = []
-  private isSlotActive = function (slot: Slot) {
+  private isSlotActive = (slot: Slot) => {
     const [eHH, eMM] = moment(slot.EndTimeOfWork)
       .format('HH:mm')
       .split(':')
@@ -39,7 +39,9 @@ class Slots {
       .split(':')
       .map(Number)
 
-    return (nowHH * 60 + nowMM) < (eHH * 60 + eMM)
+    const { fullCookTime, packageTime, deliveryTime } = this.cart
+
+    return (nowHH * 60 + nowMM + fullCookTime + packageTime + deliveryTime) < (eHH * 60 + eMM)
   }
 
   getTimeString = (slot: Slot) =>

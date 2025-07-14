@@ -1,6 +1,6 @@
 import { InputRef, Toast } from "antd-mobile";
 import { makeAutoObservable, reaction } from "mobx";
-import { deepCopy, Optional, Request } from "../features/helpers";
+import { deepCopy, Optional, range, Request } from "../features/helpers";
 import { http } from "../features/http";
 import { setItem } from "../features/local-storage";
 import { logger } from "../features/logger";
@@ -38,24 +38,27 @@ export class CartStore {
     const isToday = moment(this.date).isSame(new Date(), 'day')
     const startDay = moment(this.date).hour(9).minute(30).toDate()
     const endDay = moment(this.date).hour(21).minute(30).toDate()
+    const { fullCookTime, packageTime } = this
     if (isToday) {
-      const through15min = moment()
-        .add(15, 'minutes')
+      const coursesReadyTime = moment()
+        .add(fullCookTime + packageTime, 'minutes')
         .toDate()
 
-      return { min: through15min, max: endDay }
+      return { min: coursesReadyTime, max: endDay }
     } else {
       return { min: startDay, max: endDay }
     }
   }
 
   private checkOrderTime = () => {
-    const nowthrough15min = moment()
-      .add(15, 'minutes')
+    const { fullCookTime, packageTime } = this
+
+    const coursesReadyTime = moment()
+      .add(fullCookTime + packageTime, 'minutes')
       .toDate()
 
-    const isPast = this.date <= nowthrough15min
-    if (isPast) this.setDate(nowthrough15min)
+    const isPast = this.date <= coursesReadyTime
+    if (isPast) this.setDate(coursesReadyTime)
   }
 
   /** примечание к заказу */
@@ -74,8 +77,11 @@ export class CartStore {
   cart = new Popup()
   constructor(readonly root: RootStore) {
     makeAutoObservable(this, {}, { autoBind: true })
-    // в зависимоти от тотал прайса не позволяем использовать наличку
+    
     reaction(() => this.totalPrice, price => {
+      // считаем время приготовления в корзине
+      this.countFullCookingTime()
+      // в зависимоти от тотал прайса не позволяем использовать наличку
       if (price > 1000 && this.payment.method === 'CASH')
         this.payment.method = null
     })
@@ -163,6 +169,30 @@ export class CartStore {
     })
   }
 
+  private countFullCookingTime() {
+    let sumAllComplexity = 0
+    let minCookingTimeReal: Optional<number> = null
+    this.items.forEach(({ quantity, couse }) => {
+      range(quantity).map(() => {
+        sumAllComplexity += couse.Complexity
+      })
+      if(!minCookingTimeReal) 
+        minCookingTimeReal = couse.CookingTimeReal
+      
+      if(couse.CookingTimeReal < minCookingTimeReal)
+        minCookingTimeReal = couse.CookingTimeReal
+    })
+    this.setFullCookTime(sumAllComplexity + (minCookingTimeReal ?? 0))
+
+  }
+
+  /** предположительное время приготовления корзины */
+  fullCookTime = 0
+  setFullCookTime(sum: number) { this.fullCookTime = sum }
+  /** время комплектования константа */
+  packageTime = 15
+  /** время доставки константа */
+  deliveryTime = 15
 
   /** найденный промо */
   confirmedPromocode: Optional<string> = null

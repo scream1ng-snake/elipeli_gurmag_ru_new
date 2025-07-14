@@ -226,10 +226,15 @@ export type Selection = {
   CompressImages: undefined | string[],
   priceWithDiscount: any
   priceWithDiscountOld: any
+  /** = время выпекания + трудоёмкость */
   CookingTime: Optional<number>
   /**"Attributes": "2,3" */
   Attributes: Optional<string>
   Labels: Maybe<string>
+  /** трудоёмкость */
+  Complexity: number,
+  /** время выпекания */
+  CookingTimeReal: number,
 }
 export type RecomendationItem = CourseItem & {
   /** "/collections/4" */
