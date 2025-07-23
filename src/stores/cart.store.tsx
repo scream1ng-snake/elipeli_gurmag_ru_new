@@ -1186,10 +1186,16 @@ export class CartStore {
     order: Order,
   ) => {
     try {
-      logger.log(JSON.stringify(order), 'order')
       setState('LOADING')
-      console.log(this.root.auth.utm)
-
+      const { reception, user } = this.root
+      const { DeliveryCost } = user.info
+      const deliveryCost = DeliveryCost.find((dc, currindex) => 
+        dc.minSum <= this.totalPrice
+          && (DeliveryCost[currindex + 1]
+            ? this.totalPrice < DeliveryCost[currindex + 1].minSum
+            : true
+          )
+      )
       const response: [historyOrderItem] = await http.post(
         this.payment.method !== 'CARD_ONLINE'
           ? '/NewOrderSlot'
@@ -1197,7 +1203,10 @@ export class CartStore {
         { 
           ...order, 
           utm: this.root.auth.utm || null, 
-          webApp: AppValues[this.root.instance]
+          webApp: AppValues[this.root.instance],
+          deliveryCost: reception.receptionType === 'delivery' && deliveryCost
+            ? deliveryCost.DeliverySum
+            : undefined
         }
       )
 
@@ -1338,6 +1347,11 @@ export type AddOne = {
   PresentAction: boolean,
   MinSum: number,
   MaxSum: number
+}
+
+export type DeliveryCost = {
+  minSum: number,
+  DeliverySum: number
 }
 
 /** заказ */

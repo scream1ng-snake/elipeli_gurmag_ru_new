@@ -14,18 +14,14 @@ import { ReceptionType } from '../../../../../stores/reception.store'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { Gift } from '../../../../icons/Gift'
-import { Button, Dropdown, Space } from 'antd-mobile'
-import config from '../../../../../features/config'
-import { NavDropdown } from 'react-bootstrap'
+import { Button } from 'antd-mobile'
 import NavButton from '../../../../layout/NavButton'
 import TopNav from '../../../../common/TopNav/TopNav'
 
 
 const ReceptionSwitcher: FC = observer(() => {
   const device = useDeviceType()
-  const go = useGoUTM()
-  const { auth, reception, user } = useStore()
+  const { auth, reception } = useStore()
   const navigate = useGoUTM()
   const {
     isWorkingNow,
@@ -41,9 +37,7 @@ const ReceptionSwitcher: FC = observer(() => {
       ? 'или заберёте сами?'
       : receptionType === 'delivery'
         ? isWorkingNow
-          ? user.info.MinSum
-            ? 'Доставка бесплатно. Заказ от ' + user.info.MinSum + ' р.'
-            : 'Доставка бесплатно'
+          ? 'Доставка бесплатно'
           : <Red>Сейчас не доставляем. Доставляем с 9.30 до 21.30</Red>
         : isWorkingNow
           ? 'Забрать из Гурмага'

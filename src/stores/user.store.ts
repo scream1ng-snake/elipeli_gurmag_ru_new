@@ -5,7 +5,7 @@ import { logger } from "../features/logger";
 import Popup from "../features/modal";
 import RootStore from "./root.store";
 import { SavedAddress } from "./SavedAddresses";
-import { AddOne, AllCampaignUser, DishDiscount, DishSetDiscount, PercentDiscount } from "./cart.store";
+import { AddOne, AllCampaignUser, DeliveryCost, DishDiscount, DishSetDiscount, PercentDiscount } from "./cart.store";
 import { GeoJson } from "./location.store";
 
 class UserStore {
@@ -29,10 +29,10 @@ class UserStore {
     dishDiscounts: [],
     allCampaign: [],
     dishSet: [],
-    MinSum: 0,
     AddressArr: [],
     Address: '',
-    addOne: []
+    addOne: [],
+    DeliveryCost: []
   };
   setInfo(info: UserInfoState) {
     this.info = info;
@@ -61,10 +61,10 @@ class UserStore {
     const NAME = response?.UserInfo?.NAME ?? '';
     /**  "1979064" numberstr */
     const UserCode = response?.UserInfo?.UserCode ?? '';
-    const MinSum = response?.UserInfo?.MinSum ?? 0;
     const Address = response?.UserInfo?.Address ?? '';
     const AddressArr: SavedAddress[] = response?.UserInfo?.AddressArr ?? [];
     const addOne: AddOne[] = response?.AddOne ?? [];
+    const DeliveryCost: DeliveryCost[] = response?.UserInfo?.DeliveryCost ?? [];
     const COrg = response?.UserInfo?.COrg ?? 0;
     const Phone = response?.UserInfo?.Phone ?? '';
     const DeliveryArea = JSON.parse(response?.DeliveryArea?.[0].JSON ?? "{}") as GeoJson
@@ -81,9 +81,9 @@ class UserStore {
       addOne,
       UserCode,
       Phone,
-      MinSum,
       Address,
-      AddressArr
+      AddressArr,
+      DeliveryCost: DeliveryCost.sort((a, b) => a.minSum - b.minSum) 
     }
 
     // сохраняем состояние
@@ -151,12 +151,12 @@ export type UserInfoState = {
   allCampaign: AllCampaignUser[],
   /** это детали основных акций: скидка на сет из блюд */
   dishSet: DishSetDiscount[],
-  MinSum: number
   /** old */
   Address: string,
   /** сохраенные адреса */
   AddressArr: SavedAddress[]
   addOne: AddOne[]
+  DeliveryCost: DeliveryCost[]
 }
 
 

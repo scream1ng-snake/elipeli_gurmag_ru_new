@@ -4,13 +4,9 @@ import { useStore } from "../../../../../features/hooks"
 import { RecomendationItemComponent } from "../../../main/parts/Menu/Categories/Categories"
 import styles from '../../../main/parts/Menu/Categories/Categories.module.css'
 const css: Record<string, CSSProperties> = {
-  // headText: {
-  //   margin: '0px 14px 10px 25px',
-  //   fontSize: 20
-  // } todo
   headText: {
-    margin: '22px 14px 10px 14px',
-    fontSize: 18
+    margin: '0px 14px 10px 25px',
+    fontSize: 20
   }
 }
 const Recomendations: FC = observer(() => {

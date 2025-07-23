@@ -9,10 +9,11 @@ import Red from "../../special/RedText"
 import BankCard from '../../../assets/BankCard.png'
 import Cash from '../../../assets/Cash.png'
 import { PaymentMethod } from "../../../stores/payment.store"
+import { ReceptionType } from "../../../stores/reception.store"
 
 
 
-const Pickup: FC = observer(() => {
+const Pickup: FC<{ deliveryPrice: number | undefined }> = observer((props) => {
   const go = useGoUTM()
   function gotoAuth() {
     go("/authorize", { fromPostOrder: 'true' })
@@ -59,6 +60,8 @@ const Pickup: FC = observer(() => {
       <Details
         total={cart.totalPrice}
         count={cart.items.length}
+        deliveryPrice={props.deliveryPrice}
+        receptionType={reception.receptionType}
       />
       <Button
         className={styles.orderButton}
@@ -77,7 +80,7 @@ const Pickup: FC = observer(() => {
   </Form>
 })
 
-const Delivery: FC = observer(() => {
+const Delivery: FC<{ deliveryPrice: number | undefined }> = observer(props => {
   const go = useGoUTM()
   function gotoAuth() {
     go("/authorize", { fromPostOrder: 'true' })
@@ -122,6 +125,8 @@ const Delivery: FC = observer(() => {
     <Slots />
     <Payment />
     <Details
+      deliveryPrice={props.deliveryPrice}
+      receptionType={reception.receptionType}
       total={cart.totalPrice}
       count={cart.items.length}
     />
@@ -149,26 +154,42 @@ const Round = (num: number) =>
   Math.ceil(num * 100) / 100
 export default OrderForm
 
-type DetailsProps = { total: number, count: number }
-const Details: FC<DetailsProps> = props => {
+type DetailsProps = { 
+  total: number, 
+  count: number, 
+  deliveryPrice: number | undefined,
+  receptionType: ReceptionType
+}
+const Details: FC<DetailsProps> = ({ total, count, deliveryPrice, receptionType }) => {
+  const totalSum = (receptionType === 'delivery' && deliveryPrice)
+    ? total
+      ? total + deliveryPrice
+      : 0
+    : total
   return <Grid columns={2} className={styles.detail}>
     <Grid.Item>
-      {props.count + ' товаров'}
+      {count + ' товаров'}
     </Grid.Item>
     <Grid.Item className={styles.detailRight}>
-      {Round(props.total) + ' ₽'}
+      {Round(total) + ' ₽'}
     </Grid.Item>
-    <Grid.Item>
-      Доставка
-    </Grid.Item>
-    <Grid.Item className={styles.detailRight}>
-      0 ₽
-    </Grid.Item>
+    {deliveryPrice && receptionType === 'delivery'
+      ? <> 
+        <Grid.Item>
+          Доставка
+        </Grid.Item>
+        <Grid.Item className={styles.detailRight}>
+          {deliveryPrice + ' ₽'}
+        </Grid.Item>
+      </>
+      : null
+    }
+    
     <Grid.Item>
       Стоимость заказа
     </Grid.Item>
     <Grid.Item className={styles.detailRight}>
-      {Round(props.total) + ' ₽'}
+      {Round(totalSum) + ' ₽'}
     </Grid.Item>
   </Grid>
 }

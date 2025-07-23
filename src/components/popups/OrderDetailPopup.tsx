@@ -12,17 +12,17 @@ import CartActions from "./CartActions"
 import { FullscreenLoading } from "../common/Loading/Loading"
 import AdaptivePopup from "../common/Popup/Popup"
 
-const OrderDetailPopup: FC = observer(() => {
+const OrderDetailPopup: FC<{ deliveryPrice: number | undefined }> = observer((props) => {
   const { cart, reception } = useStore()
   const { selectLocationPopup2: { show, close }, } = reception
 
   function getBody(rt: ReceptionType) {
     switch (rt) {
       case 'delivery':
-        return <OrderForm.Delivery />
+        return <OrderForm.Delivery deliveryPrice={props.deliveryPrice} />
 
       case 'pickup':
-        return <OrderForm.Pickup />
+        return <OrderForm.Pickup deliveryPrice={props.deliveryPrice} />
 
       case 'initial': 
         return <AskLocation />

@@ -13,7 +13,7 @@ import { Congratilations, NiceToMeetYooPopup } from "../../popups/CartActions"
 import AuthRequiredPopap from "../../popups/AuthRequired"
 import Recomendations from "./parts/Recomendations/Recomendation"
 import AdaptivePopup from "../../common/Popup/Popup"
-import { AllCampaignUser, CouseInCart } from "../../../stores/cart.store"
+import { AllCampaignUser, CouseInCart, DeliveryCost } from "../../../stores/cart.store"
 import FireIco from '../../../assets/fire.png'
 import infoCircle from '../../../assets/infoCircle.png'
 import exclamation from '../../../assets/exclamation.png'
@@ -37,13 +37,32 @@ function getAllCampaignsFromCart(
 }
 
 const CartPopup: FC = observer(() => {
-  const { theme } = useTheme()
   const go = useGoUTM()
-  const { cart, reception, user } = useStore()
-  const { MinSum } = user.info 
+  const { cart, user } = useStore()
+  const { DeliveryCost } = user.info
   const [showTooltip, setShowTooltip] = useState(false)
 
   const allCampaigns = getAllCampaignsFromCart(cart.items, user.info.allCampaign)
+
+  let nextDeliveryCost: DeliveryCost | undefined
+  const deliveryCost = DeliveryCost.find((dc, currindex) => {
+    const nextDc = DeliveryCost[currindex + 1]
+    const condition = dc.minSum <= cart.totalPrice
+      && (nextDc
+        ? cart.totalPrice < nextDc.minSum
+        : true
+      )
+    if(condition) nextDeliveryCost = nextDc
+    return condition
+  })
+
+  let discountsByCampaign = 0
+  cart.items.forEach(cartItem => {
+    discountsByCampaign += (cartItem.couse.Price * cartItem.quantity)
+  })
+  discountsByCampaign -= cart.totalPrice
+  if(discountsByCampaign < 0) discountsByCampaign = 0
+
   return (
     <AdaptivePopup
       visible={cart.cart.show}
@@ -58,13 +77,15 @@ const CartPopup: FC = observer(() => {
     >
       <CartHead />
       <div className={styles.cartPopup}>
-        {/* <DeliveryPriceInfoPopup /> todo */}
+        <DeliveryPriceInfoPopup />
         <CampaignsTooltip allCampaign={allCampaigns} />
         <NiceToMeetYooPopup />
         <YoukassaPopup />
         <AuthRequiredPopap />
         <Congratilations />
-        <OrderDetailPopup />
+        <OrderDetailPopup 
+          deliveryPrice={deliveryCost?.DeliverySum} 
+        />
         <h2 className={styles.cartText}>
           {cart.items.length + ' товаров на ' + Round(cart.totalPrice) + ' ₽'}
         </h2>
@@ -72,36 +93,19 @@ const CartPopup: FC = observer(() => {
         <Promocode />
         <h3 className={styles.noteText}>Пожелание к заказу</h3>
         <NoteToOrder />
-        {/* <Details 
+        <Details
+          deliverySum={deliveryCost?.DeliverySum}
+          discountsByCampaign={discountsByCampaign}
           popClose={() => { setShowTooltip(false) }}
           popOpen={() => { setShowTooltip(true) }}
           popVisible={showTooltip}
-        /> */}
+        />
         <Recomendations />
-        {MinSum && (cart.totalPrice < MinSum) && reception.receptionType === 'delivery'
-          ? <NoticeBar
-            content={'Бесплатная доставка только для заказа от ' + MinSum + ' руб'}
-            color='alert'
-            icon={null}
-            wrap
-            style={{
-              width: 'calc(100% - 2rem)',
-              margin: '0 1rem',
-              borderRadius: 15,
-              "--border-color": theme === 'dark'
-                ? "var(--tg-theme-secondary-bg-color)"
-                : "#fff9ed",
-              "--background-color": theme === 'dark'
-                ? "var(--tg-theme-secondary-bg-color)"
-                : "#fff9ed",
-              "--text-color": theme === 'dark'
-                ? "var(--gurmag-accent-color)"
-                : "var(--adm-color-orange)"
-            }}
-          />
-          : null
-        }
-        <BottomButton />
+        
+        <BottomButton 
+          nextDeliveryCost={nextDeliveryCost}
+          deliveryPrice={deliveryCost?.DeliverySum}
+        />
         <Void height="88px" />
       </div>
     </AdaptivePopup>
@@ -152,11 +156,24 @@ const CampaignsTooltip: FC<{ allCampaign: AllCampaignUser[] }> = (props) => {
 const Prepare = (str?: string) => str?.replace(/ *\{[^}]*\} */g, "") || ''
 
 
-const BottomButton: FC = observer(() => {
-  const { cart, reception, user } = useStore()
+interface BottomButtonProps {
+  deliveryPrice: number | undefined,
+  nextDeliveryCost: DeliveryCost | undefined
+}
+const BottomButton: FC<BottomButtonProps> = observer(({ deliveryPrice, nextDeliveryCost }) => {
+  const { cart, reception } = useStore()
   const device = useDeviceType()
   const isNtMobile = device !== 'mobile'
-  const { MinSum } = user.info
+
+  const missingAmount = nextDeliveryCost
+    ? nextDeliveryCost?.minSum - cart.totalPrice
+    : undefined
+
+  const totalSum = (reception.receptionType === 'delivery' && deliveryPrice)
+    ? cart.totalPrice
+      ? cart.totalPrice + deliveryPrice
+      : 0
+    : cart.totalPrice
   return (
     <div
       style={{
@@ -172,7 +189,7 @@ const BottomButton: FC = observer(() => {
         boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.25)'
       }}
     >
-      {/* {reception.receptionType === 'delivery'
+      {reception.receptionType === 'delivery' && deliveryPrice
         ? <Space
           className="w-100"
           justify='between'
@@ -194,22 +211,25 @@ const BottomButton: FC = observer(() => {
               lineHeight: '13px'
             }}
           >
-            Доставка 299 ₽. Еще 165 ₽, и доставим за 199 ₽
+            {nextDeliveryCost && missingAmount
+              ? 'Доставка ' + deliveryPrice + ' ₽. Еще ' + missingAmount + ' ₽, и доставим за ' +  nextDeliveryCost.DeliverySum + ' ₽'
+              : 'Доставка ' + deliveryPrice + ' ₽.'
+            }
           </span>
           <img
             src={infoCircle}
           />
         </Space>
         : null
-      } todo*/}
+      }
       <Button
         shape='rounded'
         color='primary'
         className={styles.orderButton}
         onClick={cart.detailPopup.open}
-        disabled={!cart.items.length || (!!MinSum && (cart.totalPrice < MinSum) && reception.receptionType === 'delivery')}
+        disabled={!cart.items.length}
       >
-        {'Оформить заказ на ' + Round(cart.totalPrice) + ' ₽'}
+        {'Оформить заказ на ' + Round(totalSum) + ' ₽'}
       </Button>
     </div>
   )
@@ -223,54 +243,67 @@ const detailStyle: Record<string, CSSProperties> = {
     fontStyle: 'Regular',
     fontSize: '16px',
     lineHeight: '13px',
-    padding:'7px 15px',
+    padding: '7px 15px',
   },
   detailRight: {
     textAlign: 'end',
-    marginBottom:22
+    marginBottom: 22
   }
 }
-const Details: FC<{ popVisible: boolean, popOpen: () => void, popClose: () => void }> = (props) => {
+interface DetailsProps {
+  discountsByCampaign: number,
+  deliverySum: number | undefined,
+  popVisible: boolean,
+  popOpen: () => void,
+  popClose: () => void
+}
+const Details: FC<DetailsProps> = (props) => {
   return <Grid columns={2} style={detailStyle.detail}>
     <Grid.Item>
       Скидки по акциям
     </Grid.Item>
     <Grid.Item style={detailStyle.detailRight}>
-      0 ₽
+      {props.discountsByCampaign + ' ₽'}
     </Grid.Item>
-    <Grid.Item>
-      <Space align='center' style={{ position: 'relative' }}>
-        Доставка
-        
-        <Popover 
-          visible={props.popVisible}
-          onVisibleChange={val => val
-            ? props.popOpen()
-            : props.popClose()
-          }
-          destroyOnHide
-          getContainer={document.getElementById('asdfg')}
-          mode="dark"
-          content='Эта цена помогает доставлять нашу горячую и вкусную продукцию очень быстро'
-          style={{
-            fontFamily: 'Arial',
-            fontWeight: 400,
-            fontSize: '16px',
-            lineHeight: '21px',
-          }}
-        >
-          <img 
-            src={infoCircle}
-            onClick={() => props.popVisible
-              ? props.popClose()
-              : props.popOpen()
-            } 
-          />
-        </Popover>
-      </Space>
-    </Grid.Item>
-    <Grid.Item style={detailStyle.detailRight}>
-      299 ₽
-    </Grid.Item>
+    {props.deliverySum
+      ? <>
+        <Grid.Item>
+          <Space align='center' style={{ position: 'relative' }}>
+            Доставка
+
+            <Popover
+              visible={props.popVisible}
+              onVisibleChange={val => val
+                ? props.popOpen()
+                : props.popClose()
+              }
+              destroyOnHide
+              getContainer={document.getElementById('asdfg')}
+              mode="dark"
+              content='Эта цена помогает доставлять нашу горячую и вкусную продукцию очень быстро'
+              style={{
+                fontFamily: 'Arial',
+                fontWeight: 400,
+                fontSize: '16px',
+                lineHeight: '21px',
+              }}
+            >
+              <img
+                src={infoCircle}
+                onClick={() => props.popVisible
+                  ? props.popClose()
+                  : props.popOpen()
+                }
+              />
+            </Popover>
+          </Space>
+        </Grid.Item>
+        <Grid.Item style={detailStyle.detailRight}>
+          {props.deliverySum + ' ₽'}
+        </Grid.Item>
+      </>
+      : null
+    }
+
   </Grid>
 }

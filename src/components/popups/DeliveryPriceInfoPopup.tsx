@@ -6,8 +6,9 @@ import { Button, List, Space } from "antd-mobile";
 
 
 const DeliveryPriceInfoPopup: FC = observer(() => {
-  const { cart } = useStore()
+  const { cart, user } = useStore()
   const { show, close } = cart.deliveryPriceInfoPopup
+  const { DeliveryCost } = user.info
   return <AdaptivePopup 
     visible={show}
     onClose={close}
@@ -82,30 +83,16 @@ const DeliveryPriceInfoPopup: FC = observer(() => {
         "--border-inner": '1px solid rgba(185, 185, 185, 1)'
       }}
     >
-      <List.Item>
-        <Space className="w-100" justify='between'>
-          <span>Заказ до 300 ₽</span>
-          <span>299 ₽</span>
-        </Space>
-      </List.Item>
-      <List.Item>
-        <Space className="w-100" justify='between'>
-          <span>Заказ до 300 ₽</span>
-          <span>299 ₽</span>
-        </Space>
-      </List.Item>
-      <List.Item>
-        <Space className="w-100" justify='between'>
-          <span>Заказ до 300 ₽</span>
-          <span>299 ₽</span>
-        </Space>
-      </List.Item>
-      <List.Item>
-        <Space className="w-100" justify='between'>
-          <span>Заказ до 300 ₽</span>
-          <span>299 ₽</span>
-        </Space>
-      </List.Item>
+      {DeliveryCost.map((dc, key) => {
+        return(
+          <List.Item key={key}>
+            <Space className="w-100" justify='between'>
+              <span>{'Заказ от ' +  dc.minSum + ' ₽'}</span>
+              <span>{dc.DeliverySum + ' ₽'}</span>
+            </Space>
+          </List.Item>
+        )
+      })}
     </List>
     <Button 
       shape='rounded'
@@ -118,7 +105,8 @@ const DeliveryPriceInfoPopup: FC = observer(() => {
         fontSize: '20px',
         lineHeight: '100%',
         margin: '17px 15px',
-        width: 'calc(100% - 30px)'
+        width: 'calc(100% - 30px)',
+        color: 'black'
       }}
       onClick={close}
     >
