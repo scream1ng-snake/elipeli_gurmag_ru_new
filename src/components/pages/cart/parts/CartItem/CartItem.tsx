@@ -8,6 +8,7 @@ import Red from "../../../../special/RedText";
 import { Gift } from "../../../../icons/Gift";
 import Trash from '../../../../../assets/Trash.png'
 import hotCampaign from '../../../../../assets/hotCampaign.png'
+import { useTheme } from "../../../../../features/hooks";
 
 type P = {
   courseInCart: CouseInCart,
@@ -18,6 +19,8 @@ type P = {
   watchAnalog?: () => void,
 }
 const CartItem: FC<P> = observer(props => {
+  const { theme } = useTheme()
+  const isDarkMode = theme === 'dark'
   const { courseInCart, add, remove, isPresent, deletePack, watchAnalog } = props
   const isEndingOut = !props.courseInCart.couse.NoResidue
     ? props.courseInCart.couse.EndingOcResidue <= 0
@@ -44,15 +47,15 @@ const CartItem: FC<P> = observer(props => {
               {deletePack && <Button 
                 size='small' 
                 shape='rounded' 
-                style={{ background: 'rgba(242, 243, 247, 1)' }} 
+                style={{ background: isDarkMode ? '#232E3C' : 'rgba(242, 243, 247, 1)' }} 
                 onClick={deletePack}
               >
-                <img src={Trash} style={{ marginTop: -3 }} />
+                <img src={Trash} style={{ marginTop: -3, filter: isDarkMode ? 'grayscale(80%) invert(100%)' : 'none' }} />
               </Button>}
               {watchAnalog && <Button 
                 size='small' 
                 shape='rounded' 
-                style={{ background: 'rgba(242, 243, 247, 1)' }}
+                style={{ background: isDarkMode ? '#232E3C' : 'rgba(242, 243, 247, 1)' }}
                 onClick={watchAnalog}
               >
                 Заменить
