@@ -21,7 +21,7 @@ import TopNav from '../../../../common/TopNav/TopNav'
 
 const ReceptionSwitcher: FC = observer(() => {
   const device = useDeviceType()
-  const { auth, reception } = useStore()
+  const { auth, reception, user, cart } = useStore()
   const navigate = useGoUTM()
   const {
     isWorkingNow,
@@ -32,16 +32,26 @@ const ReceptionSwitcher: FC = observer(() => {
   const address = reception.Location.confirmedAddress
 
 
-  const getHint = () =>
-    receptionType === 'initial'
+  const getHint = () => {
+    const { DeliveryCost } = user.info
+    const deliveryCost = DeliveryCost.find((dc, currindex) => 
+      dc.minSum <= cart.totalPrice
+        && (DeliveryCost[currindex + 1]
+          ? cart.totalPrice < DeliveryCost[currindex + 1].minSum
+          : true
+        )
+    )
+    return receptionType === 'initial'
       ? 'или заберёте сами?'
       : receptionType === 'delivery'
-        ? isWorkingNow
-          ? 'Доставка бесплатно'
+        ? isWorkingNow 
+          ? 'Доставка ' + deliveryCost?.DeliverySum + ' ₽'
           : <Red>Сейчас не доставляем. Доставляем с 9.30 до 21.30</Red>
         : isWorkingNow
           ? 'Забрать из Гурмага'
           : <Red>Закрыто - Откроется в 9:30</Red>
+  }
+    
 
   const getAddress = () =>
     receptionType === 'initial'
