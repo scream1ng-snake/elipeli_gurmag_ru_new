@@ -21,6 +21,7 @@ import { Void } from "../../layout/Void"
 import DeliveryPriceInfoPopup from "../../popups/DeliveryPriceInfoPopup"
 import { Maybe } from "../../../features/helpers"
 import { CloseOutline } from "antd-mobile-icons"
+import { ReceptionType } from "../../../stores/reception.store"
 
 function getAllCampaignsFromCart(
   items: CouseInCart[],
@@ -38,7 +39,7 @@ function getAllCampaignsFromCart(
 
 const CartPopup: FC = observer(() => {
   const go = useGoUTM()
-  const { cart, user } = useStore()
+  const { cart, user, reception } = useStore()
   const { DeliveryCost } = user.info
   const [showTooltip, setShowTooltip] = useState(false)
 
@@ -94,6 +95,7 @@ const CartPopup: FC = observer(() => {
         <h3 className={styles.noteText}>Пожелание к заказу</h3>
         <NoteToOrder />
         <Details
+          receptionType={reception.receptionType}
           deliverySum={deliveryCost?.DeliverySum}
           discountsByCampaign={discountsByCampaign}
           popClose={() => { setShowTooltip(false) }}
@@ -251,6 +253,7 @@ const detailStyle: Record<string, CSSProperties> = {
   }
 }
 interface DetailsProps {
+  receptionType: ReceptionType,
   discountsByCampaign: number,
   deliverySum: number | undefined,
   popVisible: boolean,
@@ -263,9 +266,9 @@ const Details: FC<DetailsProps> = (props) => {
       Скидки по акциям
     </Grid.Item>
     <Grid.Item style={detailStyle.detailRight}>
-      {props.discountsByCampaign + ' ₽'}
+      {Round(props.discountsByCampaign) + ' ₽'}
     </Grid.Item>
-    {props.deliverySum !== null && props.deliverySum !== undefined
+    {props.deliverySum !== null && props.deliverySum !== undefined && props.receptionType === 'delivery'
       ? <>
         <Grid.Item>
           <Space align='center' style={{ position: 'relative' }}>
