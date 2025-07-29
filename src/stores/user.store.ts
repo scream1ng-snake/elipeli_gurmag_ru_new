@@ -104,7 +104,7 @@ class UserStore {
     // пересчитываем корзину 
     this.root.cart.applyDiscountForCart(newInfo)
     setState('COMPLETED')
-    return response?.UserInfo || null
+    return response?.UserInfo?.UserCode || null
   })
 
   
