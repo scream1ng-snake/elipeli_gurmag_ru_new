@@ -173,7 +173,7 @@ const Details: FC<DetailsProps> = ({ total, count, deliveryPrice, receptionType 
     <Grid.Item className={styles.detailRight}>
       {Round(total) + ' ₽'}
     </Grid.Item>
-    {deliveryPrice && receptionType === 'delivery'
+    {deliveryPrice !== undefined && deliveryPrice !== null && receptionType === 'delivery'
       ? <> 
         <Grid.Item>
           Доставка

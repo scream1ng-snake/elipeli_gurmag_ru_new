@@ -17,6 +17,7 @@ import Col from 'react-bootstrap/Col'
 import { Button } from 'antd-mobile'
 import NavButton from '../../../../layout/NavButton'
 import TopNav from '../../../../common/TopNav/TopNav'
+import { toJS } from 'mobx'
 
 
 const ReceptionSwitcher: FC = observer(() => {
@@ -45,7 +46,7 @@ const ReceptionSwitcher: FC = observer(() => {
       ? 'или заберёте сами?'
       : receptionType === 'delivery'
         ? isWorkingNow 
-          ? 'Доставка ' + deliveryCost?.DeliverySum + ' ₽'
+          ? deliveryCost ? 'Доставка ' + deliveryCost?.DeliverySum + ' ₽' : 'Доставка'
           : <Red>Сейчас не доставляем. Доставляем с 9.30 до 21.30</Red>
         : isWorkingNow
           ? 'Забрать из Гурмага'

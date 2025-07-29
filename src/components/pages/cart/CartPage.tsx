@@ -265,7 +265,7 @@ const Details: FC<DetailsProps> = (props) => {
     <Grid.Item style={detailStyle.detailRight}>
       {props.discountsByCampaign + ' ₽'}
     </Grid.Item>
-    {props.deliverySum
+    {props.deliverySum !== null && props.deliverySum !== undefined
       ? <>
         <Grid.Item>
           <Space align='center' style={{ position: 'relative' }}>
