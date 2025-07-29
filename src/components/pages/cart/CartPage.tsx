@@ -212,8 +212,8 @@ const BottomButton: FC<BottomButtonProps> = observer(({ deliveryPrice, nextDeliv
             }}
           >
             {nextDeliveryCost && missingAmount
-              ? 'Доставка ' + deliveryPrice + ' ₽. Еще ' + missingAmount + ' ₽, и доставим за ' +  nextDeliveryCost.DeliverySum + ' ₽'
-              : 'Доставка ' + deliveryPrice + ' ₽.'
+              ? 'Доставка ' + Round(deliveryPrice) + ' ₽. Еще ' + missingAmount + ' ₽, и доставим за ' +  nextDeliveryCost.DeliverySum + ' ₽'
+              : 'Доставка ' + Round(deliveryPrice) + ' ₽.'
             }
           </span>
           <img
@@ -299,7 +299,7 @@ const Details: FC<DetailsProps> = (props) => {
           </Space>
         </Grid.Item>
         <Grid.Item style={detailStyle.detailRight}>
-          {props.deliverySum + ' ₽'}
+          {Round(props.deliverySum) + ' ₽'}
         </Grid.Item>
       </>
       : null
