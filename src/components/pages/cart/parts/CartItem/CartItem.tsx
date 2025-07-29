@@ -29,6 +29,8 @@ const CartItem: FC<P> = observer(props => {
   const lessThanNeed = !props.courseInCart.couse.NoResidue
     ? props.courseInCart.couse.EndingOcResidue < props.courseInCart.quantity
     : false
+
+  const isNotSystemCampaign = courseInCart.campaign != 36
   return (
     <List.Item
       className={styles.cartItem}
@@ -64,7 +66,7 @@ const CartItem: FC<P> = observer(props => {
           </Space>
         </>
         : <>
-        {courseInCart.campaign 
+        {courseInCart.campaign && isNotSystemCampaign
           ? <img src={hotCampaign} style={{ position: 'absolute', bottom: 4, right: 29 }} />
           : null
         }
@@ -85,9 +87,9 @@ const CartItem: FC<P> = observer(props => {
             />
             {!courseInCart.couse.NoResidue
               ? <Red>
-                <span style={{ fontSize: 14 }}>
+                <div style={{ fontSize: 14, marginBottom: courseInCart.campaign && isNotSystemCampaign ? 20 : 0 }}>
                   {'В наличии ' + courseInCart.couse.EndingOcResidue}
-                </span>
+                </div>
               </Red>
               : null
             }
