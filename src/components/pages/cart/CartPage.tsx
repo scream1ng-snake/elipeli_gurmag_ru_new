@@ -214,7 +214,7 @@ const BottomButton: FC<BottomButtonProps> = observer(({ deliveryPrice, nextDeliv
             }}
           >
             {nextDeliveryCost && missingAmount
-              ? 'Доставка ' + Round(deliveryPrice) + ' ₽. Еще ' + missingAmount + ' ₽, и доставим за ' +  nextDeliveryCost.DeliverySum + ' ₽'
+              ? 'Доставка ' + Round(deliveryPrice) + ' ₽. Еще ' + Round(missingAmount) + ' ₽, и доставим за ' +  Round(nextDeliveryCost.DeliverySum) + ' ₽'
               : 'Доставка ' + Round(deliveryPrice) + ' ₽.'
             }
           </span>
