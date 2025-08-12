@@ -450,7 +450,7 @@ export class CartStore {
     let dishSet: DishSetDiscount[] = []
     let addOne: AddOne[] = []
     if (receptionType === 'delivery') {
-      percentDiscounts = PercentDiscounts.filter(a => a.Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
+      percentDiscounts = PercentDiscounts.filter(a => a.Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false && (a.promocode == null || a.promocode == undefined || (this.confirmedPromocode !== null && this.confirmedPromocode !== undefined && a.promocode == this.confirmedPromocode)));
       dishDiscounts = DishDiscounts.filter(a => a.Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
       allCampaign = AllCampaign.filter(a => a.Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
       dishSet = DishSet.filter(a => a.dishes[0].Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
@@ -458,7 +458,7 @@ export class CartStore {
     }
 
     if (receptionType === 'pickup') {
-      percentDiscounts = PercentDiscounts.filter(a => a.TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
+      percentDiscounts = PercentDiscounts.filter(a => a.TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false && (a.promocode == null || a.promocode == undefined || (this.confirmedPromocode !== null && this.confirmedPromocode !== undefined && a.promocode == this.confirmedPromocode)));
       dishDiscounts = DishDiscounts.filter(a => a.TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
       allCampaign = AllCampaign.filter(a => a.TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
       dishSet = DishSet.filter(a => a.dishes[0].TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
