@@ -191,7 +191,10 @@ const BottomButton: FC<BottomButtonProps> = observer(({ deliveryPrice, nextDeliv
         boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.25)'
       }}
     >
-      {reception.receptionType === 'delivery' && deliveryPrice
+      {reception.receptionType === 'delivery' 
+        && deliveryPrice !== null
+        && deliveryPrice !== undefined
+        && deliveryPrice >= 0
         ? <Space
           className="w-100"
           justify='between'
@@ -214,8 +217,8 @@ const BottomButton: FC<BottomButtonProps> = observer(({ deliveryPrice, nextDeliv
             }}
           >
             {nextDeliveryCost && missingAmount
-              ? 'Доставка ' + Round(deliveryPrice) + ' ₽. Еще ' + Round(missingAmount) + ' ₽, и доставим за ' +  Round(nextDeliveryCost.DeliverySum) + ' ₽'
-              : 'Доставка ' + Round(deliveryPrice) + ' ₽.'
+              ? 'Доставка ' + Round(deliveryPrice!) + ' ₽. Еще ' + Round(missingAmount) + ' ₽, и доставим за ' +  Round(nextDeliveryCost.DeliverySum) + ' ₽'
+              : 'Доставка ' + Round(deliveryPrice!) + ' ₽.'
             }
           </span>
           <img
@@ -229,7 +232,10 @@ const BottomButton: FC<BottomButtonProps> = observer(({ deliveryPrice, nextDeliv
         color='primary'
         className={styles.orderButton}
         onClick={cart.detailPopup.open}
-        disabled={!cart.items.length}
+        disabled={!cart.items.length 
+          || reception.menu.loadMenu.state !== 'COMPLETED'
+          || reception.menu.loadMenuBg.state !== 'COMPLETED'
+        }
       >
         {'Оформить заказ на ' + Round(totalSum) + ' ₽'}
       </Button>

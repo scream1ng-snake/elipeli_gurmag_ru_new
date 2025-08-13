@@ -8,7 +8,7 @@ import Red from "../../../../special/RedText";
 import { Gift } from "../../../../icons/Gift";
 import Trash from '../../../../../assets/Trash.png'
 import hotCampaign from '../../../../../assets/hotCampaign.png'
-import { useTheme } from "../../../../../features/hooks";
+import { useStore, useTheme } from "../../../../../features/hooks";
 
 type P = {
   courseInCart: CouseInCart,
@@ -26,9 +26,8 @@ const CartItem: FC<P> = observer(props => {
     ? props.courseInCart.couse.EndingOcResidue <= 0
     : false
 
-  const lessThanNeed = !props.courseInCart.couse.NoResidue
-    ? props.courseInCart.couse.EndingOcResidue < props.courseInCart.quantity
-    : false
+  const { reception: { menu: { loadMenu, loadMenuBg } } } = useStore()
+  const isLoading = loadMenu.state !== 'COMPLETED' || loadMenuBg.state !== 'COMPLETED'
 
   const isNotSystemCampaign = courseInCart.campaign != 36
   return (
@@ -41,60 +40,62 @@ const CartItem: FC<P> = observer(props => {
           <span className={styles.Weight}>{courseInCart.couse.Weigth}</span>
         </div>
       }
-      arrowIcon={isEndingOut
-        ? <>
-          <span style={{ fontSize: 14, position: 'absolute', bottom: 8, right: 17 }}><Red>Нет в наличии</Red></span>
-          <Space direction='vertical' align='end'>
-            <Space style={{ "--gap": "5px" }}>
-              {deletePack && <Button 
-                size='small' 
-                shape='rounded' 
-                style={{ background: isDarkMode ? '#232E3C' : 'rgba(242, 243, 247, 1)' }} 
-                onClick={deletePack}
-              >
-                <img src={Trash} style={{ marginTop: -3, filter: isDarkMode ? 'grayscale(80%) invert(100%)' : 'none' }} />
-              </Button>}
-              {watchAnalog && <Button 
-                size='small' 
-                shape='rounded' 
-                style={{ background: isDarkMode ? '#232E3C' : 'rgba(242, 243, 247, 1)' }}
-                onClick={watchAnalog}
-              >
-                Заменить
-              </Button>}
+      arrowIcon={isLoading
+        ? <Skeleton animated style={{ height:28, width: 100, borderRadius: 100 }} />
+        : isEndingOut
+          ? <>
+            <span style={{ fontSize: 14, position: 'absolute', bottom: 8, right: 17 }}><Red>Нет в наличии</Red></span>
+            <Space direction='vertical' align='end'>
+              <Space style={{ "--gap": "5px" }}>
+                {deletePack && <Button
+                  size='small'
+                  shape='rounded'
+                  style={{ background: isDarkMode ? '#232E3C' : 'rgba(242, 243, 247, 1)' }}
+                  onClick={deletePack}
+                >
+                  <img src={Trash} style={{ marginTop: -3, filter: isDarkMode ? 'grayscale(80%) invert(100%)' : 'none' }} />
+                </Button>}
+                {watchAnalog && <Button
+                  size='small'
+                  shape='rounded'
+                  style={{ background: isDarkMode ? '#232E3C' : 'rgba(242, 243, 247, 1)' }}
+                  onClick={watchAnalog}
+                >
+                  Заменить
+                </Button>}
+              </Space>
             </Space>
-          </Space>
-        </>
-        : <>
-        {courseInCart.campaign && isNotSystemCampaign
-          ? <img src={hotCampaign} style={{ position: 'absolute', bottom: 4, right: 29 }} />
-          : null
-        }
-          <Space direction='vertical' align='center'>
-            <Stepper
-              disabled={props.isPresent}
-              value={courseInCart.quantity}
-              style={{ borderRadius: 13 }}
-              onChange={val =>
-                val > courseInCart.quantity
-                  ? add()
-                  : remove()
-              }
-              max={!courseInCart.couse.NoResidue
-                ? courseInCart.couse.EndingOcResidue
-                : undefined
-              }
-            />
-            {!courseInCart.couse.NoResidue
-              ? <Red>
-                <div style={{ fontSize: 14, marginBottom: courseInCart.campaign && isNotSystemCampaign ? 20 : 0 }}>
-                  {'В наличии ' + courseInCart.couse.EndingOcResidue}
-                </div>
-              </Red>
+          </>
+          : <>
+            {courseInCart.campaign && isNotSystemCampaign
+              ? <img src={hotCampaign} style={{ position: 'absolute', bottom: 4, right: 29 }} />
               : null
             }
-          </Space>
-        </>
+            <Space direction='vertical' align='center'>
+              <Stepper
+                disabled={props.isPresent}
+                value={courseInCart.quantity}
+                style={{ borderRadius: 13 }}
+                onChange={val =>
+                  val > courseInCart.quantity
+                    ? add()
+                    : remove()
+                }
+                max={!courseInCart.couse.NoResidue
+                  ? courseInCart.couse.EndingOcResidue
+                  : undefined
+                }
+              />
+              {!courseInCart.couse.NoResidue
+                ? <Red>
+                  <div style={{ fontSize: 14, marginBottom: courseInCart.campaign && isNotSystemCampaign ? 20 : 0 }}>
+                    {'В наличии ' + courseInCart.couse.EndingOcResidue}
+                  </div>
+                </Red>
+                : null
+              }
+            </Space>
+          </>
       }
     >
       {courseInCart.couse.Name}
