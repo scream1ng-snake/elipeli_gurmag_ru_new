@@ -77,7 +77,7 @@ export class CartStore {
   cart = new Popup()
   constructor(readonly root: RootStore) {
     makeAutoObservable(this, {}, { autoBind: true })
-    
+
     reaction(() => this.totalPrice, price => {
       // считаем время приготовления в корзине
       this.countFullCookingTime()
@@ -173,14 +173,14 @@ export class CartStore {
     let sumAllComplexity = 0
     let minCookingTimeReal: Optional<number> = null
     this.items.forEach(({ quantity, couse }) => {
-      if(couse.Complexity && couse.CookingTimeReal) {
+      if (couse.Complexity && couse.CookingTimeReal) {
         range(quantity).forEach(() => {
           sumAllComplexity += couse.Complexity
         })
-        if(!minCookingTimeReal) 
+        if (!minCookingTimeReal)
           minCookingTimeReal = couse.CookingTimeReal
-        
-        if(couse.CookingTimeReal < minCookingTimeReal)
+
+        if (couse.CookingTimeReal < minCookingTimeReal)
           minCookingTimeReal = couse.CookingTimeReal
       }
     })
@@ -510,7 +510,7 @@ export class CartStore {
 
       let courseItem = new_state.itemsInCart[i];
       if (courseItem.couse === undefined) courseItem.couse = courseItem.couse;
-      
+
       courseItem.couse.priceWithDiscountOld = courseItem.couse.priceWithDiscount;
       courseItem.couse.priceWithDiscount = courseItem.couse.Price;
       //если есть процентная скидка, сразу её ставим
@@ -565,7 +565,7 @@ export class CartStore {
       if (curDishSets[j].countInCart == curDishSets[j].dishCount && (curDishSets[j].dishes[0].promocode == this.confirmedPromocode || curDishSets[j].dishes[0].promocode == null)) {
         for (let i = 0; i < new_state.itemsInCart.length; i++) {
           let courseItem = new_state.itemsInCart[i];
-          
+
           let dishInSet = curDishSets[j].dishes.find((a: any) => a.dish == courseItem.couse.VCode);
           if (dishInSet !== undefined) {
             courseItem.campaign = curDishSets[j].vcode;
@@ -657,7 +657,7 @@ export class CartStore {
 
       //идём по всем сэтам и смотрим, сколько у нас наберётся элементов в сэте
       for (let j = 0; j < addOne.length; j++) {
-        
+
         let set = addOne[j];
         //идём по всем блюдам сэта
         for (let k = 0; k < set.dishes.length; k++) {
@@ -747,7 +747,7 @@ export class CartStore {
     }
   }
 
-  
+
   countDiscountForCouses(item: CourseItem) {
     const state = {
       items: [{
@@ -780,7 +780,7 @@ export class CartStore {
     let dishSet: DishSetDiscount[] = []
     let addOne: AddOne[] = []
     if (receptionType === 'delivery') {
-      percentDiscounts = PercentDiscounts.filter(a => a.Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
+      percentDiscounts = PercentDiscounts.filter(a => a.Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false && (a.promocode == null || a.promocode == undefined || (this.confirmedPromocode !== null && this.confirmedPromocode !== undefined && a.promocode == this.confirmedPromocode)));
       dishDiscounts = DishDiscounts.filter(a => a.Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
       allCampaign = AllCampaign.filter(a => a.Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
       dishSet = DishSet.filter(a => a.dishes[0].Delivery == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
@@ -788,7 +788,7 @@ export class CartStore {
     }
 
     if (receptionType === 'pickup') {
-      percentDiscounts = PercentDiscounts.filter(a => a.TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
+      percentDiscounts = PercentDiscounts.filter(a => a.TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false && (a.promocode == null || a.promocode == undefined || (this.confirmedPromocode !== null && this.confirmedPromocode !== undefined && a.promocode == this.confirmedPromocode)));
       dishDiscounts = DishDiscounts.filter(a => a.TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
       allCampaign = AllCampaign.filter(a => a.TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
       dishSet = DishSet.filter(a => a.dishes[0].TakeOut == 1 && a.MaxSum > CourseAllSum && a.MinSum <= CourseAllSum && a.PresentAction == false);
@@ -868,7 +868,7 @@ export class CartStore {
       if (curDishSets[j].countInCart == curDishSets[j].dishCount && (curDishSets[j].dishes[0].promocode == this.confirmedPromocode || curDishSets[j].dishes[0].promocode == null)) {
         for (let i = 0; i < new_state.itemsInCart.length; i++) {
           let courseItem = new_state.itemsInCart[i];
-          
+
           let dishInSet = curDishSets[j].dishes.find((a: any) => a.dish == courseItem.couse.VCode);
           if (dishInSet !== undefined) {
             courseItem.campaign = curDishSets[j].vcode;
@@ -1038,7 +1038,7 @@ export class CartStore {
       courseItem.priceWithDiscount = courseItem.couse.priceWithDiscount * courseItem.quantity;
     }
     // @ts-ignore
-    if(new_state.itemsInCart[0].campaign == "36") { new_state.itemsInCart[0].campaign = undefined }
+    if (new_state.itemsInCart[0].campaign == "36") { new_state.itemsInCart[0].campaign = undefined }
     return new_state.itemsInCart[0]
   }
 
@@ -1168,7 +1168,7 @@ export class CartStore {
       } else {
         Toast.show('Вы не авторизовались')
         this.detailPopup.close()
-        if(!goToAuth) {
+        if (!goToAuth) {
           this.root.auth.authRequired.open()
         } else {
           goToAuth()
@@ -1191,20 +1191,20 @@ export class CartStore {
       setState('LOADING')
       const { reception, user } = this.root
       const { DeliveryCost } = user.info
-      const deliveryCost = DeliveryCost.find((dc, currindex) => 
+      const deliveryCost = DeliveryCost.find((dc, currindex) =>
         dc.minSum <= this.totalPrice
-          && (DeliveryCost[currindex + 1]
-            ? this.totalPrice < DeliveryCost[currindex + 1].minSum
-            : true
-          )
+        && (DeliveryCost[currindex + 1]
+          ? this.totalPrice < DeliveryCost[currindex + 1].minSum
+          : true
+        )
       )
       const response: [historyOrderItem] = await http.post(
         this.payment.method !== 'CARD_ONLINE'
           ? '/NewOrderSlot'
           : '/NewOrderSlotPay',
-        { 
-          ...order, 
-          utm: this.root.auth.utm || null, 
+        {
+          ...order,
+          utm: this.root.auth.utm || null,
           webApp: AppValues[this.root.instance],
           deliveryCost: reception.receptionType === 'delivery' && deliveryCost
             ? deliveryCost.DeliverySum
