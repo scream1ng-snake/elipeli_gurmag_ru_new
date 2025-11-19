@@ -151,7 +151,7 @@ const CategoryPopup: FC = observer(function () {
         ? <Preloader />
         : !currentCategory
           ? null
-          : <Container className='p-0 h-100' fluid='md' style={{ overflowY: 'scroll' }}>
+          : <Container className='p-0' fluid='md' style={{ overflowY: 'scroll', height: 'calc(100% - 65px)' }}>
             <div style={style.header}>
               <Space className='w-100' justify='between'>
                 <BackIcon onClick={goMain} styles={{ marginLeft: 20 }} />  
@@ -197,14 +197,13 @@ const CategoryPopup: FC = observer(function () {
                       menu.searcher.close()
                     }}
                     showCancelButton={() => true}
-                    className={menu.dishSearcher.isSearching ? 'mb-3' : ''}
                   />
                 }
 
 
               </Space>
               {isMobile && menu.searcher.show
-                ? <div style={{ margin: "12px 20px 0 12px" }}>
+                ? <div style={{ margin: "12px 20px 0 12px" }} className={menu.dishSearcher.isSearching ? 'mb-3' : ''}>
                     <ToggleSelector
                       isFit
                       options={options}
@@ -264,9 +263,16 @@ const CategoryPopup: FC = observer(function () {
                 </CapsuleTabs>
               }
             </div>
-            <div className={styles.courses_list} style={{ paddingBottom: 65 }}>
+            <div className={styles.courses_list}>
               {menu.dishSearcher.isSearching
-                ? menu.dishSearcher.result.map((course) => {
+                ? menu.dishSearcher.result
+                  .filter(item => {
+                    if(menu.showDishes === 'all') return true
+                    if(menu.showDishes === 'onlyInStock' && !item.NoResidue && item.EndingOcResidue > 0) return true
+                    if(menu.showDishes === 'onlyInStock' && item.NoResidue) return true
+                    return false
+                  })
+                  .map((course) => {
                   const cic = cart.countDiscountForCouses(course)
                   return <CourseItemComponent
                     key={course.VCode}
@@ -303,7 +309,6 @@ const style: Record<string, CSSProperties> = {
     fontSize: 13,
     fontWeight: 700,
     lineHeight: '14.95px',
-    background: 'var(--tg-theme-secondary-bg-color)'
 
   },
   header: {
