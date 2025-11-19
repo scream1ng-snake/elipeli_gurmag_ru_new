@@ -108,11 +108,9 @@ const myVariables = [
   { cssVar: '--gur-card-weight-text-color', dark: '#8E8E8E', light: '#8E8E8E' },
   { cssVar: '--gur-card-button-bg-color', dark: 'var(--tg-theme-bg-color)', light: 'var(--tg-theme-bg-color)' },
 
-  { cssVar: '--gur-skeleton-bg-color', dark: '#D9D9D9', light: '#D9D9D9' },
+  { cssVar: '--gur-skeleton-bg-color', dark: 'var(--tg-theme-bg-color)', light: 'var(--tg-theme-bg-color)' },
 
-  /* Не используем */
-  { cssVar: '--gur-card-star-color', dark: '#F1BB33', light: '#F1BB33' }, /* цвет в svg  */
-  { cssVar: '--cart-bg-color', dark: 'var(--tg-theme-secondary-bg-color)', light: 'rgba(238, 237, 240, 1)' }
+  { cssVar: '--cart-bg-color', dark: 'var(--tg-theme-secondary-bg-color)', light: 'var(--tg-theme-secondary-bg-color)' }
 ]
 
 const antdVariables: Var[] = [
@@ -120,6 +118,8 @@ const antdVariables: Var[] = [
   { cssVar: '--adm-color-primary', dark: 'var(--gurmag-accent-color)', light: 'var(--gurmag-accent-color)' },
   { cssVar: '--adm-color-box', dark: 'var(--tg-theme-secondary-bg-color)', light: 'var(--tg-theme-secondary-bg-color)' },
   { cssVar: '--adm-font-family', dark: 'Roboto, sans-serif', light: 'Roboto, sans-serif' }
+  // { cssVar: '--adm-color-border', dark: 'var(--adm-color-light)', light: 'var(--adm-color-light)' },
+  // { cssVar: '--adm-border-color', dark: 'var(--adm-color-light)', light: 'var(--adm-color-light)' }
 ]
 
 type WithChildren = {
