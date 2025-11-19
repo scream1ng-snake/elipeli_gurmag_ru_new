@@ -437,3 +437,8 @@ dl, ol, ul {
     height: 100%;
   }
  }
+
+ .MySearchBar .adm-search-bar-input-box {
+    border-top-left-radius: 100px;
+    border-bottom-left-radius: 100px;
+ }

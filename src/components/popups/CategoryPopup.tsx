@@ -179,6 +179,7 @@ const CategoryPopup: FC = observer(function () {
                     onClick={menu.searcher.open}
                   />
                   : <SearchBar
+                    className='MySearchBar'
                     style={{
                       "--background": 'var(--tg-theme-bg-color)',
                       boxShadow: 'rgba(0, 0, 0, 0.3) 0 0 5px 0',
