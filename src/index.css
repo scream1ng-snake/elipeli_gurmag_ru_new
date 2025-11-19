@@ -407,7 +407,7 @@ dl, ol, ul {
     height: 1px;
   }
  }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 576px) {
   .cartPopup {
     height: 75vh;
     border-radius: 25px;

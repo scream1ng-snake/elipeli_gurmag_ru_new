@@ -33,8 +33,8 @@ const AdaptivePopup: FC<Props> = props => {
         ...props.mobileBodyStyle
       }}
       onClose={props.onClose}
-      maskClassName="d-xs-block d-sm-none"
-      bodyClassName={`d-xs-block d-sm-none ${props.bodyClassName || ''}`}
+      maskClassName=""
+      bodyClassName={` ${props.bodyClassName || ''}`}
       disableBodyScroll
     >
       {props.noShtorka
@@ -52,8 +52,8 @@ const AdaptivePopup: FC<Props> = props => {
   } else {
     return <CenterPopup
       destroyOnClose
-      maskClassName="d-none d-sm-block"
-      bodyClassName={`d-none d-sm-block ${props.bodyClassName || ''}`}
+      maskClassName=""
+      bodyClassName={` ${props.bodyClassName || ''}`}
       closeOnMaskClick
       showCloseButton={!props.noCloseBtn}
       visible={props.visible}

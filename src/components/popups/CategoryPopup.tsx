@@ -2,7 +2,7 @@ import { CapsuleTabs, SearchBar, Skeleton, Space } from 'antd-mobile'
 import { toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { CSSProperties, FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useGoUTM, useNavigateBack, useStore } from '../../features/hooks'
+import { useDeviceType, useGoUTM, useNavigateBack, useStore } from '../../features/hooks'
 import Container from 'react-bootstrap/Container'
 import BackIcon, { SearchIcon } from '../icons/Back'
 
@@ -16,6 +16,8 @@ import _ from 'lodash'
 import { useSearchParams } from 'react-router-dom'
 import { GiftButton } from '../icons/GiftButton'
 import { CloseOutline } from 'antd-mobile-icons'
+import ToggleSelector from '../special/ToggleSelector'
+import { showDishesTypes } from '../../stores/menu.store'
 
 const CategoryPopup: FC = observer(function () {
   const [searchParams, setSearcParams] = useSearchParams()
@@ -81,6 +83,7 @@ const CategoryPopup: FC = observer(function () {
     })
 
   const coursesmenu = useMemo(() => {
+    // сначала фильтруем по атрибутам
     return (currentCategory?.CourseList ?? []).filter(item => {
       if (selectedAttributes.size === 0) return true
 
@@ -94,8 +97,14 @@ const CategoryPopup: FC = observer(function () {
         }
       }
       return true
+    // затем фильтруем по наличию
+    }).filter(item => {
+      if(menu.showDishes === 'all') return true
+      if(menu.showDishes === 'onlyInStock' && !item.NoResidue && item.EndingOcResidue > 0) return true
+      if(menu.showDishes === 'onlyInStock' && item.NoResidue) return true
+      return false
     })
-  }, [currentCategory, selectedAttributes.size])
+  }, [currentCategory, selectedAttributes.size, menu.showDishes])
 
   const attributes = useMemo(() => {
     const courseItems = currentCategory?.CourseList ?? []
@@ -111,6 +120,15 @@ const CategoryPopup: FC = observer(function () {
   }, [currentCategory])
 
   const attrs = Array.from(selectedAttributes)
+
+  const options = [{
+    value: showDishesTypes.all,
+    text: 'Все блюда',
+  }, {
+    value: showDishesTypes.onlyInStock,
+    text: 'Только в наличии',
+  }]
+  const isMobile = useDeviceType() === 'mobile'
   return <AdaptivePopup
     visible={categoryPopup.show}
     onClose={goMain}
@@ -136,7 +154,25 @@ const CategoryPopup: FC = observer(function () {
           : <Container className='p-0 h-100' fluid='md' style={{ overflowY: 'scroll' }}>
             <div style={style.header}>
               <Space className='w-100' justify='between'>
-                <BackIcon onClick={goMain} styles={{ marginLeft: 20 }} />
+                <BackIcon onClick={goMain} styles={{ marginLeft: 20 }} />  
+                {!isMobile || (isMobile && !menu.searcher.show)
+                  ? <ToggleSelector
+                    isFit
+                    options={options}
+                    value={menu.showDishes}
+                    onChange={menu.setShowDishes}
+                    backgroundVar={'--tg-theme-bg-color'}
+                    buttonBackgroundVar={'--tg-theme-bg-color'}
+                    buttonActiveBackgroundVar={'--gurmag-accent-color'}
+                    colorVar={'--громкий-текст'}
+                    activeColorVar={'--gur-custom-button-text-color'}
+                    styles={{
+                      boxShadow: '0px 2px 7px 0px rgba(0, 0, 0, 0.19)'
+                    }}
+                  />
+                  : null
+                }
+                
                 {!menu.searcher.show
                   ? <SearchIcon
                     styles={{ marginRight: 18 }}
@@ -167,6 +203,25 @@ const CategoryPopup: FC = observer(function () {
 
 
               </Space>
+              {isMobile && menu.searcher.show
+                ? <div style={{ margin: "12px 20px 0 12px" }}>
+                    <ToggleSelector
+                      isFit
+                      options={options}
+                      value={menu.showDishes}
+                      onChange={menu.setShowDishes}
+                      backgroundVar={'--tg-theme-bg-color'}
+                      buttonBackgroundVar={'--tg-theme-bg-color'}
+                      buttonActiveBackgroundVar={'--gurmag-accent-color'}
+                      colorVar={'--громкий-текст'}
+                      activeColorVar={'--gur-custom-button-text-color'}
+                      styles={{
+                        boxShadow: '0px 2px 7px 0px rgba(0, 0, 0, 0.19)'
+                      }}
+                    />
+                </div>
+                : null
+              }
               {menu.dishSearcher.isSearching
                 ? null
                 : <CapsuleTabs onChange={watchCategory} activeKey={currentCategory?.VCode.toString()}>

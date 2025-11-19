@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react'
+import { CSSProperties, FC, ReactNode } from 'react'
 import { Image } from 'antd-mobile'
 import styles from './styles.module.css'
 
@@ -7,6 +7,8 @@ const CustomButton: FC<{
   onClick: Function,
   height: string,
   backgroundVar: string,
+  style?: CSSProperties,
+  className?: string,
   colorVar?: string,
 
   disabled?: boolean
@@ -35,7 +37,7 @@ const CustomButton: FC<{
 }> = props =>
   <div className={styles.custom_button_wrapper}>
     <div
-      className={styles.custom_button}
+      className={styles.custom_button + (props.className || '')}
       onClick={() => !props.disabled && props.onClick()}
       style={{
         height: props.height,
@@ -52,7 +54,8 @@ const CustomButton: FC<{
         color: `var(${props.colorVar})`,
         fontWeight: props.fontWeight,
         fontSize: props.fontSize,
-        opacity: props.disabled ? 0.4 : 1
+        opacity: props.disabled ? 0.4 : 1,
+        ...props.style
       }}
     >
       {

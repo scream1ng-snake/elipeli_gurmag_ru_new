@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { CSSProperties, FC } from 'react'
 import { Image } from 'antd-mobile'
 import styles from './styles.module.css'
 import CustomButton from './CustomButton'
@@ -14,6 +14,8 @@ const ToggleSelector: FC<{
   buttonActiveBackgroundVar: string,
   colorVar: string,
   activeColorVar: string,
+  isFit?: boolean,
+  styles?: CSSProperties
 }> = props => {
   const { theme } = useTheme()
   
@@ -27,6 +29,7 @@ const ToggleSelector: FC<{
     background: `var(${props.backgroundVar})`,
     boxSizing: 'border-box',
     gap: '2px',
+    ...props.styles
   }}>
     {
       props.options.map((option, index) => (
@@ -35,7 +38,9 @@ const ToggleSelector: FC<{
           text={option.text}
           onClick={() => { props.onChange(option.value) }}
           height={'32px'}
-          minWidth={'134px'}
+          minWidth={props.isFit ? undefined : '134px'}
+          paddingHorizontal={props.isFit ? '15px' : undefined}
+          style={{ textWrap: 'nowrap' }}
           fontWeight={'400'}
           fontSize={'14.5px'}
           backgroundVar={(option.value === props.value) ? props.buttonActiveBackgroundVar : props.buttonBackgroundVar }

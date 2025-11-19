@@ -11,6 +11,9 @@ class MenuStore {
   constructor(readonly parrent: ReceptionStore) {
     makeAutoObservable(this, {}, { autoBind: true })
   }
+
+  showDishes: ShowDishesType = 'all'
+  setShowDishes = (v: ShowDishesType) => { this.showDishes = v }
   
   /** все блюда по категориям */
   categories: CategoryCourse[] = []
@@ -267,3 +270,13 @@ export type CourseReview = {
   /** "5" */
   Rating: string,
 }
+
+
+export const showDishesTypes = {
+  all: 'all',
+  onlyInStock: 'onlyInStock',
+} as const;
+
+export type ShowDishesType = typeof showDishesTypes[
+  keyof typeof showDishesTypes
+];
