@@ -122,12 +122,12 @@ const CategoryPopup: FC = observer(function () {
   const attrs = Array.from(selectedAttributes)
 
   const options = [{
-    value: showDishesTypes.all,
-    text: 'Все блюда',
-  }, {
     value: showDishesTypes.onlyInStock,
     text: 'Только в наличии',
-  }]
+  }, {
+    value: showDishesTypes.all,
+    text: 'Все блюда',
+  }, ]
   const isMobile = useDeviceType() === 'mobile'
   return <AdaptivePopup
     visible={categoryPopup.show}

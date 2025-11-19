@@ -78,8 +78,8 @@ const tgVariables: Var[] = [
   { cssVar: '--tg-theme-link-color', dark: '#168ACD', light: '#73B9F5' },
   { cssVar: '--tg-theme-button-color', dark: '#2F6EA5', light: '#40A7E3' },
   { cssVar: '--tg-theme-button-text-color', dark: '#FFFFFF', light: '#FFFFFF' },
-  { cssVar: '--tg-theme-bg-color', dark: '#17212B', light: '#FFFFFF' },
-  { cssVar: '--tg-theme-secondary-bg-color', dark: '#232E3C', light: '#EDF1F4' },
+  { cssVar: '--tg-theme-bg-color', dark: '#232E3C', light: '#FFFFFF' },
+  { cssVar: '--tg-theme-secondary-bg-color', dark: '#17212B', light: '#EDF1F4' },
   { cssVar: '--tg-theme-text-color', dark: '#F5F5F5', light: '#222222' }
 ]
 
@@ -102,11 +102,11 @@ const myVariables = [
   { cssVar: '--gur-border-color', dark: '#006241', light: '#006241' },
 
   /* Переменные карточки товара */
-  { cssVar: '--gur-card-bg-color', dark: '#232E3C', light: '#EDF1F4' },
+  { cssVar: '--gur-card-bg-color', dark: 'var(--tg-theme-secondary-bg-color)', light: 'var(--tg-theme-secondary-bg-color)' },
   { cssVar: '--gur-card-image-text-color', dark: '#FFFFFF', light: '#FFFFFF' },
   { cssVar: '--gur-card-count-text-color', dark: '#006241', light: '#006241' },
   { cssVar: '--gur-card-weight-text-color', dark: '#8E8E8E', light: '#8E8E8E' },
-  { cssVar: '--gur-card-button-bg-color', dark: '#17212B', light: '#FFFFFF' },
+  { cssVar: '--gur-card-button-bg-color', dark: 'var(--tg-theme-bg-color)', light: 'var(--tg-theme-bg-color)' },
 
   { cssVar: '--gur-skeleton-bg-color', dark: '#D9D9D9', light: '#D9D9D9' },
 

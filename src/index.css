@@ -192,7 +192,7 @@ dl, ol, ul {
   flex: 1;
   margin-top: 6px;
   padding: 0 16px 20px;
-  border-radius: 15px 15px 0px 0px;
+  border-radius: 15px;
   background: var(--tg-theme-bg-color);
 }
 
@@ -247,7 +247,6 @@ dl, ol, ul {
   line-height: 18px;
   letter-spacing: 0.05em;
   color: var(--громкий-текст);
-  height: 100%;
 }
 .item_modal_description_text > p {
   text-indent: 22px;

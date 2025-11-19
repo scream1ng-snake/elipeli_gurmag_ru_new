@@ -12,7 +12,7 @@ class MenuStore {
     makeAutoObservable(this, {}, { autoBind: true })
   }
 
-  showDishes: ShowDishesType = 'all'
+  showDishes: ShowDishesType = 'onlyInStock'
   setShowDishes = (v: ShowDishesType) => { this.showDishes = v }
   
   /** все блюда по категориям */
