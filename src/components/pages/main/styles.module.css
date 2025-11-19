@@ -2,6 +2,8 @@
   background-color: var(--tg-theme-bg-color);
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
   padding: 12px 0px;
   padding-right: 0 !important;
 }
