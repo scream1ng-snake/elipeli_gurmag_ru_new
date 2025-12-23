@@ -173,16 +173,15 @@ export class CartStore {
     let sumAllComplexity = 0
     let minCookingTimeReal: Optional<number> = null
     this.items.forEach(({ quantity, couse }) => {
-      if (couse.Complexity && couse.CookingTimeReal) {
-        range(quantity).forEach(() => {
-          sumAllComplexity += couse.Complexity
-        })
-        if (!minCookingTimeReal)
-          minCookingTimeReal = couse.CookingTimeReal
+      
+      range(quantity).forEach(() => {
+        sumAllComplexity += (couse.Complexity || 0)
+      })
+      if (!minCookingTimeReal)
+        minCookingTimeReal = (couse.CookingTimeReal || 0)
 
-        if (couse.CookingTimeReal < minCookingTimeReal)
-          minCookingTimeReal = couse.CookingTimeReal
-      }
+      if ((couse.CookingTimeReal || 0) < minCookingTimeReal)
+        minCookingTimeReal = (couse.CookingTimeReal || 0)
     })
     this.setFullCookTime(sumAllComplexity + (minCookingTimeReal ?? 0))
 

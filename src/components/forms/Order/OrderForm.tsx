@@ -19,9 +19,13 @@ const Pickup: FC<{ deliveryPrice: number | undefined }> = observer((props) => {
     go("/authorize", { fromPostOrder: 'true' })
   }
   const { cart, reception } = useStore()
-  const { timePick, datePick, availableTimeRange, date, setDate } = cart
+  const { timePick, datePick, availableTimeRange, date, setDate, packageTime, fullCookTime } = cart
   const isValid = reception.currentOrganizaion
     && cart.payment.method
+
+  const coursesReadyTime = moment()
+    .add(fullCookTime + packageTime, 'minutes')
+    .toDate()
   return <Form className="orderDetailForm">
     <DatePicker
       cancelText='Закрыть'
@@ -30,7 +34,7 @@ const Pickup: FC<{ deliveryPrice: number | undefined }> = observer((props) => {
       visible={datePick.show}
       onClose={datePick.close}
       onConfirm={setDate}
-      min={new Date()}
+      min={coursesReadyTime}
       value={date}
     />
     <DatePicker
@@ -86,7 +90,7 @@ const Delivery: FC<{ deliveryPrice: number | undefined }> = observer(props => {
     go("/authorize", { fromPostOrder: 'true' })
   }
   const { cart, reception } = useStore()
-  const { datePick, date, setDate } = cart
+  const { datePick, date, setDate, packageTime, fullCookTime } = cart
   const { selectLocationPopup2: { open }, Location } = reception
 
   const { road, house_number } = Location.confirmedAddress
@@ -94,6 +98,9 @@ const Delivery: FC<{ deliveryPrice: number | undefined }> = observer(props => {
     && cart.slots.selectedSlot
     && cart.payment.method
 
+  const coursesReadyTime = moment()
+    .add(fullCookTime + packageTime, 'minutes')
+    .toDate()
   return <Form className="orderDetailForm">
     <DatePicker
       cancelText='Закрыть'
@@ -102,7 +109,7 @@ const Delivery: FC<{ deliveryPrice: number | undefined }> = observer(props => {
       visible={datePick.show}
       onClose={datePick.close}
       onConfirm={setDate}
-      min={new Date()}
+      min={coursesReadyTime}
       value={date}
     />
     <h2 className={styles.receptionType}>
