@@ -32,21 +32,59 @@ export class CartStore {
   /** дата заказа */
   date = moment().add(15, 'minutes').toDate()
 
-  setDate = (date: Date) => { this.date = date }
+  setDate = (date: Date) => { 
+    const workDayStart = new Date(date);
+    workDayStart.setHours(9, 30, 0, 0);
+    
+    const workDayEnd = new Date(date);
+    workDayEnd.setHours(21, 30, 0, 0);
+    
+    const { fullCookTime, packageTime } = this
+    const coursesReadyTime = moment()
+      .add(fullCookTime + packageTime, 'minutes')
+      .toDate()
+    // Если дата до начала рабочего дня - устанавливаем начало рабочего дня
+    if (date < workDayStart) {
+      if(coursesReadyTime > workDayStart) {
+        this.setDate(coursesReadyTime);
+      } else {
+        this.date = workDayStart;
+      }
+    } 
+    // Если дата после конца рабочего дня - устанавливаем конец рабочего дня
+    else if (date > workDayEnd) {
+      if(coursesReadyTime > workDayEnd) {
+        this.setDate(coursesReadyTime);
+      } else {
+        this.date = workDayEnd;
+      }
+    }
+    // Если дата в пределах рабочего дня - оставляем как есть
+    else {
+      if(coursesReadyTime > date) {
+        this.setDate(coursesReadyTime);
+      } else {
+        this.date = date;
+      }
+    }
+  }
   /** диапазон времени для пикера */
   get availableTimeRange() {
     const isToday = moment(this.date).isSame(new Date(), 'day')
     const startDay = moment(this.date).hour(9).minute(30).toDate()
     const endDay = moment(this.date).hour(21).minute(30).toDate()
     const { fullCookTime, packageTime } = this
+    const coursesReadyTime = moment()
+      .add(fullCookTime + packageTime, 'minutes')
+      .toDate()
     if (isToday) {
-      const coursesReadyTime = moment()
-        .add(fullCookTime + packageTime, 'minutes')
-        .toDate()
-
       return { min: coursesReadyTime, max: endDay }
     } else {
-      return { min: startDay, max: endDay }
+      if(startDay.getTime() < coursesReadyTime.getTime()) {
+        return { min: coursesReadyTime, max: endDay }
+      } else {
+        return { min: startDay, max: endDay }
+      }
     }
   }
 
@@ -180,9 +218,12 @@ export class CartStore {
       if (!minCookingTimeReal)
         minCookingTimeReal = (couse.CookingTimeReal || 0)
 
-      if ((couse.CookingTimeReal || 0) < minCookingTimeReal)
-        minCookingTimeReal = (couse.CookingTimeReal || 0)
+      if (couse.CookingTimeReal && couse.CookingTimeReal < minCookingTimeReal)
+        minCookingTimeReal = couse.CookingTimeReal
+
+      console.log()
     })
+    console.log(sumAllComplexity + (minCookingTimeReal ?? 0))
     this.setFullCookTime(sumAllComplexity + (minCookingTimeReal ?? 0))
 
   }
