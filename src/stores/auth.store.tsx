@@ -243,16 +243,26 @@ export class AuthStore {
           this.setAccountState(state)
           this.setStage('INPUT_TELEPHONE')
           const src = 'https://t.me/Gurmagbot?start=start'
-          Dialog.alert({
-            confirmText: 'Перейти и запустить',
-            title: 'Упс... Кажется вы забыли запустить GURMAG бот?',
-            content: <p>Вам нужно зайти в <a href={src}>@Gurmagbot</a> и нажать кнопку "Запустить"</p>,
-            onConfirm: () => {
-              const { tg } = useTelegram() // eslint-disable-line
-              tg.openTelegramLink(src)
-              tg.close()
-            },
-          })
+          if(this.root.instance === 'MAX') {
+             Dialog.alert({
+              confirmText: 'Ок',
+              title: 'Гурмаг бот не запущен',
+              content: 'Для регистрации вам необходимо запустить Гурмаг бот в Max. Выполните команду /start',
+              onConfirm: () => {},
+            })
+          }
+          if(this.root.instance === 'TG_BROWSER') {
+            Dialog.alert({
+              confirmText: 'Перейти и запустить',
+              title: 'Упс... Кажется вы забыли запустить GURMAG бот?',
+              content: <p>Вам нужно зайти в <a href={src}>@Gurmagbot</a> и нажать кнопку "Запустить"</p>,
+              onConfirm: () => {
+                const { tg } = useTelegram() // eslint-disable-line
+                tg.openTelegramLink(src)
+                tg.close()
+              },
+            })
+          }
         }
         logger.log(state)
       }
