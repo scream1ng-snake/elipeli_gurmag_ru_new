@@ -82,6 +82,9 @@ export default class RootStore {
     } else if (bridge?.isIframe() || bridge?.isWebView()) {
       logger.log('мы в VK', 'root')
       this.appType = 'VK'
+    } else if (window.WebApp.initData !== null) {
+      logger.log('мы в максе', 'root')
+      this.appType = 'MAX'
     } else {
       logger.log('мы в браузере', 'root')
       this.appType = 'WEB_BROWSER'
@@ -102,6 +105,7 @@ export const AppInstances = {
   WEB_BROWSER: "WEB_BROWSER",
   TG_BROWSER: "TG_BROWSER",
   VK: "VK",
+  MAX: "MAX",
 } as const;
 export type AppInstance = typeof AppInstances[keyof typeof AppInstances];
 
@@ -109,5 +113,6 @@ export const AppValues = {
   TG_BROWSER: 0,
   WEB_BROWSER: 1,
   VK: 2,
-  UNKNOWN: 1
+  UNKNOWN: 1,
+  MAX: 3
 } as const 

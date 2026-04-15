@@ -6,6 +6,7 @@ import { HistoryContext } from "./providers";
 declare global {
   interface Window {
     Telegram: any;
+    WebApp: any; // это у макса
   }
 }
 

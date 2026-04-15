@@ -1,4 +1,4 @@
-import { Input, Button, Popup, NavBar, Form } from "antd-mobile"
+import { Input, Button, Popup, NavBar, Form, Toast } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { FC, useState, useEffect } from "react"
 import { getFormattedNumber, useMask } from "react-phone-hooks"
@@ -19,7 +19,7 @@ const phoneRegex = /^((\+8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{14,15}$/
 
 const InputNumber: FC = observer(() => {
   const go = useGoUTM()
-  const { auth } = useStore()
+  const { instance, auth } = useStore()
   const { tel } = useParams()
   const [number, setNumber] = useState(defaultPrefix)
   const [errored, setErrored] = useState(false)
@@ -31,21 +31,34 @@ const InputNumber: FC = observer(() => {
       : setErrored(true)
   }
 
-  function submit(number: string, vkConfirmed: boolean) {
+  function submit(number: string, vkConfirmed: boolean, maxConfirmed: boolean) {
     const clearNumber = number.replace(/\D/g, '')
-    auth.authorize.run(clearNumber, vkConfirmed)
+    auth.authorize.run(clearNumber, vkConfirmed, maxConfirmed)
   }
 
   useEffect(() => {
     if (tel?.length) setNumber(getFormattedNumber(tel, defaultMask))
-    bridge?.send('VKWebAppGetPhoneNumber')
-      .then((data) => {
-        if (data.phone_number) {
-          onChange(data.phone_number)
-          submit(data.phone_number, true)
-        }
-      })
-      .catch(console.error)
+    
+    switch (instance) {
+      case 'VK': {
+        bridge?.send('VKWebAppGetPhoneNumber')
+          .then((data) => {
+            if (data.phone_number) {
+              onChange(data.phone_number)
+              submit(data.phone_number, true, false)
+            }
+          })
+          .catch(console.error)
+        break
+      }
+      case 'MAX': {
+        window.WebApp?.requestContact().then(({ phone }: any) => {
+          onChange(phone)
+          submit(phone, false, true)
+        })
+        break
+      }
+    }
   }, [])
   return <Popup visible bodyClassName={styles.wrapper}>
     <Container>
@@ -80,7 +93,7 @@ const InputNumber: FC = observer(() => {
           <Col md={6}>
             <Button
               disabled={errored || number.length < 16}
-              onClick={() => submit(number, false)}
+              onClick={() => submit(number, false, false)}
               className={styles.submit_button}
               shape='rounded'
             >

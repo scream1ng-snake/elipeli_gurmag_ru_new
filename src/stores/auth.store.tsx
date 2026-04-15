@@ -4,7 +4,7 @@ import { http } from "../features/http";
 import { logger } from "../features/logger";
 import RootStore from "./root.store";
 import { Optional, Request, Undef } from "../features/helpers";
-import { Dialog, Image } from "antd-mobile";
+import { Dialog, Image, Toast } from "antd-mobile";
 import { ExclamationCircleFill as Icon } from "antd-mobile-icons";
 import Pizza from '../assets/Pizza.png'
 import Popup from "../features/modal";
@@ -98,6 +98,19 @@ export class AuthStore {
 
     const orgId = this.root.reception.OrgForMenu as number
     switch (this.root.instance) {
+      case 'MAX': {
+        const maxId = window.WebApp.initDataUnsafe.user.id
+        const result = maxId
+          ? await this.root.user.loadUserInfo.run(orgId, "max" +  maxId)
+          : await this.root.user.loadUserInfo.run(orgId, 0)
+
+        result
+          ? this.setState('AUTHORIZED')
+          : this.setState('NOT_AUTHORIZED')
+
+        if (maxId) this.root.user.setID("max" +  maxId)
+        break;
+      }
       case 'TG_BROWSER': {
         const { userId: tgId } = useTelegram() // eslint-disable-line
         const result = tgId
@@ -143,7 +156,7 @@ export class AuthStore {
   }
 
   /** тут авторизуемся по номеру телефона */
-  authorize = new Request(async (_, setState, phone: string, vkConfirmed: boolean) => {
+  authorize = new Request(async (_, setState, phone: string, vkConfirmed: boolean, maxConfirmed: boolean) => {
     setState('LOADING')
     this.setState('AUTHORIZING')
     logger.log(this.state + ' ' + this.stage, 'auth-store')
@@ -152,6 +165,26 @@ export class AuthStore {
       let state: resultType
 
       switch (this.root.instance) {
+        case 'MAX': {
+          const maxId = window.WebApp.initDataUnsafe.user.id
+          let result
+          // если этот номер точно дал max
+          // тогда вызываем другую апишку 
+          // которая не требует смс кода
+          if (maxConfirmed) {
+            result = await http.post<any, resultType>(
+              '/checkUserPhoneVk',
+              { phone, userId: "max" +  maxId }
+            )
+          } else {
+            result = await http.post<any, resultType>(
+              '/checkUserPhone',
+              { phone, userId: "max" +  maxId }
+            )
+          }
+          if (result?.length) state = result
+          break
+        }
         case 'TG_BROWSER': {
           const { userId } = useTelegram()
           const result = await http.post<any, resultType>(
@@ -201,6 +234,8 @@ export class AuthStore {
           this.setConfirmedPhone(phone)
           if (this.root.instance === 'VK' && vkConfirmed) {
             this.inputSmsCode.run('0000')
+          } else if (this.root.instance === 'MAX' && maxConfirmed) {
+            this.inputSmsCode.run("0000")
           } else {
             this.setStage('INPUT_SMS_CODE')
           }
