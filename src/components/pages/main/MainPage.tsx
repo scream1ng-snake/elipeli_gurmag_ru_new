@@ -98,13 +98,13 @@ const MainPage: FC = observer(() => {
   };  
 
   return <Wrapper>
-    {auth.floatingIconAuthForGift.show
+    {/* {auth.floatingIconAuthForGift.show
       ? <GiftButton 
         onClick={auth.bannerAuthForGift.open}
         style={{ zIndex: 2, position: 'absolute', right: '16px', bottom: '81px' }}
       />
       : null
-    }
+    } */}
     <Congratilations />
     <NiceToMeetYooPopup />
     <CollectionPopup />
@@ -120,7 +120,7 @@ const MainPage: FC = observer(() => {
     </Fixed>
     <Container className={styles.gur_main_content}>
       <AskLocation />
-      <AskAuthorize />
+      {/* <AskAuthorize /> */}
       <Stories />
       {user.hasHotCampaign.length
         ? <BannerCarusel /> 

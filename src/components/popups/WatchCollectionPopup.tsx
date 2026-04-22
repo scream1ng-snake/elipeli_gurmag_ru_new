@@ -169,7 +169,7 @@ export const CollectionPopup: FC = observer(p => {
       }}
       shtorkaOffset='-10px'
     >
-      <AskAuthorize />
+      {/* <AskAuthorize /> */}
       <BackIcon
         onClick={close}
         styles={{

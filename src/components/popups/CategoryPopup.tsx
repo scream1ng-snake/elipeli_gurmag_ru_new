@@ -144,7 +144,7 @@ const CategoryPopup: FC = observer(function () {
       : null
     }
     <ItemModal popup={coursePopup} close={() => { goBack() }} />
-    <AskAuthorize />
+    {/* <AskAuthorize /> */}
     <AskLocation />
     {
       isLoading
