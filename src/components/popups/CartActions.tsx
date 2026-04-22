@@ -71,12 +71,27 @@ export const NiceToMeetYooPopup: FC = observer(() => {
       </Space>
       <Row>
         <Col xs={{ span: 12 }} md={{ span: 6 }} className="text-md-left">
-          <br />
-          <p style={boldText}>{text.title.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
-          <br />
-          <p style={normalText}>{text.body1.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
-          <br />
-          <p style={normalText}>{text.body2.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
+          {text?.title?.length
+            ? <>
+              <br />
+              <p style={boldText}>{text.title.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
+            </>
+            : null
+          }
+          {text?.body1?.length
+            ? <>
+              <br />
+              <p style={normalText}>{text.body1.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
+            </>
+            : null
+          }
+          {text?.body2?.length
+            ? <>
+              <br />
+              <p style={normalText}>{text.body2.split('\\n').map((txt, index) => <span key={index}>{txt} <br /></span>)}</p>
+            </>
+            : null
+          }
           <br />
         </Col>
         <Col xs={{ span: 12 }} md={{ span: 6 }} className="p-0">
@@ -105,8 +120,10 @@ export const NiceToMeetYooPopup: FC = observer(() => {
             fill='outline'
             onClick={() => {
               close()
-              copyToClipboard(text.promo)
-              Toast.show('Промокод скопирован')
+              if(text?.promo?.length) {
+                copyToClipboard(text.promo)
+                Toast.show('Промокод скопирован')
+              }
             }}
             style={{
               width: 'calc(100% - 2rem)',
