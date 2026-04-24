@@ -16,7 +16,8 @@ import Col from "react-bootstrap/Col"
 import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import AdaptivePopup from "../common/Popup/Popup"
-import kruvasan from '../../assets/kruAssAn.png'
+import Max from '../../assets/Max.png'
+// import kruvasan from '../../assets/kruAssAn.png'
 import { useSearchParams } from "react-router-dom";
 import styles from '../pages/cart/CartPage.module.css'
 
@@ -28,7 +29,7 @@ const popup: CSSProperties = {
   color: 'black',
 }
 
-const boldText: CSSProperties = { fontSize: 17, fontWeight: 700, lineHeight: '18.5px' }
+const boldText: CSSProperties = { fontSize: 27, fontWeight: 700, lineHeight: '37.5px' }
 const normalText: CSSProperties = { fontSize: 16, fontWeight: 400, lineHeight: '17.5px' }
 const badge = {
   background: 'rgba(1, 98, 65, 1)',
@@ -110,8 +111,11 @@ export const NiceToMeetYooPopup: FC = observer(() => {
               </div>
             }
             <Image
-              style={{ marginBottom: -45 }}
-              src={kruvasan}
+              src={Max}
+              style={{
+                padding:'0 3rem 0 3rem',
+                margin:'-3rem 0 -1.5rem 0',
+              }}
             />
           </div>
         </Col>
