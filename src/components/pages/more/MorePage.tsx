@@ -26,10 +26,10 @@ const MorePage: FC = observer(() => {
             clickable={false}
             prefix={<PhoneOutlined style={icoStyle} />}
             onClick={() => {
-              window.open('tel:89870401199')
+              window.open('tel:89870401119')
             }}
           >
-            8-987-040-11-99
+            8-987-040-11-19
           </List.Item>
           <List.Item
             clickable={false}
